@@ -10,7 +10,7 @@ class UserRepository {
                     $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                 }).toArray(function(err, items) {
                     if(err){
-                        console.log(err);
+                        console.log('------------------------', err);
                         return []
                     }
                     return items;
