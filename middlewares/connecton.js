@@ -6,7 +6,7 @@ let connect = async (req, res, next) => {
     check(req, res, next)
 };
 
-let check = async (req, res, next) => {
+function check(req, res, next) {
     if (url.pathname === 'reports'){
         if (mongoose.connection.name !== 'goonjPaywallReports'){
             req.db = 'goonjPaywallReports';
@@ -22,9 +22,9 @@ let check = async (req, res, next) => {
     }
 
     res.status(403).send("Database Access Denied");
-};
+}
 
-let updateConnection = async (db, res, next) => {
+function updateConnection(db, res, next) {
 
     console.log('db: ', db);
     console.log('config.mongoDB[db]: ', config.mongoDB[db]);
@@ -37,7 +37,7 @@ let updateConnection = async (db, res, next) => {
         console.log('Database Connection is updated successfully. Connection String: ', connectionString);
         next();
     });
-};
+}
 
 
 module.exports = {
