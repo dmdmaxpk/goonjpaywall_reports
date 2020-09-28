@@ -5,11 +5,11 @@ const userRepo = container.resolve('userRepository');
 const  _ = require('lodash');
 
 computeUserReports = async(req, res) => {
-    console.log('computeUserReports: ', req.db);
+    console.log('computeUserReports: ');
 
     let fromDate, toDate, day, month, finalList = [];
     reportsRepo.checkLastDocument().then(function (result) {
-        console.log('result: ', result.length);
+        console.log('result: ', result);
 
         day = req.day ? req.day : 1;
         day = day > 9 ? day : '0'+Number(day);
