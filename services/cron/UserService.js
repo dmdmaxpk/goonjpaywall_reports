@@ -28,7 +28,7 @@ computeUserReports = async(req, res) => {
         toDate.setMinutes(59);
         toDate.setSeconds(59);
 
-        console.log('computeUserReports: ', fromDate, toDate);
+        console.log('computeUserReports: ', fromDate, toDate); return;
         userRepo.getUsersByDateRange(req, fromDate, toDate).then(function (users) {
             console.log('users-1: ', users);
 
