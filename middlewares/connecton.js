@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const config = require('../config');
+const config = require('./../config');
 let url = require('url');
 
 let connect = async (req, res, next) => {
