@@ -1,7 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 
 let connect = async (req, res, next) => {
-    await check(req, res, next);
     await MongoClient.connect("mongodb://localhost:27017/", async function(err, client) {
         if(err){
             console.error(`Error: ${err.message}`);
