@@ -33,7 +33,7 @@ function updateConnection(db, res, next) {
         res.status(403).send("Database Access Denied");
     });
     mongoose.connection.on('connected', connectionString => {
-        console.log('Database Connection is updated successfully. Connection String: ', connectionString, req.db);
+        console.log('Database Connection is updated successfully. Connection String: ', connectionString, db);
         next();
     });
 }
