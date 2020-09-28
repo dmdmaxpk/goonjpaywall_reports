@@ -10,8 +10,10 @@ require('./models/Report');
 // Connection to Database
 const config = require('./config');
 
+console.log('mongoose.connection: ', mongoose.connection.name);
 mongoose.connect(config.mongoDB['paywallReports']);
 mongoose.connection.on('error', err => console.error(`Error: ${err.message}`));
+console.log('mongoose.connection: ', mongoose.connection.name);
 
 const app = express();
 
