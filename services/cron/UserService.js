@@ -5,7 +5,7 @@ const userRepo = container.resolve('userRepository');
 const  _ = require('lodash');
 
 computeUserReports = async(req, res) => {
-    console.log('computeUserReports');
+    console.log('computeUserReports: ', req.db);
 
     let fromDate, toDate, day, month, finalList = [];
     reportsRepo.checkLastDocument().then(function (result) {
