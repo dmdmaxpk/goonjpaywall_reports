@@ -24,6 +24,7 @@ class SubscriptionRepository {
             console.log('getCallbackSendByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
+                    console.log('collection: ', collection);
                     collection.aggregate([
                         {
                             $match: {
