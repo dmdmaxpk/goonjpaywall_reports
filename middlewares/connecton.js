@@ -2,21 +2,21 @@ const config = require('../config');
 let url = require('url');
 
 let connect = async (req, res, next) => {
-    this.check(req, res, next)
+    check(req, res, next)
 };
 
 let check = async (req, res, next) => {
     if (url.pathname === 'reports'){
         if (mongoose.connection.name !== 'goonjPaywallReports'){
             req.db = 'goonjPaywallReports';
-            this.updateConnection('goonjPaywallReports', res, next);
+            updateConnection('goonjPaywallReports', res, next);
         }
     }
     else
     {
         if (mongoose.connection.name !== 'goonjpaywall'){
             req.db = 'goonjpaywall';
-            this.updateConnection('goonjpaywall', res, next);
+            updateConnection('goonjpaywall', res, next);
         }
     }
 
@@ -38,7 +38,5 @@ let updateConnection = async (db, res, next) => {
 
 
 module.exports = {
-    check: check,
-    connect: connect,
-    updateConnection: updateConnection
+    connect: connect
 };
