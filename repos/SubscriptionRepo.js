@@ -159,16 +159,15 @@ class SubscriptionRepository {
                                 billing_dtm: "$billing_dtm",
                             }
                         },
-                    ]);
+                    ]).toArray(function(err, items) {
+                        if(err){
+                            console.log('getChargeDetailsByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
                 }
             })
-            .toArray(function(err, items) {
-                if(err){
-                    console.log('getChargeDetailsByDateRange - err: ', err.message);
-                    resolve([]);
-                }
-                resolve(items);
-            });
         });
     }
 }

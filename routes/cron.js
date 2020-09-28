@@ -21,13 +21,13 @@ router.route('/compute-billing-history-reports')
 router.route('/compute-callback-send-reports')
     .get(connecton.connect, controller.computeCallbackSendReports);
 
-router.route('/compute-page-view-reports')
-    .get(connecton.connect, controller.computePageViewReports);
-
 router.route('/compute-charge-detail-reports')
     .get(connecton.connect, controller.computeChargeDetailsReports);
 
 router.route('/compute-revenue-net-addition-reports')
     .get(connecton.connect, controller.computeRevenueNetAdditionReports);
+
+router.route('/compute-page-view-reports')
+    .get(connecton.connect, controller.computePageViewReports);
 
 module.exports = router;
