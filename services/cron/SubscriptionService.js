@@ -29,7 +29,7 @@ computeSubscriptionReports = async(req, res) => {
         toDate.setSeconds(59);
 
         console.log('computeSubscriptionReports: ', fromDate, toDate);
-        subscriptionRepo.getSubscriptionsByDateRange(fromDate, toDate).then(function (subscriptions) {
+        subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate).then(function (subscriptions) {
             console.log('subscriptions: ', subscriptions.length);
 
             if (subscriptions.length > 0){

@@ -29,7 +29,7 @@ computePageViewReports = async(req, res) => {
         toDate.setSeconds(59);
 
         console.log('computePageViewReports: ', fromDate, toDate);
-        pageViewRepo.getPageViewsByDateRange(fromDate, toDate).then( async function(pageviews) {
+        pageViewRepo.getPageViewsByDateRange(req, fromDate, toDate).then( async function(pageviews) {
             console.log('pageviews: ', pageviews);
 
             if (pageviews !== undefined && pageviews.length > 0){

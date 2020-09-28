@@ -29,7 +29,7 @@ computeCallbackSendReports = async(req, res) => {
         toDate.setSeconds(59);
 
         console.log('computeCallbackSendReports: ', fromDate, toDate);
-        subscriptionRepo.getCallbackSendByDateRange(fromDate, toDate).then(function (subscriptions) {
+        subscriptionRepo.getCallbackSendByDateRange(req, fromDate, toDate).then(function (subscriptions) {
             console.log('subscriptions: ', subscriptions.length);
 
             if (subscriptions.length > 0){

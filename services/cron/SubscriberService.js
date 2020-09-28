@@ -29,7 +29,7 @@ computeSubscriberReports = async(req, res) => {
         toDate.setSeconds(59);
 
         console.log('computeSubscriberReports: ', fromDate, toDate);
-        subscriberRepo.getSubscribersByDateRange(fromDate, toDate).then(function (subscribers) {
+        subscriberRepo.getSubscribersByDateRange(req, fromDate, toDate).then(function (subscribers) {
             console.log('subscribers: ', subscribers.length);
 
             if (subscribers.length > 0){

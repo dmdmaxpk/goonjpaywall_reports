@@ -29,7 +29,7 @@ computeChargeDetailsReports = async(req, res) => {
         toDate.setSeconds(59);
 
         console.log('computeChargeDetailsReports: ', fromDate, toDate);
-        subscriptionRepo.getChargeDetailsByDateRange(fromDate, toDate).then(function (chargeDetails) {
+        subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate).then(function (chargeDetails) {
             console.log('chargeDetails: ', chargeDetails.length);
 
             if (chargeDetails.length > 0){

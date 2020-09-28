@@ -43,7 +43,6 @@ class PageViewRepo {
         console.log('getPageViewsByDateRange: ', from, to);
         await this.connect();
 
-        return;
         await this.connect().then(async function (db) {
             console.log('db: ', db);
 

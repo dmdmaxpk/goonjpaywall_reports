@@ -29,7 +29,7 @@ computeRevenueNetAdditionReports = async(req, res) => {
         toDate.setSeconds(59);
 
         console.log('computeRevenueNetAdditionReports: ', fromDate, toDate);
-        billingHistoryRepo.getnetAdditionByDateRange(fromDate, toDate).then(function (netAdditions) {
+        billingHistoryRepo.getnetAdditionByDateRange(req, fromDate, toDate).then(function (netAdditions) {
             console.log('netAdditions: ', netAdditions.length);
 
             if (netAdditions.length > 0){

@@ -4,7 +4,6 @@ class UserRepository {
         return new Promise((resolve, reject) => {
             console.log('getUsersByDateRange: ', from, to);
             req.db.collection('users', function (err, collection) {
-
                 if (!err) {
                     return collection.find({
                         $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]

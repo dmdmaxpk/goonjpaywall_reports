@@ -43,7 +43,7 @@ computeBillingHistoryReports = async(req, res) => {
     toDate.setSeconds(59);
 
     console.log('computeBillingHistoryReports: ', fromDate, toDate);
-    billingHistoryRepo.getBillingHistoryByDateRange(fromDate, toDate).then(function (result) {
+    billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate).then(function (result) {
         console.log('result: ', result.length, result);
 
         if (result.length > 0){
