@@ -24,7 +24,7 @@ exports.getReports = async (req,res) => {
 };
 
 exports.computeUserReports = async (req,res) =>  {
-    UserService.computeUserReports(req,res);
+    await UserService.computeUserReports(req,res);
     res.send("computeUserReports - Executed\n");
 };
 

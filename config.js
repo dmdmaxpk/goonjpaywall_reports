@@ -25,7 +25,7 @@ let config = {
     }
 };
 
-console.log("---", env);
+console.log("======", env);
 
 if (env === 'development') config = config.development;
 if (env === 'staging') config = config.staging;

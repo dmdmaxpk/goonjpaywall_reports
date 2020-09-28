@@ -4,7 +4,6 @@ class UserRepository {
         console.log('getUsersByDateRange: ', req.db, from, to);
         await req.db.collection('users', async function (err, collection) {
             console.log('collection====================================: ', collection);
-            console.log('err: ', err);
 
             if (!err) {
                 console.log('yes: ');

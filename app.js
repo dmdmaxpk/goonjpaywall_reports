@@ -10,7 +10,7 @@ require('./models/Report');
 // Connection to Database
 const config = require('./config');
 
-console.log("---", env);
+console.log("---", process.env.NODE_ENV);
 
 mongoose.connect(config.mongoDB['goonj_paywall_reports']);
 mongoose.connection.on('error', err => console.error(`Error: ${err.message}`));
