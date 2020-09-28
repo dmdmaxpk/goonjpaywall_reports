@@ -4,14 +4,16 @@ class BillingHistoryRepository {
         return new Promise((resolve, reject) => {
             console.log('getBillingHistoryByDateRange: ', from, to);
             req.db.collection('billinghistories', function (err, collection) {
-
                 if (!err) {
-                    return collection.find({
-                        $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
-                    }).sort({billing_dtm: 1}).limit(50000).toArray(function(err, items) {
+                    console.log('getBillingHistoryByDateRange: ', from, to);
+                    collection.find({
+                        $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+                    }).sort({billing_dtm: 1})
+                    .limit(50000).
+                    toArray(function(err, items) {
                         if(err){
                             console.log('getBillingHistoryByDateRange - err: ', err.message);
-                            return resolve([]);
+                            resolve([]);
                         }
                         resolve(items);
                     });
@@ -26,7 +28,7 @@ class BillingHistoryRepository {
             req.db.collection('subscriptions', function (err, collection) {
 
                 if (!err) {
-                    return collection.aggregate( [
+                    collection.aggregate( [
                         {$match : {
                                 $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                             }},
@@ -80,7 +82,7 @@ class BillingHistoryRepository {
                     .toArray(function(err, items) {
                         if(err){
                             console.log('getnetAdditionByDateRange - err: ', err.message);
-                            return resolve([]);
+                            resolve([]);
                         }
                         resolve(items);
                     });
@@ -89,9 +91,5 @@ class BillingHistoryRepository {
         });
     }
 }
-
-
-
-
 
 module.exports = BillingHistoryRepository;

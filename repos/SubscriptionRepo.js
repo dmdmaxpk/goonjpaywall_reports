@@ -5,12 +5,12 @@ class SubscriptionRepository {
             console.log('getSubscriptionsByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
-                    return collection.find({
+                    collection.find({
                         $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                     }).toArray(function(err, items) {
                         if(err){
                             console.log('getSubscriptionsByDateRange - err: ', err.message);
-                            return resolve([]);
+                            resolve([]);
                         }
                         resolve(items);
                     });
@@ -24,7 +24,7 @@ class SubscriptionRepository {
             console.log('getCallbackSendByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
-                    return collection.aggregate([
+                    collection.aggregate([
                         {
                             $match: {
                                 $or:[{source: "HE"},{source: "affiliate_web"}],
@@ -92,7 +92,7 @@ class SubscriptionRepository {
                     .toArray(function(err, items) {
                         if(err){
                             console.log('getCallbackSendByDateRange - err: ', err.message);
-                            return resolve([]);
+                            resolve([]);
                         }
                         resolve(items);
                     });
@@ -164,7 +164,7 @@ class SubscriptionRepository {
             .toArray(function(err, items) {
                 if(err){
                     console.log('getChargeDetailsByDateRange - err: ', err.message);
-                    return resolve([]);
+                    resolve([]);
                 }
                 resolve(items);
             });
