@@ -11,7 +11,7 @@ require('./models/Report');
 const config = require('./config');
 
 console.log('mongoose.connection: ', mongoose.connection.name);
-mongoose.connect(config.mongoDB['paywallReports']);
+mongoose.connect(config.mongoDB['goonj_paywall_reports']);
 mongoose.connection.on('error', err => console.error(`Error: ${err.message}`));
 console.log('mongoose.connection: ', mongoose.connection.name);
 

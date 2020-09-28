@@ -8,9 +8,9 @@ let connect = async (req, res, next) => {
 
 function check(req, res, next) {
     if (url.pathname === 'reports'){
-        if (mongoose.connection.name !== 'goonjPaywallReports'){
-            req.db = 'goonjPaywallReports';
-            updateConnection('goonjPaywallReports', res, next);
+        if (mongoose.connection.name !== 'goonj_paywall_reports'){
+            req.db = 'goonj_paywall_reports';
+            updateConnection('goonj_paywall_reports', res, next);
         }
     }
     else
