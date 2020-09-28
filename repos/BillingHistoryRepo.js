@@ -1,6 +1,6 @@
 
 class BillingHistoryRepository {
-    async getBillingHistoryByDateRange (from, to) {
+    async getBillingHistoryByDateRange (req, from, to) {
         return new Promise((resolve, reject) => {
             console.log('getBillingHistoryByDateRange: ', from, to);
             req.db.collection('billinghistories', function (err, collection) {
@@ -20,7 +20,7 @@ class BillingHistoryRepository {
         });
     }
 
-    async getnetAdditionByDateRange(from, to){
+    async getnetAdditionByDateRange(req, from, to){
         return new Promise((resolve, reject) => {
             console.log('getnetAdditionByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {

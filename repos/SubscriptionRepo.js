@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
 
 class SubscriptionRepository {
-    async getSubscriptionsByDateRange (from, to) {
+    async getSubscriptionsByDateRange (req, from, to) {
         return new Promise((resolve, reject) => {
             console.log('getSubscriptionsByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {
@@ -20,7 +19,7 @@ class SubscriptionRepository {
         });
     }
 
-    async getCallbackSendByDateRange(from, to) {
+    async getCallbackSendByDateRange(req, from, to) {
         return new Promise((resolve, reject) => {
             console.log('getCallbackSendByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {
@@ -102,7 +101,7 @@ class SubscriptionRepository {
         });
     }
 
-    async getChargeDetailsByDateRange (from, to){
+    async getChargeDetailsByDateRange (req, from, to){
         return new Promise((resolve, reject) => {
             console.log('getChargeDetailsByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {
