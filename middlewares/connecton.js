@@ -27,6 +27,7 @@ let updateConnection = async (db, req, res, next) => {
             res.status(403).send("Database Access Denied-2");
         }else{
             req.db = client.db(db);
+            console.log('=======================', db);
             next();
         }
     });
