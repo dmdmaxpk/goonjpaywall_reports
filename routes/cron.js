@@ -19,7 +19,7 @@ router.route('/compute-billing-history-reports')
     .get(connecton.connect, controller.computeBillingHistoryReports);
 
 router.route('/compute-callback-send-reports')
-    .get(controller.computeCallbackSendReports);
+    .get(connecton.connect, controller.computeCallbackSendReports);
 
 router.route('/compute-page-view-reports')
     .get(connecton.connect, controller.computePageViewReports);
