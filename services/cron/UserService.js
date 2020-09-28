@@ -30,7 +30,7 @@ computeUserReports = async(req, res) => {
 
         console.log('computeUserReports: ', fromDate, toDate);
         userRepo.getUsersByDateRange(req, fromDate, toDate).then(function (users) {
-            console.log('users-1: ', users); return;
+            console.log('users-1: ', users);
 
             if (users.length > 0){
                 finalList = computeUserData(users);
