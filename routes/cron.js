@@ -4,7 +4,7 @@ const controller = require('../controllers/cron');
 const connecton = require('../middlewares/connecton');
 
 router.route('/reports')
-    .get(connecton.connect, controller.getReports);
+    .get(controller.getReports);
 
 router.route('/compute-user-reports')
     .get(connecton.connect, controller.computeUserReports);
