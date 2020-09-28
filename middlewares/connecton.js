@@ -26,6 +26,8 @@ let check = async (req, res, next) => {
 
 let updateConnection = async (db, res, next) => {
 
+    console.log('db: ', db);
+    console.log('config.mongoDB[db]: ', config.mongoDB[db]);
     mongoose.connect(config.mongoDB[db]);
     mongoose.connection.on('error', err => {
         console.error(`Error: ${err.message}`);
