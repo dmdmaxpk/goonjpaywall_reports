@@ -12,6 +12,8 @@ class UserRepository {
                         console.log('------------------------', err);
                         return []
                     }
+                    console.log('------------------------items: ', items);
+
                     return items;
                 });
             }
