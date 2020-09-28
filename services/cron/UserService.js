@@ -9,7 +9,7 @@ computeUserReports = async(req, res) => {
 
     let fromDate, toDate, day, month, finalList = [];
     reportsRepo.checkLastDocument(req).then(function (result) {
-        console.log('result: ', result.length); return;
+        console.log('result: ', result.length);
 
         day = req.day ? req.day : 1;
         day = day > 9 ? day : '0'+Number(day);
@@ -30,7 +30,7 @@ computeUserReports = async(req, res) => {
 
         console.log('computeUserReports: ', fromDate, toDate);
         userRepo.getUsersByDateRange(req, fromDate, toDate).then(function (users) {
-            console.log('users: ', users.length);
+            console.log('users: ', users.length); return;
 
             if (users.length > 0){
                 finalList = computeUserData(users);

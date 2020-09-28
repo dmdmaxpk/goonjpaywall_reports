@@ -28,5 +28,5 @@ app.use('/', require('./routes/index'));
 // Start Server
 let { port } = config;
 app.listen(port, () => {
-    console.log(`APP running on port ${port}`);
+    console.log(`APP is running on port ${port}`);
 });
