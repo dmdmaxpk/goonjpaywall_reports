@@ -5,16 +5,16 @@ let config = {
     development: {
         port: '5005',
         mongoDB: {
-            paywall: 'mongodb://localhost:27017/goonjpaywall',
-            paywallReports: 'mongodb://localhost:27017/goonjPaywallReports',
+            goonjpaywall: 'mongodb://localhost:27017/goonjpaywall',
+            goonjPaywallReports: 'mongodb://localhost:27017/goonjPaywallReports',
         },
         paywall_base_url: paywall_base_url
     },
     staging: {
         port: '5005',
         mongoDB: {
-          paywall: 'mongodb://mongodb:27017/goonjpaywall',
-          paywallReports: 'mongodb://mongodb:27017/goonjPaywallReports',
+            goonjpaywall: 'mongodb://mongodb:27017/goonjpaywall',
+            goonjPaywallReports: 'mongodb://mongodb:27017/goonjPaywallReports',
         },
         paywall_base_url: paywall_base_url
     },

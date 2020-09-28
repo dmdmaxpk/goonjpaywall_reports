@@ -20,7 +20,7 @@ generateReportsData = async (params) => {
     return await Report.find( { $and:[{date:{$gte:new Date(params.from_date)}}, {date:{$lte:new Date(params.to_date)}}] });
 };
 
-checkLastDocument = async (req) => {
+checkLastDocument = async () => {
     return await Report.find({}).sort({_id:-1}).limit(1);
 };
 

@@ -8,7 +8,7 @@ computeUserReports = async(req, res) => {
     console.log('computeUserReports');
 
     let fromDate, toDate, day, month, finalList = [];
-    reportsRepo.checkLastDocument(req).then(function (result) {
+    reportsRepo.checkLastDocument().then(function (result) {
         console.log('result: ', result.length);
 
         day = req.day ? req.day : 1;

@@ -9,15 +9,15 @@ let connect = async (req, res, next) => {
 function check(req, res, next) {
     if (url.pathname === 'reports'){
         if (mongoose.connection.name !== 'goonjPaywallReports'){
-            req.db = 'paywallReports';
-            updateConnection('paywallReports', res, next);
+            req.db = 'goonjPaywallReports';
+            updateConnection('goonjPaywallReports', res, next);
         }
     }
     else
     {
         if (mongoose.connection.name !== 'goonjpaywall'){
-            req.db = 'paywall';
-            updateConnection('paywall', res, next);
+            req.db = 'goonjpaywall';
+            updateConnection('goonjpaywall', res, next);
         }
     }
 
@@ -26,17 +26,14 @@ function check(req, res, next) {
 
 function updateConnection(db, res, next) {
 
-    console.log('db: ', db);
     console.log('config.mongoDB[db]: ', config.mongoDB[db]);
-    console.log('config.mongoDB: ', config.mongoDB);
-    console.log('config: ', config);
     mongoose.connect(config.mongoDB[db]);
     mongoose.connection.on('error', err => {
         console.error(`Error: ${err.message}`);
         res.status(403).send("Database Access Denied");
     });
     mongoose.connection.on('connected', connectionString => {
-        console.log('Database Connection is updated successfully. Connection String: ', connectionString);
+        console.log('Database Connection is updated successfully. Connection String: ', connectionString, req.db);
         next();
     });
 }
