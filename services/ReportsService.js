@@ -92,28 +92,44 @@ generateReportsData = async (params,res) => {
                 return computeNetAdditionsReport(rawDataSet, params);
         }
         else if (params.type === 'transactions'){
-            if (params.sub_type === 'transacting_subscribers'){
-                if (params.transacting_subscribers === 'source_wise')
+            if (params.sub_type === 'transactions'){
+                if (params.transactions === 'success_rate')
+                    return computeTransactionsSuccessRateReport(rawDataSet, params);
+                else if (params.transactions === 'failure_rate')
+                    return computeTransactionsFailureRateReport(rawDataSet, params);
+                else if (params.transactions === 'source_wise')
+                    return computeTransactionsSourceWiseReport(rawDataSet, params);
+                else if(params.transactions === 'package_wise')
+                    return computeTransactionsPackageWiseReport(rawDataSet, params);
+                else if(params.transactions === 'paywall_wise')
+                    return computeTransactionsPaywallWiseReport(rawDataSet, params);
+                else if(params.transactions === 'operator_wise')
+                    return computeTransactionsOperatorWiseReport(rawDataSet, params);
+                else if(params.transactions === 'price_wise')
+                    return computeTransactionsPriceWiseWiseReport(rawDataSet, params);
+            }
+            else if (params.sub_type === 'subscribers'){
+                if (params.subscribers === 'source_wise')
                     return computeTransactingSubscribersSourceWiseReport(rawDataSet, params);
-                else if(params.transacting_subscribers === 'package_wise')
+                else if(params.subscribers === 'package_wise')
                     return computeTransactingSubscribersPackageWiseReport(rawDataSet, params);
-                else if(params.transacting_subscribers === 'paywall_wise')
+                else if(params.subscribers === 'paywall_wise')
                     return computeTransactingSubscribersPaywallWiseReport(rawDataSet, params);
-                else if(params.transacting_subscribers === 'operator_wise')
+                else if(params.subscribers === 'operator_wise')
                     return computeTransactingSubscribersOperatorWiseReport(rawDataSet, params);
-                else if(params.transacting_subscribers === 'net_total')
+                else if(params.subscribers === 'net_total')
                     return computeTransactingSubscribersNetTotalWiseReport(rawDataSet, params);
             }
-            else if (params.sub_type === 'avg_no_of_transactions') {
-                if (params.avg_no_of_transactions === 'source_wise')
+            else if (params.sub_type === 'avg_number') {
+                if (params.avg_number === 'source_wise')
                     return computeTransactionsSourceWiseReport(rawDataSet, params);
-                else if(params.avg_no_of_transactions === 'package_wise')
+                else if(params.avg_number === 'package_wise')
                     return computeTransactionsPackageWiseReport(rawDataSet, params);
-                else if(params.avg_no_of_transactions === 'paywall_wise')
+                else if(params.avg_number === 'paywall_wise')
                     return computeTransactionsPaywallWiseReport(rawDataSet, params);
-                else if(params.avg_no_of_transactions === 'operator_wise')
+                else if(params.avg_number === 'operator_wise')
                     return computeTransactionsOperatorWiseReport(rawDataSet, params);
-                else if(params.avg_no_of_transactions === 'net_total')
+                else if(params.avg_number === 'net_total')
                     return computeTransactionsNetTotalWiseReport(rawDataSet, params);
             }
         }
@@ -3789,6 +3805,14 @@ function computeNetAdditionsReport(rawDataSet, params) {
 }
 
 // Transactions Compute Functions
+function computeTransactionsSuccessRateReport(rawDataSet, params) {
+    console.log('computeTransactionsSuccessRateReport');
+
+}
+function computeTransactionsFailureRateReport(rawDataSet, params) {
+    console.log('computeTransactionsFailureRateReport');
+
+}
 function computeTransactionsSourceWiseReport(rawDataSet, params) {
     console.log('computeTransactionsSourceWiseReport');
 
@@ -4256,9 +4280,11 @@ function computeTransactionsOperatorWiseReport(rawDataSet, params) {
         return reportsTransformer.transformTheData(false, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Data not exist.');
     }
 }
-function computeTransactionsNetTotalWiseReport(rawDataSet, params) {
-    console.log('computeTransactionsNetTotalWiseReport');
+function computeTransactionsPriceWiseWiseReport(rawDataSet, params) {
+    console.log('computeTransactionsPriceWiseWiseReport');
+
 }
+
 
 // Transacting Subscribers Compute Functions
 function computeTransactingSubscribersSourceWiseReport(rawDataSet, params) {

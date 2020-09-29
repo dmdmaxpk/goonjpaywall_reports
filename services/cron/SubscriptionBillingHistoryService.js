@@ -82,7 +82,7 @@ function computeChargeDetailData(chargeDetails) {
                     price = innerObj.price - (innerObj.discount ? innerObj.discount : 0);
                     micro_charge = innerObj.micro_charge === false ? false : true;
                     dateInMili = inner_added_dtm;
-
+                    
                     //Source wise Charge Details
                     if (innerObj.source === 'app'){
                         transactionObj.transactions.source.app = transactionObj.transactions.source.app + 1;
@@ -278,6 +278,13 @@ function computeChargeDetailData(chargeDetails) {
                         chargeDetailObj.operator.easypaisa.total = chargeDetailObj.operator.easypaisa.total + price;
                     }
 
+                    //Transactions failureRate, successRate
+                    if (innerObj.billing_status === 'Success' || innerObj.billing_status === 'billed')
+                        transactionObj.transactions.successRate = transactionObj.transactions.successRate + 1;
+                    else if (innerObj.billing_status === 'graced')
+                        transactionObj.transactions.failureRate = transactionObj.transactions.failureRate + 1;
+
+
                     transactionObj.transactions.netTotal = transactionObj.transactions.netTotal + 1;
                     transactionObj.subscribers.netTotal = transactionObj.subscribers.netTotal + 1;
 
@@ -381,7 +388,9 @@ function cloneTransactionObj() {
                 comedy: 0,
                 live: 0
             },
-            netTotal: 0
+            netTotal: 0,
+            failureRate: 0,
+            successRate: 0
         },
         subscribers: {
             source: {

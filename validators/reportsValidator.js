@@ -9,8 +9,6 @@ class ReportsValidator{
     validateParams(params){
         this.reset();
         console.log('params: ', params);
-        let type = params.type ? params.type.trim() : '';
-        console.log('type: ', type);
         switch(type) {
             case 'avg_churn':
                 this.checkDateIsNull(params);
@@ -69,12 +67,14 @@ class ReportsValidator{
                 break;
             case 'transactions':
                 this.checkDateIsNull(params, "Get Transactions");
-                this.checkSubTypeIsNull(params.sub_type, "Transactions", ['transacting_subscribers', 'new_vs_returning_user', 'avg_no_of_transactions', 'avg_transaction_size']);
+                this.checkSubTypeIsNull(params.sub_type, "Transactions", ['transactions', 'subscribers', 'avg_number', 'avg_size', 'new_vs_returning']);
 
-                if (params.sub_type === 'transacting_subscribers')
-                    this.checkSubTypeIsNull(params.transacting_subscribers, "Transacting Subscribers", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'net_total']);
-                else if (params.sub_type === 'avg_no_of_transactions')
-                    this.checkSubTypeIsNull(params.avg_no_of_transactions, "Avg Transaction Details", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'net_total']);
+                if (params.sub_type === 'transactions')
+                    this.checkSubTypeIsNull(params.transactions, "Transactions", ['success_rate', 'failure_rate', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise']);
+                else if (params.sub_type === 'subscribers')
+                    this.checkSubTypeIsNull(params.subscribers, "Transacting Subscribers", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'net_total']);
+                else if (params.sub_type === 'avg_number')
+                    this.checkSubTypeIsNull(params.avg_number, "Avg Transaction Details", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'net_total']);
 
                 break;
             case 'uninstall':
@@ -95,6 +95,8 @@ class ReportsValidator{
                 this.status = false; this.reasons = 'The Report Type is invalid.';
                 break;
         }
+        let type = params.type ? params.type.trim() : '';
+        console.log('type: ', type);
 
         console.log('response ', this.status, this.reasons);
         return {status: this.status, reasons: this.reasons};
