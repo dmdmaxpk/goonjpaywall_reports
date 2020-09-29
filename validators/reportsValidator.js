@@ -9,7 +9,7 @@ class ReportsValidator{
     validateParams(params){
         this.reset();
         console.log('params: ', params);
-        switch(type) {
+        switch(params.type.trim()) {
             case 'avg_churn':
                 this.checkDateIsNull(params);
                 this.checkSubTypeIsNotArray(params, "Get Average Churn");

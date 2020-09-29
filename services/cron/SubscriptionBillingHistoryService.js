@@ -312,6 +312,9 @@ function computeChargeDetailData(chargeDetails) {
                     }
                 }
             }
+
+            if (transactionObj.transactions.netTotal > 0)
+                transactionObj.transactions.netTotal
             transactingSubsList.push(transactionObj);
             chargeDetailList.push(chargeDetailObj);
         }
