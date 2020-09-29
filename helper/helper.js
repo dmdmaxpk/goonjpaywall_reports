@@ -6,12 +6,12 @@ class Helper {
         this.isConnected = undefined;
     }
 
-    paywallIsConnected(){
+    static paywallIsConnected(){
         console.log('paywallIsConnected - this.isConnected: ', this.isConnected);
         return this.isConnected;
     }
 
-    paywallConnect(){
+    static paywallConnect(){
         this.isConnected = true;
         console.log('paywallConnect - this.isConnected: ', this.isConnected);
     }
