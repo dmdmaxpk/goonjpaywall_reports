@@ -9,8 +9,8 @@ let connect = async (req, res, next) => {
 };
 
 let check = async (req, res, next) => {
-    console.log('isConnected: ', helper.isConnected);
-    if (!helper.isConnected)
+    console.log('isConnected: ', helper.paywallIsConnected);
+    if (!helper.paywallIsConnected)
         await updateConnection(req, res, next);
 };
 
@@ -22,7 +22,7 @@ let updateConnection = async (req, res, next) => {
             res.status(403).send("goonjpaywall - Database Access Denied");
         }else{
             req.db = client.db('goonjpaywall');
-            helper.isConnected = true;
+            helper.paywallConnect;
             console.log('======================='); return;
             next();
         }

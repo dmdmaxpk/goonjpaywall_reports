@@ -2,7 +2,19 @@
 //Helper class - define all basic functions
 class Helper {
 
-    static isConnected = 'static field';
+    constructor() {
+        this.isConnected = undefined;
+    }
+
+    paywallIsConnected(){
+        console.log('paywallIsConnected - this.isConnected: ', this.isConnected);
+        return this.isConnected;
+    }
+
+    paywallConnect(){
+        this.isConnected = true;
+        console.log('paywallConnect - this.isConnected: ', this.isConnected);
+    }
 
     static getCurrentDate() {
         let now = new Date();
