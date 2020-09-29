@@ -18,7 +18,7 @@ router.route('/compute-billing-history-reports')
 router.route('/compute-callback-send-reports')
     .get(connecton.connect, controller.computeCallbackSendReports);
 
-router.route('/compute-charge-detail-reports')
+router.route('/compute-charge-detail-and-transaction-reports')
     .get(connecton.connect, controller.computeChargeDetailsReports);
 
 router.route('/compute-revenue-net-addition-reports')

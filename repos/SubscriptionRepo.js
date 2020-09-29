@@ -109,7 +109,6 @@ class SubscriptionRepository {
                 if (!err) {
                     collection.aggregate( [
                         {$match : {
-                                "subscription_status": "billed",
                                 $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                             }},
                         {$lookup:{
