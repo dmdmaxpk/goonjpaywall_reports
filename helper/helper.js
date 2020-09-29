@@ -2,7 +2,7 @@
 //Helper class - define all basic functions
 class Helper {
 
-    static isConnected;
+    isConnected;
 
     static getCurrentDate() {
         let now = new Date();
