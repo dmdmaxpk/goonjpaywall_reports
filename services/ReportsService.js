@@ -137,7 +137,6 @@ function computeVerifiedUserReport(rawDataSet, params) {
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
             if (outerObj.users){
-                console.log('inner loop ');
                 for (let j=0; j<outerObj.users.length; j++){
                     innerObj = outerObj.users[j];
                     if (innerObj.active){
@@ -173,10 +172,11 @@ function computeVerifiedUserReport(rawDataSet, params) {
                     });
 
                     // reset start_date for both month & week so can update with latest one
-                    if (week_from_date === null || month_from_date === null) {
+                    if (week_from_date === null)
                         week_from_date = innerObj.added_dtm;
+
+                    if (month_from_date === null)
                         month_from_date = innerObj.added_dtm;
-                    }
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
