@@ -3,9 +3,6 @@ const router = express.Router();
 const controller = require('../controllers/cron');
 const connecton = require('../middlewares/connecton');
 
-router.route('/reports')
-    .get(controller.getReports);
-
 router.route('/compute-user-reports')
     .get(connecton.connect, controller.computeUserReports);
 

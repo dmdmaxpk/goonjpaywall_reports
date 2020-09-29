@@ -3,13 +3,11 @@ const config = require('./../config');
 const helper = require('./../helper/helper');
 
 let connect = async (req, res, next) => {
-    console.log('isConnected: ', helper.paywallIsConnected());
     if (!helper.paywallIsConnected())
         await updateConnection(req, res, next);
 };
 
 let updateConnection = async (req, res, next) => {
-    console.log('config.mongoDB: ', config.mongoDB['goonjpaywall']);
     await MongoClient.connect(config.mongoDB['goonjpaywall'], async function(err, client) {
         if(err){
             console.error(`Error: ${err.message}`);
@@ -17,12 +15,10 @@ let updateConnection = async (req, res, next) => {
         }else{
             req.db = client.db('goonjpaywall');
             helper.connectPaywall();
-            console.log('=======================');
             next();
         }
     });
 };
-
 
 module.exports = {
     connect: connect
