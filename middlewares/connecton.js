@@ -1,14 +1,8 @@
-const mongoose = require('mongoose');
 var MongoClient = require('mongodb').MongoClient;
 const config = require('./../config');
 const helper = require('./../helper/helper');
-let url = require('url');
 
 let connect = async (req, res, next) => {
-    await check(req, res, next)
-};
-
-let check = async (req, res, next) => {
     console.log('isConnected: ', helper.paywallIsConnected());
     if (!helper.paywallIsConnected())
         await updateConnection(req, res, next);
@@ -22,8 +16,8 @@ let updateConnection = async (req, res, next) => {
             res.status(403).send("goonjpaywall - Database Access Denied");
         }else{
             req.db = client.db('goonjpaywall');
-            helper.paywallConnect();
-            console.log('======================='); return;
+            helper.connectPaywall();
+            console.log('=======================');
             next();
         }
     });
@@ -31,7 +25,5 @@ let updateConnection = async (req, res, next) => {
 
 
 module.exports = {
-    connect: connect,
-    check: check,
-    updateConnection: updateConnection
+    connect: connect
 };

@@ -11,9 +11,9 @@ class Helper {
         return this.isConnected;
     }
 
-    static paywallConnect(){
+    static connectPaywall(){
         this.isConnected = true;
-        console.log('paywallConnect - this.isConnected: ', this.isConnected);
+        console.log('connectPaywall - this.isConnected: ', this.isConnected);
     }
 
     static getCurrentDate() {
