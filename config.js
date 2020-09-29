@@ -5,7 +5,7 @@ let config = {
     development: {
         port: '5005',
         mongoDB: {
-            goonjpaywall: 'mongodb://localhost:27017/goonjpaywall',
+            goonjpaywall: 'mongodb://localhost:27017',
             goonj_paywall_reports: 'mongodb://localhost:27017/goonj_paywall_reports',
         },
         paywall_base_url: paywall_base_url
@@ -13,7 +13,7 @@ let config = {
     staging: {
         port: '5005',
         mongoDB: {
-            goonjpaywall: 'mongodb://mongodb:27017/goonjpaywall',
+            goonjpaywall: 'mongodb://mongodb:27017',
             goonj_paywall_reports: 'mongodb://mongodb:27017/goonj_paywall_reports',
         },
         paywall_base_url: paywall_base_url
