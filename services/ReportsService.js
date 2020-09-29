@@ -266,10 +266,11 @@ function computeUniquePayingUserReport(rawDataSet, params) {
                     });
 
                     // reset start_date for both month & week so can update with latest one
-                    if (week_from_date === null || month_from_date === null) {
+                    if (week_from_date === null)
                         week_from_date = innerObj.added_dtm;
+
+                    if (month_from_date === null)
                         month_from_date = innerObj.added_dtm;
-                    }
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -367,10 +368,11 @@ function computeFullPartialChargedUserReport(rawDataSet, params) {
                     });
 
                     // reset start_date for both month & week so can update with latest one
-                    if (week_from_date === null || month_from_date === null) {
+                    if (week_from_date === null)
                         week_from_date = innerObj.added_dtm;
+
+                    if (month_from_date === null)
                         month_from_date = innerObj.added_dtm;
-                    }
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -453,10 +455,11 @@ function computeReturningUserReport(rawDataSet, params) {
                     });
 
                     // reset start_date for both month & week so can update with latest one
-                    if (week_from_date === null || month_from_date === null) {
+                    if (week_from_date === null)
                         week_from_date = innerObj.added_dtm;
+
+                    if (month_from_date === null)
                         month_from_date = innerObj.added_dtm;
-                    }
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -568,10 +571,11 @@ function computeUserBilledPackageWiseReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
-                            week_from_date = billingHistory.added_dtm;
-                            month_from_date = billingHistory.added_dtm;
-                        }
+                        if (week_from_date === null)
+                            week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
+                            month_from_date = innerObj.added_dtm;
                     }
                 }
 
@@ -665,10 +669,11 @@ function computeUserBilledPaywallWiseReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
-                            week_from_date = billingHistory.added_dtm;
-                            month_from_date = billingHistory.added_dtm;
-                        }
+                        if (week_from_date === null)
+                            week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
+                            month_from_date = innerObj.added_dtm;
                     }
                 }
 
@@ -762,10 +767,11 @@ function computeUserBilledOperatorWiseReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
-                            week_from_date = billingHistory.added_dtm;
-                            month_from_date = billingHistory.added_dtm;
-                        }
+                        if (week_from_date === null)
+                            week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
+                            month_from_date = innerObj.added_dtm;
                     }
                 }
 
@@ -857,10 +863,11 @@ function computeTotalSubscribersReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
 
                     monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -955,10 +962,11 @@ function computeActiveSubscribersReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
 
                     monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -1054,10 +1062,11 @@ function activeInactiveSubscriptionReport(rawDataSet, params) {
                     });
 
                     // reset start_date for both month & week so can update with latest one
-                    if (week_from_date === null || month_from_date === null) {
+                    if (week_from_date === null)
                         week_from_date = innerObj.added_dtm;
+
+                    if (month_from_date === null)
                         month_from_date = innerObj.added_dtm;
-                    }
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -1163,10 +1172,11 @@ function packageWiseSubscriptionReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -1280,10 +1290,11 @@ function sourceWiseSubscriptionReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -1376,10 +1387,11 @@ function paywallWiseSubscriptionReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -1512,10 +1524,11 @@ function affliateMidWiseSubscriptionReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -1741,10 +1754,11 @@ function computeUnSubscriptionsSourceWiseReport(rawDataSet, params) {
                     });
 
                     // reset start_date for both month & week so can update with latest one
-                    if (week_from_date === null || month_from_date === null) {
+                    if (week_from_date === null)
                         week_from_date = innerObj.added_dtm;
+
+                    if (month_from_date === null)
                         month_from_date = innerObj.added_dtm;
-                    }
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -1829,10 +1843,11 @@ function callbackSendSubscriptionReport(rawDataSet, params) {
                     });
 
                     // reset start_date for both month & week so can update with latest one
-                    if (week_from_date === null || month_from_date === null) {
+                    if (week_from_date === null)
                         week_from_date = innerObj.added_dtm;
+
+                    if (month_from_date === null)
                         month_from_date = innerObj.added_dtm;
-                    }
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -1929,10 +1944,11 @@ function successRateSubscriptionReport(rawDataSet, params) {
                     });
 
                     // reset start_date for both month & week so can update with latest one
-                    if (week_from_date === null || month_from_date === null) {
+                    if (week_from_date === null)
                         week_from_date = innerObj.added_dtm;
+
+                    if (month_from_date === null)
                         month_from_date = innerObj.added_dtm;
-                    }
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -2042,10 +2058,11 @@ function computeRevenuePackageWiseReport(rawDataSet, params) {
                             });
 
                             // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null || month_from_date === null) {
+                            if (week_from_date === null)
                                 week_from_date = innerObj.added_dtm;
+
+                            if (month_from_date === null)
                                 month_from_date = innerObj.added_dtm;
-                            }
                         }
                     }
                 }
@@ -2143,10 +2160,11 @@ function computeRevenuePaywallWiseReport(rawDataSet, params) {
                             });
 
                             // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null || month_from_date === null) {
+                            if (week_from_date === null)
                                 week_from_date = innerObj.added_dtm;
+
+                            if (month_from_date === null)
                                 month_from_date = innerObj.added_dtm;
-                            }
                         }
                     }
                 }
@@ -2244,10 +2262,11 @@ function computeRevenueOperatorWiseReport(rawDataSet, params) {
                             });
 
                             // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null || month_from_date === null) {
+                            if (week_from_date === null)
                                 week_from_date = innerObj.added_dtm;
+
+                            if (month_from_date === null)
                                 month_from_date = innerObj.added_dtm;
-                            }
                         }
                     }
                 }
@@ -2434,10 +2453,11 @@ function computeRevenueBillingStatusWiseReport(rawDataSet, params) {
                     });
 
                     // reset start_date for both month & week so can update with latest one
-                    if (week_from_date === null || month_from_date === null) {
+                    if (week_from_date === null)
                         week_from_date = innerObj.added_dtm;
+
+                    if (month_from_date === null)
                         month_from_date = innerObj.added_dtm;
-                    }
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -2554,10 +2574,11 @@ function computeTrialSourceWiseReport(rawDataSet, params) {
                     });
 
                     // reset start_date for both month & week so can update with latest one
-                    if (week_from_date === null || month_from_date === null) {
+                    if (week_from_date === null)
                         week_from_date = innerObj.added_dtm;
+
+                    if (month_from_date === null)
                         month_from_date = innerObj.added_dtm;
-                    }
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -2711,10 +2732,11 @@ function computeChargeDetailsSourceWiseReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -2827,10 +2849,11 @@ function computeChargeDetailsPackageWiseReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -2927,10 +2950,11 @@ function computeChargeDetailsPaywallWiseReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -3027,10 +3051,11 @@ function computeChargeDetailsOperatorWiseReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -3125,10 +3150,11 @@ function computeFullAndMicroChargeDetailsReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -3283,10 +3309,11 @@ function computeNetAdditionsSourceWiseReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -3399,10 +3426,11 @@ function computeNetAdditionsPackageWiseReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -3499,10 +3527,11 @@ function computeNetAdditionsPaywallWiseReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -3599,10 +3628,11 @@ function computeNetAdditionsOperatorWiseReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -3697,10 +3727,11 @@ function computeNetAdditionsReport(rawDataSet, params) {
                         });
 
                         // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null || month_from_date === null) {
+                        if (week_from_date === null)
                             week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
                             month_from_date = innerObj.added_dtm;
-                        }
                     }
                 }
 
@@ -3847,10 +3878,11 @@ function computeTransactionsSourceWiseReport(rawDataSet, params) {
                             });
 
                             // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null || month_from_date === null) {
-                                week_from_date = transactions.added_dtm;
-                                month_from_date = transactions.added_dtm;
-                            }
+                            if (week_from_date === null)
+                                week_from_date = innerObj.added_dtm;
+
+                            if (month_from_date === null)
+                                month_from_date = innerObj.added_dtm;
                         }
                     }
                 }
@@ -3961,10 +3993,11 @@ function computeTransactionsPackageWiseReport(rawDataSet, params) {
                             });
 
                             // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null || month_from_date === null) {
-                                week_from_date = transactions.added_dtm;
-                                month_from_date = transactions.added_dtm;
-                            }
+                            if (week_from_date === null)
+                                week_from_date = innerObj.added_dtm;
+
+                            if (month_from_date === null)
+                                month_from_date = innerObj.added_dtm;
                         }
                     }
                 }
@@ -4061,10 +4094,11 @@ function computeTransactionsPaywallWiseReport(rawDataSet, params) {
                             });
 
                             // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null || month_from_date === null) {
-                                week_from_date = transactions.added_dtm;
-                                month_from_date = transactions.added_dtm;
-                            }
+                            if (week_from_date === null)
+                                week_from_date = innerObj.added_dtm;
+
+                            if (month_from_date === null)
+                                month_from_date = innerObj.added_dtm;
                         }
                     }
                 }
@@ -4161,10 +4195,11 @@ function computeTransactionsOperatorWiseReport(rawDataSet, params) {
                             });
 
                             // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null || month_from_date === null) {
-                                week_from_date = transactions.added_dtm;
-                                month_from_date = transactions.added_dtm;
-                            }
+                            if (week_from_date === null)
+                                week_from_date = innerObj.added_dtm;
+
+                            if (month_from_date === null)
+                                month_from_date = innerObj.added_dtm;
                         }
                     }
                 }
@@ -4315,10 +4350,11 @@ function computeTransactingSubscribersSourceWiseReport(rawDataSet, params) {
                             });
 
                             // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null || month_from_date === null) {
-                                week_from_date = transactions.added_dtm;
-                                month_from_date = transactions.added_dtm;
-                            }
+                            if (week_from_date === null)
+                                week_from_date = innerObj.added_dtm;
+
+                            if (month_from_date === null)
+                                month_from_date = innerObj.added_dtm;
                         }
                     }
                 }
@@ -4429,10 +4465,11 @@ function computeTransactingSubscribersPackageWiseReport(rawDataSet, params) {
                             });
 
                             // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null || month_from_date === null) {
-                                week_from_date = transactions.added_dtm;
-                                month_from_date = transactions.added_dtm;
-                            }
+                            if (week_from_date === null)
+                                week_from_date = innerObj.added_dtm;
+
+                            if (month_from_date === null)
+                                month_from_date = innerObj.added_dtm;
                         }
                     }
                 }
@@ -4529,10 +4566,11 @@ function computeTransactingSubscribersPaywallWiseReport(rawDataSet, params) {
                             });
 
                             // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null || month_from_date === null) {
-                                week_from_date = transactions.added_dtm;
-                                month_from_date = transactions.added_dtm;
-                            }
+                            if (week_from_date === null)
+                                week_from_date = innerObj.added_dtm;
+
+                            if (month_from_date === null)
+                                month_from_date = innerObj.added_dtm;
                         }
                     }
                 }
@@ -4629,10 +4667,11 @@ function computeTransactingSubscribersOperatorWiseReport(rawDataSet, params) {
                             });
 
                             // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null || month_from_date === null) {
-                                week_from_date = transactions.added_dtm;
-                                month_from_date = transactions.added_dtm;
-                            }
+                            if (week_from_date === null)
+                                week_from_date = innerObj.added_dtm;
+
+                            if (month_from_date === null)
+                                month_from_date = innerObj.added_dtm;
                         }
                     }
                 }
