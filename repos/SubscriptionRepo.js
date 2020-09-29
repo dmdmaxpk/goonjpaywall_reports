@@ -123,7 +123,11 @@ class SubscriptionRepository {
                                 subscription_status:"$subscription_status",
                                 succeses: { $filter: {
                                         input: "$histories",
-                                        as: "history"
+                                        as: "history",
+                                        cond: { $or: [
+                                                { $eq: ['$$history.billing_status',"Success"] },
+                                                { $eq: ['$$history.billing_status',"graced"] },
+                                            ]}
                                     }} }
                         },
                         {$project: {
