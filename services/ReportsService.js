@@ -588,10 +588,10 @@ function computeUserBilledPackageWiseReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = billingHistory.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = billingHistory.added_dtm;
                     }
                 }
 
@@ -686,10 +686,10 @@ function computeUserBilledPaywallWiseReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = billingHistory.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = billingHistory.added_dtm;
                     }
                 }
 
@@ -784,10 +784,10 @@ function computeUserBilledOperatorWiseReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = billingHistory.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = billingHistory.added_dtm;
                     }
                 }
 
@@ -1189,10 +1189,10 @@ function packageWiseSubscriptionReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = subscription.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = subscription.added_dtm;
                     }
                 }
 
@@ -1307,10 +1307,10 @@ function sourceWiseSubscriptionReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = subscription.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = subscription.added_dtm;
                     }
                 }
 
@@ -1404,10 +1404,10 @@ function paywallWiseSubscriptionReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = subscription.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = subscription.added_dtm;
                     }
                 }
 
@@ -1541,10 +1541,10 @@ function affliateMidWiseSubscriptionReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = subscription.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = subscription.added_dtm;
                     }
                 }
 
@@ -2075,10 +2075,10 @@ function computeRevenuePackageWiseReport(rawDataSet, params) {
 
                             // reset start_date for both month & week so can update with latest one
                             if (week_from_date === null)
-                                week_from_date = innerObj.added_dtm;
+                                week_from_date = billingHistory.added_dtm;
 
                             if (month_from_date === null)
-                                month_from_date = innerObj.added_dtm;
+                                month_from_date = billingHistory.added_dtm;
                         }
                     }
                 }
@@ -2177,10 +2177,10 @@ function computeRevenuePaywallWiseReport(rawDataSet, params) {
 
                             // reset start_date for both month & week so can update with latest one
                             if (week_from_date === null)
-                                week_from_date = innerObj.added_dtm;
+                                week_from_date = billingHistory.added_dtm;
 
                             if (month_from_date === null)
-                                month_from_date = innerObj.added_dtm;
+                                month_from_date = billingHistory.added_dtm;
                         }
                     }
                 }
@@ -2279,10 +2279,10 @@ function computeRevenueOperatorWiseReport(rawDataSet, params) {
 
                             // reset start_date for both month & week so can update with latest one
                             if (week_from_date === null)
-                                week_from_date = innerObj.added_dtm;
+                                week_from_date = billingHistory.added_dtm;
 
                             if (month_from_date === null)
-                                month_from_date = innerObj.added_dtm;
+                                month_from_date = billingHistory.added_dtm;
                         }
                     }
                 }
@@ -2369,111 +2369,112 @@ function computeRevenueBillingStatusWiseReport(rawDataSet, params) {
             if (outerObj.billingHistory){
                 for (let j=0; j<outerObj.billingHistory.length; j++){
                     billingHistory = outerObj.billingHistory[j];
-                    innerObj = billingHistory.billingStatus;
+                    if (billingHistory.billingStatus) {
+                        innerObj = billingHistory.billingStatus;
+                        if (innerObj.trial){
+                            dataObj.trial = dataObj.trial + innerObj.trial;
+                            dayDataObj.trial = dayDataObj.trial + innerObj.trial;
+                            weeklyDataObj.trial = weeklyDataObj.trial + innerObj.trial;
+                            monthlyDataObj.trial = monthlyDataObj.trial + innerObj.trial;
+                        }
+                        if (innerObj.graced){
+                            dataObj.graced = dataObj.graced + innerObj.graced;
+                            dayDataObj.graced = dayDataObj.graced + innerObj.graced;
+                            weeklyDataObj.graced = weeklyDataObj.graced + innerObj.graced;
+                            monthlyDataObj.graced = monthlyDataObj.graced + innerObj.graced;
+                        }
+                        if (innerObj.expired){
+                            dataObj.expired = dataObj.expired + innerObj.expired;
+                            dayDataObj.expired = dayDataObj.expired + innerObj.expired;
+                            weeklyDataObj.expired = weeklyDataObj.expired + innerObj.expired;
+                            monthlyDataObj.expired = monthlyDataObj.expired + innerObj.expired;
+                        }
+                        if (innerObj.success){
+                            dataObj.success = dataObj.success + innerObj.success;
+                            dayDataObj.success = dayDataObj.success + innerObj.success;
+                            weeklyDataObj.success = weeklyDataObj.success + innerObj.success;
+                            monthlyDataObj.success = monthlyDataObj.success + innerObj.success;
+                        }
+                        if (innerObj.affiliate_callback_sent){
+                            dataObj.affiliateCallbackSent = dataObj.affiliateCallbackSent + innerObj.affiliate_callback_sent;
+                            dayDataObj.affiliateCallbackSent = dayDataObj.affiliateCallbackSent + innerObj.affiliate_callback_sent;
+                            weeklyDataObj.affiliateCallbackSent = weeklyDataObj.affiliateCallbackSent + innerObj.affiliate_callback_sent;
+                            monthlyDataObj.affiliateCallbackSent = monthlyDataObj.affiliateCallbackSent + innerObj.affiliate_callback_sent;
+                        }
+                        if (innerObj.micro_charging_exceeded){
+                            dataObj.micro_charging_exceeded = dataObj.micro_charging_exceeded + innerObj.micro_charging_exceeded;
+                            dayDataObj.micro_charging_exceeded = dayDataObj.micro_charging_exceeded + innerObj.micro_charging_exceeded;
+                            weeklyDataObj.micro_charging_exceeded = weeklyDataObj.micro_charging_exceeded + innerObj.micro_charging_exceeded;
+                            monthlyDataObj.micro_charging_exceeded = monthlyDataObj.micro_charging_exceeded + innerObj.micro_charging_exceeded;
+                        }
+                        if (innerObj.graced_and_stream_stopped){
+                            dataObj.gracedAndStreamStopped = dataObj.gracedAndStreamStopped + innerObj.graced_and_stream_stopped;
+                            dayDataObj.gracedAndStreamStopped = dayDataObj.gracedAndStreamStopped + innerObj.graced_and_stream_stopped;
+                            weeklyDataObj.gracedAndStreamStopped = weeklyDataObj.gracedAndStreamStopped + innerObj.graced_and_stream_stopped;
+                            monthlyDataObj.gracedAndStreamStopped = monthlyDataObj.gracedAndStreamStopped + innerObj.graced_and_stream_stopped;
+                        }
+                        if (innerObj.direct_billing_tried_but_failed){
+                            dataObj.directBillingTriedButFailed = dataObj.directBillingTriedButFailed + innerObj.direct_billing_tried_but_failed;
+                            dayDataObj.directBillingTriedButFailed = dayDataObj.directBillingTriedButFailed + innerObj.direct_billing_tried_but_failed;
+                            weeklyDataObj.directBillingTriedButFailed = weeklyDataObj.directBillingTriedButFailed + innerObj.direct_billing_tried_but_failed;
+                            monthlyDataObj.directBillingTriedButFailed = monthlyDataObj.directBillingTriedButFailed + innerObj.direct_billing_tried_but_failed;
+                        }
+                        if (innerObj.package_change_upon_user_request){
+                            dataObj.packageChangeUponUserRequest = dataObj.packageChangeUponUserRequest + innerObj.package_change_upon_user_request;
+                            dayDataObj.packageChangeUponUserRequest = dayDataObj.packageChangeUponUserRequest + innerObj.package_change_upon_user_request;
+                            weeklyDataObj.packageChangeUponUserRequest = weeklyDataObj.packageChangeUponUserRequest + innerObj.package_change_upon_user_request;
+                            monthlyDataObj.packageChangeUponUserRequest = monthlyDataObj.packageChangeUponUserRequest + innerObj.package_change_upon_user_request;
+                        }
+                        if (innerObj.unsubscribe_request_received_and_expired){
+                            dataObj.switchPackageRequestTriedButFailed = dataObj.switchPackageRequestTriedButFailed + innerObj.unsubscribe_request_received_and_expired;
+                            dayDataObj.switchPackageRequestTriedButFailed = dayDataObj.switchPackageRequestTriedButFailed + innerObj.unsubscribe_request_received_and_expired;
+                            weeklyDataObj.switchPackageRequestTriedButFailed = weeklyDataObj.switchPackageRequestTriedButFailed + innerObj.unsubscribe_request_received_and_expired;
+                            monthlyDataObj.switchPackageRequestTriedButFailed = monthlyDataObj.switchPackageRequestTriedButFailed + innerObj.unsubscribe_request_received_and_expired;
+                        }
+                        if (innerObj.subscription_request_received_for_the_same_package){
+                            dataObj.unsubscribeRequestReceivedAndExpired = dataObj.unsubscribeRequestReceivedAndExpired + innerObj.subscription_request_received_for_the_same_package;
+                            dayDataObj.unsubscribeRequestReceivedAndExpired = dayDataObj.unsubscribeRequestReceivedAndExpired + innerObj.subscription_request_received_for_the_same_package;
+                            weeklyDataObj.unsubscribeRequestReceivedAndExpired = weeklyDataObj.unsubscribeRequestReceivedAndExpired + innerObj.subscription_request_received_for_the_same_package;
+                            monthlyDataObj.unsubscribeRequestReceivedAndExpired = monthlyDataObj.unsubscribeRequestReceivedAndExpired + innerObj.subscription_request_received_for_the_same_package;
+                        }
+                        if (innerObj.switch_package_request_tried_but_failed){
+                            dataObj.subscriptionRequestReceivedForTheSamePackage = dataObj.subscriptionRequestReceivedForTheSamePackage + innerObj.switch_package_request_tried_but_failed;
+                            dayDataObj.subscriptionRequestReceivedForTheSamePackage = dayDataObj.subscriptionRequestReceivedForTheSamePackage + innerObj.switch_package_request_tried_but_failed;
+                            weeklyDataObj.subscriptionRequestReceivedForTheSamePackage = weeklyDataObj.subscriptionRequestReceivedForTheSamePackage + innerObj.switch_package_request_tried_but_failed;
+                            monthlyDataObj.subscriptionRequestReceivedForTheSamePackage = monthlyDataObj.subscriptionRequestReceivedForTheSamePackage + innerObj.switch_package_request_tried_but_failed;
+                        }
+                        if (innerObj.subscription_request_received_for_the_same_package_after_unsub){
+                            dataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub = dataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub + innerObj.subscription_request_received_for_the_same_package_after_unsub;
+                            dayDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub = dayDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub + innerObj.subscription_request_received_for_the_same_package_after_unsub;
+                            weeklyDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub = weeklyDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub + innerObj.subscription_request_received_for_the_same_package_after_unsub;
+                            monthlyDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub = monthlyDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub + innerObj.subscription_request_received_for_the_same_package_after_unsub;
+                        }
 
-                    if (innerObj.trial){
-                        dataObj.trial = dataObj.trial + innerObj.trial;
-                        dayDataObj.trial = dayDataObj.trial + innerObj.trial;
-                        weeklyDataObj.trial = weeklyDataObj.trial + innerObj.trial;
-                        monthlyDataObj.trial = monthlyDataObj.trial + innerObj.trial;
-                    }
-                    if (innerObj.graced){
-                        dataObj.graced = dataObj.graced + innerObj.graced;
-                        dayDataObj.graced = dayDataObj.graced + innerObj.graced;
-                        weeklyDataObj.graced = weeklyDataObj.graced + innerObj.graced;
-                        monthlyDataObj.graced = monthlyDataObj.graced + innerObj.graced;
-                    }
-                    if (innerObj.expired){
-                        dataObj.expired = dataObj.expired + innerObj.expired;
-                        dayDataObj.expired = dayDataObj.expired + innerObj.expired;
-                        weeklyDataObj.expired = weeklyDataObj.expired + innerObj.expired;
-                        monthlyDataObj.expired = monthlyDataObj.expired + innerObj.expired;
-                    }
-                    if (innerObj.success){
-                        dataObj.success = dataObj.success + innerObj.success;
-                        dayDataObj.success = dayDataObj.success + innerObj.success;
-                        weeklyDataObj.success = weeklyDataObj.success + innerObj.success;
-                        monthlyDataObj.success = monthlyDataObj.success + innerObj.success;
-                    }
-                    if (innerObj.affiliate_callback_sent){
-                        dataObj.affiliateCallbackSent = dataObj.affiliateCallbackSent + innerObj.affiliate_callback_sent;
-                        dayDataObj.affiliateCallbackSent = dayDataObj.affiliateCallbackSent + innerObj.affiliate_callback_sent;
-                        weeklyDataObj.affiliateCallbackSent = weeklyDataObj.affiliateCallbackSent + innerObj.affiliate_callback_sent;
-                        monthlyDataObj.affiliateCallbackSent = monthlyDataObj.affiliateCallbackSent + innerObj.affiliate_callback_sent;
-                    }
-                    if (innerObj.micro_charging_exceeded){
-                        dataObj.micro_charging_exceeded = dataObj.micro_charging_exceeded + innerObj.micro_charging_exceeded;
-                        dayDataObj.micro_charging_exceeded = dayDataObj.micro_charging_exceeded + innerObj.micro_charging_exceeded;
-                        weeklyDataObj.micro_charging_exceeded = weeklyDataObj.micro_charging_exceeded + innerObj.micro_charging_exceeded;
-                        monthlyDataObj.micro_charging_exceeded = monthlyDataObj.micro_charging_exceeded + innerObj.micro_charging_exceeded;
-                    }
-                    if (innerObj.graced_and_stream_stopped){
-                        dataObj.gracedAndStreamStopped = dataObj.gracedAndStreamStopped + innerObj.graced_and_stream_stopped;
-                        dayDataObj.gracedAndStreamStopped = dayDataObj.gracedAndStreamStopped + innerObj.graced_and_stream_stopped;
-                        weeklyDataObj.gracedAndStreamStopped = weeklyDataObj.gracedAndStreamStopped + innerObj.graced_and_stream_stopped;
-                        monthlyDataObj.gracedAndStreamStopped = monthlyDataObj.gracedAndStreamStopped + innerObj.graced_and_stream_stopped;
-                    }
-                    if (innerObj.direct_billing_tried_but_failed){
-                        dataObj.directBillingTriedButFailed = dataObj.directBillingTriedButFailed + innerObj.direct_billing_tried_but_failed;
-                        dayDataObj.directBillingTriedButFailed = dayDataObj.directBillingTriedButFailed + innerObj.direct_billing_tried_but_failed;
-                        weeklyDataObj.directBillingTriedButFailed = weeklyDataObj.directBillingTriedButFailed + innerObj.direct_billing_tried_but_failed;
-                        monthlyDataObj.directBillingTriedButFailed = monthlyDataObj.directBillingTriedButFailed + innerObj.direct_billing_tried_but_failed;
-                    }
-                    if (innerObj.package_change_upon_user_request){
-                        dataObj.packageChangeUponUserRequest = dataObj.packageChangeUponUserRequest + innerObj.package_change_upon_user_request;
-                        dayDataObj.packageChangeUponUserRequest = dayDataObj.packageChangeUponUserRequest + innerObj.package_change_upon_user_request;
-                        weeklyDataObj.packageChangeUponUserRequest = weeklyDataObj.packageChangeUponUserRequest + innerObj.package_change_upon_user_request;
-                        monthlyDataObj.packageChangeUponUserRequest = monthlyDataObj.packageChangeUponUserRequest + innerObj.package_change_upon_user_request;
-                    }
-                    if (innerObj.unsubscribe_request_received_and_expired){
-                        dataObj.switchPackageRequestTriedButFailed = dataObj.switchPackageRequestTriedButFailed + innerObj.unsubscribe_request_received_and_expired;
-                        dayDataObj.switchPackageRequestTriedButFailed = dayDataObj.switchPackageRequestTriedButFailed + innerObj.unsubscribe_request_received_and_expired;
-                        weeklyDataObj.switchPackageRequestTriedButFailed = weeklyDataObj.switchPackageRequestTriedButFailed + innerObj.unsubscribe_request_received_and_expired;
-                        monthlyDataObj.switchPackageRequestTriedButFailed = monthlyDataObj.switchPackageRequestTriedButFailed + innerObj.unsubscribe_request_received_and_expired;
-                    }
-                    if (innerObj.subscription_request_received_for_the_same_package){
-                        dataObj.unsubscribeRequestReceivedAndExpired = dataObj.unsubscribeRequestReceivedAndExpired + innerObj.subscription_request_received_for_the_same_package;
-                        dayDataObj.unsubscribeRequestReceivedAndExpired = dayDataObj.unsubscribeRequestReceivedAndExpired + innerObj.subscription_request_received_for_the_same_package;
-                        weeklyDataObj.unsubscribeRequestReceivedAndExpired = weeklyDataObj.unsubscribeRequestReceivedAndExpired + innerObj.subscription_request_received_for_the_same_package;
-                        monthlyDataObj.unsubscribeRequestReceivedAndExpired = monthlyDataObj.unsubscribeRequestReceivedAndExpired + innerObj.subscription_request_received_for_the_same_package;
-                    }
-                    if (innerObj.switch_package_request_tried_but_failed){
-                        dataObj.subscriptionRequestReceivedForTheSamePackage = dataObj.subscriptionRequestReceivedForTheSamePackage + innerObj.switch_package_request_tried_but_failed;
-                        dayDataObj.subscriptionRequestReceivedForTheSamePackage = dayDataObj.subscriptionRequestReceivedForTheSamePackage + innerObj.switch_package_request_tried_but_failed;
-                        weeklyDataObj.subscriptionRequestReceivedForTheSamePackage = weeklyDataObj.subscriptionRequestReceivedForTheSamePackage + innerObj.switch_package_request_tried_but_failed;
-                        monthlyDataObj.subscriptionRequestReceivedForTheSamePackage = monthlyDataObj.subscriptionRequestReceivedForTheSamePackage + innerObj.switch_package_request_tried_but_failed;
-                    }
-                    if (innerObj.subscription_request_received_for_the_same_package_after_unsub){
-                        dataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub = dataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub + innerObj.subscription_request_received_for_the_same_package_after_unsub;
-                        dayDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub = dayDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub + innerObj.subscription_request_received_for_the_same_package_after_unsub;
-                        weeklyDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub = weeklyDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub + innerObj.subscription_request_received_for_the_same_package_after_unsub;
-                        monthlyDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub = monthlyDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub + innerObj.subscription_request_received_for_the_same_package_after_unsub;
-                    }
+                        // Hourly Bases Data
+                        hourlyBasisTotalCount.push({
+                            trial: innerObj.trial,
+                            graced: innerObj.graced,
+                            expired: innerObj.expired,
+                            success: innerObj.success,
+                            affiliateCallbackSent: innerObj.affiliate_callback_sent,
+                            microChargingExceeded: innerObj.micro_charging_exceeded,
+                            gracedAndStreamStopped: innerObj.graced_and_stream_stopped,
+                            directBillingTriedButFailed: innerObj.direct_billing_tried_but_failed,
+                            packageChangeUponUserRequest: innerObj.package_change_upon_user_request,
+                            switchPackageRequestTriedButFailed: innerObj.switch_package_request_tried_but_failed,
+                            unsubscribeRequestReceivedAndExpired: innerObj.unsubscribe_request_received_and_expired,
+                            subscriptionRequestReceivedForTheSamePackage: innerObj.subscription_request_received_for_the_same_package,
+                            subscriptionRequestReceivedForTheSamePackageAfterUnsub: innerObj.subscription_request_received_for_the_same_package_after_unsub,
+                            date: billingHistory.added_dtm_hours
+                        });
 
-                    // Hourly Bases Data
-                    hourlyBasisTotalCount.push({
-                        trial: innerObj.trial,
-                        graced: innerObj.graced,
-                        expired: innerObj.expired,
-                        success: innerObj.success,
-                        affiliateCallbackSent: innerObj.affiliate_callback_sent,
-                        microChargingExceeded: innerObj.micro_charging_exceeded,
-                        gracedAndStreamStopped: innerObj.graced_and_stream_stopped,
-                        directBillingTriedButFailed: innerObj.direct_billing_tried_but_failed,
-                        packageChangeUponUserRequest: innerObj.package_change_upon_user_request,
-                        switchPackageRequestTriedButFailed: innerObj.switch_package_request_tried_but_failed,
-                        unsubscribeRequestReceivedAndExpired: innerObj.unsubscribe_request_received_and_expired,
-                        subscriptionRequestReceivedForTheSamePackage: innerObj.subscription_request_received_for_the_same_package,
-                        subscriptionRequestReceivedForTheSamePackageAfterUnsub: innerObj.subscription_request_received_for_the_same_package_after_unsub,
-                        date: billingHistory.added_dtm_hours
-                    });
+                        // reset start_date for both month & week so can update with latest one
+                        if (week_from_date === null)
+                            week_from_date = billingHistory.added_dtm;
 
-                    // reset start_date for both month & week so can update with latest one
-                    if (week_from_date === null)
-                        week_from_date = innerObj.added_dtm;
-
-                    if (month_from_date === null)
-                        month_from_date = innerObj.added_dtm;
+                        if (month_from_date === null)
+                            month_from_date = billingHistory.added_dtm;
+                    }
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -2744,15 +2745,15 @@ function computeChargeDetailsSourceWiseReport(rawDataSet, params) {
                             null: innerObj.null,
                             affiliate_web: innerObj.affiliate_web,
                             system_after_grace_end: innerObj.system_after_grace_end,
-                            date: innerObj.added_dtm_hours
+                            date: chargeDetails.added_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = chargeDetails.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = chargeDetails.added_dtm;
                     }
                 }
 
@@ -2866,10 +2867,10 @@ function computeChargeDetailsPackageWiseReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = chargeDetails.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = chargeDetails.added_dtm;
                     }
                 }
 
@@ -2967,10 +2968,10 @@ function computeChargeDetailsPaywallWiseReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = chargeDetails.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = chargeDetails.added_dtm;
                     }
                 }
 
@@ -3068,10 +3069,10 @@ function computeChargeDetailsOperatorWiseReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = chargeDetails.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = chargeDetails.added_dtm;
                     }
                 }
 
@@ -3167,10 +3168,10 @@ function computeFullAndMicroChargeDetailsReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = chargeDetails.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = chargeDetails.added_dtm;
                     }
                 }
 
@@ -3321,15 +3322,15 @@ function computeNetAdditionsSourceWiseReport(rawDataSet, params) {
                             null: innerObj.null,
                             affiliate_web: innerObj.affiliate_web,
                             system_after_grace_end: innerObj.system_after_grace_end,
-                            date: innerObj.added_dtm_hours
+                            date: netAddition.added_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = netAddition.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = netAddition.added_dtm;
                     }
                 }
 
@@ -3443,10 +3444,10 @@ function computeNetAdditionsPackageWiseReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = netAddition.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = netAddition.added_dtm;
                     }
                 }
 
@@ -3544,10 +3545,10 @@ function computeNetAdditionsPaywallWiseReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = netAddition.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = netAddition.added_dtm;
                     }
                 }
 
@@ -3645,10 +3646,10 @@ function computeNetAdditionsOperatorWiseReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = netAddition.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = netAddition.added_dtm;
                     }
                 }
 
@@ -3744,10 +3745,10 @@ function computeNetAdditionsReport(rawDataSet, params) {
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = netAddition.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = netAddition.added_dtm;
                     }
                 }
 
