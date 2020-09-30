@@ -2735,7 +2735,6 @@ function computeChargeDetailsSourceWiseReport(rawDataSet, params) {
                         }
 
                         // Hourly Bases Data
-                        console.log(chargeDetails.added_dtm_hours)
                         hourlyBasisTotalCount.push({
                             app: innerObj.app,
                             web: innerObj.web,

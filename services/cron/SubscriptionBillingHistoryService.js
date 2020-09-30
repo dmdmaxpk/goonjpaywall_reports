@@ -281,6 +281,23 @@ function computeChargeDetailData(chargeDetails) {
                             chargeDetailObj.operator.easypaisa.total = chargeDetailObj.operator.easypaisa.total + price;
                         }
 
+
+                        //Price wise transactions
+                        if (innerObj.price === '15')
+                            transactionObj.transactions.price['15'] = transactionObj.transactions.price['15'] + 1;
+                        else if (innerObj.price === '11.95')
+                            transactionObj.transactions.price['15'] = transactionObj.transactions.price['11.95'] + 1;
+                        else if (innerObj.price === '10')
+                            transactionObj.transactions.price['10'] = transactionObj.transactions.price['10'] + 1;
+                        else if (innerObj.price === '7')
+                            transactionObj.transactions.price['7'] = transactionObj.transactions.price['7'] + 1;
+                        else if (innerObj.price === '5')
+                            transactionObj.transactions.price['5'] = transactionObj.transactions.price['5'] + 1;
+                        else if(innerObj.price === '4')
+                            transactionObj.transactions.price['4'] = transactionObj.transactions.price['4'] + 1;
+                        else if (innerObj.price === '2')
+                            transactionObj.transactions.price['2'] = transactionObj.transactions.price['2'] + 1;
+
                         //Success rate
                         transactionObj.transactions.successRate = transactionObj.transactions.successRate + 1;
                         transactionObj.transactions.netTotal = transactionObj.transactions.netTotal + 1;
@@ -313,8 +330,15 @@ function computeChargeDetailData(chargeDetails) {
                 }
             }
 
-            if (transactionObj.transactions.netTotal > 0)
-                transactionObj.transactions.netTotal
+            if (transactionObj.transactions.netTotal > 0){
+                transactionObj.transactions.successRate = (transactionObj.transactions.successRate / transactionObj.transactions.netTotal) * 100;
+                transactionObj.transactions.failureRate = (transactionObj.transactions.failureRate / transactionObj.transactions.netTotal) * 100;
+            }
+            else{
+                transactionObj.transactions.failureRate = 0;
+                transactionObj.transactions.successRate = 0;
+            }
+
             transactingSubsList.push(transactionObj);
             chargeDetailList.push(chargeDetailObj);
         }
@@ -401,6 +425,15 @@ function cloneTransactionObj() {
             paywall: {
                 comedy: 0,
                 live: 0
+            },
+            price: {
+                '15': 0,
+                '11.95': 0,
+                '10': 0,
+                '7': 0,
+                '5': 0,
+                '4': 0,
+                '3': 0,
             },
             netTotal: 0,
             failureRate: 0,
