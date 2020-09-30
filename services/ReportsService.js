@@ -93,7 +93,7 @@ generateReportsData = async (params,res) => {
         }
         else if (params.type === 'transactions'){
             if (params.sub_type === 'transactions'){
-                if (params.transactions === 'avg_number')
+                if (params.transactions === 'avg_transaction')
                     return computeTransactionsAvgReport(rawDataSet, params);
                 else if (params.transactions === 'success_failure_rate')
                     return computeTransactionsRateReport(rawDataSet, params);

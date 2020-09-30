@@ -67,10 +67,10 @@ class ReportsValidator{
                 break;
             case 'transactions':
                 this.checkDateIsNull(params, "Get Transactions");
-                this.checkSubTypeIsNull(params.sub_type, "Transactions", ['transactions', 'subscribers', 'avg_number', 'avg_size', 'new_vs_returning']);
+                this.checkSubTypeIsNull(params.sub_type, "Transactions", ['transactions', 'subscribers']);
 
                 if (params.sub_type === 'transactions')
-                    this.checkSubTypeIsNull(params.transactions, "Transactions", ['success_rate', 'failure_rate', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise']);
+                    this.checkSubTypeIsNull(params.transactions, "Transactions", ['avg_transaction', 'new_vs_returning', 'success_rate', 'failure_rate', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise']);
                 else if (params.sub_type === 'subscribers')
                     this.checkSubTypeIsNull(params.subscribers, "Transacting Subscribers", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'net_total']);
 
