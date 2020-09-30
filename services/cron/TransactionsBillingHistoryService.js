@@ -59,7 +59,7 @@ function computeTransactionAvgData(transactions, fromDate) {
 
     let transaction, totalSubscribers = 0, totalTransactions = 0, totalPrice = 0, transactionList = [];
 
-    let transactionObj = {avg_transactions: 0, avg_value: 0};
+    let transactionObj = {totalTransactions: 0, totalSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
     for (let k=0; k < transactions.length; k++) {
         transaction = transactions[k];
 
@@ -70,6 +70,9 @@ function computeTransactionAvgData(transactions, fromDate) {
 
     // Add Timestemps
 
+    transactionObj.totalTransactions = totalTransactions;
+    transactionObj.totalSubscribers = totalSubscribers;
+    transactionObj.totalPrice = totalPrice;
     transactionObj.avg_value = ( totalPrice > 0  && totalTransactions> 0 )? totalTransactions / totalPrice : 0;
     transactionObj.avg_transactions = ( totalSubscribers > 0 && totalTransactions> 0 )? totalTransactions / totalSubscribers : 0;
     transactionObj.added_dtm = fromDate;
@@ -85,15 +88,12 @@ function insertNewRecord(transactionAvg, dateString) {
         console.log('getReportByDateString - result : ', transactionAvg);
         if (result.length > 0) {
             result = result[0];
-            result.transactions.avg = transactionAvg;
+            result.avgTransactions = transactionAvg;
 
             reportsRepo.updateReport(result, result._id);
         }
-        else{
-            let transactions = {};
-            transactions.avg = transactionAvg;
-            reportsRepo.createReport({transactions: transactions, date: dateString});
-        }
+        else
+            reportsRepo.createReport({avgTransactions: transactionAvg, date: dateString});
     });
 }
 

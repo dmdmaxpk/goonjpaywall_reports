@@ -18,6 +18,7 @@ const report = new Schema({
     successRate: {type: Object, default: undefined},
     netAdditions: {type: Object, default: undefined},
     transactions: {type: Object, default: undefined},
+    avgTransactions: {type: Object, default: undefined},
     pageViews: {type: Object, default: undefined},
     date: { type: Date, default: Date.now }
 }, { strict: true });
