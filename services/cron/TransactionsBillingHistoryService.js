@@ -51,6 +51,13 @@ computeTransactionsAvgReports = async(req, res) => {
                         computeTransactionsAvgReports(req, res);
                 }
             }
+            else{
+                req.month = Number(req.month) + 1;
+                console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
+
+                if (req.month <= new Date().getMonth())
+                    computeTransactionsAvgReports(req, res);
+            }
         });
     });
 };
