@@ -73,8 +73,6 @@ class ReportsValidator{
                     this.checkSubTypeIsNull(params.transactions, "Transactions", ['success_rate', 'failure_rate', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise']);
                 else if (params.sub_type === 'subscribers')
                     this.checkSubTypeIsNull(params.subscribers, "Transacting Subscribers", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'net_total']);
-                else if (params.sub_type === 'avg_number')
-                    this.checkSubTypeIsNull(params.avg_number, "Avg Transaction Details", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'net_total']);
 
                 break;
             case 'uninstall':

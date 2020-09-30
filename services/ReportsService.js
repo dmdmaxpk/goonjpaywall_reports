@@ -93,7 +93,9 @@ generateReportsData = async (params,res) => {
         }
         else if (params.type === 'transactions'){
             if (params.sub_type === 'transactions'){
-                if (params.transactions === 'success_failure_rate')
+                if (params.transactions === 'avg_number')
+                    return computeTransactionsAvgReport(rawDataSet, params);
+                else if (params.transactions === 'success_failure_rate')
                     return computeTransactionsRateReport(rawDataSet, params);
                 else if (params.transactions === 'source_wise')
                     return computeTransactionsSourceWiseReport(rawDataSet, params);
@@ -117,18 +119,6 @@ generateReportsData = async (params,res) => {
                     return computeTransactingSubscribersOperatorWiseReport(rawDataSet, params);
                 else if(params.transactions === 'price_wise')
                     return computeTransactingSubscribersPriceWiseReport(rawDataSet, params);
-            }
-            else if (params.sub_type === 'avg_number') {
-                if (params.avg_number === 'source_wise')
-                    return computeTransactionsSourceWiseReport(rawDataSet, params);
-                else if(params.avg_number === 'package_wise')
-                    return computeTransactionsPackageWiseReport(rawDataSet, params);
-                else if(params.avg_number === 'paywall_wise')
-                    return computeTransactionsPaywallWiseReport(rawDataSet, params);
-                else if(params.avg_number === 'operator_wise')
-                    return computeTransactionsOperatorWiseReport(rawDataSet, params);
-                else if(params.avg_number === 'net_total')
-                    return computeTransactionsNetTotalWiseReport(rawDataSet, params);
             }
         }
     }catch (e) {
@@ -3804,6 +3794,112 @@ function computeNetAdditionsReport(rawDataSet, params) {
 }
 
 // Transactions Compute Functions
+function computeTransactionsAvgReport(rawDataSet, params) {
+    console.log('computeTransactionsAvgReport');
+
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, innerObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
+    let dayDataObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
+    let weeklyDataObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
+    let monthlyDataObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
+
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+            if (outerObj.avgTransactions){
+                innerObj = outerObj.avgTransactions[0];
+
+                if (innerObj.totalTransactions){
+                    dataObj.totalTransactions = dataObj.totalTransactions + innerObj.totalTransactions;
+                    dayDataObj.totalTransactions = dayDataObj.totalTransactions + innerObj.totalTransactions;
+                    weeklyDataObj.totalTransactions = weeklyDataObj.totalTransactions + innerObj.totalTransactions;
+                    monthlyDataObj.totalTransactions = monthlyDataObj.totalTransactions + innerObj.totalTransactions;
+                }
+                if (innerObj.uniqueSubscribers){
+                    dataObj.uniqueSubscribers = dataObj.uniqueSubscribers + innerObj.uniqueSubscribers;
+                    dayDataObj.uniqueSubscribers = dayDataObj.uniqueSubscribers + innerObj.uniqueSubscribers;
+                    weeklyDataObj.uniqueSubscribers = weeklyDataObj.uniqueSubscribers + innerObj.uniqueSubscribers;
+                    monthlyDataObj.uniqueSubscribers = monthlyDataObj.uniqueSubscribers + innerObj.uniqueSubscribers;
+                }
+                if (innerObj.totalPrice){
+                    dataObj.totalPrice = dataObj.totalPrice + innerObj.totalPrice;
+                    dayDataObj.totalPrice = dayDataObj.totalPrice + innerObj.totalPrice;
+                    weeklyDataObj.totalPrice = weeklyDataObj.totalPrice + innerObj.totalPrice;
+                    monthlyDataObj.totalPrice = monthlyDataObj.totalPrice + innerObj.totalPrice;
+                }
+                if (innerObj.avg_transactions){
+                    dataObj.avg_transactions = dataObj.avg_transactions + innerObj.avg_transactions;
+                    dayDataObj.avg_transactions = dayDataObj.avg_transactions + innerObj.avg_transactions;
+                    weeklyDataObj.avg_transactions = weeklyDataObj.avg_transactions + innerObj.avg_transactions;
+                    monthlyDataObj.avg_transactions = monthlyDataObj.avg_transactions + innerObj.avg_transactions;
+                }
+                if (innerObj.avg_value){
+                    dataObj.avg_value = dataObj.avg_value + innerObj.avg_value;
+                    dayDataObj.avg_value = dayDataObj.avg_value + innerObj.avg_value;
+                    weeklyDataObj.avg_value = weeklyDataObj.avg_value + innerObj.avg_value;
+                    monthlyDataObj.avg_value = monthlyDataObj.avg_value + innerObj.avg_value;
+                }
+
+                // reset start_date for both month & week so can update with latest one
+                if (week_from_date === null)
+                    week_from_date = innerObj.added_dtm;
+
+                if (month_from_date === null)
+                    month_from_date = innerObj.added_dtm;
+
+                monthNo = new Date(outerObj.date).getMonth() + 1;
+                dayNo = new Date(outerObj.date).getDate();
+
+                // Monthly Data Count
+                if(Number(dayNo) === Number(getDaysInMonth(monthNo))){
+                    monthlyDataObj.from_date = month_from_date;
+                    monthlyDataObj.to_date = outerObj.date;
+                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                    monthlyDataObj = _.clone({totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0});
+                    month_from_date = null;
+                }
+
+                // Weekly Data Count
+                if (Number(dayNo) % 7 === 0){
+                    weeklyDataObj.from_date = week_from_date;
+                    weeklyDataObj.to_date = outerObj.date;
+                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                    weeklyDataObj = _.clone({totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0});
+                    week_from_date = null;
+                }
+
+                // Day Wise Date Count
+                dayDataObj.date = outerObj.date;
+                dayWiseTotalCount.push(_.clone(dayDataObj));
+                dayDataObj = _.clone({totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0});
+            }
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // Total Count Data
+        // date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+        return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformTheData(false, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Data not exist.');
+    }
+}
 function computeTransactionsRateReport(rawDataSet, params) {
     console.log('computeTransactionsRateReport');
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
