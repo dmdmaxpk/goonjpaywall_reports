@@ -34,23 +34,16 @@ computeTransactionsAvgReports = async(req, res) => {
 
             if (transaction.length > 0){
                 transactionAvg = computeTransactionAvgData(transaction, fromDate);
-
                 console.log('transactionAvg.length : ', transactionAvg.length, transactionAvg);
                 insertNewRecord(transactionAvg, new Date(setDate(fromDate, 0, 0, 0, 0)));
-
-                req.day = Number(req.day) + 1;
-                console.log('getChargeDetailsByDateRange -> day : ', day, req.day, getDaysInMonth(month));
-
-                if (req.day <= getDaysInMonth(month))
-                    computeTransactionsAvgReports(req, res);
-                else{
-                    req.month = Number(req.month) + 1;
-                    console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
-
-                    if (req.month <= new Date().getMonth())
-                        computeTransactionsAvgReports(req, res);
-                }
             }
+
+            // Get Data for next time slot
+            req.day = Number(req.day) + 1;
+            console.log('getChargeDetailsByDateRange -> day : ', day, req.day, getDaysInMonth(month));
+
+            if (req.day <= getDaysInMonth(month))
+                computeTransactionsAvgReports(req, res);
             else{
                 req.month = Number(req.month) + 1;
                 console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
