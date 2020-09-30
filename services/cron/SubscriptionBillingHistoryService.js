@@ -487,8 +487,7 @@ function cloneTransactionObj() {
                 '5': 0,
                 '4': 0,
                 '3': 0,
-            },
-            netTotal: 0
+            }
         },
         added_dtm: '',
         added_dtm_hours: ''

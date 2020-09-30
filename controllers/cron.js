@@ -6,6 +6,7 @@ const CallbackSendService = require('../services/cron/CallbackSendService');
 const PageViewService = require('../services/cron/PageViewService');
 const RevenueNetAdditionService = require('../services/cron/RevenueNetAdditionService');
 const SubscriptionBillingHistoryService = require('../services/cron/SubscriptionBillingHistoryService');
+const TransactionsBillingHistoryService = require('../services/cron/TransactionsBillingHistoryService');
 
 exports.computeUserReports = async (req,res) =>  {
     await UserService.computeUserReports(req,res);
@@ -35,6 +36,11 @@ exports.computeCallbackSendReports = async (req,res) =>  {
 exports.computePageViewReports = async (req,res) =>  {
     PageViewService.computePageViewReports(req,res);
     res.send("computePageViewReports - Executed\n");
+};
+
+exports.computeTransactionsReports = async (req,res) =>  {
+    TransactionsBillingHistoryService.computeTransactionsReports(req,res);
+    res.send("computeTransactionsReports - Executed\n");
 };
 
 exports.computeChargeDetailsReports = async (req,res) =>  {

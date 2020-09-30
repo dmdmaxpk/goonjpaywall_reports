@@ -93,10 +93,8 @@ generateReportsData = async (params,res) => {
         }
         else if (params.type === 'transactions'){
             if (params.sub_type === 'transactions'){
-                if (params.transactions === 'success_rate')
-                    return computeTransactionsSuccessRateReport(rawDataSet, params);
-                else if (params.transactions === 'failure_rate')
-                    return computeTransactionsFailureRateReport(rawDataSet, params);
+                if (params.transactions === 'success_failure_rate')
+                    return computeTransactionsRateReport(rawDataSet, params);
                 else if (params.transactions === 'source_wise')
                     return computeTransactionsSourceWiseReport(rawDataSet, params);
                 else if(params.transactions === 'package_wise')
@@ -117,8 +115,8 @@ generateReportsData = async (params,res) => {
                     return computeTransactingSubscribersPaywallWiseReport(rawDataSet, params);
                 else if(params.subscribers === 'operator_wise')
                     return computeTransactingSubscribersOperatorWiseReport(rawDataSet, params);
-                else if(params.subscribers === 'net_total')
-                    return computeTransactingSubscribersNetTotalWiseReport(rawDataSet, params);
+                else if(params.transactions === 'price_wise')
+                    return computeTransactingSubscribersPriceWiseReport(rawDataSet, params);
             }
             else if (params.sub_type === 'avg_number') {
                 if (params.avg_number === 'source_wise')
@@ -3806,13 +3804,112 @@ function computeNetAdditionsReport(rawDataSet, params) {
 }
 
 // Transactions Compute Functions
-function computeTransactionsSuccessRateReport(rawDataSet, params) {
-    console.log('computeTransactionsSuccessRateReport');
+function computeTransactionsRateReport(rawDataSet, params) {
+    console.log('computeTransactionsRateReport');
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, innerObj, transactions, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = { successRate: 0, failureRate: 0, netTotal: 0 };
+    let dayDataObj = { successRate: 0, failureRate: 0, netTotal: 0 };
+    let weeklyDataObj = { successRate: 0, failureRate: 0, netTotal: 0 };
+    let monthlyDataObj = { successRate: 0, failureRate: 0, netTotal: 0 };
 
-}
-function computeTransactionsFailureRateReport(rawDataSet, params) {
-    console.log('computeTransactionsFailureRateReport');
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+            if (outerObj.transactions){
+                for (let j=0; j<outerObj.transactions.length; j++) {
+                    transactions = outerObj.transactions[j];
+                    if (transactions.transactions) {
+                        innerObj = transactions.transactions;
 
+                        if (innerObj.successRate){
+                            dataObj.successRate = dataObj.successRate + innerObj.successRate;
+                            dayDataObj.successRate = dayDataObj.successRate + innerObj.successRate;
+                            weeklyDataObj.successRate = weeklyDataObj.successRate + innerObj.successRate;
+                            monthlyDataObj.successRate = monthlyDataObj.successRate + innerObj.successRate;
+                        }
+                        if (innerObj.failureRate){
+                            dataObj.failureRate = dataObj.failureRate + innerObj.failureRate;
+                            dayDataObj.failureRate = dayDataObj.failureRate + innerObj.failureRate;
+                            weeklyDataObj.failureRate = weeklyDataObj.failureRate + innerObj.failureRate;
+                            monthlyDataObj.failureRate = monthlyDataObj.failureRate + innerObj.failureRate;
+                        }
+                        if (innerObj.netTotal){
+                            dataObj.netTotal = dataObj.netTotal + innerObj.netTotal;
+                            dayDataObj.netTotal = dayDataObj.netTotal + innerObj.netTotal;
+                            weeklyDataObj.netTotal = weeklyDataObj.netTotal + innerObj.netTotal;
+                            monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.netTotal;
+                        }
+
+
+                        // Hourly Bases Data
+                        hourlyBasisTotalCount.push({
+                            successRate: innerObj.successRate,
+                            failureRate: innerObj.failureRate,
+                            netTotal: innerObj.netTotal,
+                            date: transactions.added_dtm
+                        });
+
+                        // reset start_date for both month & week so can update with latest one
+                        if (week_from_date === null)
+                            week_from_date = transactions.added_dtm;
+
+                        if (month_from_date === null)
+                            month_from_date = transactions.added_dtm;
+                    }
+                }
+
+                monthNo = new Date(outerObj.date).getMonth() + 1;
+                dayNo = new Date(outerObj.date).getDate();
+
+                // Monthly Data Count
+                if(Number(dayNo) === Number(getDaysInMonth(monthNo))){
+                    monthlyDataObj.from_date = month_from_date;
+                    monthlyDataObj.to_date = outerObj.date;
+                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                    monthlyDataObj = _.clone({ successRate: 0, failureRate: 0, netTotal: 0 });
+                    month_from_date = null;
+                }
+
+                // Weekly Data Count
+                if (Number(dayNo) % 7 === 0){
+                    weeklyDataObj.from_date = week_from_date;
+                    weeklyDataObj.to_date = outerObj.date;
+                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                    weeklyDataObj = _.clone({ successRate: 0, failureRate: 0, netTotal: 0 });
+                    week_from_date = null;
+                }
+
+                // Day Wise Date Count
+                dayDataObj.date = outerObj.date;
+                dayWiseTotalCount.push(_.clone(dayDataObj));
+                dayDataObj = _.clone({ successRate: 0, failureRate: 0, netTotal: 0 });
+            }
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // Total Count Data
+        // date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+        return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformTheData(false, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Data not exist.');
+    }
 }
 function computeTransactionsSourceWiseReport(rawDataSet, params) {
     console.log('computeTransactionsSourceWiseReport');
@@ -4284,8 +4381,139 @@ function computeTransactionsOperatorWiseReport(rawDataSet, params) {
 function computeTransactionsPriceWiseWiseReport(rawDataSet, params) {
     console.log('computeTransactionsPriceWiseWiseReport');
 
-}
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, innerObj, transactions, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = { '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let dayDataObj = { '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let weeklyDataObj = { '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let monthlyDataObj = { '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
 
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+            if (outerObj.transactions){
+                for (let j=0; j<outerObj.transactions.length; j++) {
+                    transactions = outerObj.transactions[j];
+                    if (transactions.transactions) {
+                        if (transactions.transactions.price) {
+                            innerObj = transactions.transactions.price;
+                            if (innerObj['15']){
+                                dataObj['15'] = dataObj['15'] + innerObj['15'];
+                                dayDataObj['15'] = dayDataObj['15'] + innerObj['15'];
+                                weeklyDataObj['15'] = weeklyDataObj['15'] + innerObj['15'];
+                                monthlyDataObj['15'] = monthlyDataObj['15'] + innerObj['15'];
+                            }
+                            if (innerObj['11.95']){
+                                dataObj['11.95'] = dataObj['11.95'] + innerObj['11.95'];
+                                dayDataObj['11.95'] = dayDataObj['11.95'] + innerObj['11.95'];
+                                weeklyDataObj['11.95'] = weeklyDataObj['11.95'] + innerObj['11.95'];
+                                monthlyDataObj['11.95'] = monthlyDataObj['11.95'] + innerObj['11.95'];
+                            }
+                            if (innerObj['10']){
+                                dataObj['10'] = dataObj['10'] + innerObj['10'];
+                                dayDataObj['10'] = dayDataObj['10'] + innerObj['10'];
+                                weeklyDataObj['10'] = weeklyDataObj['10'] + innerObj['10'];
+                                monthlyDataObj['10'] = monthlyDataObj['10'] + innerObj['10'];
+                            }
+                            if (innerObj['7']){
+                                dataObj['7'] = dataObj['7'] + innerObj['7'];
+                                dayDataObj['7'] = dayDataObj['7'] + innerObj['7'];
+                                weeklyDataObj['7'] = weeklyDataObj['7'] + innerObj['7'];
+                                monthlyDataObj['7'] = monthlyDataObj['7'] + innerObj['7'];
+                            }
+                            if (innerObj['5']){
+                                dataObj['5'] = dataObj['5'] + innerObj['5'];
+                                dayDataObj['5'] = dayDataObj['5'] + innerObj['5'];
+                                weeklyDataObj['5'] = weeklyDataObj['5'] + innerObj['5'];
+                                monthlyDataObj['5'] = monthlyDataObj['5'] + innerObj['5'];
+                            }
+                            if (innerObj['4']){
+                                dataObj['4'] = dataObj['4'] + innerObj['4'];
+                                dayDataObj['4'] = dayDataObj['4'] + innerObj['4'];
+                                weeklyDataObj['4'] = weeklyDataObj['4'] + innerObj['4'];
+                                monthlyDataObj['4'] = monthlyDataObj['4'] + innerObj['4'];
+                            }
+                            if (innerObj['2']){
+                                dataObj['2'] = dataObj['2'] + innerObj['2'];
+                                dayDataObj['2'] = dayDataObj['2'] + innerObj['2'];
+                                weeklyDataObj['2'] = weeklyDataObj['2'] + innerObj['2'];
+                                monthlyDataObj['2'] = monthlyDataObj['2'] + innerObj['2'];
+                            }
+
+                            // Hourly Bases Data
+                            hourlyBasisTotalCount.push({
+                                '15': innerObj['15'],
+                                '11.95': innerObj['11.95'],
+                                '10': innerObj['10'],
+                                '7': innerObj['7'],
+                                '5': innerObj['5'],
+                                '4': innerObj['4'],
+                                '2': innerObj['2'],
+                                date: transactions.added_dtm
+                            });
+
+                            // reset start_date for both month & week so can update with latest one
+                            if (week_from_date === null)
+                                week_from_date = transactions.added_dtm;
+
+                            if (month_from_date === null)
+                                month_from_date = transactions.added_dtm;
+                        }
+                    }
+                }
+
+                monthNo = new Date(outerObj.date).getMonth() + 1;
+                dayNo = new Date(outerObj.date).getDate();
+
+                // Monthly Data Count
+                if(Number(dayNo) === Number(getDaysInMonth(monthNo))){
+                    monthlyDataObj.from_date = month_from_date;
+                    monthlyDataObj.to_date = outerObj.date;
+                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                    monthlyDataObj = _.clone({ '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
+                    month_from_date = null;
+                }
+
+                // Weekly Data Count
+                if (Number(dayNo) % 7 === 0){
+                    weeklyDataObj.from_date = week_from_date;
+                    weeklyDataObj.to_date = outerObj.date;
+                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                    weeklyDataObj = _.clone({ '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
+                    week_from_date = null;
+                }
+
+                // Day Wise Date Count
+                dayDataObj.date = outerObj.date;
+                dayWiseTotalCount.push(_.clone(dayDataObj));
+                dayDataObj = _.clone({ '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
+            }
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // Total Count Data
+        // date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+        return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformTheData(false, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Data not exist.');
+    }
+}
 
 // Transacting Subscribers Compute Functions
 function computeTransactingSubscribersSourceWiseReport(rawDataSet, params) {
@@ -4755,8 +4983,141 @@ function computeTransactingSubscribersOperatorWiseReport(rawDataSet, params) {
         return reportsTransformer.transformTheData(false, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Data not exist.');
     }
 }
-function computeTransactingSubscribersNetTotalWiseReport(rawDataSet, params) {
-    console.log('computeTransactingSubscribersNetTotalWiseReport');
+function computeTransactingSubscribersPriceWiseReport(rawDataSet, params) {
+    console.log('computeTransactingSubscribersPriceWiseReport');
+
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, innerObj, transactions, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = { '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let dayDataObj = { '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let weeklyDataObj = { '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let monthlyDataObj = { '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+            if (outerObj.transactions){
+                for (let j=0; j<outerObj.transactions.length; j++) {
+                    transactions = outerObj.transactions[j];
+                    if (transactions.subscribers) {
+                        if (transactions.subscribers.price) {
+                            innerObj = transactions.subscribers.price;
+                            if (innerObj['15']){
+                                dataObj['15'] = dataObj['15'] + innerObj['15'];
+                                dayDataObj['15'] = dayDataObj['15'] + innerObj['15'];
+                                weeklyDataObj['15'] = weeklyDataObj['15'] + innerObj['15'];
+                                monthlyDataObj['15'] = monthlyDataObj['15'] + innerObj['15'];
+                            }
+                            if (innerObj['11.95']){
+                                dataObj['11.95'] = dataObj['11.95'] + innerObj['11.95'];
+                                dayDataObj['11.95'] = dayDataObj['11.95'] + innerObj['11.95'];
+                                weeklyDataObj['11.95'] = weeklyDataObj['11.95'] + innerObj['11.95'];
+                                monthlyDataObj['11.95'] = monthlyDataObj['11.95'] + innerObj['11.95'];
+                            }
+                            if (innerObj['10']){
+                                dataObj['10'] = dataObj['10'] + innerObj['10'];
+                                dayDataObj['10'] = dayDataObj['10'] + innerObj['10'];
+                                weeklyDataObj['10'] = weeklyDataObj['10'] + innerObj['10'];
+                                monthlyDataObj['10'] = monthlyDataObj['10'] + innerObj['10'];
+                            }
+                            if (innerObj['7']){
+                                dataObj['7'] = dataObj['7'] + innerObj['7'];
+                                dayDataObj['7'] = dayDataObj['7'] + innerObj['7'];
+                                weeklyDataObj['7'] = weeklyDataObj['7'] + innerObj['7'];
+                                monthlyDataObj['7'] = monthlyDataObj['7'] + innerObj['7'];
+                            }
+                            if (innerObj['5']){
+                                dataObj['5'] = dataObj['5'] + innerObj['5'];
+                                dayDataObj['5'] = dayDataObj['5'] + innerObj['5'];
+                                weeklyDataObj['5'] = weeklyDataObj['5'] + innerObj['5'];
+                                monthlyDataObj['5'] = monthlyDataObj['5'] + innerObj['5'];
+                            }
+                            if (innerObj['4']){
+                                dataObj['4'] = dataObj['4'] + innerObj['4'];
+                                dayDataObj['4'] = dayDataObj['4'] + innerObj['4'];
+                                weeklyDataObj['4'] = weeklyDataObj['4'] + innerObj['4'];
+                                monthlyDataObj['4'] = monthlyDataObj['4'] + innerObj['4'];
+                            }
+                            if (innerObj['2']){
+                                dataObj['2'] = dataObj['2'] + innerObj['2'];
+                                dayDataObj['2'] = dayDataObj['2'] + innerObj['2'];
+                                weeklyDataObj['2'] = weeklyDataObj['2'] + innerObj['2'];
+                                monthlyDataObj['2'] = monthlyDataObj['2'] + innerObj['2'];
+                            }
+
+                            // Hourly Bases Data
+                            hourlyBasisTotalCount.push({
+                                '15': innerObj['15'],
+                                '11.95': innerObj['11.95'],
+                                '10': innerObj['10'],
+                                '7': innerObj['7'],
+                                '5': innerObj['5'],
+                                '4': innerObj['4'],
+                                '2': innerObj['2'],
+                                date: transactions.added_dtm
+                            });
+
+                            // reset start_date for both month & week so can update with latest one
+                            if (week_from_date === null)
+                                week_from_date = transactions.added_dtm;
+
+                            if (month_from_date === null)
+                                month_from_date = transactions.added_dtm;
+                        }
+                    }
+                }
+
+                monthNo = new Date(outerObj.date).getMonth() + 1;
+                dayNo = new Date(outerObj.date).getDate();
+
+                // Monthly Data Count
+                if(Number(dayNo) === Number(getDaysInMonth(monthNo))){
+                    monthlyDataObj.from_date = month_from_date;
+                    monthlyDataObj.to_date = outerObj.date;
+                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                    monthlyDataObj = _.clone({ '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
+                    month_from_date = null;
+                }
+
+                // Weekly Data Count
+                if (Number(dayNo) % 7 === 0){
+                    weeklyDataObj.from_date = week_from_date;
+                    weeklyDataObj.to_date = outerObj.date;
+                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                    weeklyDataObj = _.clone({ '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
+                    week_from_date = null;
+                }
+
+                // Day Wise Date Count
+                dayDataObj.date = outerObj.date;
+                dayWiseTotalCount.push(_.clone(dayDataObj));
+                dayDataObj = _.clone({ '15': 0, '11.95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
+            }
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // Total Count Data
+        // date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+        return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformTheData(false, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Data not exist.');
+    }
 }
 
 

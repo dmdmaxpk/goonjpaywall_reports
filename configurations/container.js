@@ -9,6 +9,7 @@ const BillingHistoryRepository = require('../repos/BillingHistoryRepo');
 const SubscriptionRepository = require('../repos/SubscriptionRepo');
 const PageViewRepo = require('../repos/PageViewRepo');
 const SubscriberRepository = require('../repos/SubscriberRepo');
+const TransactionsRepo = require('../repos/TransactionsRepo');
 
 //Validators
 const ReportsValidator = require('../validators/reportsValidator');
@@ -24,6 +25,7 @@ container.register({
     subscriptionRepository: awilix.asClass(SubscriptionRepository).singleton(),
     pageViewRepo: awilix.asClass(PageViewRepo).singleton(),
     subscriberRepository: awilix.asClass(SubscriberRepository).singleton(),
+    transactionsRepo: awilix.asClass(TransactionsRepo).singleton(),
 
     //Validators
     reportsValidator: awilix.asClass(ReportsValidator).singleton(),
