@@ -57,24 +57,24 @@ computeTransactionsAvgReports = async(req, res) => {
 
 function computeTransactionAvgData(transactions, fromDate) {
 
-    let transaction, totalSubscribers = 0, totalTransactions = 0, totalPrice = 0, transactionList = [];
+    let transaction, uniqueSubscribers = 0, totalTransactions = 0, totalPrice = 0, transactionList = [];
 
-    let transactionObj = {totalTransactions: 0, totalSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
+    let transactionObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
     for (let k=0; k < transactions.length; k++) {
         transaction = transactions[k];
 
-        totalSubscribers = totalSubscribers + 1;
+        uniqueSubscribers = uniqueSubscribers + 1;
         totalTransactions = totalTransactions + transaction.size;
-        totalPrice = transactions.reduce((a, b) => a + (b['price'] || 0), 0);
+        totalPrice = transaction.transactions.reduce((a, b) => a + (b['price'] || 0), 0);
     }
 
     // Add Timestemps
 
     transactionObj.totalTransactions = totalTransactions;
-    transactionObj.totalSubscribers = totalSubscribers;
+    transactionObj.uniqueSubscribers = uniqueSubscribers;
     transactionObj.totalPrice = totalPrice;
     transactionObj.avg_value = ( totalPrice > 0  && totalTransactions> 0 )? totalTransactions / totalPrice : 0;
-    transactionObj.avg_transactions = ( totalSubscribers > 0 && totalTransactions> 0 )? totalTransactions / totalSubscribers : 0;
+    transactionObj.avg_transactions = ( uniqueSubscribers > 0 && totalTransactions> 0 )? totalTransactions / uniqueSubscribers : 0;
     transactionObj.added_dtm = fromDate;
     transactionObj.added_dtm_hours = setDate(new Date(fromDate), null, 0, 0, 0);
     transactionList.push(transactionObj);
