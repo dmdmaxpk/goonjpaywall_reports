@@ -65,7 +65,7 @@ function computeTransactionAvgData(transactions, fromDate) {
 
         uniqueSubscribers = uniqueSubscribers + 1;
         totalTransactions = totalTransactions + transaction.size;
-        totalPrice = transaction.transactions.reduce((a, b) => a + (b['price'] || 0), 0);
+        totalPrice = totalPrice + transaction.transactions.reduce((a, b) => a + (b['price'] || 0), 0);
     }
 
     // Add Timestemps
