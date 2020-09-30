@@ -38,8 +38,8 @@ exports.computePageViewReports = async (req,res) =>  {
     res.send("computePageViewReports - Executed\n");
 };
 
-exports.computeTransactionsReports = async (req,res) =>  {
-    TransactionsBillingHistoryService.computeTransactionsReports(req,res);
+exports.computeTransactionsAvgReports = async (req,res) =>  {
+    TransactionsBillingHistoryService.computeTransactionsAvgReports(req,res);
     res.send("computeTransactionsReports - Executed\n");
 };
 
