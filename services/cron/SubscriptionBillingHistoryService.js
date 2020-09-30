@@ -282,21 +282,35 @@ function computeChargeDetailData(chargeDetails) {
                         }
 
 
-                        //Price wise transactions
-                        if (innerObj.price === '15')
+                        //Price wise charge & transaction details
+                        if (innerObj.price === 15){
                             transactionObj.transactions.price['15'] = transactionObj.transactions.price['15'] + 1;
-                        else if (innerObj.price === '11.95')
+                            transactionObj.subscribers.price['15'] = transactionObj.subscribers.price['15'] + 1;
+                        }
+                        else if (innerObj.price === 11.95){
                             transactionObj.transactions.price['15'] = transactionObj.transactions.price['11.95'] + 1;
-                        else if (innerObj.price === '10')
+                            transactionObj.subscribers.price['15'] = transactionObj.subscribers.price['11.95'] + 1;
+                        }
+                        else if (innerObj.price === 10){
                             transactionObj.transactions.price['10'] = transactionObj.transactions.price['10'] + 1;
-                        else if (innerObj.price === '7')
+                            transactionObj.subscribers.price['10'] = transactionObj.subscribers.price['10'] + 1;
+                        }
+                        else if (innerObj.price === 7){
                             transactionObj.transactions.price['7'] = transactionObj.transactions.price['7'] + 1;
-                        else if (innerObj.price === '5')
+                            transactionObj.subscribers.price['7'] = transactionObj.subscribers.price['7'] + 1;
+                        }
+                        else if (innerObj.price === 5){
                             transactionObj.transactions.price['5'] = transactionObj.transactions.price['5'] + 1;
-                        else if(innerObj.price === '4')
+                            transactionObj.subscribers.price['5'] = transactionObj.subscribers.price['5'] + 1;
+                        }
+                        else if(innerObj.price === 4){
                             transactionObj.transactions.price['4'] = transactionObj.transactions.price['4'] + 1;
-                        else if (innerObj.price === '2')
+                            transactionObj.subscribers.price['4'] = transactionObj.subscribers.price['4'] + 1;
+                        }
+                        else if (innerObj.price === 2){
                             transactionObj.transactions.price['2'] = transactionObj.transactions.price['2'] + 1;
+                            transactionObj.subscribers.price['2'] = transactionObj.subscribers.price['2'] + 1;
+                        }
 
                         //Success rate
                         transactionObj.transactions.successRate = transactionObj.transactions.successRate + 1;
@@ -464,6 +478,15 @@ function cloneTransactionObj() {
             paywall: {
                 comedy: 0,
                 live: 0
+            },
+            price: {
+                '15': 0,
+                '11.95': 0,
+                '10': 0,
+                '7': 0,
+                '5': 0,
+                '4': 0,
+                '3': 0,
             },
             netTotal: 0
         },
