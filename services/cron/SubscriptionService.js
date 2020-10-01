@@ -15,7 +15,7 @@ computeSubscriptionReports = async(req, res) => {
         day = day > 9 ? day : '0'+Number(day);
         req.day = day;
 
-        month = req.month ? req.month : 9;
+        month = req.month ? req.month : 2;
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
@@ -49,6 +49,7 @@ computeSubscriptionReports = async(req, res) => {
             if (req.day <= getDaysInMonth(month))
                 computeSubscriptionReports(req, res);
             else{
+                req.day = 1;
                 req.month = Number(req.month) + 1;
                 console.log('computeSubscriptionReports -> month : ', month, req.month, new Date().getMonth());
 
