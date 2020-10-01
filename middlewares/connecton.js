@@ -3,7 +3,8 @@ const config = require('./../config');
 const helper = require('./../helper/helper');
 
 let connect = async (req, res, next) => {
-    if (helper.getDBInstance() === undefined)
+    console.log('helper.getDBInstance(): ', helper.getDBInstance());
+    if (!helper.getDBInstance())
         await updateConnection(req, res, next);
     else
         req.db = helper.getDBInstance();
