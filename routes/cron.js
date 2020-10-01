@@ -21,7 +21,7 @@ router.route('/compute-callback-send-reports')
 router.route('/compute-transactions-avg-reports')
     .get(connecton.connect, controller.computeTransactionsAvgReports);
 
-router.route('/compute-charge-detail-and-transaction-reports')
+router.route('/compute-charge-detail-reports')
     .get(connecton.connect, controller.computeChargeDetailsReports);
 
 router.route('/compute-revenue-net-addition-reports')

@@ -1,27 +1,23 @@
 const env = process.env.NODE_ENV || 'development';
-const paywall_base_url = 'http://127.0.0.1:5001/';
 
 let config = {
     development: {
         port: '5005',
         mongoDB: {
             goonjpaywall: 'mongodb://localhost:27017',
-            goonj_paywall_reports: 'mongodb://localhost:27017/goonj_paywall_reports',
-        },
-        paywall_base_url: paywall_base_url
+            goonj_paywall_reports: 'mongodb://localhost:27017/goonj_paywall_reports'
+        }
     },
     staging: {
         port: '5005',
         mongoDB: {
             goonjpaywall: 'mongodb://mongodb:27017',
-            goonj_paywall_reports: 'mongodb://mongodb:27017/goonj_paywall_reports',
-        },
-        paywall_base_url: paywall_base_url
+            goonj_paywall_reports: 'mongodb://mongodb:27017/goonj_paywall_reports'
+        }
     },
     production: {
         port: process.env.PW_PORT,
-        mongoDB: process.env.PW_MONGO_DB_URL,
-        paywall_base_url: paywall_base_url
+        mongoDB: process.env.PW_MONGO_DB_URL
     }
 };
 
