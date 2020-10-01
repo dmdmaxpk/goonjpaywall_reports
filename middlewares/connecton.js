@@ -4,7 +4,7 @@ const helper = require('./../helper/helper');
 
 let connect = async (req, res, next) => {
     console.log('helper.getDBInstance(): ', helper.getDBInstance(), typeof helper.getDBInstance());
-    if (typeof helper.getDBInstance() == 'undefined'){
+    if (!helper.getDBInstance()){
         console.log('typeof: ');
         await updateConnection(req, res, next);
     }
@@ -22,6 +22,7 @@ let updateConnection = async (req, res, next) => {
         }else{
             req.db = client.db('goonjpaywall');
             helper.setDBInstance(req.db);
+            console.log('req.db: ', req.db);
         }
     });
 };

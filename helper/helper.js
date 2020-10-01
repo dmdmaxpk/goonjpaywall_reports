@@ -11,6 +11,8 @@ class Helper {
     }
 
     static setDBInstance(db){
+        console.log('===================== ');
+
         this.db = db;
     }
 
