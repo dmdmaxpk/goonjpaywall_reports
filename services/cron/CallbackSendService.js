@@ -38,19 +38,20 @@ computeCallbackSendReports = async(req, res) => {
                 console.log('finalList.length : ', finalList.length, finalList);
                 if (finalList.length > 0)
                     insertNewRecord(finalList,  new Date(setDate(fromDate, 0, 0, 0, 0)));
+            }
 
-                req.day = Number(req.day) + 1;
-                console.log('getCallbackSendByDateRange -> day : ', day, req.day, getDaysInMonth(month));
+            // Get compute data for next time slot
+            req.day = Number(req.day) + 1;
+            console.log('getCallbackSendByDateRange -> day : ', day, req.day, getDaysInMonth(month));
 
-                if (req.day <= getDaysInMonth(month))
+            if (req.day <= getDaysInMonth(month))
+                computeCallbackSendReports(req, res);
+            else{
+                req.month = Number(req.month) + 1;
+                console.log('getCallbackSendByDateRange -> month : ', month, req.month, new Date().getMonth());
+
+                if (req.month <= new Date().getMonth())
                     computeCallbackSendReports(req, res);
-                else{
-                    req.month = Number(req.month) + 1;
-                    console.log('getCallbackSendByDateRange -> month : ', month, req.month, new Date().getMonth());
-
-                    if (req.month <= new Date().getMonth())
-                        computeCallbackSendReports(req, res);
-                }
             }
         });
     });

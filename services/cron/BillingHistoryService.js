@@ -50,42 +50,43 @@ computeBillingHistoryReports = async(req, res) => {
             computedData = computeBillingHistoryData(result);
             console.log('computedData: ', computedData);
             pushDataInArray(computedData);
+        }
 
-            if (Number(req.toHours) < 23){
-                console.log('Number(req.toHours) if: ', Number(req.toHours));
+        // Get compute data for next time slot
+        if (Number(req.toHours) < 23){
+            console.log('Number(req.toHours) if: ', Number(req.toHours));
 
-                //increment in hours ('from' to 'to') for next data-chunk
-                req.fromHours = Number(req.fromHours) + 8;
-                req.toHours = Number(req.toHours) + 8;
+            //increment in hours ('from' to 'to') for next data-chunk
+            req.fromHours = Number(req.fromHours) + 8;
+            req.toHours = Number(req.toHours) + 8;
 
-                console.log('computeBillingHistoryReports -> fromHours : ', fromHours, req.fromHours, new Date().getTime());
-                console.log('computeBillingHistoryReports -> toHours : ', toHours, req.toHours, new Date().getTime());
+            console.log('computeBillingHistoryReports -> fromHours : ', fromHours, req.fromHours, new Date().getTime());
+            console.log('computeBillingHistoryReports -> toHours : ', toHours, req.toHours, new Date().getTime());
 
-                // Compute Data for next data-chuck
+            // Compute Data for next data-chuck
+            computeBillingHistoryReports(req, res);
+        }
+        else{
+            console.log('Number(req.toHours) else: ', Number(req.toHours));
+
+            // set day, month, and hours for next day - data compilation
+            req.day = Number(req.day) + 1;
+            req.month = Number(req.month) + 1;
+            req.fromHours = 0; req.toHours = 7;
+
+            console.log('computeBillingHistoryReports -> day : ', day, req.day, getDaysInMonth(month));
+            console.log('computeBillingHistoryReports -> month : ', month, req.month, new Date().getMonth());
+            console.log('computeBillingHistoryReports -> fromHours : ', fromHours, req.fromHours, new Date().getTime());
+            console.log('computeBillingHistoryReports -> toHours : ', toHours, req.toHours, new Date().getTime());
+
+            //insert per day compiled data in Database
+            insertNewRecord(fromDate);
+
+            // Compute Data for next day
+            if (req.day <= getDaysInMonth(month))
                 computeBillingHistoryReports(req, res);
-            }
-            else{
-                console.log('Number(req.toHours) else: ', Number(req.toHours));
-
-                // set day, month, and hours for next day - data compilation
-                req.day = Number(req.day) + 1;
-                req.month = Number(req.month) + 1;
-                req.fromHours = 0; req.toHours = 7;
-
-                console.log('computeBillingHistoryReports -> day : ', day, req.day, getDaysInMonth(month));
-                console.log('computeBillingHistoryReports -> month : ', month, req.month, new Date().getMonth());
-                console.log('computeBillingHistoryReports -> fromHours : ', fromHours, req.fromHours, new Date().getTime());
-                console.log('computeBillingHistoryReports -> toHours : ', toHours, req.toHours, new Date().getTime());
-
-                //insert per day compiled data in Database
-                insertNewRecord(fromDate);
-
-                // Compute Data for next day
-                if (req.day <= getDaysInMonth(month))
-                    computeBillingHistoryReports(req, res);
-                else if (req.month <= new Date().getMonth())
-                    computeBillingHistoryReports(req, res);
-            }
+            else if (req.month <= new Date().getMonth())
+                computeBillingHistoryReports(req, res);
         }
     });
 };

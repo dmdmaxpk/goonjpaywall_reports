@@ -40,19 +40,20 @@ computeSubscriptionReports = async(req, res) => {
                 console.log('subscribersFinalList.length : ', subscribersFinalList.length, subscribersFinalList);
                 if (finalList.length > 0 || subscribersFinalList.length > 0)
                     insertNewRecord(finalList, subscribersFinalList,  new Date(setDate(fromDate, 0, 0, 0, 0)));
+            }
 
-                req.day = Number(req.day) + 1;
-                console.log('computeSubscriptionReports -> day : ', day, req.day, getDaysInMonth(month));
+            // Get compute data for next time slot
+            req.day = Number(req.day) + 1;
+            console.log('computeSubscriptionReports -> day : ', day, req.day, getDaysInMonth(month));
 
-                if (req.day <= getDaysInMonth(month))
+            if (req.day <= getDaysInMonth(month))
+                computeSubscriptionReports(req, res);
+            else{
+                req.month = Number(req.month) + 1;
+                console.log('computeSubscriptionReports -> month : ', month, req.month, new Date().getMonth());
+
+                if (req.month <= new Date().getMonth())
                     computeSubscriptionReports(req, res);
-                else{
-                    req.month = Number(req.month) + 1;
-                    console.log('computeSubscriptionReports -> month : ', month, req.month, new Date().getMonth());
-
-                    if (req.month <= new Date().getMonth())
-                        computeSubscriptionReports(req, res);
-                }
             }
         });
     });

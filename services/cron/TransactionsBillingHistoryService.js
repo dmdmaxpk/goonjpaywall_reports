@@ -38,7 +38,7 @@ computeTransactionsAvgReports = async(req, res) => {
                 insertNewRecord(transactionAvg, new Date(setDate(fromDate, 0, 0, 0, 0)));
             }
 
-            // Get Data for next time slot
+            // Get compute data for next time slot
             req.day = Number(req.day) + 1;
             console.log('getChargeDetailsByDateRange -> day : ', day, req.day, getDaysInMonth(month));
 

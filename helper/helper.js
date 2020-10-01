@@ -13,6 +13,10 @@ class Helper {
     static connectPaywall(){
         this.isConnected = true;
     }
+
+    static getDaysInMonth(month) {
+        return new Date(2020, month, 0).getDate();
+    }
 }
 
 module.exports = Helper;

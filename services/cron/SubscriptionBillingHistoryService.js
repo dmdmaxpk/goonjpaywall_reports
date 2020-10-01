@@ -39,21 +39,21 @@ computeChargeDetailsReports = async(req, res) => {
 
                 console.log('chargeDetailList.length : ', chargeDetailList.length, chargeDetailList);
                 console.log('transactingSubsList.length : ', transactingSubsList.length, transactingSubsList);
-
                 insertNewRecord(transactingSubsList, chargeDetailList, new Date(setDate(fromDate, 0, 0, 0, 0)));
+            }
 
-                req.day = Number(req.day) + 1;
-                console.log('getChargeDetailsByDateRange -> day : ', day, req.day, getDaysInMonth(month));
+            // Get compute data for next time slot
+            req.day = Number(req.day) + 1;
+            console.log('getChargeDetailsByDateRange -> day : ', day, req.day, getDaysInMonth(month));
 
-                if (req.day <= getDaysInMonth(month))
+            if (req.day <= getDaysInMonth(month))
+                computeChargeDetailsReports(req, res);
+            else{
+                req.month = Number(req.month) + 1;
+                console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
+
+                if (req.month <= new Date().getMonth())
                     computeChargeDetailsReports(req, res);
-                else{
-                    req.month = Number(req.month) + 1;
-                    console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
-
-                    if (req.month <= new Date().getMonth())
-                        computeChargeDetailsReports(req, res);
-                }
             }
         });
     });
