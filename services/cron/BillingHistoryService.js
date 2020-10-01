@@ -15,11 +15,11 @@ computeBillingHistoryReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute for 3 time simultaneously per day
     * */
-    day = req.day ? req.day : 6;
+    day = req.day ? req.day : 1;
     day = day > 9 ? day : '0'+Number(day);
     req.day = day;
 
-    month = req.month ? req.month : 9;
+    month = req.month ? req.month : 2;
     month = month > 9 ? month : '0'+Number(month);
     req.month = month;
 
@@ -71,7 +71,6 @@ computeBillingHistoryReports = async(req, res) => {
 
             // set day, month, and hours for next day - data compilation
             req.day = Number(req.day) + 1;
-            req.month = Number(req.month) + 1;
             req.fromHours = 0; req.toHours = 7;
 
             console.log('computeBillingHistoryReports -> day : ', day, req.day, getDaysInMonth(month));
@@ -85,8 +84,14 @@ computeBillingHistoryReports = async(req, res) => {
             // Compute Data for next day
             if (req.day <= getDaysInMonth(month))
                 computeBillingHistoryReports(req, res);
-            else if (req.month <= new Date().getMonth())
-                computeBillingHistoryReports(req, res);
+            else{
+                req.day = 1;
+                req.month = Number(req.month) + 1;
+                console.log('computePageViewReports -> month : ', month, req.month, new Date().getMonth());
+
+                if (req.month <= new Date().getMonth())
+                    computeBillingHistoryReports(req, res);
+            }
         }
     });
 };

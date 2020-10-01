@@ -3,8 +3,6 @@ const config = require('./../config');
 const helper = require('./../helper/helper');
 
 let connect = async (req, res, next) => {
-
-    console.log('helper.paywallIsConnected(): ', helper.paywallIsConnected());
     if (!helper.paywallIsConnected())
         await updateConnection(req, res, next);
 

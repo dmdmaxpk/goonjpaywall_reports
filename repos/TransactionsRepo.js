@@ -25,8 +25,7 @@ class TransactionsRepo {
                             transactions: "$data",
                             size: { $size:"$data" },
                         }}
-                    ]).sort({billing_dtm: 1})
-                    .limit(50000).
+                    ]).
                     toArray(function(err, items) {
                         if(err){
                             console.log('getTransactionsAvgByDateRange - err: ', err.message);

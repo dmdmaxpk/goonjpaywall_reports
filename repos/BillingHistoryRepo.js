@@ -8,9 +8,8 @@ class BillingHistoryRepository {
                     console.log('getBillingHistoryByDateRange: ', from, to);
                     collection.find({
                         $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
-                    }).sort({billing_dtm: 1})
-                    .limit(50000).
-                    toArray(function(err, items) {
+                    })
+                    .toArray(function(err, items) {
                         if(err){
                             console.log('getBillingHistoryByDateRange - err: ', err.message);
                             resolve([]);
@@ -78,7 +77,6 @@ class BillingHistoryRepository {
                             }
                         }
                     ])
-                    .limit(50000)
                     .toArray(function(err, items) {
                         if(err){
                             console.log('getnetAdditionByDateRange - err: ', err.message);
