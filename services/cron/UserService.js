@@ -15,7 +15,7 @@ computeUserReports = async(req, res) => {
         day = day > 9 ? day : '0'+Number(day);
         req.day = day;
 
-        month = req.month ? req.month : 9;
+        month = req.month ? req.month : 1;
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
