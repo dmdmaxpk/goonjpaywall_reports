@@ -6,6 +6,7 @@ let connect = async (req, res, next) => {
     if (!helper.paywallIsConnected())
         await updateConnection(req, res, next);
 
+    console.log('req.db: ', req.db);
     next();
 };
 
