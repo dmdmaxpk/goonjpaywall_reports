@@ -47,6 +47,7 @@ computeUserReports = async(req, res) => {
             if (req.day <= getDaysInMonth(month))
                 computeUserReports(req, res);
             else{
+                req.day = 1;
                 req.month = Number(req.month) + 1;
                 console.log('getUsersByDateRange -> month : ', month, req.month, new Date().getMonth());
 
