@@ -7,6 +7,8 @@ let connect = async (req, res, next) => {
     console.log('helper.paywallIsConnected(): ', helper.paywallIsConnected());
     if (!helper.paywallIsConnected())
         await updateConnection(req, res, next);
+
+    next();
 };
 
 let updateConnection = async (req, res, next) => {
