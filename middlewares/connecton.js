@@ -10,7 +10,6 @@ let connect = async (req, res, next) => {
         req.db = helper.getDBInstance();
 
     console.log('req.db: ', req.db);
-    next();
 };
 
 let updateConnection = async (req, res, next) => {
@@ -21,7 +20,6 @@ let updateConnection = async (req, res, next) => {
         }else{
             req.db = client.db('goonjpaywall');
             helper.setDBInstance(req.db);
-            next();
         }
     });
 };
