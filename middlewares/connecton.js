@@ -3,8 +3,10 @@ const config = require('./../config');
 const helper = require('./../helper/helper');
 
 let connect = async (req, res, next) => {
-    if (!helper.paywallIsConnected())
+    if (helper.getDBInstance() === undefined)
         await updateConnection(req, res, next);
+    else
+        req.db = helper.getDBInstance();
 
     console.log('req.db: ', req.db);
     next();
@@ -17,7 +19,7 @@ let updateConnection = async (req, res, next) => {
             res.status(403).send("goonjpaywall - Database Access Denied");
         }else{
             req.db = client.db('goonjpaywall');
-            helper.connectPaywall();
+            helper.setDBInstance(req.db);
             next();
         }
     });

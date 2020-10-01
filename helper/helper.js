@@ -3,15 +3,15 @@
 class Helper {
 
     constructor() {
-        this.isConnected = undefined;
+        this.db = undefined;
     }
 
-    static paywallIsConnected(){
-        return this.isConnected;
+    static getDBInstance(){
+        return this.db;
     }
 
-    static connectPaywall(){
-        this.isConnected = true;
+    static setDBInstance(db){
+        this.db = db;
     }
 
     static getDaysInMonth(month) {
