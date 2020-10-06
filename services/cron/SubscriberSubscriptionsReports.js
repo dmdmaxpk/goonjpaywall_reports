@@ -152,8 +152,10 @@ function insertNewRecord(data, dateString) {
 
             if(result.subscribers)
                 result.subscribers.subscriptions = data;
-            else
-                result.subscribers.push({subscriptions: data});
+            else{
+                let subscribers = [];
+                subscribers.push({subscriptions: data});
+            }
 
             reportsRepo.updateReport(result, result._id);
         }
