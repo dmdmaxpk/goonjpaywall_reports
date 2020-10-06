@@ -17,13 +17,19 @@ class TransactionsRepo {
                         },
                         { $group: {
                             _id: "$subscriber_id",
-                            data: { $push:  { price: "$price" }}
+                            data: { $push:  { price: "$price", billing_dtm: "$billing_dtm" }}
                         }},
                         { $project: {
-                            _id: 0,
                             subscriber_id: "$_id",
                             transactions: "$data",
                             size: { $size:"$data" },
+                        }},
+                        {$match: { size: {$gt: 4}  }},
+                        {$project: {
+                            _id: 0,
+                            subscriber_id: "$_id",
+                            transactions: "$transactions",
+                            size: "$size",
                         }}
                     ]).
                     toArray(function(err, items) {

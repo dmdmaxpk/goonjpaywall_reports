@@ -8,53 +8,49 @@ computeUserReports = async(req, res) => {
     console.log('computeUserReports: ');
 
     let fromDate, toDate, day, month, finalList = [];
-    reportsRepo.checkLastDocument().then(function (result) {
-        console.log('result: ', result);
+    day = req.day ? req.day : 1;
+    day = day > 9 ? day : '0'+Number(day);
+    req.day = day;
 
-        day = req.day ? req.day : 1;
-        day = day > 9 ? day : '0'+Number(day);
-        req.day = day;
+    month = req.month ? req.month : 2;
+    month = month > 9 ? month : '0'+Number(month);
+    req.month = month;
 
-        month = req.month ? req.month : 2;
-        month = month > 9 ? month : '0'+Number(month);
-        req.month = month;
+    console.log('day : ', day, req.day);
+    console.log('month : ', month, req.month);
 
-        console.log('day : ', day, req.day);
-        console.log('month : ', month, req.month);
+    fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
+    toDate  = _.clone(fromDate);
+    toDate.setHours(23);
+    toDate.setMinutes(59);
+    toDate.setSeconds(59);
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
-        toDate  = _.clone(fromDate);
-        toDate.setHours(23);
-        toDate.setMinutes(59);
-        toDate.setSeconds(59);
+    console.log('computeUserReports: ', fromDate, toDate);
+    userRepo.getUsersByDateRange(req, fromDate, toDate).then(function (users) {
+        console.log('users-1: ', users);
 
-        console.log('computeUserReports: ', fromDate, toDate);
-        userRepo.getUsersByDateRange(req, fromDate, toDate).then(function (users) {
-            console.log('users-1: ', users);
+        if (users.length > 0){
+            finalList = computeUserData(users);
 
-            if (users.length > 0){
-                finalList = computeUserData(users);
+            console.log('finalList.length : ', finalList.length, finalList);
+            if (finalList.length > 0)
+                insertNewRecord(finalList, new Date(setDate(fromDate, 0, 0, 0, 0)));
+        }
 
-                console.log('finalList.length : ', finalList.length, finalList);
-                if (finalList.length > 0)
-                    insertNewRecord(finalList, new Date(setDate(fromDate, 0, 0, 0, 0)));
-            }
+        // Get compute data for next time slot
+        req.day = Number(req.day) + 1;
+        console.log('getUsersByDateRange -> day : ', day, req.day, getDaysInMonth(month));
 
-            // Get compute data for next time slot
-            req.day = Number(req.day) + 1;
-            console.log('getUsersByDateRange -> day : ', day, req.day, getDaysInMonth(month));
+        if (req.day <= getDaysInMonth(month))
+            computeUserReports(req, res);
+        else{
+            req.day = 1;
+            req.month = Number(req.month) + 1;
+            console.log('getUsersByDateRange -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.day <= getDaysInMonth(month))
+            if (req.month <= new Date().getMonth())
                 computeUserReports(req, res);
-            else{
-                req.day = 1;
-                req.month = Number(req.month) + 1;
-                console.log('getUsersByDateRange -> month : ', month, req.month, new Date().getMonth());
-
-                if (req.month <= new Date().getMonth())
-                    computeUserReports(req, res);
-            }
-        });
+        }
     });
 };
 

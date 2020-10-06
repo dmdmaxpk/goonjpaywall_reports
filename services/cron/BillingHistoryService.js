@@ -9,11 +9,10 @@ let billingHistory = [], returningUserList = [], fullAndPartialChargeList = [],
 computeBillingHistoryReports = async(req, res) => {
     console.log('computeBillingHistoryReports');
 
-    let fromDate, toDate, day, month, fromHours, toHours, computedData;
-
+    let fromDate, toDate, day, month, computedData;
     /*
     * Compute date and time for data fetching from db
-    * Script will execute for 3 time simultaneously per day
+    * Script will execute to fetch data as per day
     * */
     day = req.day ? req.day : 1;
     day = day > 9 ? day : '0'+Number(day);
@@ -23,22 +22,12 @@ computeBillingHistoryReports = async(req, res) => {
     month = month > 9 ? month : '0'+Number(month);
     req.month = month;
 
-    fromHours = req.fromHours ? req.fromHours : 0;
-    fromHours = fromHours > 9 ? fromHours : '0'+Number(fromHours);
-    req.fromHours = fromHours;
-
-    toHours = req.toHours ? req.toHours : 7;
-    toHours = toHours > 9 ? toHours : '0'+Number(toHours);
-    req.toHours = toHours;
-
     console.log('day : ', day, req.day);
     console.log('month : ', month, req.month);
-    console.log('fromHours : ', fromHours, req.fromHours);
-    console.log('toHours : ', toHours, req.toHours);
 
-    fromDate  = new Date('2020-'+month+'-'+day+'T'+(fromHours)+':00:00.000Z');
+    fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
     toDate  = _.clone(fromDate);
-    toDate.setHours(toHours);
+    toDate.setHours(23);
     toDate.setMinutes(59);
     toDate.setSeconds(59);
 
@@ -50,48 +39,22 @@ computeBillingHistoryReports = async(req, res) => {
             computedData = computeBillingHistoryData(result);
             console.log('computedData: ', computedData);
             pushDataInArray(computedData);
+            insertNewRecord(fromDate);
         }
 
         // Get compute data for next time slot
-        if (Number(req.toHours) < 23){
-            console.log('Number(req.toHours) if: ', Number(req.toHours));
+        req.day = Number(req.day) + 1;
+        console.log('getChargeDetailsByDateRange -> day : ', day, req.day, getDaysInMonth(month));
 
-            //increment in hours ('from' to 'to') for next data-chunk
-            req.fromHours = Number(req.fromHours) + 8;
-            req.toHours = Number(req.toHours) + 8;
-
-            console.log('computeBillingHistoryReports -> fromHours : ', fromHours, req.fromHours, new Date().getTime());
-            console.log('computeBillingHistoryReports -> toHours : ', toHours, req.toHours, new Date().getTime());
-
-            // Compute Data for next data-chuck
+        if (req.day <= getDaysInMonth(month))
             computeBillingHistoryReports(req, res);
-        }
         else{
-            console.log('Number(req.toHours) else: ', Number(req.toHours));
+            req.day = 1;
+            req.month = Number(req.month) + 1;
+            console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
 
-            // set day, month, and hours for next day - data compilation
-            req.day = Number(req.day) + 1;
-            req.fromHours = 0; req.toHours = 7;
-
-            console.log('computeBillingHistoryReports -> day : ', day, req.day, getDaysInMonth(month));
-            console.log('computeBillingHistoryReports -> month : ', month, req.month, new Date().getMonth());
-            console.log('computeBillingHistoryReports -> fromHours : ', fromHours, req.fromHours, new Date().getTime());
-            console.log('computeBillingHistoryReports -> toHours : ', toHours, req.toHours, new Date().getTime());
-
-            //insert per day compiled data in Database
-            insertNewRecord(fromDate);
-
-            // Compute Data for next day
-            if (req.day <= getDaysInMonth(month))
+            if (req.month <= new Date().getMonth())
                 computeBillingHistoryReports(req, res);
-            else{
-                req.day = 1;
-                req.month = Number(req.month) + 1;
-                console.log('computePageViewReports -> month : ', month, req.month, new Date().getMonth());
-
-                if (req.month <= new Date().getMonth())
-                    computeBillingHistoryReports(req, res);
-            }
         }
     });
 };

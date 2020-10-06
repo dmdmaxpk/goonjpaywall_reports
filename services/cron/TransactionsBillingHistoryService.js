@@ -7,69 +7,96 @@ const  _ = require('lodash');
 computeTransactionsAvgReports = async(req, res) => {
     console.log('computeTransactionsAvgReports');
 
-    let fromDate, toDate, day, month, transactionAvg = [];
-    reportsRepo.checkLastDocument().then(function (result) {
-        console.log('result: ', result.length);
+    let fromDate, toDate, day, month, computedData;
+    /*
+    * Compute date and time for data fetching from db
+    * Script will execute to fetch data as per day
+    * */
+    day = req.day ? req.day : 1;
+    day = day > 9 ? day : '0'+Number(day);
+    req.day = day;
 
-        day = req.day ? req.day : 1;
-        day = day > 9 ? day : '0'+Number(day);
-        req.day = day;
+    month = req.month ? req.month : 2;
+    month = month > 9 ? month : '0'+Number(month);
+    req.month = month;
 
-        month = req.month ? req.month : 2;
-        month = month > 9 ? month : '0'+Number(month);
-        req.month = month;
+    console.log('day : ', day, req.day);
+    console.log('month : ', month, req.month);
 
-        console.log('day : ', day, req.day);
-        console.log('month : ', month, req.month);
+    fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
+    toDate  = _.clone(fromDate);
+    toDate.setHours(23);
+    toDate.setMinutes(59);
+    toDate.setSeconds(59);
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
-        toDate  = _.clone(fromDate);
-        toDate.setHours(23);
-        toDate.setMinutes(59);
-        toDate.setSeconds(59);
+    console.log('computeTransactionsAvgReports: ', fromDate, toDate);
+    transactionsRepo.getTransactionsAvgByDateRange(req, fromDate, toDate).then(function (transactionRawData) {
+        console.log('transaction: ', transactionRawData.length);
 
-        console.log('computeTransactionsAvgReports: ', fromDate, toDate);
-        transactionsRepo.getTransactionsAvgByDateRange(req, fromDate, toDate).then(function (transaction) {
-            console.log('transaction: ', transaction.length);
+        if (transactionRawData.length > 0){
 
-            if (transaction.length > 0){
-                transactionAvg = computeTransactionAvgData(transaction, fromDate);
-                console.log('transactionAvg.length : ', transactionAvg.length, transactionAvg);
-                insertNewRecord(transactionAvg, new Date(setDate(fromDate, 0, 0, 0, 0)));
-            }
+            computedData = computeTransactionsData(transactionRawData, fromDate);
+            insertNewRecord(computedData.transactionList, computedData.transactionsBySubscriber, new Date(setDate(fromDate, 0, 0, 0, 0)));
+        }
 
-            // Get compute data for next time slot
-            req.day = Number(req.day) + 1;
-            console.log('getChargeDetailsByDateRange -> day : ', day, req.day, getDaysInMonth(month));
+        // Get compute data for next time slot
+        req.day = Number(req.day) + 1;
+        console.log('getChargeDetailsByDateRange -> day : ', day, req.day, getDaysInMonth(month));
 
-            if (req.day <= getDaysInMonth(month))
+        if (req.day <= getDaysInMonth(month))
+            computeTransactionsAvgReports(req, res);
+        else{
+            req.day = 1;
+            req.month = Number(req.month) + 1;
+            console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
+
+            if (req.month <= new Date().getMonth())
                 computeTransactionsAvgReports(req, res);
-            else{
-                req.day = 1;
-                req.month = Number(req.month) + 1;
-                console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
-
-                if (req.month <= new Date().getMonth())
-                    computeTransactionsAvgReports(req, res);
-            }
-        });
+        }
     });
 };
 
-function computeTransactionAvgData(transactions, fromDate) {
+function computeTransactionsData(transactionRawData, fromDate) {
 
-    let transaction, uniqueSubscribers = 0, totalTransactions = 0, totalPrice = 0, transactionList = [];
+    let rawData, outerObj, innerObj, outer_added_dtm, dateInMili, uniqueSubscribers = 0, totalTransactions = 0, totalPrice = 0;
+    let transactionList = [], transactionsBySubscriber = [];
 
     let transactionObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
-    for (let k=0; k < transactions.length; k++) {
-        transaction = transactions[k];
+    let transactionsBySubscriberObj = {total: 0};
+    for (let i=0; i < transactionRawData.length; i++) {
+        rawData = transactionRawData[i];
 
+        // Calculate average transaction rate
         uniqueSubscribers = uniqueSubscribers + 1;
-        totalTransactions = totalTransactions + transaction.size;
-        totalPrice = totalPrice + transaction.transactions.reduce((a, b) => a + (b['price'] || 0), 0);
-    }
+        totalTransactions = totalTransactions + rawData.size;
 
-    // Add Timestemps
+        if (rawData.transactions.length > 0){
+            for (let j= 0 ; j < rawData.transactions.length; j ++){
+                outerObj = rawData.transactions[j];
+
+                //get totalPrice to compute avg price
+                totalPrice = totalPrice + outerObj['price'];
+
+                //script to get transaction's count per subscriber with in given datetime range
+                outer_added_dtm = setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
+                if (dateInMili !== outer_added_dtm) {
+                    for (let k = 0; k < rawData.transactions.length; k++) {
+
+                        innerObj = rawData.transactions[k];
+                        inner_added_dtm = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
+                        if (outer_added_dtm === inner_added_dtm) {
+                            dateInMili = inner_added_dtm;
+
+                            transactionsBySubscriberObj.total = transactionsBySubscriberObj.total + 1;
+                        }
+                    }
+                }
+            }
+
+            transactionsBySubscriber.push(transactionsBySubscriberObj);
+        }
+        //Calculate total transaction per subscribers.
+    }
 
     transactionObj.totalTransactions = totalTransactions;
     transactionObj.uniqueSubscribers = uniqueSubscribers;
@@ -80,10 +107,10 @@ function computeTransactionAvgData(transactions, fromDate) {
     transactionObj.added_dtm_hours = setDate(new Date(fromDate), null, 0, 0, 0);
     transactionList.push(transactionObj);
 
-    return transactionList;
+    return {transactionList: transactionList, transactionsBySubscriber: transactionsBySubscriber};
 }
 
-function insertNewRecord(transactionAvg, dateString) {
+function insertNewRecord(transactionAvg, transactionsBySubscriber, dateString) {
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         console.log('getReportByDateString - result : ', transactionAvg);
@@ -91,10 +118,20 @@ function insertNewRecord(transactionAvg, dateString) {
             result = result[0];
             result.avgTransactions = transactionAvg;
 
+            if(result.hasOwnProperty('subscribers'))
+                result.subscribers.transactions.total = transactionsBySubscriber;
+            else{
+                let subscribers = {transactions: {total: 0}};
+                subscribers.transactions.total = transactionsBySubscriber;
+            }
+
             reportsRepo.updateReport(result, result._id);
         }
-        else
-            reportsRepo.createReport({avgTransactions: transactionAvg, date: dateString});
+        else{
+            let subscribers = {transactions: {total: 0}};
+            subscribers.transactions.total = transactionsBySubscriber;
+            reportsRepo.createReport({avgTransactions: transactionAvg, subscribers: subscribers, date: dateString});
+        }
     });
 }
 

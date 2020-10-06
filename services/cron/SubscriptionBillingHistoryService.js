@@ -8,61 +8,61 @@ computeChargeDetailsReports = async(req, res) => {
     console.log('computeChargeDetailsReports');
 
     let fromDate, toDate, day, month, chargeDetailList = [], transactingSubsList = [];
-    reportsRepo.checkLastDocument().then(function (result) {
-        console.log('result: ', result.length);
+    /*
+    * Compute date and time for data fetching from db
+    * Script will execute to fetch data as per day
+    * */
+    day = req.day ? req.day : 1;
+    day = day > 9 ? day : '0'+Number(day);
+    req.day = day;
 
-        day = req.day ? req.day : 1;
-        day = day > 9 ? day : '0'+Number(day);
-        req.day = day;
+    month = req.month ? req.month : 2;
+    month = month > 9 ? month : '0'+Number(month);
+    req.month = month;
 
-        month = req.month ? req.month : 2;
-        month = month > 9 ? month : '0'+Number(month);
-        req.month = month;
+    console.log('day : ', day, req.day);
+    console.log('month : ', month, req.month);
 
-        console.log('day : ', day, req.day);
-        console.log('month : ', month, req.month);
+    fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
+    toDate  = _.clone(fromDate);
+    toDate.setHours(23);
+    toDate.setMinutes(59);
+    toDate.setSeconds(59);
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
-        toDate  = _.clone(fromDate);
-        toDate.setHours(23);
-        toDate.setMinutes(59);
-        toDate.setSeconds(59);
+    console.log('computeChargeDetailsReports: ', fromDate, toDate);
+    subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate).then(function (chargeDetails) {
+        console.log('chargeDetails: ', chargeDetails.length);
 
-        console.log('computeChargeDetailsReports: ', fromDate, toDate);
-        subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate).then(function (chargeDetails) {
-            console.log('chargeDetails: ', chargeDetails.length);
+        if (chargeDetails.length > 0){
+            finalData = computeChargeDetailData(chargeDetails);
+            transactingSubsList = finalData.transactingSubsList;
+            chargeDetailList = finalData.chargeDetailList;
 
-            if (chargeDetails.length > 0){
-                finalData = computeChargeDetailData(chargeDetails);
-                transactingSubsList = finalData.transactingSubsList;
-                chargeDetailList = finalData.chargeDetailList;
+            console.log('chargeDetailList.length : ', chargeDetailList.length, chargeDetailList);
+            console.log('transactingSubsList.length : ', transactingSubsList.length, transactingSubsList);
+            insertNewRecord(transactingSubsList, chargeDetailList, new Date(setDate(fromDate, 0, 0, 0, 0)));
+        }
 
-                console.log('chargeDetailList.length : ', chargeDetailList.length, chargeDetailList);
-                console.log('transactingSubsList.length : ', transactingSubsList.length, transactingSubsList);
-                insertNewRecord(transactingSubsList, chargeDetailList, new Date(setDate(fromDate, 0, 0, 0, 0)));
-            }
+        // Get compute data for next time slot
+        req.day = Number(req.day) + 1;
+        console.log('getChargeDetailsByDateRange -> day : ', day, req.day, getDaysInMonth(month));
 
-            // Get compute data for next time slot
-            req.day = Number(req.day) + 1;
-            console.log('getChargeDetailsByDateRange -> day : ', day, req.day, getDaysInMonth(month));
+        if (req.day <= getDaysInMonth(month))
+            computeChargeDetailsReports(req, res);
+        else{
+            req.day = 1;
+            req.month = Number(req.month) + 1;
+            console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.day <= getDaysInMonth(month))
+            if (req.month <= new Date().getMonth())
                 computeChargeDetailsReports(req, res);
-            else{
-                req.day = 1;
-                req.month = Number(req.month) + 1;
-                console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
-
-                if (req.month <= new Date().getMonth())
-                    computeChargeDetailsReports(req, res);
-            }
-        });
+        }
     });
 };
 
 function computeChargeDetailData(chargeDetails) {
 
-    let dateInMili, outer_added_dtm, inner_added_dtm, chargeDetailObj, transactingSubsriberObj, outerObj, innerObj, price,
+    let dateInMili, outer_added_dtm, inner_added_dtm, chargeDetailObj, outerObj, innerObj, price,
         micro_charge, transactingSubsList = [], chargeDetailList = [];
     for (let j=0; j < chargeDetails.length; j++) {
 
