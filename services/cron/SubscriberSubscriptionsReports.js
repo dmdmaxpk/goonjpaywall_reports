@@ -68,10 +68,10 @@ function computeSubscriptionsData(subscriptionsRawData) {
                 outer_added_dtm = setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
 
                 if (dateInMili !== outer_added_dtm){
-                    for (let k=0; k < outerObj.length; k++) {
+                    for (let k=0; k < rawData.subscriptions.length; k++) {
 
-                        innerObj = outerObj[k];
-                        inner_added_dtm = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0).getTime();
+                        innerObj = rawData.subscriptions[k];
+                        inner_added_dtm = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
 
                         if (outer_added_dtm === inner_added_dtm){
                             dateInMili = inner_added_dtm;
