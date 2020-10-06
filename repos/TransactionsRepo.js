@@ -5,7 +5,7 @@ class TransactionsRepo {
             console.log('getTransactionsAvgByDateRange: ', from, to);
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
-                    console.log('getTransactionsAvgByDateRange: ', from, to);
+                    console.log('getTransactionsAvgByDateRange - !err: ');
                     collection.aggregate([
                         { $match: {
                                 $and: [
@@ -34,9 +34,11 @@ class TransactionsRepo {
                     ]).
                     toArray(function(err, items) {
                         if(err){
-                            console.log('getTransactionsAvgByDateRange - err: ', err.message);
+                            console.log('getTransactionsAvgByDateRange - err 2: ', err.message);
                             resolve([]);
                         }
+                        console.log('getTransactionsAvgByDateRange - items: ', items);
+
                         resolve(items);
                     });
                 }
