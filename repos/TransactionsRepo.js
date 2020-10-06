@@ -24,7 +24,7 @@ class TransactionsRepo {
                             transactions: "$data",
                             size: { $size:"$data" },
                         }},
-                        {$match: { size: {$gt: 4}  }},
+                        {$match: { size: {$gt: 0}  }},
                         {$project: {
                             _id: 0,
                             subscriber_id: "$_id",
