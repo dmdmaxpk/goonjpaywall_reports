@@ -125,6 +125,7 @@ function insertNewRecord(transactionAvg, transactionsBySubscriber, dateString) {
             else{
                 let subscribers = {};
                 subscribers.transactions = transactionsBySubscriber;
+                result.subscribers = subscribers;
             }
 
             reportsRepo.updateReport(result, result._id);

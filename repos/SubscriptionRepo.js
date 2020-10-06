@@ -172,6 +172,44 @@ class SubscriptionRepository {
             })
         });
     }
+
+    async getSubscriberSubscriptionsByDateRange (req, from, to){
+        return new Promise((resolve, reject) => {
+            console.log('getChargeDetailsByDateRange: ', from, to);
+            req.db.collection('subscriptions', function (err, collection) {
+                if (!err) {
+                    collection.aggregate( [
+                        {$match : {
+                                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                            }},
+                        { $group: {
+                                _id: "$subscriber_id",
+                                data: { $push:  {
+                                        price: "$price",
+                                        source: "$source",
+                                        paywall_id: "$paywall_id",
+                                        affiliate_mid: "$affiliate_mid",
+                                        payment_source: "$payment_source",
+                                        subscribed_package_id: "$subscribed_package_id",
+                                        subscription_status: "$subscription_status",
+                                        billing_dtm: "$billing_dtm"
+                                }}
+                            }},
+                        { $project: {
+                                subscriber_id: "$_id",
+                                subscriptions: "$data",
+                        }}
+                    ]).toArray(function(err, items) {
+                        if(err){
+                            console.log('getChargeDetailsByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            })
+        });
+    }
 }
 
 module.exports = SubscriptionRepository;

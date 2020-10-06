@@ -7,6 +7,7 @@ const PageViewService = require('../services/cron/PageViewService');
 const RevenueNetAdditionService = require('../services/cron/RevenueNetAdditionService');
 const SubscriptionBillingHistoryService = require('../services/cron/SubscriptionBillingHistoryService');
 const TransactionsBillingHistoryService = require('../services/cron/TransactionsBillingHistoryService');
+const SubscriberSubscriptionsReports = require('../services/cron/SubscriberSubscriptionsReports');
 
 exports.computeUserReports = async (req,res) =>  {
     await UserService.computeUserReports(req,res);
@@ -15,6 +16,11 @@ exports.computeUserReports = async (req,res) =>  {
 
 exports.computeSubscriberReports = async (req,res) =>  {
     SubscriberService.computeSubscriberReports(req,res);
+    res.send("computeSubscriberReports - Executed\n");
+};
+
+exports.computeSubscriberSubscriptionsReports = async (req,res) =>  {
+    SubscriberSubscriptionsReports.computeSubscriberSubscriptionsReports(req,res);
     res.send("computeSubscriberReports - Executed\n");
 };
 
