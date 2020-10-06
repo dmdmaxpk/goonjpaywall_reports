@@ -31,7 +31,7 @@ computeTransactionsAvgReports = async(req, res) => {
 
     console.log('computeTransactionsAvgReports: ', fromDate, toDate);
     transactionsRepo.getTransactionsAvgByDateRange(req, fromDate, toDate).then(function (transactionRawData) {
-        console.log('transaction: ', transactionRawData.length);
+        console.log('transactionRawData: ', transactionRawData.length, transactionRawData);
 
         if (transactionRawData.length > 0){
 

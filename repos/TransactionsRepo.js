@@ -27,9 +27,9 @@ class TransactionsRepo {
                         {$match: { size: {$gt: 0}  }},
                         {$project: {
                             _id: 0,
-                            subscriber_id: "$_id",
-                            transactions: "$transactions",
-                            size: "$size",
+                            subscriber_id: 1,
+                            transactions: 1,
+                            size: 1,
                         }}
                     ]).
                     toArray(function(err, items) {
