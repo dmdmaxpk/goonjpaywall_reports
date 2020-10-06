@@ -10,8 +10,8 @@ class TransactionsRepo {
                         { $match: {
                                 $and: [
                                     {'billing_status': 'Success'},
-                                    {billing_dtm:{$gte:new Date(from)}},
-                                    {billing_dtm:{$lte:new Date(to)}}
+                                    {billing_dtm:{$gte:new Date('2020-02-12T00:00:00.000Z')}},
+                                    {billing_dtm:{$lte:new Date('2020-02-12T23:59:59.000Z')}}
                                 ]
                             }
                         },

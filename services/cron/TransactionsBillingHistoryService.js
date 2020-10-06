@@ -113,7 +113,9 @@ function computeTransactionsData(transactionRawData, fromDate) {
 function insertNewRecord(transactionAvg, transactionsBySubscriber, dateString) {
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
-        console.log('getReportByDateString - result : ', transactionAvg);
+        console.log('getReportByDateString - result : ', result);
+        console.log('transactionAvg : ', transactionAvg);
+        console.log('transactionsBySubscriber : ', transactionsBySubscriber);
         if (result.length > 0) {
             result = result[0];
             result.avgTransactions = transactionAvg;
