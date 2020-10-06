@@ -130,8 +130,8 @@ function computeSubscriptionsData(subscriptionsRawData) {
                             else if(innerObj.operator === 'easypaisa')
                                 newObj.operator.easypaisa = newObj.operator.easypaisa + 1;
 
-                            newObj.added_dtm = outerObj.added_dtm;
-                            newObj.added_dtm_hours = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+                            newObj.added_dtm = outerObj.billing_dtm;
+                            newObj.added_dtm_hours = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
                         }
                     }
                     finalList.push(newObj);
@@ -152,17 +152,14 @@ function insertNewRecord(data, dateString) {
 
             if(result.subscribers)
                 result.subscribers.subscriptions = data;
-            else{
-                let subscribers = {};
-                subscribers.subscriptions = data;
-                result.subscribers = subscribers;
-            }
+            else
+                result.subscribers.push({subscriptions: data});
 
             reportsRepo.updateReport(result, result._id);
         }
         else{
-            let subscribers = {};
-            subscribers.subscriptions = data;
+            let subscribers = [];
+            subscribers.push({subscriptions: data});
             reportsRepo.createReport({subscribers: subscribers, date: dateString});
         }
     });
