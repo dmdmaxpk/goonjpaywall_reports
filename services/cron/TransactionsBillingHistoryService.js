@@ -119,17 +119,17 @@ function insertNewRecord(transactionAvg, transactionsBySubscriber, dateString) {
             result.avgTransactions = transactionAvg;
 
             if(result.hasOwnProperty('subscribers'))
-                result.subscribers.transactions.total = transactionsBySubscriber;
+                result.subscribers.transactions = transactionsBySubscriber;
             else{
-                let subscribers = {transactions: {total: 0}};
-                subscribers.transactions.total = transactionsBySubscriber;
+                let subscribers = {};
+                subscribers.transactions = transactionsBySubscriber;
             }
 
             reportsRepo.updateReport(result, result._id);
         }
         else{
-            let subscribers = {transactions: {total: 0}};
-            subscribers.transactions.total = transactionsBySubscriber;
+            let subscribers = {};
+            subscribers.transactions = transactionsBySubscriber;
             reportsRepo.createReport({avgTransactions: transactionAvg, subscribers: subscribers, date: dateString});
         }
     });
