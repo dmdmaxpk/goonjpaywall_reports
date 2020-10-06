@@ -62,7 +62,7 @@ function computeSubscriptionsData(subscriptionsRawData) {
         rawData = subscriptionsRawData[i];
         if (rawData.subscriptions.length > 0) {
 
-            for (let j= 0; j < rawData.subscriptions.length; j ++) {
+            for (let j=0; j < rawData.subscriptions.length; j++) {
                 outerObj = rawData.subscriptions[j];
                 newObj = _.clone(cloneInfoObj());
                 outer_added_dtm = setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
@@ -125,12 +125,12 @@ function computeSubscriptionsData(subscriptionsRawData) {
                                 newObj.paywall.live = newObj.paywall.live + 1;
 
                             //Operator wise subscriptions
-                            if(innerObj.operator === 'telenor' || !innerObj.hasOwnProperty('operator'))
+                            if(innerObj.payment_source === 'telenor' || !innerObj.hasOwnProperty('payment_source'))
                                 newObj.operator.telenor = newObj.operator.telenor + 1;
-                            else if(innerObj.operator === 'easypaisa')
+                            else if(innerObj.payment_source === 'easypaisa')
                                 newObj.operator.easypaisa = newObj.operator.easypaisa + 1;
 
-                            newObj.added_dtm = outerObj.billing_dtm;
+                            newObj.added_dtm = innerObj.billing_dtm;
                             newObj.added_dtm_hours = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
                         }
                     }
