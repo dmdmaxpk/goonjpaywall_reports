@@ -54,83 +54,89 @@ computeSubscriberSubscriptionsReports = async(req, res) => {
     });
 };
 
-function computeSubscriptionsData(users) {
+function computeSubscriptionsData(subscriptionsRawData) {
 
-    let dateInMili, outer_added_dtm, inner_added_dtm, newObj, outerObj, innerObj, finalList = [];
-    for (let j=0; j < users.length; j++) {
+    let rawData, newObj, outerObj, innerObj, dateInMili, outer_added_dtm, inner_added_dtm, finalList = [];
+    for (let i=0; i < subscriptionsRawData.length; i++) {
 
-        outerObj = users[j];
-        newObj = _.clone(cloneInfoObj());
-        outer_added_dtm = setDate(new Date(outerObj.added_dtm), null, 0, 0, 0).getTime();
+        rawData = subscriptionsRawData[i];
+        if (rawData.subscriptions.length > 0) {
 
-        if (dateInMili !== outer_added_dtm){
-            for (let k=0; k < users.length; k++) {
+            for (let j= 0; j < rawData.subscriptions.length; j ++) {
+                outerObj = rawData.subscriptions[j];
+                newObj = _.clone(cloneInfoObj());
+                outer_added_dtm = setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
 
-                innerObj = users[k];
-                inner_added_dtm = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0).getTime();
+                if (dateInMili !== outer_added_dtm){
+                    for (let k=0; k < rawData.subscriptions.length; k++) {
 
-                if (outer_added_dtm === inner_added_dtm){
-                    dateInMili = inner_added_dtm;
+                        innerObj = rawData.subscriptions[k];
+                        inner_added_dtm = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0).getTime();
 
-                    //Source wise subscriptions
-                    if(innerObj.source === 'app')
-                        newObj.source.app = newObj.source.app + 1;
-                    else if(innerObj.source === 'web')
-                        newObj.source.web = newObj.source.web + 1;
-                    else if(innerObj.source === 'gdn2')
-                        newObj.source.gdn2 = newObj.source.gdn2 + 1;
-                    else if(innerObj.source === 'HE')
-                        newObj.source.HE = newObj.source.HE + 1;
-                    else if(innerObj.source === 'affiliate_web')
-                        newObj.source.affiliate_web = newObj.source.affiliate_web + 1;
+                        if (outer_added_dtm === inner_added_dtm){
+                            dateInMili = inner_added_dtm;
 
-                    //Affiliate mid wise subscriptions
-                    if(innerObj.affiliate_mid){
-                        if(innerObj.affiliate_mid === 'aff3')
-                            newObj.affiliate_mid.aff3 = newObj.affiliate_mid.aff3 + 1;
-                        else if(innerObj.affiliate_mid === 'aff3a')
-                            newObj.affiliate_mid.aff3a = newObj.affiliate_mid.aff3a + 1;
-                        else if(innerObj.affiliate_mid === 'gdn')
-                            newObj.affiliate_mid.gdn = newObj.affiliate_mid.gdn + 1;
-                        else if(innerObj.affiliate_mid === 'gdn2')
-                            newObj.affiliate_mid.gdn2 = newObj.affiliate_mid.gdn2 + 1;
-                        else if(innerObj.affiliate_mid === 'goonj')
-                            newObj.affiliate_mid.goonj = newObj.affiliate_mid.goonj + 1;
-                        else if(innerObj.affiliate_mid === '1565')
-                            newObj.affiliate_mid['1565'] = newObj.affiliate_mid['1565'] + 1;
-                        else if(innerObj.affiliate_mid === '1')
-                            newObj.affiliate_mid['1'] = newObj.affiliate_mid['1'] + 1;
-                        else if(innerObj.affiliate_mid === 'null')
-                            newObj.affiliate_mid['null'] = newObj.affiliate_mid['null'] + 1;
+                            //Source wise subscriptions
+                            if(innerObj.source === 'app')
+                                newObj.source.app = newObj.source.app + 1;
+                            else if(innerObj.source === 'web')
+                                newObj.source.web = newObj.source.web + 1;
+                            else if(innerObj.source === 'gdn2')
+                                newObj.source.gdn2 = newObj.source.gdn2 + 1;
+                            else if(innerObj.source === 'HE')
+                                newObj.source.HE = newObj.source.HE + 1;
+                            else if(innerObj.source === 'affiliate_web')
+                                newObj.source.affiliate_web = newObj.source.affiliate_web + 1;
+
+                            //Affiliate mid wise subscriptions
+                            if(innerObj.affiliate_mid){
+                                if(innerObj.affiliate_mid === 'aff3')
+                                    newObj.affiliate_mid.aff3 = newObj.affiliate_mid.aff3 + 1;
+                                else if(innerObj.affiliate_mid === 'aff3a')
+                                    newObj.affiliate_mid.aff3a = newObj.affiliate_mid.aff3a + 1;
+                                else if(innerObj.affiliate_mid === 'gdn')
+                                    newObj.affiliate_mid.gdn = newObj.affiliate_mid.gdn + 1;
+                                else if(innerObj.affiliate_mid === 'gdn2')
+                                    newObj.affiliate_mid.gdn2 = newObj.affiliate_mid.gdn2 + 1;
+                                else if(innerObj.affiliate_mid === 'goonj')
+                                    newObj.affiliate_mid.goonj = newObj.affiliate_mid.goonj + 1;
+                                else if(innerObj.affiliate_mid === '1565')
+                                    newObj.affiliate_mid['1565'] = newObj.affiliate_mid['1565'] + 1;
+                                else if(innerObj.affiliate_mid === '1')
+                                    newObj.affiliate_mid['1'] = newObj.affiliate_mid['1'] + 1;
+                                else if(innerObj.affiliate_mid === 'null')
+                                    newObj.affiliate_mid['null'] = newObj.affiliate_mid['null'] + 1;
+                            }
+
+                            //Package wise subscriptions
+                            if(innerObj.subscribed_package_id === 'QDfC')
+                                newObj.package.dailyLive = newObj.package.dailyLive + 1;
+                            else if(innerObj.subscribed_package_id === 'QDfG')
+                                newObj.package.weeklyLive = newObj.package.weeklyLive + 1;
+                            else if(innerObj.subscribed_package_id === 'QDfH')
+                                newObj.package.dailyComedy = newObj.package.dailyComedy + 1;
+                            else if(innerObj.subscribed_package_id === 'QDfI')
+                                newObj.package.weeklyComedy = newObj.package.weeklyComedy + 1;
+
+                            //Paywall wise subscriptions
+                            if(innerObj.paywall_id === 'ghRtjhT7')
+                                newObj.paywall.comedy = newObj.paywall.comedy + 1;
+                            else if(innerObj.paywall_id === 'Dt6Gp70c')
+                                newObj.paywall.live = newObj.paywall.live + 1;
+
+                            //Operator wise subscriptions
+                            if(innerObj.operator === 'telenor' || !innerObj.hasOwnProperty('operator'))
+                                newObj.operator.telenor = newObj.operator.telenor + 1;
+                            else if(innerObj.operator === 'easypaisa')
+                                newObj.operator.easypaisa = newObj.operator.easypaisa + 1;
+
+                            newObj.added_dtm = outerObj.added_dtm;
+                            newObj.added_dtm_hours = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+                        }
                     }
-
-                    //Package wise subscriptions
-                    if(innerObj.subscribed_package_id === 'QDfC')
-                        newObj.package.dailyLive = newObj.package.dailyLive + 1;
-                    else if(innerObj.subscribed_package_id === 'QDfG')
-                        newObj.package.weeklyLive = newObj.package.weeklyLive + 1;
-                    else if(innerObj.subscribed_package_id === 'QDfH')
-                        newObj.package.dailyComedy = newObj.package.dailyComedy + 1;
-                    else if(innerObj.subscribed_package_id === 'QDfI')
-                        newObj.package.weeklyComedy = newObj.package.weeklyComedy + 1;
-
-                    //Paywall wise subscriptions
-                    if(innerObj.paywall_id === 'ghRtjhT7')
-                        newObj.paywall.comedy = newObj.paywall.comedy + 1;
-                    else if(innerObj.paywall_id === 'Dt6Gp70c')
-                        newObj.paywall.live = newObj.paywall.live + 1;
-
-                    //Operator wise subscriptions
-                    if(innerObj.operator === 'telenor' || !innerObj.hasOwnProperty('operator'))
-                        newObj.operator.telenor = newObj.operator.telenor + 1;
-                    else if(innerObj.operator === 'easypaisa')
-                        newObj.operator.easypaisa = newObj.operator.easypaisa + 1;
-
-                    newObj.added_dtm = outerObj.added_dtm;
-                    newObj.added_dtm_hours = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+                    finalList.push(newObj);
                 }
             }
-            finalList.push(newObj);
         }
     }
 
@@ -144,7 +150,7 @@ function insertNewRecord(data, dateString) {
         if (result.length > 0) {
             result = result[0];
 
-            if(result.hasOwnProperty('subscribers'))
+            if(result.subscribers)
                 result.subscribers.subscriptions = data;
             else{
                 let subscribers = {};
