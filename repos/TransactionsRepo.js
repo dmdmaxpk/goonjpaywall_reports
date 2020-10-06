@@ -2,7 +2,7 @@
 class TransactionsRepo {
     async getTransactionsAvgByDateRange (req, from, to) {
         return new Promise((resolve, reject) => {
-            console.log('getTransactionsAvgByDateRange: ', from, to);
+            console.log('getTransactionsAvgByDateRange: ', from, to, req.db);
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
                     console.log('getTransactionsAvgByDateRange - !err: ');
