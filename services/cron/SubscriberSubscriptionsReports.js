@@ -32,9 +32,11 @@ computeSubscriberSubscriptionsReports = async(req, res) => {
         if (subscriptions.length > 0){
             finalList = computeSubscriptionsData(subscriptions);
 
-            console.log('finalList.length : ', finalList.length, finalList);
-            if (finalList.length > 0)
+            console.log('finalList.length : ', finalList.length);
+            if (finalList.length > 0){
                 insertNewRecord(finalList, new Date(setDate(fromDate, 0, 0, 0, 0)));
+                return;
+            }
         }
 
         // Get compute data for next time slot
@@ -74,6 +76,7 @@ function computeSubscriptionsData(subscriptionsRawData) {
                         inner_added_dtm = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
 
                         if (outer_added_dtm === inner_added_dtm){
+                            console.log('======================================');
                             dateInMili = inner_added_dtm;
 
                             //Source wise subscriptions
@@ -145,26 +148,26 @@ function computeSubscriptionsData(subscriptionsRawData) {
 
 function insertNewRecord(data, dateString) {
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
-    reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
-        console.log('result subscriptions: ', result);
-        if (result.length > 0) {
-            result = result[0];
-
-            if(result.subscribers)
-                result.subscribers.subscriptions = data;
-            else{
-                let subscribers = [];
-                subscribers.push({subscriptions: data});
-            }
-
-            reportsRepo.updateReport(result, result._id);
-        }
-        else{
-            let subscribers = [];
-            subscribers.push({subscriptions: data});
-            reportsRepo.createReport({subscribers: subscribers, date: dateString});
-        }
-    });
+    // reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
+    //     console.log('result subscriptions: ', result);
+    //     if (result.length > 0) {
+    //         result = result[0];
+    //
+    //         if(result.subscribers)
+    //             result.subscribers.subscriptions = data;
+    //         else{
+    //             let subscribers = [];
+    //             subscribers.push({subscriptions: data});
+    //         }
+    //
+    //         reportsRepo.updateReport(result, result._id);
+    //     }
+    //     else{
+    //         let subscribers = [];
+    //         subscribers.push({subscriptions: data});
+    //         reportsRepo.createReport({subscribers: subscribers, date: dateString});
+    //     }
+    // });
 }
 
 
