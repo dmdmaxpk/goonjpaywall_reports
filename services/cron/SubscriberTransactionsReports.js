@@ -104,8 +104,8 @@ function computeTransactionsData(transactionsRawData) {
             //Price wise transaction details
             if (innerObj.price === 15)
                 newObj.price['15'] = newObj.price['15'] + 1;
-            else if (innerObj.price === 11_95)
-                newObj.price['11_95'] = newObj.price['11_95'] + 1;
+            else if (innerObj.price === 11)
+                newObj.price['11'] = newObj.price['11'] + 1;
             else if (innerObj.price === 10)
                 newObj.price['10'] = newObj.price['10'] + 1;
             else if (innerObj.price === 7)
@@ -199,7 +199,7 @@ function cloneInfoObj() {
         },
         price: {
             '15': 0,
-            '11_95': 0,
+            '11': 0,
             '10': 0,
             '7': 0,
             '5': 0,

@@ -690,10 +690,10 @@ computeTransactionsPriceWiseWiseReport = async (rawDataSet, params) =>{
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, transactions, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = { '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
-    let dayDataObj = { '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
-    let weeklyDataObj = { '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
-    let monthlyDataObj = { '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let dataObj = { '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let dayDataObj = { '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let weeklyDataObj = { '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let monthlyDataObj = { '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -710,11 +710,11 @@ computeTransactionsPriceWiseWiseReport = async (rawDataSet, params) =>{
                                 weeklyDataObj['15'] = weeklyDataObj['15'] + innerObj['15'];
                                 monthlyDataObj['15'] = monthlyDataObj['15'] + innerObj['15'];
                             }
-                            if (innerObj['11_95']){
-                                dataObj['11_95'] = dataObj['11_95'] + innerObj['11_95'];
-                                dayDataObj['11_95'] = dayDataObj['11_95'] + innerObj['11_95'];
-                                weeklyDataObj['11_95'] = weeklyDataObj['11_95'] + innerObj['11_95'];
-                                monthlyDataObj['11_95'] = monthlyDataObj['11_95'] + innerObj['11_95'];
+                            if (innerObj['11']){
+                                dataObj['11'] = dataObj['11'] + innerObj['11'];
+                                dayDataObj['11'] = dayDataObj['11'] + innerObj['11'];
+                                weeklyDataObj['11'] = weeklyDataObj['11'] + innerObj['11'];
+                                monthlyDataObj['11'] = monthlyDataObj['11'] + innerObj['11'];
                             }
                             if (innerObj['10']){
                                 dataObj['10'] = dataObj['10'] + innerObj['10'];
@@ -750,7 +750,7 @@ computeTransactionsPriceWiseWiseReport = async (rawDataSet, params) =>{
                             // Hourly Bases Data
                             hourlyBasisTotalCount.push({
                                 '15': innerObj['15']|| 0,
-                                '11_95': innerObj['11_95']|| 0,
+                                '11': innerObj['11']|| 0,
                                 '10': innerObj['10']|| 0,
                                 '7': innerObj['7']|| 0,
                                 '5': innerObj['5']|| 0,
@@ -777,7 +777,7 @@ computeTransactionsPriceWiseWiseReport = async (rawDataSet, params) =>{
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({ '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
+                    monthlyDataObj = _.clone({ '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
                     month_from_date = null;
                 }
 
@@ -786,14 +786,14 @@ computeTransactionsPriceWiseWiseReport = async (rawDataSet, params) =>{
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({ '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
+                    weeklyDataObj = _.clone({ '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({ '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
+                dayDataObj = _.clone({ '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
             }
         }
 
@@ -1295,10 +1295,10 @@ computeTransactingSubscribersPriceWiseReport = async (rawDataSet, params) =>{
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, transactions, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = { '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
-    let dayDataObj = { '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
-    let weeklyDataObj = { '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
-    let monthlyDataObj = { '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let dataObj = { '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let dayDataObj = { '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let weeklyDataObj = { '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
+    let monthlyDataObj = { '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -1315,11 +1315,11 @@ computeTransactingSubscribersPriceWiseReport = async (rawDataSet, params) =>{
                                 weeklyDataObj['15'] = weeklyDataObj['15'] + innerObj['15'];
                                 monthlyDataObj['15'] = monthlyDataObj['15'] + innerObj['15'];
                             }
-                            if (innerObj['11_95']){
-                                dataObj['11_95'] = dataObj['11_95'] + innerObj['11_95'];
-                                dayDataObj['11_95'] = dayDataObj['11_95'] + innerObj['11_95'];
-                                weeklyDataObj['11_95'] = weeklyDataObj['11_95'] + innerObj['11_95'];
-                                monthlyDataObj['11_95'] = monthlyDataObj['11_95'] + innerObj['11_95'];
+                            if (innerObj['11']){
+                                dataObj['11'] = dataObj['11'] + innerObj['11'];
+                                dayDataObj['11'] = dayDataObj['11'] + innerObj['11'];
+                                weeklyDataObj['11'] = weeklyDataObj['11'] + innerObj['11'];
+                                monthlyDataObj['11'] = monthlyDataObj['11'] + innerObj['11'];
                             }
                             if (innerObj['10']){
                                 dataObj['10'] = dataObj['10'] + innerObj['10'];
@@ -1355,7 +1355,7 @@ computeTransactingSubscribersPriceWiseReport = async (rawDataSet, params) =>{
                             // Hourly Bases Data
                             hourlyBasisTotalCount.push({
                                 '15': innerObj['15'],
-                                '11_95': innerObj['11_95'],
+                                '11': innerObj['11'],
                                 '10': innerObj['10'],
                                 '7': innerObj['7'],
                                 '5': innerObj['5'],
@@ -1382,7 +1382,7 @@ computeTransactingSubscribersPriceWiseReport = async (rawDataSet, params) =>{
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({ '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
+                    monthlyDataObj = _.clone({ '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
                     month_from_date = null;
                 }
 
@@ -1391,14 +1391,14 @@ computeTransactingSubscribersPriceWiseReport = async (rawDataSet, params) =>{
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({ '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
+                    weeklyDataObj = _.clone({ '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({ '15': 0, '11_95': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
+                dayDataObj = _.clone({ '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
             }
         }
 
