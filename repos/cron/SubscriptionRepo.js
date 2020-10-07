@@ -192,7 +192,7 @@ class SubscriptionRepository {
                                         payment_source: "$payment_source",
                                         subscribed_package_id: "$subscribed_package_id",
                                         subscription_status: "$subscription_status",
-                                        billing_dtm: "$billing_dtm"
+                                        added_dtm: "$added_dtm"
                                 }}
                             }},
                         { $project: {

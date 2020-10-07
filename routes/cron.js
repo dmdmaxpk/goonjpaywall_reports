@@ -12,6 +12,9 @@ router.route('/compute-subscriber-reports')
 router.route('/compute-subscriber-subscriptions-reports')
     .get(connecton.connect, controller.computeSubscriberSubscriptionsReports); //
 
+router.route('/compute-subscriber-transaction-reports')
+    .get(connecton.connect, controller.computeSubscriberTransactionsReports); //
+
 router.route('/compute-subscription-reports')
     .get(connecton.connect, controller.computeSubscriptionReports); //
 

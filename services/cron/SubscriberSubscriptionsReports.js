@@ -82,23 +82,23 @@ function computeSubscriptionsData(subscriptionsRawData) {
 
             //Affiliate mid wise subscriptions
             if(innerObj.affiliate_mid){
-                    if(innerObj.affiliate_mid === 'aff3')
-                        newObj.affiliate_mid.aff3 = newObj.affiliate_mid.aff3 + 1;
-                    else if(innerObj.affiliate_mid === 'aff3a')
-                        newObj.affiliate_mid.aff3a = newObj.affiliate_mid.aff3a + 1;
-                    else if(innerObj.affiliate_mid === 'gdn')
-                        newObj.affiliate_mid.gdn = newObj.affiliate_mid.gdn + 1;
-                    else if(innerObj.affiliate_mid === 'gdn2')
-                        newObj.affiliate_mid.gdn2 = newObj.affiliate_mid.gdn2 + 1;
-                    else if(innerObj.affiliate_mid === 'goonj')
-                        newObj.affiliate_mid.goonj = newObj.affiliate_mid.goonj + 1;
-                    else if(innerObj.affiliate_mid === '1565')
-                        newObj.affiliate_mid['1565'] = newObj.affiliate_mid['1565'] + 1;
-                    else if(innerObj.affiliate_mid === '1')
-                        newObj.affiliate_mid['1'] = newObj.affiliate_mid['1'] + 1;
-                    else if(innerObj.affiliate_mid === 'null')
-                        newObj.affiliate_mid['null'] = newObj.affiliate_mid['null'] + 1;
-                }
+                if(innerObj.affiliate_mid === 'aff3')
+                    newObj.affiliate_mid.aff3 = newObj.affiliate_mid.aff3 + 1;
+                else if(innerObj.affiliate_mid === 'aff3a')
+                    newObj.affiliate_mid.aff3a = newObj.affiliate_mid.aff3a + 1;
+                else if(innerObj.affiliate_mid === 'gdn')
+                    newObj.affiliate_mid.gdn = newObj.affiliate_mid.gdn + 1;
+                else if(innerObj.affiliate_mid === 'gdn2')
+                    newObj.affiliate_mid.gdn2 = newObj.affiliate_mid.gdn2 + 1;
+                else if(innerObj.affiliate_mid === 'goonj')
+                    newObj.affiliate_mid.goonj = newObj.affiliate_mid.goonj + 1;
+                else if(innerObj.affiliate_mid === '1565')
+                    newObj.affiliate_mid['1565'] = newObj.affiliate_mid['1565'] + 1;
+                else if(innerObj.affiliate_mid === '1')
+                    newObj.affiliate_mid['1'] = newObj.affiliate_mid['1'] + 1;
+                else if(innerObj.affiliate_mid === 'null')
+                    newObj.affiliate_mid['null'] = newObj.affiliate_mid['null'] + 1;
+            }
 
             //Package wise subscriptions
             if(innerObj.subscribed_package_id === 'QDfC')
@@ -134,8 +134,8 @@ function computeSubscriptionsData(subscriptionsRawData) {
             else if(innerObj.subscription_status === 'not_billed')
                 newObj.subscription_status.not_billed = newObj.subscription_status.not_billed + 1;
 
-            newObj.added_dtm = innerObj.billing_dtm;
-            newObj.added_dtm_hours = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+            newObj.added_dtm = innerObj.added_dtm;
+            newObj.added_dtm_hours = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
         }
         finalList.push(newObj);
     }
