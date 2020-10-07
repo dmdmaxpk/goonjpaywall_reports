@@ -288,9 +288,9 @@ function computeChargeDetailData(chargeDetails) {
                             transactionObj.transactions.price['15'] = transactionObj.transactions.price['15'] + 1;
                             transactionObj.subscribers.price['15'] = transactionObj.subscribers.price['15'] + 1;
                         }
-                        else if (innerObj.price === 11.95){
-                            transactionObj.transactions.price['15'] = transactionObj.transactions.price['11.95'] + 1;
-                            transactionObj.subscribers.price['15'] = transactionObj.subscribers.price['11.95'] + 1;
+                        else if (innerObj.price === 11_95){
+                            transactionObj.transactions.price['11_95'] = transactionObj.transactions.price['11_95'] + 1;
+                            transactionObj.subscribers.price['11_95'] = transactionObj.subscribers.price['11_95'] + 1;
                         }
                         else if (innerObj.price === 10){
                             transactionObj.transactions.price['10'] = transactionObj.transactions.price['10'] + 1;
@@ -443,7 +443,7 @@ function cloneTransactionObj() {
             },
             price: {
                 '15': 0,
-                '11.95': 0,
+                '11_95': 0,
                 '10': 0,
                 '7': 0,
                 '5': 0,
@@ -482,7 +482,7 @@ function cloneTransactionObj() {
             },
             price: {
                 '15': 0,
-                '11.95': 0,
+                '11_95': 0,
                 '10': 0,
                 '7': 0,
                 '5': 0,
