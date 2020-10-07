@@ -33,10 +33,8 @@ computeSubscriberTransactionsReports = async(req, res) => {
             finalList = computeTransactionsData(transactions);
 
             console.log('finalList.length : ', finalList.length);
-            if (finalList.length > 0){
+            if (finalList.length > 0)
                 insertNewRecord(finalList, new Date(setDate(fromDate, 0, 0, 0, 0)));
-                return;
-            }
         }
 
         // Get compute data for next time slot
@@ -167,8 +165,11 @@ function insertNewRecord(data, dateString) {
 
             subscriberReportsRepo.updateReport(result, result._id);
         }
-        else
+        else{
+
+            console.log('data:' , data);
             subscriberReportsRepo.createReport({transactions: data, date: dateString});
+        }
     });
 }
 

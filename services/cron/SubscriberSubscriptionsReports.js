@@ -1,6 +1,5 @@
 const container = require("../../configurations/container");
 const subscriberReportsRepo = require('../../repos/apis/SubscriberReportsRepo');
-
 const subscriptionRepository = container.resolve('subscriptionRepository');
 const  _ = require('lodash');
 
@@ -33,10 +32,8 @@ computeSubscriberSubscriptionsReports = async(req, res) => {
             finalList = computeSubscriptionsData(subscriptions);
 
             console.log('finalList.length : ', finalList.length);
-            if (finalList.length > 0){
+            if (finalList.length > 0)
                 insertNewRecord(finalList, new Date(setDate(fromDate, 0, 0, 0, 0)));
-                return;
-            }
         }
 
         // Get compute data for next time slot

@@ -8,6 +8,7 @@ getReportByDateString = async (dateString) => {
 
 createReport = async (data) => {
     let report = new SubscriberReport(data);
+    console.log('createReport: ', data);
     return await report.save();
 };
 
