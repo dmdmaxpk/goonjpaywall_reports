@@ -113,7 +113,7 @@ class BillingHistoryRepository {
                             subscriber_id: "$_id",
                             transactions: "$data",
                         }}
-                    ])
+                    ], { allowDiskUse: true })
                     .toArray(function(err, items) {
                         if(err){
                             console.log('getSubscriberTransactionsByDateRange - err: ', err.message);
