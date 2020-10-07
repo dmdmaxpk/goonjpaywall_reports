@@ -104,35 +104,21 @@ function computeTransactionsData(transactionsRawData) {
 
 
             //Price wise transaction details
-            if (innerObj.price === 15){
-                newObj.transactions.price['15'] = newObj.transactions.price['15'] + 1;
-                newObj.subscribers.price['15'] = newObj.subscribers.price['15'] + 1;
-            }
-            else if (innerObj.price === 11.95){
-                newObj.transactions.price['15'] = newObj.transactions.price['11.95'] + 1;
-                newObj.subscribers.price['15'] = newObj.subscribers.price['11.95'] + 1;
-            }
-            else if (innerObj.price === 10){
-                newObj.transactions.price['10'] = newObj.transactions.price['10'] + 1;
-                newObj.subscribers.price['10'] = newObj.subscribers.price['10'] + 1;
-            }
-            else if (innerObj.price === 7){
-                newObj.transactions.price['7'] = newObj.transactions.price['7'] + 1;
-                newObj.subscribers.price['7'] = newObj.subscribers.price['7'] + 1;
-            }
-            else if (innerObj.price === 5){
-                newObj.transactions.price['5'] = newObj.transactions.price['5'] + 1;
-                newObj.subscribers.price['5'] = newObj.subscribers.price['5'] + 1;
-            }
-            else if(innerObj.price === 4){
-                newObj.transactions.price['4'] = newObj.transactions.price['4'] + 1;
-                newObj.subscribers.price['4'] = newObj.subscribers.price['4'] + 1;
-            }
-            else if (innerObj.price === 2){
-                newObj.transactions.price['2'] = newObj.transactions.price['2'] + 1;
-                newObj.subscribers.price['2'] = newObj.subscribers.price['2'] + 1;
-            }
-
+            if (innerObj.price === 15)
+                newObj.price['15'] = newObj.price['15'] + 1;
+            else if (innerObj.price === 11.95)
+                newObj.price['15'] = newObj.price['11.95'] + 1;
+            else if (innerObj.price === 10)
+                newObj.price['10'] = newObj.price['10'] + 1;
+            else if (innerObj.price === 7)
+                newObj.price['7'] = newObj.price['7'] + 1;
+            else if (innerObj.price === 5)
+                newObj.price['5'] = newObj.price['5'] + 1;
+            else if(innerObj.price === 4)
+                newObj.price['4'] = newObj.price['4'] + 1;
+            else if (innerObj.price === 2)
+                newObj.price['2'] = newObj.price['2'] + 1;
+            
             //Status wise transaction
             if(innerObj.billing_status === 'trial')
                 newObj.billing_status.trial = newObj.billing_status.trial + 1;
@@ -205,16 +191,6 @@ function cloneInfoObj() {
             gdn2: 0,
             HE: 0,
             affiliate_web: 0
-        },
-        affiliate_mid: {
-            aff3: 0,
-            aff3a: 0,
-            gdn: 0,
-            gdn2: 0,
-            goonj: 0,
-            '1565': 0,
-            '1': 0,
-            'null': 0,
         },
         operator: {
             telenor: 0,
