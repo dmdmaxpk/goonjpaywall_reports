@@ -4,12 +4,12 @@ const container = awilix.createContainer({
 });
 
 // Repositories
-const UserRepository = require('../repos/UserRepo');
-const BillingHistoryRepository = require('../repos/BillingHistoryRepo');
-const SubscriptionRepository = require('../repos/SubscriptionRepo');
-const PageViewRepo = require('../repos/PageViewRepo');
-const SubscriberRepository = require('../repos/SubscriberRepo');
-const TransactionsRepo = require('../repos/TransactionsRepo');
+const UserRepository = require('../repos/cron/UserRepo');
+const BillingHistoryRepository = require('../repos/cron/BillingHistoryRepo');
+const SubscriptionRepository = require('../repos/cron/SubscriptionRepo');
+const PageViewRepo = require('../repos/cron/PageViewRepo');
+const SubscriberRepository = require('../repos/cron/SubscriberRepo');
+const TransactionsRepo = require('../repos/cron/TransactionsRepo');
 
 //Validators
 const ReportsValidator = require('../validators/reportsValidator');

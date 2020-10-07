@@ -1,5 +1,5 @@
 const container = require("../../configurations/container");
-const reportsRepo = require('../../repos/ReportsRepo');
+const reportsRepo = require('../../repos/apis/ReportsRepo');
 const reportsTransformer = container.resolve('reportsTransformer');
 
 // Import Compute Files to access its factory functions

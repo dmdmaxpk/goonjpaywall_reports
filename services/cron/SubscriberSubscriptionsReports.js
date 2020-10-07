@@ -1,5 +1,5 @@
 const container = require("../../configurations/container");
-const reportsRepo = require('../../repos/ReportsRepo');
+const subscriberReportsRepo = require('../../repos/apis/SubscriberReportsRepo');
 
 const subscriptionRepository = container.resolve('subscriptionRepository');
 const  _ = require('lodash');
@@ -58,89 +58,86 @@ computeSubscriberSubscriptionsReports = async(req, res) => {
 
 function computeSubscriptionsData(subscriptionsRawData) {
 
-    let rawData, newObj, outerObj, innerObj, dateInMili, outer_added_dtm, inner_added_dtm, finalList = [];
+    let rawData, newObj, innerObj, finalList = [];
     for (let i=0; i < subscriptionsRawData.length; i++) {
 
         rawData = subscriptionsRawData[i];
-        if (rawData.subscriptions.length > 0) {
+        newObj = _.clone(cloneInfoObj());
+        newObj.subscriber = rawData.subscriber_id;
 
-            for (let j=0; j < rawData.subscriptions.length; j++) {
-                outerObj = rawData.subscriptions[j];
-                newObj = _.clone(cloneInfoObj());
-                outer_added_dtm = setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
+        for (let k=0; k < rawData.subscriptions.length; k++) {
+            innerObj = rawData.subscriptions[k];
 
-                if (dateInMili !== outer_added_dtm){
-                    for (let k=0; k < rawData.subscriptions.length; k++) {
+            //Source wise subscriptions
+            if(innerObj.source === 'app')
+                newObj.source.app = newObj.source.app + 1;
+            else if(innerObj.source === 'web')
+                newObj.source.web = newObj.source.web + 1;
+            else if(innerObj.source === 'gdn2')
+                newObj.source.gdn2 = newObj.source.gdn2 + 1;
+            else if(innerObj.source === 'HE')
+                newObj.source.HE = newObj.source.HE + 1;
+            else if(innerObj.source === 'affiliate_web')
+                newObj.source.affiliate_web = newObj.source.affiliate_web + 1;
 
-                        innerObj = rawData.subscriptions[k];
-                        inner_added_dtm = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
-
-                        if (outer_added_dtm === inner_added_dtm){
-                            console.log('======================================');
-                            dateInMili = inner_added_dtm;
-
-                            //Source wise subscriptions
-                            if(innerObj.source === 'app')
-                                newObj.source.app = newObj.source.app + 1;
-                            else if(innerObj.source === 'web')
-                                newObj.source.web = newObj.source.web + 1;
-                            else if(innerObj.source === 'gdn2')
-                                newObj.source.gdn2 = newObj.source.gdn2 + 1;
-                            else if(innerObj.source === 'HE')
-                                newObj.source.HE = newObj.source.HE + 1;
-                            else if(innerObj.source === 'affiliate_web')
-                                newObj.source.affiliate_web = newObj.source.affiliate_web + 1;
-
-                            //Affiliate mid wise subscriptions
-                            if(innerObj.affiliate_mid){
-                                if(innerObj.affiliate_mid === 'aff3')
-                                    newObj.affiliate_mid.aff3 = newObj.affiliate_mid.aff3 + 1;
-                                else if(innerObj.affiliate_mid === 'aff3a')
-                                    newObj.affiliate_mid.aff3a = newObj.affiliate_mid.aff3a + 1;
-                                else if(innerObj.affiliate_mid === 'gdn')
-                                    newObj.affiliate_mid.gdn = newObj.affiliate_mid.gdn + 1;
-                                else if(innerObj.affiliate_mid === 'gdn2')
-                                    newObj.affiliate_mid.gdn2 = newObj.affiliate_mid.gdn2 + 1;
-                                else if(innerObj.affiliate_mid === 'goonj')
-                                    newObj.affiliate_mid.goonj = newObj.affiliate_mid.goonj + 1;
-                                else if(innerObj.affiliate_mid === '1565')
-                                    newObj.affiliate_mid['1565'] = newObj.affiliate_mid['1565'] + 1;
-                                else if(innerObj.affiliate_mid === '1')
-                                    newObj.affiliate_mid['1'] = newObj.affiliate_mid['1'] + 1;
-                                else if(innerObj.affiliate_mid === 'null')
-                                    newObj.affiliate_mid['null'] = newObj.affiliate_mid['null'] + 1;
-                            }
-
-                            //Package wise subscriptions
-                            if(innerObj.subscribed_package_id === 'QDfC')
-                                newObj.package.dailyLive = newObj.package.dailyLive + 1;
-                            else if(innerObj.subscribed_package_id === 'QDfG')
-                                newObj.package.weeklyLive = newObj.package.weeklyLive + 1;
-                            else if(innerObj.subscribed_package_id === 'QDfH')
-                                newObj.package.dailyComedy = newObj.package.dailyComedy + 1;
-                            else if(innerObj.subscribed_package_id === 'QDfI')
-                                newObj.package.weeklyComedy = newObj.package.weeklyComedy + 1;
-
-                            //Paywall wise subscriptions
-                            if(innerObj.paywall_id === 'ghRtjhT7')
-                                newObj.paywall.comedy = newObj.paywall.comedy + 1;
-                            else if(innerObj.paywall_id === 'Dt6Gp70c')
-                                newObj.paywall.live = newObj.paywall.live + 1;
-
-                            //Operator wise subscriptions
-                            if(innerObj.payment_source === 'telenor' || !innerObj.hasOwnProperty('payment_source'))
-                                newObj.operator.telenor = newObj.operator.telenor + 1;
-                            else if(innerObj.payment_source === 'easypaisa')
-                                newObj.operator.easypaisa = newObj.operator.easypaisa + 1;
-
-                            newObj.added_dtm = innerObj.billing_dtm;
-                            newObj.added_dtm_hours = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
-                        }
-                    }
-                    finalList.push(newObj);
+            //Affiliate mid wise subscriptions
+            if(innerObj.affiliate_mid){
+                    if(innerObj.affiliate_mid === 'aff3')
+                        newObj.affiliate_mid.aff3 = newObj.affiliate_mid.aff3 + 1;
+                    else if(innerObj.affiliate_mid === 'aff3a')
+                        newObj.affiliate_mid.aff3a = newObj.affiliate_mid.aff3a + 1;
+                    else if(innerObj.affiliate_mid === 'gdn')
+                        newObj.affiliate_mid.gdn = newObj.affiliate_mid.gdn + 1;
+                    else if(innerObj.affiliate_mid === 'gdn2')
+                        newObj.affiliate_mid.gdn2 = newObj.affiliate_mid.gdn2 + 1;
+                    else if(innerObj.affiliate_mid === 'goonj')
+                        newObj.affiliate_mid.goonj = newObj.affiliate_mid.goonj + 1;
+                    else if(innerObj.affiliate_mid === '1565')
+                        newObj.affiliate_mid['1565'] = newObj.affiliate_mid['1565'] + 1;
+                    else if(innerObj.affiliate_mid === '1')
+                        newObj.affiliate_mid['1'] = newObj.affiliate_mid['1'] + 1;
+                    else if(innerObj.affiliate_mid === 'null')
+                        newObj.affiliate_mid['null'] = newObj.affiliate_mid['null'] + 1;
                 }
-            }
+
+            //Package wise subscriptions
+            if(innerObj.subscribed_package_id === 'QDfC')
+                newObj.package.dailyLive = newObj.package.dailyLive + 1;
+            else if(innerObj.subscribed_package_id === 'QDfG')
+                newObj.package.weeklyLive = newObj.package.weeklyLive + 1;
+            else if(innerObj.subscribed_package_id === 'QDfH')
+                newObj.package.dailyComedy = newObj.package.dailyComedy + 1;
+            else if(innerObj.subscribed_package_id === 'QDfI')
+                newObj.package.weeklyComedy = newObj.package.weeklyComedy + 1;
+
+            //Paywall wise subscriptions
+            if(innerObj.paywall_id === 'ghRtjhT7')
+                newObj.paywall.comedy = newObj.paywall.comedy + 1;
+            else if(innerObj.paywall_id === 'Dt6Gp70c')
+                newObj.paywall.live = newObj.paywall.live + 1;
+
+            //Operator wise subscriptions
+            if(innerObj.payment_source === 'telenor' || !innerObj.hasOwnProperty('payment_source'))
+                newObj.operator.telenor = newObj.operator.telenor + 1;
+            else if(innerObj.payment_source === 'easypaisa')
+                newObj.operator.easypaisa = newObj.operator.easypaisa + 1;
+
+            //Status wise subscriptions
+            if(innerObj.subscription_status === 'trial')
+                newObj.subscription_status.trial = newObj.subscription_status.trial + 1;
+            else if(innerObj.subscription_status === 'expired')
+                newObj.subscription_status.expired = newObj.subscription_status.expired + 1;
+            else if(innerObj.subscription_status === 'graced')
+                newObj.subscription_status.graced = newObj.subscription_status.graced + 1;
+            else if(innerObj.subscription_status === 'billed')
+                newObj.subscription_status.billed = newObj.subscription_status.billed + 1;
+            else if(innerObj.subscription_status === 'not_billed')
+                newObj.subscription_status.not_billed = newObj.subscription_status.not_billed + 1;
+
+            newObj.added_dtm = innerObj.billing_dtm;
+            newObj.added_dtm_hours = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
         }
+        finalList.push(newObj);
     }
 
     return finalList;
@@ -148,31 +145,22 @@ function computeSubscriptionsData(subscriptionsRawData) {
 
 function insertNewRecord(data, dateString) {
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
-    // reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
-    //     console.log('result subscriptions: ', result);
-    //     if (result.length > 0) {
-    //         result = result[0];
-    //
-    //         if(result.subscribers)
-    //             result.subscribers.subscriptions = data;
-    //         else{
-    //             let subscribers = [];
-    //             subscribers.push({subscriptions: data});
-    //         }
-    //
-    //         reportsRepo.updateReport(result, result._id);
-    //     }
-    //     else{
-    //         let subscribers = [];
-    //         subscribers.push({subscriptions: data});
-    //         reportsRepo.createReport({subscribers: subscribers, date: dateString});
-    //     }
-    // });
-}
+    subscriberReportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
+        console.log('result subscriptions: ', result);
+        if (result.length > 0) {
+            result = result[0];
+            result.subscriptions = data;
 
+            subscriberReportsRepo.updateReport(result, result._id);
+        }
+        else
+            subscriberReportsRepo.createReport({subscriptions: data, date: dateString});
+    });
+}
 
 function cloneInfoObj() {
     return {
+        subscriber: '',
         package: {
             dailyLive: 0,
             weeklyLive: 0,
@@ -203,6 +191,13 @@ function cloneInfoObj() {
         operator: {
             telenor: 0,
             easypaisa: 0
+        },
+        subscription_status: {
+            trial: 0,
+            expired: 0,
+            graced: 0,
+            billed: 0,
+            not_billed: 0
         },
         added_dtm: '',
         added_dtm_hours: ''

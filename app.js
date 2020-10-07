@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 // Import database models
 require('./models/Report');
+require('./models/SubscriberReport');
 
 // Connection to Database
 const config = require('./config');

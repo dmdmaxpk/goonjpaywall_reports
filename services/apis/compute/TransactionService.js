@@ -749,13 +749,13 @@ computeTransactionsPriceWiseWiseReport = async (rawDataSet, params) =>{
 
                             // Hourly Bases Data
                             hourlyBasisTotalCount.push({
-                                '15': innerObj['15'],
-                                '11.95': innerObj['11.95'],
-                                '10': innerObj['10'],
-                                '7': innerObj['7'],
-                                '5': innerObj['5'],
-                                '4': innerObj['4'],
-                                '2': innerObj['2'],
+                                '15': innerObj['15']|| 0,
+                                '11.95': innerObj['11.95']|| 0,
+                                '10': innerObj['10']|| 0,
+                                '7': innerObj['7']|| 0,
+                                '5': innerObj['5']|| 0,
+                                '4': innerObj['4']|| 0,
+                                '2': innerObj['2']|| 0,
                                 date: transactions.added_dtm
                             });
 

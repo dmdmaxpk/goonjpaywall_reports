@@ -175,7 +175,7 @@ class SubscriptionRepository {
 
     async getSubscriberSubscriptionsByDateRange (req, from, to){
         return new Promise((resolve, reject) => {
-            console.log('getChargeDetailsByDateRange: ', from, to);
+            console.log('getSubscriberSubscriptionsByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
                     collection.aggregate( [
@@ -201,7 +201,7 @@ class SubscriptionRepository {
                         }}
                     ]).toArray(function(err, items) {
                         if(err){
-                            console.log('getChargeDetailsByDateRange - err: ', err.message);
+                            console.log('getSubscriberSubscriptionsByDateRange - err: ', err.message);
                             resolve([]);
                         }
                         resolve(items);

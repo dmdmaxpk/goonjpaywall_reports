@@ -1,5 +1,5 @@
 const container = require("../../configurations/container");
-const reportsRepo = require('../../repos/ReportsRepo');
+const reportsRepo = require('../../repos/apis/ReportsRepo');
 
 const transactionsRepo = container.resolve('transactionsRepo');
 const  _ = require('lodash');
