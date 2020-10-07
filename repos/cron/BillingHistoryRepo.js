@@ -94,26 +94,25 @@ class BillingHistoryRepository {
             console.log('getSubscriberTransactionsByDateRange: ', from, to);
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
-                    console.log('getSubscriberTransactionsByDateRange: ', from, to);
                     collection.aggregate( [
                         {$match : {
-                                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
-                            }},
+                                $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+                        }},
                         { $group: {
-                                _id: "$subscriber_id",
-                                data: { $push:  {
-                                        price: "$price",
-                                        paywall_id: "$paywall_id",
-                                        package_id: "$package_id",
-                                        operator: "$operator",
-                                        billing_status: "$billing_status",
-                                        billing_dtm: "$billing_dtm"
-                                    }}
-                            }},
-                        { $project: {
-                                subscriber_id: "$_id",
-                                subscriptions: "$data",
+                            _id: "$subscriber_id",
+                            data: { $push:  {
+                                price: "$price",
+                                paywall_id: "$paywall_id",
+                                package_id: "$package_id",
+                                operator: "$operator",
+                                billing_status: "$billing_status",
+                                billing_dtm: "$billing_dtm"
                             }}
+                        }},
+                        { $project: {
+                            subscriber_id: "$_id",
+                            transactions: "$data",
+                        }}
                     ])
                     .toArray(function(err, items) {
                         if(err){

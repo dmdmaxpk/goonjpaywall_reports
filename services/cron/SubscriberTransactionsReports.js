@@ -65,8 +65,8 @@ function computeTransactionsData(transactionsRawData) {
         newObj = _.clone(cloneInfoObj());
         newObj.subscriber = rawData.subscriber_id;
 
-        for (let k=0; k < rawData.subscriptions.length; k++) {
-            innerObj = rawData.subscriptions[k];
+        for (let k=0; k < rawData.transactions.length; k++) {
+            innerObj = rawData.transactions[k];
 
             //Source wise transaction
             if(innerObj.source === 'app')
