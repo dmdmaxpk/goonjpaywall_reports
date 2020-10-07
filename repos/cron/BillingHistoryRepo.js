@@ -112,7 +112,8 @@ class BillingHistoryRepository {
                         { $project: {
                             subscriber_id: "$_id",
                             transactions: "$data",
-                        }}
+                        }},
+                        { $limit : 50000 }
                     ], { allowDiskUse: true })
                     .toArray(function(err, items) {
                         if(err){

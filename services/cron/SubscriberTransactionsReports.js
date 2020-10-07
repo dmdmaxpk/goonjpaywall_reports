@@ -118,7 +118,7 @@ function computeTransactionsData(transactionsRawData) {
                 newObj.price['4'] = newObj.price['4'] + 1;
             else if (innerObj.price === 2)
                 newObj.price['2'] = newObj.price['2'] + 1;
-            
+
             //Status wise transaction
             if(innerObj.billing_status === 'trial')
                 newObj.billing_status.trial = newObj.billing_status.trial + 1;
