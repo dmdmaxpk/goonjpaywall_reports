@@ -30,9 +30,9 @@ computeAffiliateReports = async(req, res) => {
         console.log('subscription: ', subscriptions);
 
         if (subscriptions.length > 0){
-            finalList = computeAffiliateData(subscriptions); ;
+            finalList = computeAffiliateData(subscriptions);
 
-            console.log('finalList.length : ', finalList.length, finalList);return;
+            console.log('finalList.length : ', finalList.length, finalList);
             if (finalList.length > 0)
                 insertNewRecord(finalList, new Date(setDate(fromDate, 0, 0, 0, 0)));
         }
@@ -107,6 +107,9 @@ function computeAffiliateData(subscriptionsRawData) {
                             else if (rawData.status === 'subscription-request-received-for-the-same-package-after-unsub')
                                 newObj = updateMidsCount(subscription, newObj, 'status', 'subscription_request_received_for_the_same_package_after_unsub');
                         }
+
+                        newObj.added_dtm = subscription.added_dtm;
+                        newObj.added_dtm_hours = setDate(new Date(subscription.added_dtm), null, 0, 0, 0);
                     }
                 }
                 finalList.push(newObj);
@@ -115,6 +118,21 @@ function computeAffiliateData(subscriptionsRawData) {
     }
 
     return finalList;
+}
+
+function insertNewRecord(data, dateString) {
+    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
+    affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
+        console.log('result subscriptions: ', result);
+        if (result.length > 0) {
+            result = result[0];
+            result.affilateReportsData = data;
+
+            affiliateRepo.updateReport(result, result._id);
+        }
+        else
+            affiliateRepo.createReport({affilateReportsData: data, date: dateString});
+    });
 }
 
 function updateMidsCount(subscription, newObj, type, mid) {
@@ -135,6 +153,7 @@ function updateMidsCount(subscription, newObj, type, mid) {
 
     return newObj;
 }
+
 function cloneObj() {
     let mids = _.clone({ '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 });
     return {
@@ -154,22 +173,10 @@ function cloneObj() {
             'unsubscribe_request_received_and_expired': mids,
             'subscription_request_received_for_the_same_package': mids,
             'subscription_request_received_for_the_same_package_after_unsub': mids,
-        }
+        },
+        added_dtm: '',
+        added_dtm_hours: ''
     }
-}
-function insertNewRecord(data, dateString) {
-    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
-    affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
-        console.log('result subscriptions: ', result);
-        if (result.length > 0) {
-            result = result[0];
-            result.affilateReportsData = data;
-
-            affiliateRepo.updateReport(result, result._id);
-        }
-        else
-            affiliateRepo.createReport({affilateReportsData: data, date: dateString});
-    });
 }
 
 function setDate(date, h=null,m, s, mi){
