@@ -76,64 +76,36 @@ function computeAffiliateData(subscriptionsRawData) {
 
                         //collect data - package wise
                         if (rawData.package_id) {
-                            if (rawData.package_id === 'QDfC'){
-                                //Live TV Daily
-                                newObj.package.type = rawData.package_id;
+                            if (rawData.package_id === 'QDfC')
                                 newObj = updateMidsCount(subscription, newObj, 'package', 'QDfC');
-                            }
-                            else if (rawData.package_id === 'QDfG') {
-                                //Live TV Weekly
-                                newObj.package.type = rawData.package_id;
+                            else if (rawData.package_id === 'QDfG')
                                 newObj = updateMidsCount(subscription, newObj, 'package', 'QDfG');
-                            }
                         }
 
                         //collect data - billing status wise
                         if (rawData.status) {
-                            if (rawData.status === 'trial'){
-                                newObj.status.type = rawData.status;
+                            if (rawData.status === 'trial')
                                 newObj = updateMidsCount(subscription, newObj, 'status', 'trial');
-                            }
-                            else if (rawData.status === 'graced') {
-                                newObj.status.type = rawData.status;
+                            else if (rawData.status === 'graced')
                                 newObj = updateMidsCount(subscription, newObj, 'status', 'graced');
-                            }
-                            else if (rawData.status === 'Success') {
-                                newObj.status.type = rawData.status;
+                            else if (rawData.status === 'Success')
                                 newObj = updateMidsCount(subscription, newObj, 'status', 'success');
-                            }
-                            else if (rawData.status === 'Affiliate callback sent') {
-                                newObj.status.type = rawData.status;
+                            else if (rawData.status === 'Affiliate callback sent')
                                 newObj = updateMidsCount(subscription, newObj, 'status', 'affiliate_callback_sent');
-                            }
-                            else if (rawData.status === 'graced_and_stream_stopped') {
-                                newObj.status.type = rawData.status;
+                            else if (rawData.status === 'graced_and_stream_stopped')
                                 newObj = updateMidsCount(subscription, newObj, 'status', 'graced_and_stream_stopped');
-                            }
-                            else if (rawData.status === 'direct-billing-tried-but-failed') {
-                                newObj.status.type = rawData.status;
+                            else if (rawData.status === 'direct-billing-tried-but-failed')
                                 newObj = updateMidsCount(subscription, newObj, 'status', 'direct_billing_tried_but_failed');
-                            }
-                            else if (rawData.status === 'package_change_upon_user_request') {
-                                newObj.status.type = rawData.status;
+                            else if (rawData.status === 'package_change_upon_user_request')
                                 newObj = updateMidsCount(subscription, newObj, 'status', 'package_change_upon_user_request');
-                            }
-                            else if (rawData.status === 'switch-package-request-tried-but-failed') {
-                                newObj.status.type = rawData.status;
+                            else if (rawData.status === 'switch-package-request-tried-but-failed')
                                 newObj = updateMidsCount(subscription, newObj, 'status', 'switch_package_request_tried_but_failed');
-                            }
-                            else if (rawData.status === 'unsubscribe-request-received-and-expired') {
-                                newObj.status.type = rawData.status;
+                            else if (rawData.status === 'unsubscribe-request-received-and-expired')
                                 newObj = updateMidsCount(subscription, newObj, 'status', 'unsubscribe_request_received_and_expired');
-                            }
-                            else if (rawData.status === 'subscription-request-received-for-the-same-package') {
-                                newObj.status.type = rawData.status;
+                            else if (rawData.status === 'subscription-request-received-for-the-same-package')
                                 newObj = updateMidsCount(subscription, newObj, 'status', 'subscription_request_received_for_the_same_package');
-                            }
-                            else if (rawData.status === 'subscription-request-received-for-the-same-package-after-unsub') {
-                                newObj.status.type = rawData.status;
+                            else if (rawData.status === 'subscription-request-received-for-the-same-package-after-unsub')
                                 newObj = updateMidsCount(subscription, newObj, 'status', 'subscription_request_received_for_the_same_package_after_unsub');
-                            }
                         }
                     }
                 }
@@ -164,24 +136,24 @@ function updateMidsCount(subscription, newObj, type, mid) {
     return newObj;
 }
 function cloneObj() {
-    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
+    let mids = _.clone({ '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 });
     return {
         package: {
-            'QDfC': _.clone(mids),
-            'QDfG': _.clone(mids)
+            'QDfC': mids,
+            'QDfG': mids
         },
         status: {
-            'trial': _.clone(mids),
-            'graced': _.clone(mids),
-            'success': _.clone(mids),
-            'affiliate_callback_sent': _.clone(mids),
-            'graced_and_stream_stopped': _.clone(mids),
-            'direct_billing_tried_but_failed': _.clone(mids),
-            'package_change_upon_user_request': _.clone(mids),
-            'switch_package_request_tried_but_failed': _.clone(mids),
-            'unsubscribe_request_received_and_expired': _.clone(mids),
-            'subscription_request_received_for_the_same_package': _.clone(mids),
-            'subscription_request_received_for_the_same_package_after_unsub': _.clone(mids),
+            'trial': mids,
+            'graced': mids,
+            'success': mids,
+            'affiliate_callback_sent': mids,
+            'graced_and_stream_stopped': mids,
+            'direct_billing_tried_but_failed': mids,
+            'package_change_upon_user_request': mids,
+            'switch_package_request_tried_but_failed': mids,
+            'unsubscribe_request_received_and_expired': mids,
+            'subscription_request_received_for_the_same_package': mids,
+            'subscription_request_received_for_the_same_package_after_unsub': mids,
         }
     }
 }
