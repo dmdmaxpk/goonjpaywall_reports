@@ -210,6 +210,58 @@ class SubscriptionRepository {
             })
         });
     }
+
+    async getAffiliateDataDateRange (req, from, to){
+        return new Promise((resolve, reject) => {
+            console.log('getAffiliateDataDateRange: ', from, to);
+            req.db.collection('subscriptions', function (err, collection) {
+                if (!err) {
+                    collection.aggregate([
+                        {
+                            $match:{
+                                source: {$in: ["HE","affiliate_web"]},
+                                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                            }
+                        },{
+                            $lookup: {
+                                from: "billinghistories",
+                                let: {subscriber_id: "$subscriber_id", package_id: "$subscribed_package_id"},
+                                pipeline:[
+                                    { $match:
+                                        { $expr:
+                                            { $and:[
+                                                {$eq: ["$subscriber_id", "$$subscriber_id" ]},
+                                                {$eq: ["$package_id", "$$package_id" ]},
+                                                {$gt: ["$billing_dtm", new Date(from)]},
+                                                {$lt: ["$billing_dtm", new Date(to)]}
+                                            ]}
+                                        }
+                                    }],
+                                as: "history"
+                            }
+                        },
+                        { $unwind: "$history" },
+                        { $group:{
+                            _id: {"status": "$history.billing_status", "package_id": "$history.package_id"},
+                            data: { $push: { affiliate_mid: "$affiliate_mid", added_dtm: "$added_dtm"}}
+                        }},
+                        { $project: {
+                            status: "$_id.status",
+                            package_id: "$_id.package_id",
+                            subscriptions: "$data",
+                            _id: 0
+                        }}
+                    ]).toArray(function(err, items) {
+                        if(err){
+                            console.log('getAffiliateDataDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            })
+        });
+    }
 }
 
 module.exports = SubscriptionRepository;

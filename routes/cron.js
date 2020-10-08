@@ -33,6 +33,9 @@ router.route('/compute-charge-detail-reports')
 router.route('/compute-revenue-net-addition-reports')
     .get(connecton.connect, controller.computeRevenueNetAdditionReports); //
 
+router.route('/compute-affiliate-reports')
+    .get(connecton.connect, controller.computeAffiliateReports);
+
 router.route('/compute-page-view-reports')
     .get(connecton.connect, controller.computePageViewReports);
 
