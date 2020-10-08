@@ -30,9 +30,9 @@ computeAffiliateReports = async(req, res) => {
         console.log('subscription: ', subscriptions);
 
         if (subscriptions.length > 0){
-            finalList = computeAffiliateData(subscriptions); return;
+            finalList = computeAffiliateData(subscriptions); ;
 
-            console.log('finalList.length : ', finalList.length, finalList);
+            console.log('finalList.length : ', finalList.length, finalList);return;
             if (finalList.length > 0)
                 insertNewRecord(finalList, new Date(setDate(fromDate, 0, 0, 0, 0)));
         }
