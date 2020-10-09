@@ -154,6 +154,7 @@ function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, dat
 }
 
 function affliateWiseMidsCount(history, package_id, affiliate, dataObj) {
+
     if (history.affiliate_mid === '1')
         dataObj['status'][package_id][affiliate]['1'] = dataObj['status'][package_id][affiliate]['1'] + history.count;
     else if (history.affiliate_mid === '1569')
@@ -172,6 +173,8 @@ function affliateWiseMidsCount(history, package_id, affiliate, dataObj) {
     return dataObj;
 }
 function wiseMidsCount(history, wise, dataObj) {
+    console.log('wise: ', wise);
+
     if (history.affiliate_mid === '1')
         dataObj[wise]['1'] = dataObj[wise]['1'] + history.count;
     else if (history.affiliate_mid === '1569')
@@ -186,6 +189,8 @@ function wiseMidsCount(history, wise, dataObj) {
         dataObj[wise]['gdn2'] = dataObj[wise]['gdn2'] + history.count;
     else if (history.affiliate_mid === 'goonj')
         dataObj[wise]['goonj'] = dataObj[wise]['goonj'] + history.count;
+
+    console.log('dataObj: ', dataObj);
 
     return dataObj;
 }
