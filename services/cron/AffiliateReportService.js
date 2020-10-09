@@ -196,16 +196,16 @@ function wiseMidsCount(history, wise, dataObj) {
 }
 
 function cloneAffilateObj() {
-    let mids = _.clone({ '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 });
+    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
     return {
         status: {
             QDfC: {
-                HE: mids,
-                affiliate_web: mids
+                HE: _.clone(mids),
+                affiliate_web: _.clone(mids)
             },
             QDfG: {
-                HE: mids,
-                affiliate_web: mids
+                HE: _.clone(mids),
+                affiliate_web: _.clone(mids)
             }
         },
         added_dtm: '',
@@ -213,29 +213,29 @@ function cloneAffilateObj() {
     }
 }
 function cloneStatusWiseObj() {
-    let mids = _.clone({ '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 });
+    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
     return {
-        success: mids,
-        trial: mids,
-        callback_sent: mids,
+        success: _.clone(mids),
+        trial: _.clone(mids),
+        callback_sent: _.clone(mids),
         added_dtm: '',
         added_dtm_hours: ''
     }
 }
 function clonePackageWiseObj() {
-    let mids = _.clone({ '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 });
+    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
     return {
-        QDfC: mids,
-        QDfG: mids,
+        QDfC: _.clone(mids),
+        QDfG: _.clone(mids),
         added_dtm: '',
         added_dtm_hours: ''
     }
 }
 function cloneSourceWiseObj() {
-    let mids = _.clone({ '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 });
+    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
     return {
-        HE: mids,
-        affiliate_web: mids,
+        HE: _.clone(mids),
+        affiliate_web: _.clone(mids),
         added_dtm: '',
         added_dtm_hours: ''
     }
