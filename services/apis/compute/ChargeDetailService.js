@@ -602,21 +602,18 @@ function cloneObjectPaywallWiseObj() {
 // Populate object's properties with data - Net Addition or Charge Details
 function updateDataArrs(innerObj, type, mode, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj) {
 
-    let subType;
-    subType = (mode === 'charge_details') ? 'full' : 'expire';
-    if (innerObj[type][subType]){
-        dataObj[type][subType] = dataObj[type][subType] + innerObj[type][subType];
-        dayDataObj[type][subType] = dayDataObj[type][subType] + innerObj[type][subType];
-        weeklyDataObj[type][subType] = weeklyDataObj[type][subType] + innerObj[type][subType];
-        monthlyDataObj[type][subType] = monthlyDataObj[type][subType] + innerObj[type][subType];
+    if (innerObj[type]['full']){
+        dataObj[type]['full'] = dataObj[type]['full'] + innerObj[type]['full'];
+        dayDataObj[type]['full'] = dayDataObj[type]['full'] + innerObj[type]['full'];
+        weeklyDataObj[type]['full'] = weeklyDataObj[type]['full'] + innerObj[type]['full'];
+        monthlyDataObj[type]['full'] = monthlyDataObj[type]['full'] + innerObj[type]['full'];
     }
 
-    subType = (mode === 'charge_details') ? 'micro' : 'system';
-    if(innerObj[type][subType]){
-        dataObj[type][subType] = dataObj[type][subType] + innerObj[type][subType];
-        dayDataObj[type][subType] = dayDataObj[type][subType] + innerObj[type][subType];
-        weeklyDataObj[type][subType] = weeklyDataObj[type][subType] + innerObj[type][subType];
-        monthlyDataObj[type][subType] = monthlyDataObj[type][subType] + innerObj[type][subType];
+    if(innerObj[type]['micro']){
+        dataObj[type]['micro'] = dataObj[type]['micro'] + innerObj[type]['micro'];
+        dayDataObj[type]['micro'] = dayDataObj[type]['micro'] + innerObj[type]['micro'];
+        weeklyDataObj[type]['micro'] = weeklyDataObj[type]['micro'] + innerObj[type]['micro'];
+        monthlyDataObj[type]['micro'] = monthlyDataObj[type]['micro'] + innerObj[type]['micro'];
     }
     if(innerObj[type].total){
         dataObj[type].total = dataObj[type].total + innerObj[type].total;
