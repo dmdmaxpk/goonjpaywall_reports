@@ -89,24 +89,24 @@ function computeAffiliateData(subscriptionsRawData) {
 
             //collect data => billing_status wise, get Mids count
             if (history.status === 'Success')
-                statusWiseObj = _.clone(wiseMidsCount(history, history.status, statusWiseObj));
+                statusWiseObj = _.clone(wiseMidsCount(history, 'success', statusWiseObj));
             else if (history.status === 'trial')
-                statusWiseObj = _.clone(wiseMidsCount(history, history.status, statusWiseObj));
+                statusWiseObj = _.clone(wiseMidsCount(history, 'trial', statusWiseObj));
             else if (history.status === 'Affiliate callback sent')
-                statusWiseObj = _.clone(wiseMidsCount(history, history.status, statusWiseObj));
+                statusWiseObj = _.clone(wiseMidsCount(history, allback_sent, statusWiseObj));
 
             return;
             //collect data => package wise, get Mids count
             if (history.package_id === 'QDfC')
-                packageWiseObj = _.clone(wiseMidsCount(history, history.package_id, packageWiseObj));
+                packageWiseObj = _.clone(wiseMidsCount(history, 'QDfC', packageWiseObj));
             else if (history.package_id === 'QDfG')
-                packageWiseObj = _.clone(wiseMidsCount(history, history.package_id, packageWiseObj));
+                packageWiseObj = _.clone(wiseMidsCount(history, 'QDfG', packageWiseObj));
 
             //collect data => source wise, get Mids count
             if (history.source === 'HE')
-                sourceWiseObj = _.clone(wiseMidsCount(history, history.source, sourceWiseObj));
+                sourceWiseObj = _.clone(wiseMidsCount(history, 'HE', sourceWiseObj));
             else if (history.source === 'affiliate_web')
-                sourceWiseObj = _.clone(wiseMidsCount(history, history.source, sourceWiseObj));
+                sourceWiseObj = _.clone(wiseMidsCount(history, 'affiliate_web', sourceWiseObj));
 
         }
 

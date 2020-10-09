@@ -245,6 +245,8 @@ class SubscriptionRepository {
                         },
                         { $unwind: "$history" },
                         { $project:{
+                            affiliate: "$source",
+                            affiliate_mid: "$affiliate_mid",
                             status: "$history.billing_status",
                             package_id: "$history.package_id",
                             day: { "$dayOfMonth" : "$history.billing_dtm"},
@@ -254,15 +256,17 @@ class SubscriptionRepository {
                         { $project:{
                             billing_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
                             status: "$status",
-                            package_id: "$package_id"
+                            package_id: "$package_id",
+                            affiliate: "$affiliate",
+                            affiliate_mid: "$affiliate_mid"
                         }},
                         { $group:{
-                            _id: {billing_dtm: "$billing_dtm", status: "$status", package_id: "$package_id"},
+                            _id: {billing_dtm: "$billing_dtm", status: "$status", package_id: "$package_id", affiliate: "$affiliate", affiliate_mid: "$affiliate_mid"},
                             count: {$sum: 1}
                         }},
                         { $group:{
                             _id: {billing_dtm: "$_id.billing_dtm"},
-                            history: { $push:  { status: "$_id.status", package_id: "$_id.package_id", count: "$count" }}
+                            history: { $push:  { status: "$_id.status", package_id: "$_id.package_id", affiliate: "$_id.affiliate", affiliate_mid: "$_id.affiliate_mid", count: "$count" }}
                         }},
                         { $project: {
                             _id: 0,
