@@ -2,14 +2,14 @@ const env = process.env.NODE_ENV || 'development';
 
 let config = {
     development: {
-        port: '3006',
+        port: '5005',
         mongoDB: {
             goonjpaywall: 'mongodb://localhost:27017',
             goonj_paywall_reports: 'mongodb://localhost:27017/goonj_paywall_reports'
         }
     },
     staging: {
-        port: '3006',
+        port: '5005',
         mongoDB: {
             goonjpaywall: 'mongodb://mongodb:27017',
             goonj_paywall_reports: 'mongodb://mongodb:27017/goonj_paywall_reports'
