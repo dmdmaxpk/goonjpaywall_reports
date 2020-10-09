@@ -92,7 +92,7 @@ function computeAffiliateData(subscriptionsRawData) {
             else if (history.status === 'trial')
                 statusWiseObj = _.clone(wiseMidsCount(history, 'trial', statusWiseObj));
             else if (history.status === 'Affiliate callback sent')
-                statusWiseObj = _.clone(wiseMidsCount(history, allback_sent, statusWiseObj));
+                statusWiseObj = _.clone(wiseMidsCount(history, 'callback_sent', statusWiseObj));
 
             //collect data => package wise, get Mids count
             if (history.package_id === 'QDfC')
@@ -218,7 +218,7 @@ function cloneStatusWiseObj() {
     return {
         success: mids,
         trial: mids,
-        allback_sent: mids,
+        callback_sent: mids,
         added_dtm: '',
         added_dtm_hours: ''
     }
