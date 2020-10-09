@@ -232,6 +232,9 @@ class SubscriptionRepository {
                                             { $and:[
                                                 {$eq: ["$subscriber_id", "$$subscriber_id" ]},
                                                 {$eq: ["$package_id", "$$package_id" ]},
+                                                {$in: ["$billing_status",
+                                                    [ "Success", "trial", "Affiliate callback sent" ]
+                                                ]},
                                                 {$gt: ["$billing_dtm", new Date(from)]},
                                                 {$lt: ["$billing_dtm", new Date(to)]}
                                             ]}
@@ -241,15 +244,30 @@ class SubscriptionRepository {
                             }
                         },
                         { $unwind: "$history" },
+                        { $project:{
+                            status: "$history.billing_status",
+                            package_id: "$history.package_id",
+                            day: { "$dayOfMonth" : "$history.billing_dtm"},
+                            month: { "$month" : "$history.billing_dtm" },
+                            year:{ "$year": "$history.billing_dtm" }
+                        }},
+                        { $project:{
+                            billing_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
+                            status: "$status",
+                            package_id: "$package_id"
+                        }},
                         { $group:{
-                            _id: {"status": "$history.billing_status", "package_id": "$history.package_id"},
-                            data: { $push: { affiliate_mid: "$affiliate_mid", added_dtm: "$added_dtm"}}
+                            _id: {billing_dtm: "$billing_dtm", status: "$status", package_id: "$package_id"},
+                            count: {$sum: 1}
+                        }},
+                        { $group:{
+                            _id: {billing_dtm: "$_id.billing_dtm"},
+                            history: { $push:  { status: "$_id.status", package_id: "$_id.package_id", count: "$count" }}
                         }},
                         { $project: {
-                            status: "$_id.status",
-                            package_id: "$_id.package_id",
-                            subscriptions: "$data",
-                            _id: 0
+                            _id: 0,
+                            billing_dtm: "$_id.billing_dtm",
+                            history: "$history"
                         }}
                     ]).toArray(function(err, items) {
                         if(err){

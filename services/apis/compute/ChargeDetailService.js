@@ -604,7 +604,6 @@ function updateDataArrs(innerObj, type, mode, dataObj, dayDataObj, weeklyDataObj
 
     let subType;
     subType = (mode === 'charge_details') ? 'full' : 'expire';
-    subType = (mode === 'transacting_subscriber') ? 'full' : 'expire';
     if (innerObj[type][subType]){
         dataObj[type][subType] = dataObj[type][subType] + innerObj[type][subType];
         dayDataObj[type][subType] = dayDataObj[type][subType] + innerObj[type][subType];

@@ -33,7 +33,8 @@ computeAffiliateReports = async(req, res) => {
             computedData = computeAffiliateData(subscriptions);
             console.log('computedData : ', computedData);
 
-            insertNewRecord(computedData.subscriptionsStatusWise, computedData.subscriptionsPackageWise, new Date(setDate(fromDate, 0, 0, 0, 0)));
+            //affiliateWise, statusWise, packageWise, sourceWise
+            insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, new Date(setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
@@ -55,114 +56,171 @@ computeAffiliateReports = async(req, res) => {
 
 function computeAffiliateData(subscriptionsRawData) {
 
-    let rawData, packageSubObj, statusSubObj, outerObj, subscription, outer_added_dtm, inner_added_dtm, dateInMili,
-        subscriptionsPackageWise = [], subscriptionsStatusWise = [];
+    let rawData, statusWiseObj, packageWiseObj, sourceWiseObj, affiliateObj, history, billing_dtm,
+        affiliateWise = [], statusWise = [], packageWise = [], sourceWise = [];
     for (let i=0; i < subscriptionsRawData.length; i++) {
 
         rawData = subscriptionsRawData[i];
-        packageSubObj = _.clone(clonePackageSubObj());
-        statusSubObj = _.clone(cloneStatusSubObj());
+        affiliateObj = _.clone(cloneAffilateObj());
+        statusWiseObj = _.clone(cloneStatusWiseObj());
+        packageWiseObj = _.clone(clonePackageWiseObj());
+        sourceWiseObj = _.clone(cloneSourceWiseObj());
 
-        for (let j = 0; j < rawData.subscriptions.length; j++) {
-            outerObj = rawData.subscriptions[j];
-            outer_added_dtm = setDate(new Date(outerObj.added_dtm), null, 0, 0, 0).getTime();
+        billing_dtm = setDate(new Date(rawData.billing_dtm), null, 0, 0, 0).getTime();
+        for (let j = 0; j < rawData.history.length; j++) {
+            history = rawData.history[j];
 
-            if (dateInMili !== outer_added_dtm) {
-                for (let k = 0; k < rawData.subscriptions.length; k++) {
-                    subscription = rawData.subscriptions[k];
-                    inner_added_dtm = setDate(new Date(subscription.added_dtm), null, 0, 0, 0).getTime();
-
-                    if (outer_added_dtm === inner_added_dtm) {
-                        dateInMili = inner_added_dtm;
-
-                        //collect data - package wise
-                        if (rawData.package_id) {
-                            if (rawData.package_id === 'QDfC')
-                                packageSubObj = updateMidsCount(subscription, packageSubObj, 'QDfC');
-                            else if (rawData.package_id === 'QDfG')
-                                packageSubObj = updateMidsCount(subscription, packageSubObj, 'QDfG');
-                        }
-
-                        //collect data - billing status wise
-                        if (rawData.status) {
-                            if (rawData.status === 'trial')
-                                statusSubObj = updateMidsCount(subscription, statusSubObj, 'trial');
-                            else if (rawData.status === 'graced')
-                                statusSubObj = updateMidsCount(subscription, statusSubObj, 'graced');
-                            else if (rawData.status === 'Success')
-                                statusSubObj = updateMidsCount(subscription, statusSubObj, 'success');
-                            else if (rawData.status === 'Affiliate callback sent')
-                                statusSubObj = updateMidsCount(subscription, statusSubObj, 'affiliate_callback_sent');
-                            else if (rawData.status === 'graced_and_stream_stopped')
-                                statusSubObj = updateMidsCount(subscription, statusSubObj, 'graced_and_stream_stopped');
-                            else if (rawData.status === 'direct-billing-tried-but-failed')
-                                statusSubObj = updateMidsCount(subscription, statusSubObj, 'direct_billing_tried_but_failed');
-                            else if (rawData.status === 'package_change_upon_user_request')
-                                statusSubObj = updateMidsCount(subscription, statusSubObj, 'package_change_upon_user_request');
-                            else if (rawData.status === 'switch-package-request-tried-but-failed')
-                                statusSubObj = updateMidsCount(subscription, statusSubObj, 'switch_package_request_tried_but_failed');
-                            else if (rawData.status === 'unsubscribe-request-received-and-expired')
-                                statusSubObj = updateMidsCount(subscription, statusSubObj, 'unsubscribe_request_received_and_expired');
-                            else if (rawData.status === 'subscription-request-received-for-the-same-package')
-                                statusSubObj = updateMidsCount(subscription, statusSubObj, 'subscription_request_received_for_the_same_package');
-                            else if (rawData.status === 'subscription-request-received-for-the-same-package-after-unsub')
-                                statusSubObj = updateMidsCount(subscription, statusSubObj, 'subscription_request_received_for_the_same_package_after_unsub');
-                        }
-
-                        packageSubObj.added_dtm = subscription.added_dtm;
-                        packageSubObj.added_dtm_hours = setDate(new Date(subscription.added_dtm), null, 0, 0, 0);
-
-                        statusSubObj.added_dtm = subscription.added_dtm;
-                        statusSubObj.added_dtm_hours = setDate(new Date(subscription.added_dtm), null, 0, 0, 0);
-                    }
+            //collect data => billing_status to package - then package to affiliate_type, get mids count
+            if (history.status === 'Success') {
+                if (history.package_id === 'QDfC') {
+                    if (history.source === "HE")
+                        affiliateObj = affliateWiseMidsCount(history, history.package_id, history.source, affiliateObj);
+                    else if (history.source === "affiliate_web")
+                        affiliateObj = affliateWiseMidsCount(history, history.package_id, history.source, affiliateObj);
                 }
-                subscriptionsPackageWise.push(packageSubObj);
-                subscriptionsStatusWise.push(statusSubObj);
+                else if (history.package_id === 'QDfG') {
+                    if (history.source === "HE")
+                        affiliateObj = affliateWiseMidsCount(history, history.package_id, history.source, affiliateObj);
+                    else if (history.source === "affiliate_web")
+                        affiliateObj = affliateWiseMidsCount(history, history.package_id, history.source, affiliateObj);
+                }
             }
+
+            //collect data => billing_status wise, get Mids count
+            if (history.status === 'Success')
+                statusWiseObj = wiseMidsCount(history, history.status, statusWiseObj);
+            else if (history.status === 'trial')
+                statusWiseObj = wiseMidsCount(history, history.status, statusWiseObj);
+            else if (history.status === 'Affiliate callback sent')
+                statusWiseObj = wiseMidsCount(history, history.status, statusWiseObj);
+
+            //collect data => package wise, get Mids count
+            if (history.package_id === 'QDfC')
+                packageWiseObj = wiseMidsCount(history, history.package_id, packageWiseObj);
+            else if (history.package_id === 'QDfG')
+                packageWiseObj = wiseMidsCount(history, history.package_id, packageWiseObj);
+
+            //collect data => source wise, get Mids count
+            if (history.source === 'HE')
+                sourceWiseObj = wiseMidsCount(history, history.source, sourceWiseObj);
+            else if (history.source === 'affiliate_web')
+                sourceWiseObj = wiseMidsCount(history, history.source, sourceWiseObj);
+
         }
+
+        affiliateObj.added_dtm = history.added_dtm;
+        statusWiseObj.added_dtm = history.added_dtm;
+        packageWiseObj.added_dtm = history.added_dtm;
+        sourceWiseObj.added_dtm = history.added_dtm;
+        affiliateObj.added_dtm_hours = setDate(new Date(history.added_dtm), null, 0, 0, 0);
+        statusWiseObj.added_dtm_hours = setDate(new Date(history.added_dtm), null, 0, 0, 0);
+        packageWiseObj.added_dtm_hours = setDate(new Date(history.added_dtm), null, 0, 0, 0);
+        sourceWiseObj.added_dtm_hours = setDate(new Date(history.added_dtm), null, 0, 0, 0);
+
+        affiliateWise.push(affiliateObj);
+        statusWise.push(statusWiseObj);
+        packageWise.push(packageWiseObj);
+        sourceWise.push(sourceWiseObj);
     }
 
-    return {subscriptionsPackageWise: subscriptionsPackageWise, subscriptionsStatusWise: subscriptionsStatusWise};
+    //affiliateWise, statusWise, packageWise, sourceWise
+    return {affiliateWise: affiliateWise, statusWise: statusWise, packageWise: packageWise, sourceWise: sourceWise};
 }
 
-function insertNewRecord(subscriptionsStatusWise, subscriptionsPackageWise, dateString) {
+function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, dateString) {
+    //affiliateWise, statusWise, packageWise, sourceWise
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
-    console.log('=>=>=>=>=>=>=> subscriptionsPackageWise', subscriptionsPackageWise);
-    console.log('=>=>=>=>=>=>=> subscriptionsStatusWise', subscriptionsStatusWise);
+    console.log('=>=>=>=>=>=>=> affiliateWise', affiliateWise);
+    console.log('=>=>=>=>=>=>=> statusWise', statusWise);
+    console.log('=>=>=>=>=>=>=> packageWise', packageWise);
+    console.log('=>=>=>=>=>=>=> sourceWise', sourceWise);
     affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
         console.log('result subscriptions: ', result);
         if (result.length > 0) {
             result = result[0];
-            result.subscriptionsStatusWise = subscriptionsStatusWise;
-            result.subscriptionsPackageWise = subscriptionsPackageWise;
+            result.affiliateWise = affiliateWise;
+            result.statusWise = statusWise;
+            result.packageWise = packageWise;
+            result.sourceWise = sourceWise;
 
             affiliateRepo.updateReport(result, result._id);
         }
         else
-            affiliateRepo.createReport({subscriptionsPackageWise: subscriptionsStatusWise, subscriptionsStatusWise: subscriptionsPackageWise, date: dateString});
+            affiliateRepo.createReport({
+                affiliateWise: affiliateWise,
+                statusWise: statusWise,
+                packageWise: packageWise,
+                sourceWise: sourceWise,
+                date: dateString
+            });
     });
 }
 
-function updateMidsCount(subscription, dataObj, mid) {
-    if (subscription.affiliate_mid === '1')
-        dataObj[mid]['1'] = dataObj[mid]['1'] + 1;
-    else if (subscription.affiliate_mid === '1569')
-        dataObj[mid]['1569'] = dataObj[mid]['1569'] + 1;
-    else if (subscription.affiliate_mid === 'aff3')
-        dataObj[mid]['aff3'] = dataObj[mid]['aff3'] + 1;
-    else if (subscription.affiliate_mid === 'aff3a')
-        dataObj[mid]['aff3a'] = dataObj[mid]['aff3a'] + 1;
-    else if (subscription.affiliate_mid === 'gdn')
-        dataObj[mid]['gdn'] = dataObj[mid]['gdn'] + 1;
-    else if (subscription.affiliate_mid === 'gdn2')
-        dataObj[mid]['gdn2'] = dataObj[mid]['gdn2'] + 1;
-    else if (subscription.affiliate_mid === 'goonj')
-        dataObj[mid]['goonj'] = dataObj[mid]['goonj'] + 1;
+function affliateWiseMidsCount(history, package_id, affiliate, dataObj) {
+    if (history.affiliate_mid === '1')
+        dataObj['status'][package_id][affiliate]['1'] = dataObj['status'][package_id][affiliate]['1'] + history.count;
+    else if (history.affiliate_mid === '1569')
+        dataObj['status'][package_id][affiliate]['1569'] = dataObj['status'][package_id][affiliate]['1569'] + history.count;
+    else if (history.affiliate_mid === 'aff3')
+        dataObj['status'][package_id][affiliate]['aff3'] = dataObj['status'][package_id][affiliate]['aff3'] + history.count;
+    else if (history.affiliate_mid === 'aff3a')
+        dataObj['status'][package_id][affiliate]['aff3a'] = dataObj['status'][package_id][affiliate]['aff3a'] + history.count;
+    else if (history.affiliate_mid === 'gdn')
+        dataObj['status'][package_id][affiliate]['gdn'] = dataObj['status'][package_id][affiliate]['gdn'] + history.count;
+    else if (history.affiliate_mid === 'gdn2')
+        dataObj['status'][package_id][affiliate]['gdn2'] = dataObj['status'][package_id][affiliate]['gdn2'] + history.count;
+    else if (history.affiliate_mid === 'goonj')
+        dataObj['status'][package_id][affiliate]['goonj'] = dataObj['status'][package_id][affiliate]['goonj'] + history.count;
+
+    return dataObj;
+}
+function wiseMidsCount(history, wise, dataObj) {
+    if (history.affiliate_mid === '1')
+        dataObj[wise]['1'] = dataObj[wise]['1'] + history.count;
+    else if (history.affiliate_mid === '1569')
+        dataObj[wise]['1569'] = dataObj[wise]['1569'] + history.count;
+    else if (history.affiliate_mid === 'aff3')
+        dataObj[wise]['aff3'] = dataObj[wise]['aff3'] + history.count;
+    else if (history.affiliate_mid === 'aff3a')
+        dataObj[wise]['aff3a'] = dataObj[wise]['aff3a'] + history.count;
+    else if (history.affiliate_mid === 'gdn')
+        dataObj[wise]['gdn'] = dataObj[wise]['gdn'] + history.count;
+    else if (history.affiliate_mid === 'gdn2')
+        dataObj[wise]['gdn2'] = dataObj[wise]['gdn2'] + history.count;
+    else if (history.affiliate_mid === 'goonj')
+        dataObj[wise]['goonj'] = dataObj[wise]['goonj'] + history.count;
 
     return dataObj;
 }
 
-function clonePackageSubObj() {
+function cloneAffilateObj() {
+    let mids = _.clone({ '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 });
+    return {
+        status: {
+            QDfC: {
+                HE: mids,
+                affiliate_web: mids
+            },
+            QDfG: {
+                HE: mids,
+                affiliate_web: mids
+            }
+        },
+        added_dtm: '',
+        added_dtm_hours: ''
+    }
+}
+function cloneStatusWiseObj() {
+    let mids = _.clone({ '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 });
+    return {
+        success: mids,
+        trial: mids,
+        allback_sent: mids,
+        added_dtm: '',
+        added_dtm_hours: ''
+    }
+}
+function clonePackageWiseObj() {
     let mids = _.clone({ '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 });
     return {
         QDfC: mids,
@@ -171,20 +229,11 @@ function clonePackageSubObj() {
         added_dtm_hours: ''
     }
 }
-function cloneStatusSubObj() {
+function cloneSourceWiseObj() {
     let mids = _.clone({ '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 });
     return {
-        trial: mids,
-        graced: mids,
-        success: mids,
-        affiliate_callback_sent: mids,
-        graced_and_stream_stopped: mids,
-        direct_billing_tried_but_failed: mids,
-        package_change_upon_user_request: mids,
-        switch_package_request_tried_but_failed: mids,
-        unsubscribe_request_received_and_expired: mids,
-        subscription_request_received_for_the_same_package: mids,
-        subscription_request_received_for_the_same_package_after_unsub: mids,
+        HE: mids,
+        affiliate_web: mids,
         added_dtm: '',
         added_dtm_hours: ''
     }
