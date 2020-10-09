@@ -74,37 +74,37 @@ function computeAffiliateData(subscriptionsRawData) {
             if (history.status === 'Success') {
                 if (history.package_id === 'QDfC') {
                     if (history.affiliate === "HE")
-                        affiliateObj = _.clone(affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj));
+                        affiliateObj = affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj);
                     else if (history.affiliate === "affiliate_web")
-                        affiliateObj = _.clone(affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj));
+                        affiliateObj = affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj);
                 }
                 else if (history.package_id === 'QDfG') {
                     if (history.affiliate === "HE")
-                        affiliateObj = _.clone(affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj));
+                        affiliateObj = affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj);
                     else if (history.affiliate === "affiliate_web")
-                        affiliateObj = _.clone(affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj));
+                        affiliateObj = affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj);
                 }
             }
 
             //collect data => billing_status wise, get Mids count
             if (history.status === 'Success')
-                statusWiseObj = _.clone(wiseMidsCount(history, 'success', statusWiseObj));
+                statusWiseObj = wiseMidsCount(history, 'success', statusWiseObj);
             else if (history.status === 'trial')
-                statusWiseObj = _.clone(wiseMidsCount(history, 'trial', statusWiseObj));
+                statusWiseObj = wiseMidsCount(history, 'trial', statusWiseObj);
             else if (history.status === 'Affiliate callback sent')
-                statusWiseObj = _.clone(wiseMidsCount(history, 'callback_sent', statusWiseObj));
+                statusWiseObj = wiseMidsCount(history, 'callback_sent', statusWiseObj);
 
             //collect data => package wise, get Mids count
             if (history.package_id === 'QDfC')
-                packageWiseObj = _.clone(wiseMidsCount(history, 'QDfC', packageWiseObj));
+                packageWiseObj = wiseMidsCount(history, 'QDfC', packageWiseObj);
             else if (history.package_id === 'QDfG')
-                packageWiseObj = _.clone(wiseMidsCount(history, 'QDfG', packageWiseObj));
+                packageWiseObj = wiseMidsCount(history, 'QDfG', packageWiseObj);
 
             //collect data => source wise, get Mids count
             if (history.affiliate === 'HE')
-                sourceWiseObj = _.clone(wiseMidsCount(history, 'HE', sourceWiseObj));
+                sourceWiseObj = wiseMidsCount(history, 'HE', sourceWiseObj);
             else if (history.affiliate === 'affiliate_web')
-                sourceWiseObj = _.clone(wiseMidsCount(history, 'affiliate_web', sourceWiseObj));
+                sourceWiseObj = wiseMidsCount(history, 'affiliate_web', sourceWiseObj);
 
         }
 
@@ -130,12 +130,7 @@ function computeAffiliateData(subscriptionsRawData) {
 function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, dateString) {
     //affiliateWise, statusWise, packageWise, sourceWise
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
-    console.log('=>=>=>=>=>=>=> affiliateWise', affiliateWise);
-    console.log('=>=>=>=>=>=>=> statusWise', statusWise);
-    console.log('=>=>=>=>=>=>=> packageWise', packageWise);
-    console.log('=>=>=>=>=>=>=> sourceWise', sourceWise);
     affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
-        console.log('result subscriptions: ', result);
         if (result.length > 0) {
             result = result[0];
             result.affiliateWise = affiliateWise;
@@ -175,9 +170,6 @@ function affliateWiseMidsCount(history, package_id, affiliate, dataObj) {
     return dataObj;
 }
 function wiseMidsCount(history, wise, dataObj) {
-    console.log('wiseMidsCount::::::::::::: ');
-    console.log('wise: ', wise);
-    console.log('dataObj: ', dataObj);
     if (history.affiliate_mid === '1')
         dataObj[wise]['1'] = dataObj[wise]['1'] + history.count;
     else if (history.affiliate_mid === '1569')
