@@ -73,16 +73,16 @@ function computeAffiliateData(subscriptionsRawData) {
             //collect data => billing_status to package - then package to affiliate_type, get mids count
             if (history.status === 'Success') {
                 if (history.package_id === 'QDfC') {
-                    if (history.source === "HE")
-                        affiliateObj = _.clone(affliateWiseMidsCount(history, history.package_id, history.source, affiliateObj));
-                    else if (history.source === "affiliate_web")
-                        affiliateObj = _.clone(affliateWiseMidsCount(history, history.package_id, history.source, affiliateObj));
+                    if (history.affiliate === "HE")
+                        affiliateObj = _.clone(affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj));
+                    else if (history.affiliate === "affiliate_web")
+                        affiliateObj = _.clone(affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj));
                 }
                 else if (history.package_id === 'QDfG') {
-                    if (history.source === "HE")
-                        affiliateObj = _.clone(affliateWiseMidsCount(history, history.package_id, history.source, affiliateObj));
-                    else if (history.source === "affiliate_web")
-                        affiliateObj = _.clone(affliateWiseMidsCount(history, history.package_id, history.source, affiliateObj));
+                    if (history.affiliate === "HE")
+                        affiliateObj = _.clone(affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj));
+                    else if (history.affiliate === "affiliate_web")
+                        affiliateObj = _.clone(affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj));
                 }
             }
 
@@ -101,9 +101,9 @@ function computeAffiliateData(subscriptionsRawData) {
                 packageWiseObj = _.clone(wiseMidsCount(history, 'QDfG', packageWiseObj));
 
             //collect data => source wise, get Mids count
-            if (history.source === 'HE')
+            if (history.affiliate === 'HE')
                 sourceWiseObj = _.clone(wiseMidsCount(history, 'HE', sourceWiseObj));
-            else if (history.source === 'affiliate_web')
+            else if (history.affiliate === 'affiliate_web')
                 sourceWiseObj = _.clone(wiseMidsCount(history, 'affiliate_web', sourceWiseObj));
 
         }
