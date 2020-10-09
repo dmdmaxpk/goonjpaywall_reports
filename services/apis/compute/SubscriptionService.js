@@ -94,7 +94,7 @@ activeInactiveSubscriptionReport = async (rawDataSet, params) =>{
         // add date range (start-date, end-date)
         dataObj = _.clone(dataObj);
         dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
-        return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
         return reportsTransformer.transformTheData(false, params, 'Data not exist.');
@@ -205,7 +205,7 @@ packageWiseSubscriptionReport = async (rawDataSet, params) =>{
         // add date range (start-date, end-date)
         dataObj = _.clone(dataObj);
         dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
-        return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
         return reportsTransformer.transformTheData(false, params, 'Data not exist.');
@@ -323,7 +323,7 @@ sourceWiseSubscriptionReport = async (rawDataSet, params) =>{
         // add date range (start-date, end-date)
         dataObj = _.clone(dataObj);
         dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
-        return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
         return reportsTransformer.transformTheData(false, params, 'Data not exist.');
@@ -420,7 +420,7 @@ paywallWiseSubscriptionReport = async (rawDataSet, params) =>{
         // date range (start-date, end-date)
         dataObj = _.clone(dataObj);
         dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
-        return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
         return reportsTransformer.transformTheData(false, params, 'Data not exist.');
@@ -557,7 +557,7 @@ affliateMidWiseSubscriptionReport = async (rawDataSet, params) =>{
         // date range (start-date, end-date)
         dataObj = _.clone(dataObj);
         dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
-        return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
         return reportsTransformer.transformTheData(false, params, 'Data not exist.');
@@ -786,7 +786,7 @@ computeUnSubscriptionsSourceWiseReport = async (rawDataSet, params) =>{
         // date range (start-date, end-date)
         dataObj = _.clone(dataObj);
         dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
-        return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
         return reportsTransformer.transformTheData(false, params, 'Data not exist.');
@@ -875,7 +875,7 @@ callbackSendSubscriptionReport = async (rawDataSet, params) =>{
         // date range (start-date, end-date)
         dataObj = _.clone(dataObj);
         dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
-        return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
         return reportsTransformer.transformTheData(false, params, 'Data not exist.');
@@ -976,13 +976,12 @@ successRateSubscriptionReport = async (rawDataSet, params) =>{
         // date range (start-date, end-date)
         dataObj = _.clone(dataObj);
         dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
-        return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
         return reportsTransformer.transformTheData(false, params, 'Data not exist.');
     }
 };
-
 
 // Clone Objects to initialise the properties - Unsubscribe
 function cloneUnsubscribeObjectSourceWiseObj() {
