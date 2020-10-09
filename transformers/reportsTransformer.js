@@ -11,7 +11,7 @@ class ReportsTransformer {
     }
 
     //Transform The Data
-    transformTheData (status, totalCount, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, message) {
+    transformTheData (treeLevel, status, totalCount, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, message) {
         return {
             status: status,
             statusTest: (status ? 'Success' : 'Failed'),
@@ -23,7 +23,8 @@ class ReportsTransformer {
             dayWiseTotalCount: dayWiseTotalCount,
             weekWiseTotalCount: weekWiseTotalCount,
             monthWiseTotalCount: monthWiseTotalCount,
-            message: message
+            treeLevel: treeLevel,
+            message: message,
         };
     }
 }

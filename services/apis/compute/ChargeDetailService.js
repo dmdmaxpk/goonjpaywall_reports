@@ -158,7 +158,7 @@ computeChargeDetailsSourceWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Data not exist.');
+        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
     }
 };
 computeChargeDetailsPackageWiseReport = async (rawDataSet, params) =>{
@@ -275,7 +275,7 @@ computeChargeDetailsPackageWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Data not exist.');
+        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
     }
 };
 computeChargeDetailsPaywallWiseReport = async (rawDataSet, params) =>{
@@ -376,7 +376,7 @@ computeChargeDetailsPaywallWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Data not exist.');
+        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
     }
 };
 computeChargeDetailsOperatorWiseReport = async (rawDataSet, params) =>{
@@ -477,7 +477,7 @@ computeChargeDetailsOperatorWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Data not exist.');
+        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
     }
 };
 computeFullAndMicroChargeDetailsReport = async (rawDataSet, params) =>{
@@ -576,7 +576,7 @@ computeFullAndMicroChargeDetailsReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Data not exist.');
+        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
     }
 };
 

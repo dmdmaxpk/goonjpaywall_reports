@@ -107,7 +107,7 @@ computeTrialSourceWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Data not exist.');
+        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
     }
 };
 
