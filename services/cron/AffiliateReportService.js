@@ -33,7 +33,6 @@ computeAffiliateReports = async(req, res) => {
             computedData = computeAffiliateData(subscriptions);
             console.log('computedData : ', computedData);
 
-            return;
             //affiliateWise, statusWise, packageWise, sourceWise
             insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, new Date(setDate(fromDate, 0, 0, 0, 0)));
         }
@@ -95,7 +94,6 @@ function computeAffiliateData(subscriptionsRawData) {
             else if (history.status === 'Affiliate callback sent')
                 statusWiseObj = _.clone(wiseMidsCount(history, allback_sent, statusWiseObj));
 
-            return;
             //collect data => package wise, get Mids count
             if (history.package_id === 'QDfC')
                 packageWiseObj = _.clone(wiseMidsCount(history, 'QDfC', packageWiseObj));
