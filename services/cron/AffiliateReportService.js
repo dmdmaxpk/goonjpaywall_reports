@@ -33,6 +33,7 @@ computeAffiliateReports = async(req, res) => {
             computedData = computeAffiliateData(subscriptions);
             console.log('computedData : ', computedData);
 
+            return;
             //affiliateWise, statusWise, packageWise, sourceWise
             insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, new Date(setDate(fromDate, 0, 0, 0, 0)));
         }
@@ -100,6 +101,7 @@ function computeAffiliateData(subscriptionsRawData) {
             else if (history.package_id === 'QDfG')
                 packageWiseObj = wiseMidsCount(history, 'QDfG', packageWiseObj);
 
+            return;
             //collect data => source wise, get Mids count
             if (history.affiliate === 'HE')
                 sourceWiseObj = wiseMidsCount(history, 'HE', sourceWiseObj);
