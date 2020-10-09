@@ -583,19 +583,19 @@ computeFullAndMicroChargeDetailsReport = async (rawDataSet, params) =>{
 
 // Clone Objects to initialise the properties - Net Addition or Charge Details
 function cloneObjectSourceWiseObj() {
-    let obj =  { expire: 0, system: 0, total: 0 };
+    let obj =  { full: 0, micro: 0, total: 0 };
     return { app: _.clone(obj), web: _.clone(obj), HE: _.clone(obj), sms: _.clone(obj), gdn2: _.clone(obj), CP: _.clone(obj), null: _.clone(obj), affiliate_web: _.clone(obj), system_after_grace_end: _.clone(obj) }
 }
 function cloneObjectPackageWiseObj() {
-    let obj =  { expire: 0, system: 0, total: 0 };
+    let obj =  { full: 0, micro: 0, total: 0 };
     return { dailyLive: _.clone(obj), weeklyLive: _.clone(obj), dailyComedy: _.clone(obj), weeklyComedy: _.clone(obj) }
 }
 function cloneObjectOperatorWiseObj() {
-    let obj =  { expire: 0, system: 0, total: 0 };
+    let obj =  { full: 0, micro: 0, total: 0 };
     return { telenor: _.clone(obj), easypaisa: _.clone(obj) }
 }
 function cloneObjectPaywallWiseObj() {
-    let obj =  { expire: 0, system: 0, total: 0 };
+    let obj =  { full: 0, micro: 0, total: 0 };
     return { live: _.clone(obj), comedy: _.clone(obj) }
 }
 

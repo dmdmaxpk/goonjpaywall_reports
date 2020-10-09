@@ -601,23 +601,18 @@ function cloneObjectPaywallWiseObj() {
 
 // Populate object's properties with data - Net Addition or Charge Details
 function updateDataArrs(innerObj, type, mode, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj) {
-
-    let subType;
-    subType = (mode === 'charge_details') ? 'full' : 'expire';
-    subType = (mode === 'transacting_subscriber') ? 'full' : 'expire';
-    if (innerObj[type][subType]){
-        dataObj[type][subType] = dataObj[type][subType] + innerObj[type][subType];
-        dayDataObj[type][subType] = dayDataObj[type][subType] + innerObj[type][subType];
-        weeklyDataObj[type][subType] = weeklyDataObj[type][subType] + innerObj[type][subType];
-        monthlyDataObj[type][subType] = monthlyDataObj[type][subType] + innerObj[type][subType];
+    if (innerObj[type]['expire']){
+        dataObj[type]['expire'] = dataObj[type]['expire'] + innerObj[type]['expire'];
+        dayDataObj[type]['expire'] = dayDataObj[type]['expire'] + innerObj[type]['expire'];
+        weeklyDataObj[type]['expire'] = weeklyDataObj[type]['expire'] + innerObj[type]['expire'];
+        monthlyDataObj[type]['expire'] = monthlyDataObj[type]['expire'] + innerObj[type]['expire'];
     }
 
-    subType = (mode === 'charge_details') ? 'micro' : 'system';
-    if(innerObj[type][subType]){
-        dataObj[type][subType] = dataObj[type][subType] + innerObj[type][subType];
-        dayDataObj[type][subType] = dayDataObj[type][subType] + innerObj[type][subType];
-        weeklyDataObj[type][subType] = weeklyDataObj[type][subType] + innerObj[type][subType];
-        monthlyDataObj[type][subType] = monthlyDataObj[type][subType] + innerObj[type][subType];
+    if(innerObj[type]['system']){
+        dataObj[type]['system'] = dataObj[type]['system'] + innerObj[type]['system'];
+        dayDataObj[type]['system'] = dayDataObj[type]['system'] + innerObj[type]['system'];
+        weeklyDataObj[type]['system'] = weeklyDataObj[type]['system'] + innerObj[type]['system'];
+        monthlyDataObj[type]['system'] = monthlyDataObj[type]['system'] + innerObj[type]['system'];
     }
     if(innerObj[type].total){
         dataObj[type].total = dataObj[type].total + innerObj[type].total;
