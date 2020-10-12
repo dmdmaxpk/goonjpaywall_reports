@@ -104,10 +104,10 @@ function computeHelogsData(helogsRawData) {
 
         }
 
-        helogsObj.added_dtm = helog.added_dtm;
-        sourceObj.added_dtm = helog.added_dtm;
-        helogsObj.added_dtm_hours = setDate(new Date(helog.added_dtm), null, 0, 0, 0);
-        sourceObj.added_dtm_hours = setDate(new Date(helog.added_dtm), null, 0, 0, 0);
+        helogsObj.added_dtm = rawData.added_dtm;
+        sourceObj.added_dtm = rawData.added_dtm;
+        helogsObj.added_dtm_hours = setDate(new Date(rawData.added_dtm), null, 0, 0, 0);
+        sourceObj.added_dtm_hours = setDate(new Date(rawData.added_dtm), null, 0, 0, 0);
 
         sourceWise.push(sourceObj);
         helogsWise.push(helogsObj);
