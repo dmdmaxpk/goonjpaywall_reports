@@ -7,9 +7,8 @@ class PageViewRepo {
                 if (!err) {
                     collection.aggregate([
                         { $match:{
-                            method:'pageview', $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
-                        }},
-                        { $limit: 10 },
+                            $and:[{method:'pageview'}, {added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                        }}
                     ]).toArray(function(err, items) {
                         if(err){
                             console.log('getPageViewsByDateRange - err: ', err.message);
