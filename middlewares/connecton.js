@@ -16,15 +16,14 @@ let connect = async (req, res, next) => {
 };
 
 let updateConnection = async (req, res, next, connectType) => {
+
+    console.log('updateConnection: ', updateConnection);
     await MongoClient.connect(config.mongoDB[connectType], async function(err, client) {
         if(err){
             console.error(`Error: ${err.message}`);
             res.status(403).send(connectType, "  - Database Access Denied");
         }else{
             req.db = client.db(connectType);
-
-            console.log('req.db: ', req.db);
-
             helper.setDBInstance(req.db);
             next();
         }
