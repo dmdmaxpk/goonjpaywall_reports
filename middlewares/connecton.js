@@ -3,11 +3,7 @@ const config = require('./../config');
 const helper = require('./../helper/helper');
 
 let connect = async (req, res, next) => {
-
-    console.log('req: ', req.url);
     let connectType = req.url.includes('logger') ? 'logger' : 'goonjpaywall';
-    console.log('connectType: ', connectType);
-
     if (!helper.getDBInstance())
         await updateConnection(req, res, next, connectType);
     else{
@@ -26,6 +22,9 @@ let updateConnection = async (req, res, next, connectType) => {
             res.status(403).send(connectType, "  - Database Access Denied");
         }else{
             req.db = client.db(connectType);
+
+            console.log('req.db: ', req.db);
+
             helper.setDBInstance(req.db);
             next();
         }
