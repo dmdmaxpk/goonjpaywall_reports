@@ -12,11 +12,11 @@ computeHelogsReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    day = req.day ? req.day : 1;
+    day = req.day ? req.day : 21;
     day = day > 9 ? day : '0'+Number(day);
     req.day = day;
 
-    month = req.month ? req.month : 2;
+    month = req.month ? req.month : 4;
     month = month > 9 ? month : '0'+Number(month);
     req.month = month;
 
