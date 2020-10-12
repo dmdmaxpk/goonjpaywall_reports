@@ -17,7 +17,7 @@ let connect = async (req, res, next) => {
 
 let updateConnection = async (req, res, next, connectType) => {
 
-    console.log('updateConnection: ', updateConnection);
+    console.log('updateConnection: ');
     await MongoClient.connect(config.mongoDB[connectType], async function(err, client) {
         if(err){
             console.error(`Error: ${err.message}`);

@@ -7,7 +7,11 @@ class PageViewRepo {
                 if (!err) {
                     collection.aggregate([
                         { $match:{
-                            $and:[{method:'pageview'}, {added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                            $and:[
+                                {method:'pageview'},
+                                {added_dtm:{$gte:new Date("2020-09-01T00:00:00.000Z")}},
+                                {added_dtm:{$lte:new Date("2020-09-02T00:00:00.000Z")}}
+                            ]
                         }}
                     ]).toArray(function(err, items) {
                         if(err){
