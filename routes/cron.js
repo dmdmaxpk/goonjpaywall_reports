@@ -37,6 +37,6 @@ router.route('/compute-affiliate-reports')
     .get(connecton.connect, controller.computeAffiliateReports);
 
 router.route('/compute-page-view-reports')
-    .get(connecton.connect, controller.computePageViewReports);
+    .get(connecton.connect('logger'), controller.computePageViewReports);
 
 module.exports = router;

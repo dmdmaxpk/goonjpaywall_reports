@@ -2,10 +2,11 @@ var MongoClient = require('mongodb').MongoClient;
 const config = require('./../config');
 const helper = require('./../helper/helper');
 
-let connect = async (req, res, next) => {
-    if (!helper.getDBInstance()){
+let connect = async (req, res, dbType, next) => {
+
+    console.log('dbType: ', dbType);
+    if (!helper.getDBInstance())
         await updateConnection(req, res, next);
-    }
     else{
         req.db = helper.getDBInstance();
         next();
