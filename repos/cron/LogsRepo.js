@@ -9,8 +9,8 @@ class LogsRepo {
                         { $match:{
                             $and:[
                                 {mid: {"$in": ["1", "1569", "aff3", "aff3a", "goonj", "gdn", "gdn2"]}},
-                                {added_dtm:{$gte:new Date(from)}},
-                                {added_dtm:{$lte:new Date(to)}}
+                                {added_dtm:{$gte:new Date("2020-06-30T00:00:00.000Z")}},
+                                {added_dtm:{$lte:new Date("2020-06-30T23:59:59.000Z")}}
                             ]
                         }},
                         { $project:{
