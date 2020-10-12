@@ -33,26 +33,27 @@ computePageViewReports = async(req, res) => {
     pageViewRepo.getPageViewsByDateRange(req, fromDate, toDate).then( async function(pageviews) {
         console.log('pageviews: ', pageviews);
 
-        if (pageviews !== undefined && pageviews.length > 0){
+        if (pageviews.length > 0){
             finalList = computePageviewData(pageviews);
 
-            console.log('finalList.length : ', finalList.total.length, finalList);
-            if (finalList.total.length > 0)
-                insertNewRecord(finalList, computeDate(fromDate));
+            console.log('finalList.length : ', finalList.length, finalList);
+            // if (finalList.total.length > 0)
+            //     insertNewRecord(finalList, new Date(setDate(fromDate, 0, 0, 0, 0)));
+        }
 
-            req.day = Number(req.day) + 1;
-            console.log('computePageViewReports -> day : ', day, req.day, getDaysInMonth(month));
+        // Get compute data for next time slot
+        req.day = Number(req.day) + 1;
+        console.log('computePageViewReports -> day : ', day, req.day, getDaysInMonth(month));
 
-            if (req.day <= getDaysInMonth(month))
+        if (req.day <= getDaysInMonth(month))
+            computePageViewReports(req, res);
+        else{
+            req.day = 1;
+            req.month = Number(req.month) + 1;
+            console.log('computePageViewReports -> month : ', month, req.month, new Date().getMonth());
+
+            if (req.month <= new Date().getMonth())
                 computePageViewReports(req, res);
-            else{
-                req.day = 1;
-                req.month = Number(req.month) + 1;
-                console.log('computePageViewReports -> month : ', month, req.month, new Date().getMonth());
-
-                if (req.month <= new Date().getMonth())
-                    computePageViewReports(req, res);
-            }
         }
     });
 };
