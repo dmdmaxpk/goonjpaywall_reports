@@ -3,7 +3,7 @@ class PageViewRepo {
     async getPageViewsByDateRange (req, from, to) {
         return new Promise((resolve, reject) => {
             console.log('getPageViewsByDateRange: ', from, to);
-            req.db.collection('subscriptions', function (err, collection) {
+            req.db.collection('logs', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
                         { $match:{
