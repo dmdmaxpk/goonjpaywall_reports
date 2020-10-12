@@ -47,9 +47,6 @@ exports.computeCallbackSendReports = async (req,res) =>  {
 };
 
 exports.computePageViewReports = async (req,res) =>  {
-
-    console.log('computePageViewReports');
-    return;
     PageViewService.computePageViewReports(req,res);
     res.send("computePageViewReports - Executed\n");
 };
