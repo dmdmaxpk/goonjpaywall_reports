@@ -88,19 +88,19 @@ function computeHelogsData(helogsRawData) {
             //collect data => Affiliate mid wise, get its count
             //1, 1569, aff3a, aff3, goonj, gdn, gdn2
             if (helog.mid === '1')
-                helogsObj.mid['1'] = helogsObj.mid['1'] + 1;
+                helogsObj['1'] = helogsObj['1'] + 1;
             else if (helog.mid === '1569')
-                helogsObj.mid['1569'] = helogsObj.mid['1569'] + 1;
+                helogsObj['1569'] = helogsObj['1569'] + 1;
             else if (helog.mid === 'aff3a')
-                helogsObj.mid['aff3a'] = helogsObj.mid['aff3a'] + 1;
+                helogsObj['aff3a'] = helogsObj['aff3a'] + 1;
             else if (helog.mid === 'aff3')
-                helogsObj.mid['aff3'] = helogsObj.mid['aff3'] + 1;
+                helogsObj['aff3'] = helogsObj['aff3'] + 1;
             else if (helog.mid === 'goonj')
-                helogsObj.mid['goonj'] = helogsObj.mid['goonj'] + 1;
+                helogsObj['goonj'] = helogsObj['goonj'] + 1;
             else if (helog.mid === 'gdn')
-                helogsObj.mid['gdn'] = helogsObj.mid['gdn'] + 1;
+                helogsObj['gdn'] = helogsObj['gdn'] + 1;
             else if (helog.mid === 'gdn2')
-                helogsObj.mid['gdn2'] = helogsObj.mid['gdn2'] + 1;
+                helogsObj['gdn2'] = helogsObj['gdn2'] + 1;
 
         }
 
