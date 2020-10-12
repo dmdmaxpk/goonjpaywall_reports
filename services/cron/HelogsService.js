@@ -1,5 +1,5 @@
 const container = require("../../configurations/container");
-const reportsRepo = require('../../repos/apis/ReportsRepo');
+const affiliateRepo = require('../../repos/apis/AffiliateRepo');
 
 const logsRepo = container.resolve('logsRepo');
 const  _ = require('lodash');
@@ -36,8 +36,7 @@ computeHelogsReports = async(req, res) => {
         if (helogsData.length > 0){
             finalList = computeHelogsData(helogsData);
 
-            console.log('finalList.length : ', finalList.length, finalList);
-            if (finalList.length > 0)
+            console.log('finalList.length : ', finalList);
                 insertNewRecord(finalList, new Date(setDate(fromDate, 0, 0, 0, 0)));
         }
 
@@ -119,15 +118,15 @@ function computeHelogsData(helogsRawData) {
 
 function insertNewRecord(data, dateString) {
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
-    reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
+    affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
         console.log('data helogs: ', data);
         if (result.length > 0){
             result = result[0];
             result.helogs = data;
-            reportsRepo.updateReport(result, result._id);
+            affiliateRepo.updateReport(result, result._id);
         }
         else
-            reportsRepo.createReport({helogs: data, date: dateString});
+            affiliateRepo.createReport({helogs: data, date: dateString});
     });
 }
 
