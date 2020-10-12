@@ -56,21 +56,20 @@ computeAffiliateReports = async(req, res) => {
 
 function computeAffiliateData(subscriptionsRawData) {
 
-    let rawData, statusWiseObj, packageWiseObj, sourceWiseObj, affiliateObj, history, billing_dtm, result,
+    let rawData, statusWiseObj, packageWiseObj, sourceWiseObj, affiliateObj, history,
         affiliateWise = [], statusWise = [], packageWise = [], sourceWise = [];
     for (let i=0; i < subscriptionsRawData.length; i++) {
 
         rawData = subscriptionsRawData[i];
-        affiliateObj = _.clone(cloneAffilateObj());
+        affiliateObj = _.clone(cloneAffiliateObj());
         statusWiseObj = _.clone(cloneStatusWiseObj());
         packageWiseObj = _.clone(clonePackageWiseObj());
         sourceWiseObj = _.clone(cloneSourceWiseObj());
 
-        billing_dtm = setDate(new Date(rawData.billing_dtm), null, 0, 0, 0).getTime();
         for (let j = 0; j < rawData.history.length; j++) {
             history = rawData.history[j];
 
-            //collect data => billing_status to package - then package to affiliate_type, get mids count
+            //collect data => billing_status to package - then package to affiliate_type, then get mids count
             if (history.status === 'Success') {
                 if (history.package_id === 'QDfC') {
                     if (history.affiliate === "HE")
@@ -193,7 +192,7 @@ function wiseMidsCount(history, wise, dataObj) {
     return dataObj;
 }
 
-function cloneAffilateObj() {
+function cloneAffiliateObj() {
     let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
     return {
         status: {

@@ -3,7 +3,7 @@ const SubscriberService = require('../services/cron/SubscriberService');
 const SubscriptionService = require('../services/cron/SubscriptionService');
 const BillingHistoryService = require('../services/cron/BillingHistoryService');
 const CallbackSendService = require('../services/cron/CallbackSendService');
-const PageViewService = require('../services/cron/PageViewService');
+const HelogsService = require('../services/cron/HelogsService');
 const RevenueNetAdditionService = require('../services/cron/RevenueNetAdditionService');
 const SubscriptionBillingHistoryService = require('../services/cron/SubscriptionBillingHistoryService');
 const TransactionsBillingHistoryService = require('../services/cron/TransactionsBillingHistoryService');
@@ -46,9 +46,9 @@ exports.computeCallbackSendReports = async (req,res) =>  {
     res.send("computeCallbackSendReports - Executed\n");
 };
 
-exports.computePageViewReports = async (req,res) =>  {
-    PageViewService.computePageViewReports(req,res);
-    res.send("computePageViewReports - Executed\n");
+exports.computeHelogsReports = async (req,res) =>  {
+    HelogsService.computeHelogsReports(req,res);
+    res.send("computeHelogsReports - Executed\n");
 };
 
 exports.computeTransactionsAvgReports = async (req,res) =>  {

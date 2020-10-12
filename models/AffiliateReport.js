@@ -9,6 +9,7 @@ const affiliateReport = new Schema({
     statusWise: {type: Object, default: undefined},
     packageWise: {type: Object, default: undefined},
     sourceWise: {type: Object, default: undefined},
+    helogs: {type: Object, default: undefined},
     date: { type: Date, default: Date.now }
 }, { strict: true });
 

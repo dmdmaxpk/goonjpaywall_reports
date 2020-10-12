@@ -7,7 +7,7 @@ const container = awilix.createContainer({
 const UserRepository = require('../repos/cron/UserRepo');
 const BillingHistoryRepository = require('../repos/cron/BillingHistoryRepo');
 const SubscriptionRepository = require('../repos/cron/SubscriptionRepo');
-const PageViewRepo = require('../repos/cron/PageViewRepo');
+const LogsRepo = require('../repos/cron/LogsRepo');
 const SubscriberRepository = require('../repos/cron/SubscriberRepo');
 const TransactionsRepo = require('../repos/cron/TransactionsRepo');
 
@@ -23,7 +23,7 @@ container.register({
     billingHistoryRepository: awilix.asClass(BillingHistoryRepository).singleton(),
     userRepository: awilix.asClass(UserRepository).singleton(),
     subscriptionRepository: awilix.asClass(SubscriptionRepository).singleton(),
-    pageViewRepo: awilix.asClass(PageViewRepo).singleton(),
+    logsRepo: awilix.asClass(LogsRepo).singleton(),
     subscriberRepository: awilix.asClass(SubscriberRepository).singleton(),
     transactionsRepo: awilix.asClass(TransactionsRepo).singleton(),
 
