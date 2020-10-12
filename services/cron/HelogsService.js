@@ -30,7 +30,7 @@ computeHelogsReports = async(req, res) => {
     toDate.setSeconds(59);
 
     console.log('computeHelogsReports: ', fromDate, toDate);
-    logsRepo.getHelogsByDateRange(req, fromDate.trim(), toDate.trim()).then( async function(helogsData) {
+    logsRepo.getHelogsByDateRange(req, fromDate, toDate).then( async function(helogsData) {
         console.log('helogsData: ', helogsData);
 
         if (helogsData.length > 0){
