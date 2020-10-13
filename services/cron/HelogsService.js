@@ -13,7 +13,7 @@ computeHelogsReports = async(req, res) => {
     * Script will execute to fetch data as per day
     * */
 
-    dateData = helper.computeNextDate(req);
+    dateData = helper.computeNextDate(req, 30, 6);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -61,7 +61,7 @@ computeHelogsUniqueSuccessReports = async(req, res) => {
     * Script will execute to fetch data as per day
     * */
 
-    dateData = helper.computeNextDate(req);
+    dateData = helper.computeNextDate(req, 30, 6);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;

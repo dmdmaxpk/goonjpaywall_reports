@@ -36,15 +36,15 @@ class Helper {
     }
 
 
-    static computeNextDate(req){
+    static computeNextDate(req, sDay, sMonth){
 
         let fromDate, toDate, day, month;
 
-        day = req.day ? req.day : 30;
+        day = req.day ? req.day : sDay;
         day = day > 9 ? day : '0'+Number(day);
         req.day = day;
 
-        month = req.month ? req.month : 6;
+        month = req.month ? req.month : sMonth;
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
