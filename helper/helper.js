@@ -1,4 +1,6 @@
 
+const  _ = require('lodash');
+
 //Helper class - define all basic functions
 class Helper {
 
