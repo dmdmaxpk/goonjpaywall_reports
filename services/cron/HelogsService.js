@@ -149,19 +149,19 @@ function computeHelogsData(helogsRawData) {
             //collect data => Affiliate mid wise, get its count
             //1, 1569, aff3a, aff3, goonj, gdn, gdn2
             if (helog.mid === '1')
-                helogsObj['1'] = Number(helogsObj['1']) + Number(helogsObj.count);
+                helogsObj['1'] = helogsObj['1'] + helog.count;
             else if (helog.mid === '1569')
-                helogsObj['1569'] = Number(helogsObj['1569']) + Number(helogsObj.count);
+                helogsObj['1569'] = helogsObj['1569'] + helog.count;
             else if (helog.mid === 'aff3a')
-                helogsObj['aff3a'] = Number(helogsObj['aff3a']) + Number(helogsObj.count);
+                helogsObj['aff3a'] = helogsObj['aff3a'] + helog.count;
             else if (helog.mid === 'aff3')
-                helogsObj['aff3'] = Number(helogsObj['aff3']) + Number(helogsObj.count);
+                helogsObj['aff3'] = helogsObj['aff3'] + helog.count;
             else if (helog.mid === 'goonj')
-                helogsObj['goonj'] = Number(helogsObj['goonj']) + Number(helogsObj.count);
+                helogsObj['goonj'] = helogsObj['goonj'] + helog.count;
             else if (helog.mid === 'gdn')
-                helogsObj['gdn'] = Number(helogsObj['gdn']) + Number(helogsObj.count);
+                helogsObj['gdn'] = helogsObj['gdn'] + helog.count;
             else if (helog.mid === 'gdn2')
-                helogsObj['gdn2'] = Number(helogsObj['gdn2']) + Number(helogsObj.count);
+                helogsObj['gdn2'] = helogsObj['gdn2'] + helog.count;
         }
 
         sourceWise.push(sourceObj);
@@ -239,19 +239,19 @@ function sourceWiseMidsCount(helog, source, dataObj) {
     console.log('source: ', source);
 
     if (helog.mid === '1')
-        dataObj[source]['1'] = Number(dataObj[source]['1']) + Number(helog.count);
+        dataObj[source]['1'] = dataObj[source]['1'] + helog.count;
     else if (helog.mid === '1569')
-        dataObj[source]['1569'] = Number(dataObj[source]['1569']) + Number(helog.count);
+        dataObj[source]['1569'] = dataObj[source]['1569'] + helog.count;
     else if (helog.mid === 'aff3')
-        dataObj[source]['aff3'] = Number(dataObj[source]['aff3']) + Number(helog.count);
+        dataObj[source]['aff3'] = dataObj[source]['aff3'] + helog.count;
     else if (helog.mid === 'aff3a')
-        dataObj[source]['aff3a'] = Number(dataObj[source]['aff3a']) + Number(helog.count);
+        dataObj[source]['aff3a'] = dataObj[source]['aff3a'] + helog.count;
     else if (helog.mid === 'gdn')
-        dataObj[source]['gdn'] = Number(dataObj[source]['gdn']) + Number(helog.count);
+        dataObj[source]['gdn'] = dataObj[source]['gdn'] + helog.count;
     else if (helog.mid === 'gdn2')
-        dataObj[source]['gdn2'] = Number(dataObj[source]['gdn2']) + Number(helog.count);
+        dataObj[source]['gdn2'] = dataObj[source]['gdn2'] + helog.count;
     else if (helog.mid === 'goonj')
-        dataObj[source]['goonj'] = Number(dataObj[source]['goonj']) + Number(helog.count);
+        dataObj[source]['goonj'] = dataObj[source]['goonj'] + helog.count;
 
     console.log('dataObj: ', dataObj);
 
