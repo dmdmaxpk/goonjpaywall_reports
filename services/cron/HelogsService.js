@@ -8,11 +8,11 @@ function computeNextDate(req){
 
     let fromDate, toDate, day, month;
 
-    day = req.day ? req.day : 21;
+    day = req.day ? req.day : 30;
     day = day > 9 ? day : '0'+Number(day);
     req.day = day;
 
-    month = req.month ? req.month : 4;
+    month = req.month ? req.month : 6;
     month = month > 9 ? month : '0'+Number(month);
     req.month = month;
 
@@ -143,24 +143,25 @@ function computeHelogsData(helogsRawData) {
                 sourceObj = sourceWiseMidsCount(helog, 'he', sourceObj);
             else if (helog.source === 'affiliate')
                 sourceObj = sourceWiseMidsCount(helog, 'affiliate', sourceObj);
+            else if (helog.source === 'null')
+                sourceObj = sourceWiseMidsCount(helog, 'null', sourceObj);
 
             //collect data => Affiliate mid wise, get its count
             //1, 1569, aff3a, aff3, goonj, gdn, gdn2
             if (helog.mid === '1')
-                helogsObj['1'] = helogsObj['1'] + 1;
+                helogsObj['1'] = helogsObj['1'] + helogsObj.count;
             else if (helog.mid === '1569')
-                helogsObj['1569'] = helogsObj['1569'] + 1;
+                helogsObj['1569'] = helogsObj['1569'] + helogsObj.count;
             else if (helog.mid === 'aff3a')
-                helogsObj['aff3a'] = helogsObj['aff3a'] + 1;
+                helogsObj['aff3a'] = helogsObj['aff3a'] + helogsObj.count;
             else if (helog.mid === 'aff3')
-                helogsObj['aff3'] = helogsObj['aff3'] + 1;
+                helogsObj['aff3'] = helogsObj['aff3'] + helogsObj.count;
             else if (helog.mid === 'goonj')
-                helogsObj['goonj'] = helogsObj['goonj'] + 1;
+                helogsObj['goonj'] = helogsObj['goonj'] + helogsObj.count;
             else if (helog.mid === 'gdn')
-                helogsObj['gdn'] = helogsObj['gdn'] + 1;
+                helogsObj['gdn'] = helogsObj['gdn'] + helogsObj.count;
             else if (helog.mid === 'gdn2')
-                helogsObj['gdn2'] = helogsObj['gdn2'] + 1;
-
+                helogsObj['gdn2'] = helogsObj['gdn2'] + helogsObj.count;
         }
 
         sourceWise.push(sourceObj);
@@ -277,7 +278,8 @@ function cloneSourceWiseObj() {
         gdn2: _.clone(mids),
         HE: _.clone(mids),
         he: _.clone(mids),
-        affiliate: _.clone(mids)
+        affiliate: _.clone(mids),
+        'null': _.clone(mids)
     }
 }
 

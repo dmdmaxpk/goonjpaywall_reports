@@ -8,10 +8,7 @@ class LogsRepo {
                     collection.aggregate([
                         { $match:{
                             mid: {$in: ["1", "1569", "aff3", "aff3a", "goonj", "gdn", "gdn2"]},
-                            $and:[
-                                {added_dtm:{$gte:new Date(from)}},
-                                {added_dtm:{$lte:new Date(to)}}
-                            ]
+                            $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                         }},
                         { $project:{
                             source: "$source",
