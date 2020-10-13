@@ -46,7 +46,7 @@ computeLogsPageViewReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('computeLogsPageViewReports: ', fromDate, toDate);
-    logsRepo.getLogsByDateRange(req, fromDate, toDate).then( async function(logsPageViewData) {
+    logsRepo.getLogsPageViewByDateRange(req, fromDate, toDate).then( async function(logsPageViewData) {
         console.log('logsPageViewData: ', logsPageViewData);
 
         if (logsPageViewData.length > 0){
@@ -90,7 +90,7 @@ computeLogsSubscribeButtonClickReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('computeLogsSubscribeButtonClickReports: ', fromDate, toDate);
-    logsRepo.getLogsDistictDataByDateRange(req, fromDate, toDate).then( async function(logsSubscribeClicks) {
+    logsRepo.getLogsSubscribeClicksByDateRange(req, fromDate, toDate).then( async function(logsSubscribeClicks) {
         console.log('logsSubscribeClicks: ', logsSubscribeClicks);
 
         if (logsSubscribeClicks.length > 0){
