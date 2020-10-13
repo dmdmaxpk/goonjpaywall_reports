@@ -1,33 +1,23 @@
 const container = require("../../configurations/container");
 const reportsRepo = require('../../repos/apis/ReportsRepo');
-
 const transactionsRepo = container.resolve('transactionsRepo');
+const helper = require('../../helper/helper');
 const  _ = require('lodash');
 
 computeTransactionsAvgReports = async(req, res) => {
     console.log('computeTransactionsAvgReports');
-
     let fromDate, toDate, day, month, computedData;
+
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    day = req.day ? req.day : 1;
-    day = day > 9 ? day : '0'+Number(day);
-    req.day = day;
-
-    month = req.month ? req.month : 2;
-    month = month > 9 ? month : '0'+Number(month);
-    req.month = month;
-
-    console.log('day : ', day, req.day);
-    console.log('month : ', month, req.month);
-
-    fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
-    toDate  = _.clone(fromDate);
-    toDate.setHours(23);
-    toDate.setMinutes(59);
-    toDate.setSeconds(59);
+    dateData = helper.computeNextDate(req);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
 
     console.log('computeTransactionsAvgReports: ', fromDate, toDate);
     transactionsRepo.getTransactionsAvgByDateRange(req, fromDate, toDate).then(function (transactionRawData) {
@@ -36,21 +26,25 @@ computeTransactionsAvgReports = async(req, res) => {
         if (transactionRawData.length > 0){
 
             computedData = computeTransactionsData(transactionRawData, fromDate);
-            insertNewRecord(computedData.transactionList, computedData.transactionsBySubscriber, new Date(setDate(fromDate, 0, 0, 0, 0)));
+            insertNewRecord(computedData.transactionList, computedData.transactionsBySubscriber, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('getChargeDetailsByDateRange -> day : ', day, req.day, getDaysInMonth(month));
+        console.log('getChargeDetailsByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.day <= getDaysInMonth(month))
-            computeTransactionsAvgReports(req, res);
+        if (req.day <= helper.getDaysInMonth(month)){
+            if (month < helper.getTodayMonthNo())
+                computeTransactionsAvgReports(req, res);
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+                computeTransactionsAvgReports(req, res);
+        }
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
             console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth() + 1)
+            if (req.month <= helper.getTodayMonthNo())
                 computeTransactionsAvgReports(req, res);
         }
     });
@@ -78,12 +72,12 @@ function computeTransactionsData(transactionRawData, fromDate) {
                 totalPrice = totalPrice + outerObj['price'];
 
                 //script to get transaction's count per subscriber with in given datetime range
-                outer_added_dtm = setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
+                outer_added_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
                 if (dateInMili !== outer_added_dtm) {
                     for (let k = 0; k < rawData.transactions.length; k++) {
 
                         innerObj = rawData.transactions[k];
-                        inner_added_dtm = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
+                        inner_added_dtm = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
                         if (outer_added_dtm === inner_added_dtm) {
                             dateInMili = inner_added_dtm;
 
@@ -104,7 +98,7 @@ function computeTransactionsData(transactionRawData, fromDate) {
     transactionObj.avg_value = ( totalPrice > 0  && totalTransactions> 0 )? totalTransactions / totalPrice : 0;
     transactionObj.avg_transactions = ( uniqueSubscribers > 0 && totalTransactions> 0 )? totalTransactions / uniqueSubscribers : 0;
     transactionObj.added_dtm = fromDate;
-    transactionObj.added_dtm_hours = setDate(new Date(fromDate), null, 0, 0, 0);
+    transactionObj.added_dtm_hours = helper.setDate(new Date(fromDate), null, 0, 0, 0);
     transactionList.push(transactionObj);
 
     return {transactionList: transactionList, transactionsBySubscriber: transactionsBySubscriber};
@@ -136,19 +130,6 @@ function insertNewRecord(transactionAvg, transactionsBySubscriber, dateString) {
             reportsRepo.createReport({avgTransactions: transactionAvg, subscribers: subscribers, date: dateString});
         }
     });
-}
-
-function setDate(date, h=null,m, s, mi){
-    if (h !== null)
-        date.setHours(h);
-
-    date.setMinutes(m);
-    date.setSeconds(s);
-    date.setMilliseconds(mi);
-    return date;
-}
-function getDaysInMonth(month) {
-    return new Date(2020, month, 0).getDate();
 }
 
 module.exports = {

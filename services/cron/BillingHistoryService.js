@@ -1,35 +1,25 @@
 const container = require("../../configurations/container");
 const reportsRepo = require('../../repos/apis/ReportsRepo');
-
 const billingHistoryRepo = container.resolve('billingHistoryRepository');
+const helper = require('../../helper/helper');
 const  _ = require('lodash');
 
 let billingHistory = [], returningUserList = [], fullAndPartialChargeList = [],
     sourceWiseUnSubList = [], sourceWiseTrail = [], uniquePayingUsers = [], successRate = [];
 computeBillingHistoryReports = async(req, res) => {
     console.log('computeBillingHistoryReports');
-
     let fromDate, toDate, day, month, computedData;
+
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    day = req.day ? req.day : 1;
-    day = day > 9 ? day : '0'+Number(day);
-    req.day = day;
-
-    month = req.month ? req.month : 2;
-    month = month > 9 ? month : '0'+Number(month);
-    req.month = month;
-
-    console.log('day : ', day, req.day);
-    console.log('month : ', month, req.month);
-
-    fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
-    toDate  = _.clone(fromDate);
-    toDate.setHours(23);
-    toDate.setMinutes(59);
-    toDate.setSeconds(59);
+    dateData = helper.computeNextDate(req);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
 
     console.log('computeBillingHistoryReports: ', fromDate, toDate);
     billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate).then(function (result) {
@@ -44,16 +34,20 @@ computeBillingHistoryReports = async(req, res) => {
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('getChargeDetailsByDateRange -> day : ', day, req.day, getDaysInMonth(month));
+        console.log('getChargeDetailsByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.day <= getDaysInMonth(month))
-            computeBillingHistoryReports(req, res);
+        if (req.day <= helper.getDaysInMonth(month)){
+            if (month < helper.getTodayMonthNo())
+                computeBillingHistoryReports(req, res);
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+                computeBillingHistoryReports(req, res);
+        }
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
             console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth() + 1)
+            if (req.month <= helper.getTodayMonthNo())
                 computeBillingHistoryReports(req, res);
         }
     });
@@ -80,12 +74,12 @@ function computeBillingHistoryData(data) {
         successRateObj = _.clone(cloneSuccessRateObj());
 
         outerObj = data[j];
-        outer_added_dtm = setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
+        outer_added_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
         if (dateInMili !== outer_added_dtm){
             for (let k=0; k < data.length; k++) {
 
                 innerObj = data[k];
-                inner_added_dtm = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
+                inner_added_dtm = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
                 if (outer_added_dtm === inner_added_dtm){
                     dateInMili = inner_added_dtm;
 
@@ -184,7 +178,7 @@ function computeBillingHistoryData(data) {
                             uniquePayingUserObj.total = uniquePayingUserObj.total + 1;
                             // Unique paying users - timestemps
                             uniquePayingUserObj.added_dtm = outerObj.billing_dtm;
-                            uniquePayingUserObj.added_dtm_hours = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+                            uniquePayingUserObj.added_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
                         }
                     }
 
@@ -297,23 +291,23 @@ function computeBillingHistoryData(data) {
                     * */
                     //Returning User - timestemps
                     newObjReturningUsers.added_dtm = outerObj.billing_dtm;
-                    newObjReturningUsers.added_dtm_hours = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+                    newObjReturningUsers.added_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
 
                     //Full & Partial charged users - timestemps
                     fullAndPartialCharging.added_dtm = outerObj.billing_dtm;
-                    fullAndPartialCharging.added_dtm_hours = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+                    fullAndPartialCharging.added_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
 
                     // Un-subscribe Source wise - timestemps
                     unSubSourceWise.added_dtm = outerObj.billing_dtm;
-                    unSubSourceWise.added_dtm_hours = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+                    unSubSourceWise.added_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
 
                     // Trail Activated Source wise - timestemps
                     trialSourceWise.added_dtm = outerObj.billing_dtm;
-                    trialSourceWise.added_dtm_hours = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+                    trialSourceWise.added_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
 
                     // Billing Status wise - timestemps
                     billingStatusNewObj.added_dtm = outerObj.billing_dtm;
-                    billingStatusNewObj.added_dtm_hours = setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+                    billingStatusNewObj.added_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
                 }
             }
 
@@ -322,7 +316,7 @@ function computeBillingHistoryData(data) {
             successRateObj.successful = successfulSubs;
             successRateObj.rate = (totalSubs / successfulSubs) * 100;
             successRateObj.added_dtm = outerObj.billing_dtm;
-            successRateObj.added_dtm_hours = setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0);
+            successRateObj.added_dtm_hours = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0);
 
             billingHistoryArr.push(billingStatusNewObj);
             returningUserListArr.push(newObjReturningUsers);
@@ -348,7 +342,7 @@ function computeBillingHistoryData(data) {
 }
 
 function insertNewRecord(dateString) {
-    dateString = new Date(setDate(dateString, 0, 0, 0, 0));
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
     console.log('=>=>=>=>=>=>=> successRate', successRate);
 
@@ -424,20 +418,6 @@ function push(data, type) {
         else if (type === 'successRate')
             successRate.push(d);
     }, {});
-
-
-}
-function setDate(date, h=null,m, s, mi){
-    if (h !== null)
-        date.setHours(h);
-
-    date.setMinutes(m);
-    date.setSeconds(s);
-    date.setMilliseconds(mi);
-    return date;
-}
-function getDaysInMonth(month) {
-    return new Date(2020, month, 0).getDate();
 }
 
 function cloneSuccessRateObj() {

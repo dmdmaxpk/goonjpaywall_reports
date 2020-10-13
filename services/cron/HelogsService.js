@@ -1,33 +1,8 @@
 const container = require("../../configurations/container");
 const affiliateRepo = require('../../repos/apis/AffiliateRepo');
-
 const logsRepo = container.resolve('logsRepo');
+const helper = require('../../helper/helper');
 const  _ = require('lodash');
-
-function computeNextDate(req){
-
-    let fromDate, toDate, day, month;
-
-    day = req.day ? req.day : 30;
-    day = day > 9 ? day : '0'+Number(day);
-    req.day = day;
-
-    month = req.month ? req.month : 6;
-    month = month > 9 ? month : '0'+Number(month);
-    req.month = month;
-
-    console.log('day : ', day, req.day);
-    console.log('month : ', month, req.month);
-
-    fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
-    toDate  = _.clone(fromDate);
-    toDate.setHours(23);
-    toDate.setMinutes(59);
-    toDate.setSeconds(59);
-
-    console.log('computeNextDate: ', fromDate, toDate);
-    return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
-}
 
 computeHelogsReports = async(req, res) => {
     console.log('computeHelogsReports');
@@ -38,7 +13,7 @@ computeHelogsReports = async(req, res) => {
     * Script will execute to fetch data as per day
     * */
 
-    dateData = computeNextDate(req);
+    dateData = helper.computeNextDate(req);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -53,21 +28,25 @@ computeHelogsReports = async(req, res) => {
             finalList = computeHelogsData(helogsData);
 
             console.log('finalList.length : ', finalList);
-                insertNewRecord(finalList, 'helogs', new Date(setDate(fromDate, 0, 0, 0, 0)));
+                insertNewRecord(finalList, 'helogs', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeHelogsReports -> day : ', day, req.day, getDaysInMonth(month));
+        console.log('computeHelogsReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.day <= getDaysInMonth(month))
-            computeHelogsReports(req, res);
+        if (req.day <= helper.getDaysInMonth(month)){
+            if (month < helper.getTodayMonthNo())
+                computeHelogsReports(req, res);
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+                computeHelogsReports(req, res);
+        }
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
             console.log('computeHelogsReports -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth() + 1)
+            if (req.month <= helper.getTodayMonthNo())
                 computeHelogsReports(req, res);
         }
     });
@@ -82,7 +61,7 @@ computeHelogsUniqueSuccessReports = async(req, res) => {
     * Script will execute to fetch data as per day
     * */
 
-    dateData = computeNextDate(req);
+    dateData = helper.computeNextDate(req);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -97,21 +76,25 @@ computeHelogsUniqueSuccessReports = async(req, res) => {
             finalList = computeHelogsUniqueSuccess(helogsData);
 
             console.log('finalList.length : ', finalList);
-                insertNewRecord(finalList, 'unique', new Date(setDate(fromDate, 0, 0, 0, 0)));
+                insertNewRecord(finalList, 'unique', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeHelogsUniqueSuccessReports -> day : ', day, req.day, getDaysInMonth(month));
+        console.log('computeHelogsUniqueSuccessReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.day <= getDaysInMonth(month))
-            computeHelogsUniqueSuccessReports(req, res);
+        if (req.day <= helper.getDaysInMonth(month)){
+            if (month < helper.getTodayMonthNo())
+                computeHelogsUniqueSuccessReports(req, res);
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+                computeHelogsUniqueSuccessReports(req, res);
+        }
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
             console.log('computeHelogsUniqueSuccessReports -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth() + 1)
+            if (req.month <= helper.getTodayMonthNo())
                 computeHelogsUniqueSuccessReports(req, res);
         }
     });
@@ -283,15 +266,6 @@ function cloneSourceWiseObj() {
     }
 }
 
-function setDate(date, m, s, mi){
-    date.setMinutes(m);
-    date.setSeconds(s);
-    date.setMilliseconds(mi);
-    return date;
-}
-function getDaysInMonth(month) {
-    return new Date(2020, month, 0).getDate();
-}
 
 module.exports = {
     computeHelogsReports: computeHelogsReports,

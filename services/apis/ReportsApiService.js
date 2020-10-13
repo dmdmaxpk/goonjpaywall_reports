@@ -12,11 +12,16 @@ const transactionService = require("./compute/TransactionService");
 const trialService = require("./compute/TrialService");
 const usersService = require("./compute/UsersService");
 
-const  _ = require('lodash');
-
-generateReportsData = async (params,res) => {
+generateReportsData = async (req,res) => {
     try {
-        let rawDataSet = await reportsRepo.generateReportsData(params);
+        let params = req.query, rawDataSet;
+        if (req.reportType === '') 
+            rawDataSet = await reportsRepo.generateReportsData(params);
+        else if (req.reportType === '')
+            rawDataSet = await reportsRepo.generateReportsData(params);
+        else if (req.reportType === '') 
+            rawDataSet = await reportsRepo.generateReportsData(params);
+
         if (params.type === 'users'){
             if (params.sub_type === 'active_inactive')
                 return usersService.computeVerifiedUserReport(rawDataSet, params);

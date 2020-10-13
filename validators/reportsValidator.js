@@ -10,11 +10,6 @@ class ReportsValidator{
         this.reset();
         console.log('params: ', params);
         switch(params.type.trim()) {
-            case 'avg_churn':
-                this.checkDateIsNull(params);
-                this.checkSubTypeIsNotArray(params, "Get Average Churn");
-
-                break;
             case 'users':
                 this.checkDateIsNull(params);
                 this.checkSubTypeIsNull(params.sub_type, "Get Users", ['active_inactive', 'full_and_partial_charged', 'returning_user', 'accessing_service', 'unique_paying', 'user_billed']);
@@ -37,14 +32,6 @@ class ReportsValidator{
                 this.checkDateIsNull(params, "Success Rate");
 
                 break;
-            case 'share_msisdn':
-                this.checkDateIsNull(params, "Share MSISDN");
-                this.checkSubTypeIsNull(params.sub_type, "Share MSISDN", ['unSubscribed', 'subscribed', 'deactivated', 'inactive', 'chargeFailed']);
-
-                if (params.sub_type === 'inactive')
-                    this.checkSubTypeIsNull(params.inactive, "Share MSISDN", ['open_web_or_app_once', 'not_open_web_or_app']);
-
-                break;
             case 'revenue':
                 this.checkDateIsNull(params, "Revenue");
                 this.checkSubTypeIsNull(params.sub_type, "Revenue", ['package_wise', 'paywall_wise', 'operator_wise', 'billing_status_wise', 'net_revenue', 'deactivated']);
@@ -60,11 +47,6 @@ class ReportsValidator{
                 this.checkSubTypeIsNull(params.sub_type, "Net Additions", ['source_wise', 'package_wise', 'operator_wise', 'paywall_wise', 'net_additions_overall']);
 
                 break;
-            case 'visitors':
-                this.checkDateIsNull(params, "Get Visitors");
-                this.checkSubTypeIsNull(params.sub_type, "Visitors", ['app', 'web']);
-
-                break;
             case 'transactions':
                 this.checkDateIsNull(params, "Get Transactions");
                 this.checkSubTypeIsNull(params.sub_type, "Transactions", ['transactions', 'subscribers']);
@@ -75,10 +57,6 @@ class ReportsValidator{
                     this.checkSubTypeIsNull(params.subscribers, "Transacting Subscribers", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'net_total']);
 
                 break;
-            case 'uninstall':
-                this.checkDateIsNull(params, "Check Uninstall");
-
-                break;
             case 'trial':
                 this.checkDateIsNull(params, "Get Source Wise Trials");
                 this.checkSubTypeIsNull(params.sub_type, "Trails", ['source_wise']);
@@ -87,6 +65,33 @@ class ReportsValidator{
             case 'unsubscribe':
                 this.checkDateIsNull(params, "Get Source Wise Un Subscriptions");
                 this.checkSubTypeIsNull(params.sub_type, "Un-subscriptions", ['source_wise']);
+
+                break;
+            case 'affiliate':
+                this.checkDateIsNull(params, "Generate Affiliate Reports");
+                this.checkSubTypeIsNull(params.sub_type, "Affiliate", ['source_wise']);
+
+                break;
+            case 'visitors':
+                this.checkDateIsNull(params, "Get Visitors");
+                this.checkSubTypeIsNull(params.sub_type, "Visitors", ['app', 'web']);
+
+                break;
+            case 'avg_churn':
+                this.checkDateIsNull(params);
+                this.checkSubTypeIsNotArray(params, "Get Average Churn");
+
+                break;
+            case 'share_msisdn':
+                this.checkDateIsNull(params, "Share MSISDN");
+                this.checkSubTypeIsNull(params.sub_type, "Share MSISDN", ['unSubscribed', 'subscribed', 'deactivated', 'inactive', 'chargeFailed']);
+
+                if (params.sub_type === 'inactive')
+                    this.checkSubTypeIsNull(params.inactive, "Share MSISDN", ['open_web_or_app_once', 'not_open_web_or_app']);
+
+                break;
+            case 'uninstall':
+                this.checkDateIsNull(params, "Check Uninstall");
 
                 break;
             default:

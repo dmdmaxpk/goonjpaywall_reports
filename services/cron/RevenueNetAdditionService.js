@@ -1,33 +1,23 @@
 const container = require("../../configurations/container");
 const reportsRepo = require('../../repos/apis/ReportsRepo');
-
 const billingHistoryRepo = container.resolve('billingHistoryRepository');
+const helper = require('../../helper/helper');
 const  _ = require('lodash');
 
 computeRevenueNetAdditionReports = async(req, res) => {
     console.log('computeRevenueNetAdditionReports');
-
     let fromDate, toDate, day, month, finalData, finalList = [];
+
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    day = req.day ? req.day : 1;
-    day = day > 9 ? day : '0'+Number(day);
-    req.day = day;
-
-    month = req.month ? req.month : 2;
-    month = month > 9 ? month : '0'+Number(month);
-    req.month = month;
-
-    console.log('day : ', day, req.day);
-    console.log('month : ', month, req.month);
-
-    fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
-    toDate  = _.clone(fromDate);
-    toDate.setHours(23);
-    toDate.setMinutes(59);
-    toDate.setSeconds(59);
+    dateData = helper.computeNextDate(req);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
 
     console.log('computeRevenueNetAdditionReports: ', fromDate, toDate);
     billingHistoryRepo.getnetAdditionByDateRange(req, fromDate, toDate).then(function (netAdditions) {
@@ -38,21 +28,25 @@ computeRevenueNetAdditionReports = async(req, res) => {
             finalList = finalData.finalList;
             console.log('finalList.length : ', finalList.length, finalList);
             if (finalList.length > 0)
-                insertNewRecord(finalList, new Date(setDate(fromDate, 0, 0, 0, 0)));
+                insertNewRecord(finalList, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeRevenueNetAdditionReports -> day : ', day, req.day, getDaysInMonth(month));
+        console.log('computeRevenueNetAdditionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.day <= getDaysInMonth(month))
-            computeRevenueNetAdditionReports(req, res);
+        if (req.day <= helper.getDaysInMonth(month)){
+            if (month < helper.getTodayMonthNo())
+                computeRevenueNetAdditionReports(req, res);
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+                computeRevenueNetAdditionReports(req, res);
+        }
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
             console.log('computeRevenueNetAdditionReports -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth() + 1)
+            if (req.month <= helper.getTodayMonthNo())
                 computeRevenueNetAdditionReports(req, res);
         }
     });
@@ -66,13 +60,13 @@ function computeNetAdditionRevenueData(netAdditions) {
         outerObj = netAdditions[j];
 
         newObj = _.clone(cloneInfoObj());
-        outer_added_dtm = setDate(new Date(outerObj.added_dtm), null, 0, 0, 0).getTime();
+        outer_added_dtm = helper.setDate(new Date(outerObj.added_dtm), null, 0, 0, 0).getTime();
 
         if (dateInMili !== outer_added_dtm){
             for (let k=0; k < netAdditions.length; k++) {
 
                 innerObj = netAdditions[k];
-                inner_added_dtm = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0).getTime();
+                inner_added_dtm = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0).getTime();
 
                 if (outer_added_dtm === inner_added_dtm){
                     dateInMili = inner_added_dtm;
@@ -233,7 +227,7 @@ function computeNetAdditionRevenueData(netAdditions) {
                         newObj.netAdditionType.system = newObj.netAdditionType.system + 1;
 
                     newObj.added_dtm = outerObj.added_dtm;
-                    newObj.added_dtm_hours = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+                    newObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
                 }
             }
             finalList.push(newObj);
@@ -258,20 +252,6 @@ function insertNewRecord(finalList, dateString) {
             reportsRepo.createReport({netAdditions: finalList, date: dateString});
         }
     });
-}
-
-function setDate(date, h=null,m, s, mi){
-    if (h !== null)
-        date.setHours(h);
-
-    date.setMinutes(m);
-    date.setSeconds(s);
-    date.setMilliseconds(mi);
-    return date;
-}
-
-function getDaysInMonth(month) {
-    return new Date(2020, month, 0).getDate();
 }
 
 function cloneInfoObj() {

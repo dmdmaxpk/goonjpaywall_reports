@@ -1,33 +1,8 @@
 const container = require("../../configurations/container");
 const affiliateRepo = require('../../repos/apis/AffiliateRepo');
-
 const logsRepo = container.resolve('logsRepo');
+const helper = require('../../helper/helper');
 const  _ = require('lodash');
-
-function computeNextDate(req){
-
-    let fromDate, toDate, day, month;
-
-    day = req.day ? req.day : 22;
-    day = day > 9 ? day : '0'+Number(day);
-    req.day = day;
-
-    month = req.month ? req.month : 5;
-    month = month > 9 ? month : '0'+Number(month);
-    req.month = month;
-
-    console.log('day : ', day, req.day);
-    console.log('month : ', month, req.month);
-
-    fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
-    toDate  = _.clone(fromDate);
-    toDate.setHours(23);
-    toDate.setMinutes(59);
-    toDate.setSeconds(59);
-
-    console.log('computeNextDate: ', fromDate, toDate);
-    return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
-}
 
 computeLogsPageViewReports = async(req, res) => {
     console.log('computeLogsPageViewReports');
@@ -37,7 +12,7 @@ computeLogsPageViewReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = computeNextDate(req);
+    dateData = helper.computeNextDate(req);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -52,42 +27,46 @@ computeLogsPageViewReports = async(req, res) => {
             finalList = computeLogsPageViewData(logsPageViewData);
 
             console.log('finalList.length : ', finalList);
-                insertNewRecord(finalList, 'pageView', new Date(setDate(fromDate, 0, 0, 0, 0)));
+                insertNewRecord(finalList, 'pageView', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeLogsPageViewReports -> day : ', day, req.day, getDaysInMonth(month));
+        console.log('computeLogsPageViewReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.day <= getDaysInMonth(month))
-            computeLogsPageViewReports(req, res);
+        if (req.day <= helper.getDaysInMonth(month)){
+            if (month < helper.getTodayMonthNo())
+                computeLogsPageViewReports(req, res);
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+                computeLogsPageViewReports(req, res);
+        }
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
             console.log('computeLogsPageViewReports -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth() + 1)
+            if (req.month <= helper.getTodayMonthNo())
                 computeLogsPageViewReports(req, res);
         }
     });
 };
 
-computeLogsSubscribeButtonClickReports = async(req, res) => {
-    console.log('computeLogsSubscribeButtonClickReports');
+computeLogsSubscribeClicksReports = async(req, res) => {
+    console.log('computeLogsSubscribeClicksReports');
     let dateData, fromDate, toDate, day, month, finalList = [];
 
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = computeNextDate(req);
+    dateData = helper.computeNextDate(req);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    console.log('computeLogsSubscribeButtonClickReports: ', fromDate, toDate);
+    console.log('computeLogsSubscribeClicksReports: ', fromDate, toDate);
     logsRepo.getLogsSubscribeClicksByDateRange(req, fromDate, toDate).then( async function(logsSubscribeClicks) {
         console.log('logsSubscribeClicks: ', logsSubscribeClicks);
 
@@ -95,22 +74,26 @@ computeLogsSubscribeButtonClickReports = async(req, res) => {
             finalList = computeLogsSubscribeClicks(logsSubscribeClicks);
 
             console.log('finalList.length : ', finalList);
-                insertNewRecord(finalList, 'subsClicks', new Date(setDate(fromDate, 0, 0, 0, 0)));
+                insertNewRecord(finalList, 'subsClicks', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeLogsSubscribeButtonClickReports -> day : ', day, req.day, getDaysInMonth(month));
+        console.log('computeLogsSubscribeClicksReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.day <= getDaysInMonth(month))
-            computeLogsSubscribeButtonClickReports(req, res);
+        if (req.day <= helper.getDaysInMonth(month)){
+            if (month < helper.getTodayMonthNo())
+                computeLogsSubscribeClicksReports(req, res);
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+                computeLogsSubscribeClicksReports(req, res);
+        }
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('computeLogsSubscribeButtonClickReports -> month : ', month, req.month, new Date().getMonth());
+            console.log('computeLogsSubscribeClicksReports -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth() + 1)
-                computeLogsSubscribeButtonClickReports(req, res);
+            if (req.month <= helper.getTodayMonthNo())
+                computeLogsSubscribeClicksReports(req, res);
         }
     });
 };
@@ -281,17 +264,7 @@ function cloneSourceWiseObj() {
     }
 }
 
-function setDate(date, m, s, mi){
-    date.setMinutes(m);
-    date.setSeconds(s);
-    date.setMilliseconds(mi);
-    return date;
-}
-function getDaysInMonth(month) {
-    return new Date(2020, month, 0).getDate();
-}
-
 module.exports = {
     computeLogsPageViewReports: computeLogsPageViewReports,
-    computeLogsSubscribeButtonClickReports: computeLogsSubscribeButtonClickReports,
+    computeLogsSubscribeClicksReports: computeLogsSubscribeClicksReports,
 };

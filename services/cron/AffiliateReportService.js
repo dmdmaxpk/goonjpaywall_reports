@@ -1,29 +1,24 @@
 const container = require("../../configurations/container");
 const affiliateRepo = require('../../repos/apis/AffiliateRepo');
-
+const helper = require('../../helper/helper');
 const subscriptionRepo = container.resolve('subscriptionRepository');
 const  _ = require('lodash');
 
+
 computeAffiliateReports = async(req, res) => {
     console.log('computeAffiliateReports: ');
-
     let fromDate, toDate, day, month, computedData = [];
-    day = req.day ? req.day : 1;
-    day = day > 9 ? day : '0'+Number(day);
-    req.day = day;
 
-    month = req.month ? req.month : 2;
-    month = month > 9 ? month : '0'+Number(month);
-    req.month = month;
-
-    console.log('day : ', day, req.day);
-    console.log('month : ', month, req.month);
-
-    fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
-    toDate  = _.clone(fromDate);
-    toDate.setHours(23);
-    toDate.setMinutes(59);
-    toDate.setSeconds(59);
+    /*
+    * Compute date and time for data fetching from db
+    * Script will execute to fetch data as per day
+    * */
+    dateData = helper.computeNextDate(req);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
 
     console.log('computeAffiliateReports: ', fromDate, toDate);
     subscriptionRepo.getAffiliateDataDateRange(req, fromDate, toDate).then(function (subscriptions) {
@@ -34,21 +29,25 @@ computeAffiliateReports = async(req, res) => {
             console.log('computedData : ', computedData);
 
             //affiliateWise, statusWise, packageWise, sourceWise
-            insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, new Date(setDate(fromDate, 0, 0, 0, 0)));
+            insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('getUsersByDateRange -> day : ', day, req.day, getDaysInMonth(month));
+        console.log('getUsersByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.day <= getDaysInMonth(month))
-            computeAffiliateReports(req, res);
+        if (req.day <= helper.getDaysInMonth(month)){
+            if (month < helper.getTodayMonthNo())
+                computeAffiliateReports(req, res);
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+                computeAffiliateReports(req, res);
+        }
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
             console.log('getUsersByDateRange -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth() + 1)
+            if (req.month <= helper.getTodayMonthNo())
                 computeAffiliateReports(req, res);
         }
     });
@@ -111,10 +110,10 @@ function computeAffiliateData(subscriptionsRawData) {
         statusWiseObj.added_dtm = history.added_dtm;
         packageWiseObj.added_dtm = history.added_dtm;
         sourceWiseObj.added_dtm = history.added_dtm;
-        affiliateObj.added_dtm_hours = setDate(new Date(history.added_dtm), null, 0, 0, 0);
-        statusWiseObj.added_dtm_hours = setDate(new Date(history.added_dtm), null, 0, 0, 0);
-        packageWiseObj.added_dtm_hours = setDate(new Date(history.added_dtm), null, 0, 0, 0);
-        sourceWiseObj.added_dtm_hours = setDate(new Date(history.added_dtm), null, 0, 0, 0);
+        affiliateObj.added_dtm_hours = helper.setDate(new Date(history.added_dtm), null, 0, 0, 0);
+        statusWiseObj.added_dtm_hours = helper.setDate(new Date(history.added_dtm), null, 0, 0, 0);
+        packageWiseObj.added_dtm_hours = helper.setDate(new Date(history.added_dtm), null, 0, 0, 0);
+        sourceWiseObj.added_dtm_hours = helper.setDate(new Date(history.added_dtm), null, 0, 0, 0);
 
         affiliateWise.push(affiliateObj);
         statusWise.push(statusWiseObj);
@@ -236,20 +235,6 @@ function cloneSourceWiseObj() {
         added_dtm: '',
         added_dtm_hours: ''
     }
-}
-
-function setDate(date, h=null,m, s, mi){
-    if (h !== null)
-        date.setHours(h);
-
-    date.setMinutes(m);
-    date.setSeconds(s);
-    date.setMilliseconds(mi);
-    return date;
-}
-
-function getDaysInMonth(month) {
-    return new Date(2020, month, 0).getDate();
 }
 
 module.exports = {

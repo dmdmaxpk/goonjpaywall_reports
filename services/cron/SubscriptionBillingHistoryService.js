@@ -1,33 +1,23 @@
 const container = require("../../configurations/container");
 const reportsRepo = require('../../repos/apis/ReportsRepo');
-
 const subscriptionRepo = container.resolve('subscriptionRepository');
+const helper = require('../../helper/helper');
 const  _ = require('lodash');
 
 computeChargeDetailsReports = async(req, res) => {
     console.log('computeChargeDetailsReports');
-
     let fromDate, toDate, day, month, chargeDetailList = [], transactingSubsList = [];
+
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    day = req.day ? req.day : 1;
-    day = day > 9 ? day : '0'+Number(day);
-    req.day = day;
-
-    month = req.month ? req.month : 2;
-    month = month > 9 ? month : '0'+Number(month);
-    req.month = month;
-
-    console.log('day : ', day, req.day);
-    console.log('month : ', month, req.month);
-
-    fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
-    toDate  = _.clone(fromDate);
-    toDate.setHours(23);
-    toDate.setMinutes(59);
-    toDate.setSeconds(59);
+    dateData = helper.computeNextDate(req);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
 
     console.log('computeChargeDetailsReports: ', fromDate, toDate);
     subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate).then(function (chargeDetails) {
@@ -40,21 +30,25 @@ computeChargeDetailsReports = async(req, res) => {
 
             console.log('chargeDetailList.length : ', chargeDetailList.length, chargeDetailList);
             console.log('transactingSubsList.length : ', transactingSubsList.length, transactingSubsList);
-            insertNewRecord(transactingSubsList, chargeDetailList, new Date(setDate(fromDate, 0, 0, 0, 0)));
+            insertNewRecord(transactingSubsList, chargeDetailList, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('getChargeDetailsByDateRange -> day : ', day, req.day, getDaysInMonth(month));
+        console.log('getChargeDetailsByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.day <= getDaysInMonth(month))
-            computeChargeDetailsReports(req, res);
+        if (req.day <= helper.getDaysInMonth(month)){
+            if (month < helper.getTodayMonthNo())
+                computeChargeDetailsReports(req, res);
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+                computeChargeDetailsReports(req, res);
+        }
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
             console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth() + 1)
+            if (req.month <= helper.getTodayMonthNo())
                 computeChargeDetailsReports(req, res);
         }
     });
@@ -71,13 +65,13 @@ function computeChargeDetailData(chargeDetails) {
         //app, web, HE, sms, gdn2, CP, null, affiliate_web, system_after_grace_end
         chargeDetailObj = _.clone(cloneChargeDetailObj());
         transactionObj = _.clone(cloneTransactionObj());
-        outer_added_dtm = setDate(new Date(outerObj.added_dtm), null, 0, 0, 0).getTime();
+        outer_added_dtm = helper.setDate(new Date(outerObj.added_dtm), null, 0, 0, 0).getTime();
 
         if (dateInMili !== outer_added_dtm){
             for (let k=0; k < chargeDetails.length; k++) {
 
                 innerObj = chargeDetails[k];
-                inner_added_dtm = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0).getTime();
+                inner_added_dtm = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0).getTime();
 
                 if (outer_added_dtm === inner_added_dtm){
                     price = innerObj.price - (innerObj.discount ? innerObj.discount : 0);
@@ -324,10 +318,10 @@ function computeChargeDetailData(chargeDetails) {
 
                         // Add Timestemps
                         transactionObj.added_dtm = outerObj.added_dtm;
-                        transactionObj.added_dtm_hours = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+                        transactionObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
 
                         chargeDetailObj.added_dtm = outerObj.added_dtm;
-                        chargeDetailObj.added_dtm_hours = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+                        chargeDetailObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
                     }
                     else if (innerObj.billing_status === 'graced'){
 
@@ -337,10 +331,10 @@ function computeChargeDetailData(chargeDetails) {
 
                         // Add Timestemps
                         transactionObj.added_dtm = outerObj.added_dtm;
-                        transactionObj.added_dtm_hours = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+                        transactionObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
 
                         chargeDetailObj.added_dtm = outerObj.added_dtm;
-                        chargeDetailObj.added_dtm_hours = setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+                        chargeDetailObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
                     }
                 }
             }
@@ -495,18 +489,6 @@ function cloneTransactionObj() {
     }
 }
 
-function setDate(date, h=null,m, s, mi){
-    if (h !== null)
-        date.setHours(h);
-
-    date.setMinutes(m);
-    date.setSeconds(s);
-    date.setMilliseconds(mi);
-    return date;
-}
-function getDaysInMonth(month) {
-    return new Date(2020, month, 0).getDate();
-}
 
 module.exports = {
     computeChargeDetailsReports: computeChargeDetailsReports,

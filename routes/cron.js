@@ -42,10 +42,10 @@ router.route('/compute-helogs-logger-reports')
 router.route('/compute-helogs-unique-success-logger-reports')
     .get(connecton.connect, controller.computeHelogsUniqueSuccessReports);
 
-router.route('/compute-logs-page-view-logger-reports')
+router.route('/compute-page-views-logger-reports')
     .get(connecton.connect, controller.computeLogsPageViewReports);
 
-router.route('/compute-logs-subscribe-button-click-logger-reports')
-    .get(connecton.connect, controller.computeLogsSubscribeButtonClickReports);
+router.route('/compute-subscribe-clicks-logger-reports')
+    .get(connecton.connect, controller.computeLogsSubscribeClicksReports);
 
 module.exports = router;

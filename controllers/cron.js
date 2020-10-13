@@ -63,9 +63,9 @@ exports.computeLogsPageViewReports = async (req,res) =>  {
     res.send("computeLogsPageViewReports - Executed\n");
 };
 
-exports.computeLogsSubscribeButtonClickReports = async (req,res) =>  {
-    LogsService.computeLogsSubscribeButtonClickReports(req,res);
-    res.send("computeLogsSubscribeButtonClickReports - Executed\n");
+exports.computeLogsSubscribeClicksReports = async (req,res) =>  {
+    LogsService.computeLogsSubscribeClicksReports(req,res);
+    res.send("computeLogsSubscribeClicksReports - Executed\n");
 };
 
 exports.computeTransactionsAvgReports = async (req,res) =>  {
