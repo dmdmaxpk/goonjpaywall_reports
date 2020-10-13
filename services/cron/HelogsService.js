@@ -4,14 +4,10 @@ const affiliateRepo = require('../../repos/apis/AffiliateRepo');
 const logsRepo = container.resolve('logsRepo');
 const  _ = require('lodash');
 
-computeHelogsReports = async(req, res) => {
-    console.log('computeHelogsReports');
+function computeNextDate(req){
 
-    let fromDate, toDate, day, month, finalList = [];
-    /*
-    * Compute date and time for data fetching from db
-    * Script will execute to fetch data as per day
-    * */
+    let fromDate, toDate, day, month;
+
     day = req.day ? req.day : 21;
     day = day > 9 ? day : '0'+Number(day);
     req.day = day;
@@ -29,6 +25,26 @@ computeHelogsReports = async(req, res) => {
     toDate.setMinutes(59);
     toDate.setSeconds(59);
 
+    console.log('computeNextDate: ', fromDate, toDate);
+    return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
+}
+
+computeHelogsReports = async(req, res) => {
+    console.log('computeHelogsReports');
+
+    let dateData, fromDate, toDate, day, month, finalList = [];
+    /*
+    * Compute date and time for data fetching from db
+    * Script will execute to fetch data as per day
+    * */
+
+    dateData = computeNextDate(req);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
+
     console.log('computeHelogsReports: ', fromDate, toDate);
     logsRepo.getHelogsByDateRange(req, fromDate, toDate).then( async function(helogsData) {
         console.log('helogsData: ', helogsData);
@@ -37,7 +53,7 @@ computeHelogsReports = async(req, res) => {
             finalList = computeHelogsData(helogsData);
 
             console.log('finalList.length : ', finalList);
-                insertNewRecord(finalList, new Date(setDate(fromDate, 0, 0, 0, 0)));
+                insertNewRecord(finalList, 'helogs', new Date(setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
@@ -53,6 +69,50 @@ computeHelogsReports = async(req, res) => {
 
             if (req.month <= new Date().getMonth())
                 computeHelogsReports(req, res);
+        }
+    });
+};
+
+computeHelogsUniqueSuccessReports = async(req, res) => {
+    console.log('computeHelogsUniqueSuccessReports');
+
+    let dateData, fromDate, toDate, day, month, finalList = [];
+    /*
+    * Compute date and time for data fetching from db
+    * Script will execute to fetch data as per day
+    * */
+
+    dateData = computeNextDate(req);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
+
+    console.log('computeHelogsUniqueSuccessReports: ', fromDate, toDate);
+    logsRepo.getHelogsDistictDataByDateRange(req, fromDate, toDate).then( async function(helogsData) {
+        console.log('helogsData: ', helogsData);
+
+        if (helogsData.length > 0){
+            finalList = computeHelogsUniqueSuccess(helogsData);
+
+            console.log('finalList.length : ', finalList);
+                insertNewRecord(finalList, 'unique', new Date(setDate(fromDate, 0, 0, 0, 0)));
+        }
+
+        // Get compute data for next time slot
+        req.day = Number(req.day) + 1;
+        console.log('computeHelogsUniqueSuccessReports -> day : ', day, req.day, getDaysInMonth(month));
+
+        if (req.day <= getDaysInMonth(month))
+            computeHelogsUniqueSuccessReports(req, res);
+        else{
+            req.day = 1;
+            req.month = Number(req.month) + 1;
+            console.log('computeHelogsUniqueSuccessReports -> month : ', month, req.month, new Date().getMonth());
+
+            if (req.month <= new Date().getMonth())
+                computeHelogsUniqueSuccessReports(req, res);
         }
     });
 };
@@ -103,11 +163,6 @@ function computeHelogsData(helogsRawData) {
 
         }
 
-        helogsObj.added_dtm = rawData.added_dtm;
-        sourceObj.added_dtm = rawData.added_dtm;
-        helogsObj.added_dtm_hours = setDate(new Date(rawData.added_dtm), null, 0, 0, 0);
-        sourceObj.added_dtm_hours = setDate(new Date(rawData.added_dtm), null, 0, 0, 0);
-
         sourceWise.push(sourceObj);
         helogsWise.push(helogsObj);
     }
@@ -116,37 +171,86 @@ function computeHelogsData(helogsRawData) {
     return {helogsWise: helogsWise, sourceWise: sourceWise};
 }
 
-function insertNewRecord(data, dateString) {
+function computeHelogsUniqueSuccess(helogsRawData) {
+
+    let rawData, helog, helogsObj, helogsWise = [];
+    for (let i=0; i < helogsRawData.length; i++) {
+
+        rawData = helogsRawData[i];
+        helogsObj = _.clone(cloneHelogsObj());
+
+        for (let j = 0; j < rawData.helogs.length; j++) {
+            helog = rawData.helogs[j];
+
+            //collect data => Affiliate mid wise, get its count
+            //1, 1569, aff3a, aff3, goonj, gdn, gdn2
+            if (helog.mid === '1')
+                helogsObj['1'] = helogsObj['1'] + 1;
+            else if (helog.mid === '1569')
+                helogsObj['1569'] = helogsObj['1569'] + 1;
+            else if (helog.mid === 'aff3a')
+                helogsObj['aff3a'] = helogsObj['aff3a'] + 1;
+            else if (helog.mid === 'aff3')
+                helogsObj['aff3'] = helogsObj['aff3'] + 1;
+            else if (helog.mid === 'goonj')
+                helogsObj['goonj'] = helogsObj['goonj'] + 1;
+            else if (helog.mid === 'gdn')
+                helogsObj['gdn'] = helogsObj['gdn'] + 1;
+            else if (helog.mid === 'gdn2')
+                helogsObj['gdn2'] = helogsObj['gdn2'] + 1;
+
+        }
+
+        helogsWise.push(helogsObj);
+    }
+
+    //sourceWise, statusWise, packageWise, sourceWise
+    return {helogsWise: helogsWise};
+}
+
+function insertNewRecord(data, type, dateString) {
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
     affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
         console.log('data helogs: ', data);
         if (result.length > 0){
             result = result[0];
-            result.helogs = data;
+            if (type === 'helogs')
+                result.helogs = data;
+            else if (type === 'unique')
+                result.uniqueSuccessHe = data;
+
             affiliateRepo.updateReport(result, result._id);
         }
-        else
+        else{
+            let obj = {};
+            if (type === 'helogs')
+                obj.helogs = data;
+            else if (type === 'unique')
+                obj.uniqueSuccessHe = data;
+
+            obj.date = dateString;
             affiliateRepo.createReport({helogs: data, date: dateString});
+        }
     });
 }
 
-function sourceWiseMidsCount(logs, source, dataObj) {
+function sourceWiseMidsCount(helog, source, dataObj) {
     console.log('source: ', source);
 
-    if (logs.mid === '1')
-        dataObj[source]['1'] = dataObj[source]['1'] + logs.count;
-    else if (logs.mid === '1569')
-        dataObj[source]['1569'] = dataObj[source]['1569'] + logs.count;
-    else if (logs.mid === 'aff3')
-        dataObj[source]['aff3'] = dataObj[source]['aff3'] + logs.count;
-    else if (logs.mid === 'aff3a')
-        dataObj[source]['aff3a'] = dataObj[source]['aff3a'] + logs.count;
-    else if (logs.mid === 'gdn')
-        dataObj[source]['gdn'] = dataObj[source]['gdn'] + logs.count;
-    else if (logs.mid === 'gdn2')
-        dataObj[source]['gdn2'] = dataObj[source]['gdn2'] + logs.count;
-    else if (logs.mid === 'goonj')
-        dataObj[source]['goonj'] = dataObj[source]['goonj'] + logs.count;
+    if (helog.mid === '1')
+        dataObj[source]['1'] = dataObj[source]['1'] + helog.count;
+    else if (helog.mid === '1569')
+        dataObj[source]['1569'] = dataObj[source]['1569'] + helog.count;
+    else if (helog.mid === 'aff3')
+        dataObj[source]['aff3'] = dataObj[source]['aff3'] + helog.count;
+    else if (helog.mid === 'aff3a')
+        dataObj[source]['aff3a'] = dataObj[source]['aff3a'] + helog.count;
+    else if (helog.mid === 'gdn')
+        dataObj[source]['gdn'] = dataObj[source]['gdn'] + helog.count;
+    else if (helog.mid === 'gdn2')
+        dataObj[source]['gdn2'] = dataObj[source]['gdn2'] + helog.count;
+    else if (helog.mid === 'goonj')
+        dataObj[source]['goonj'] = dataObj[source]['goonj'] + helog.count;
 
     console.log('dataObj: ', dataObj);
 
@@ -161,22 +265,19 @@ function cloneHelogsObj() {
         aff3a: 0,
         gdn: 0,
         gdn2: 0,
-        goonj: 0,
-        added_dtm: '',
-        added_dtm_hours: ''
+        goonj: 0
     }
 }
 function cloneSourceWiseObj() {
     let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
+    //app, web, gdn2, HE, he, affiliate
     return {
         app: _.clone(mids),
         web: _.clone(mids),
         gdn2: _.clone(mids),
         HE: _.clone(mids),
         he: _.clone(mids),
-        affiliate: _.clone(mids),
-        added_dtm: '',
-        added_dtm_hours: ''
+        affiliate: _.clone(mids)
     }
 }
 
@@ -186,11 +287,11 @@ function setDate(date, m, s, mi){
     date.setMilliseconds(mi);
     return date;
 }
-
 function getDaysInMonth(month) {
     return new Date(2020, month, 0).getDate();
 }
 
 module.exports = {
     computeHelogsReports: computeHelogsReports,
+    computeHelogsUniqueSuccessReports: computeHelogsUniqueSuccessReports,
 };

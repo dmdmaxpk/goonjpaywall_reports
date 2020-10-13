@@ -51,6 +51,11 @@ exports.computeHelogsReports = async (req,res) =>  {
     res.send("computeHelogsReports - Executed\n");
 };
 
+exports.computeHelogsUniqueSuccessReports = async (req,res) =>  {
+    HelogsService.computeHelogsUniqueSuccessReports(req,res);
+    res.send("computeHelogsUniqueSuccessReports - Executed\n");
+};
+
 exports.computeTransactionsAvgReports = async (req,res) =>  {
     TransactionsBillingHistoryService.computeTransactionsAvgReports(req,res);
     res.send("computeTransactionsReports - Executed\n");

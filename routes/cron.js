@@ -39,4 +39,7 @@ router.route('/compute-affiliate-reports')
 router.route('/compute-helogs-logger-reports')
     .get(connecton.connect, controller.computeHelogsReports);
 
+router.route('/compute-helogs-unique-success-logger-reports')
+    .get(connecton.connect, controller.computeHelogsUniqueSuccessReports);
+
 module.exports = router;
