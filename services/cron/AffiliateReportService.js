@@ -48,7 +48,7 @@ computeAffiliateReports = async(req, res) => {
             req.month = Number(req.month) + 1;
             console.log('getUsersByDateRange -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth())
+            if (req.month <= new Date().getMonth() + 1)
                 computeAffiliateReports(req, res);
         }
     });

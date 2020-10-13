@@ -10,7 +10,7 @@ const affiliateReport = new Schema({
     packageWise: {type: Object, default: undefined},
     sourceWise: {type: Object, default: undefined},
     helogs: {type: Object, default: undefined},
-    helogsUniqueSuccessHe: {type: Object, default: undefined},
+    uniqueSuccessHe: {type: Object, default: undefined},
     logsPageView: {type: Object, default: undefined},
     logsSubscribeClick: {type: Object, default: undefined},
     date: { type: Date, default: Date.now }

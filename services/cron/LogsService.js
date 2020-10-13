@@ -31,13 +31,12 @@ function computeNextDate(req){
 
 computeLogsPageViewReports = async(req, res) => {
     console.log('computeLogsPageViewReports');
-
     let dateData, fromDate, toDate, day, month, finalList = [];
+
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-
     dateData = computeNextDate(req);
     req = dateData.req;
     day = dateData.day;
@@ -67,7 +66,7 @@ computeLogsPageViewReports = async(req, res) => {
             req.month = Number(req.month) + 1;
             console.log('computeLogsPageViewReports -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth())
+            if (req.month <= new Date().getMonth() + 1)
                 computeLogsPageViewReports(req, res);
         }
     });
@@ -75,13 +74,12 @@ computeLogsPageViewReports = async(req, res) => {
 
 computeLogsSubscribeButtonClickReports = async(req, res) => {
     console.log('computeLogsSubscribeButtonClickReports');
-
     let dateData, fromDate, toDate, day, month, finalList = [];
+
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-
     dateData = computeNextDate(req);
     req = dateData.req;
     day = dateData.day;
@@ -111,7 +109,7 @@ computeLogsSubscribeButtonClickReports = async(req, res) => {
             req.month = Number(req.month) + 1;
             console.log('computeLogsSubscribeButtonClickReports -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth())
+            if (req.month <= new Date().getMonth() + 1)
                 computeLogsSubscribeButtonClickReports(req, res);
         }
     });

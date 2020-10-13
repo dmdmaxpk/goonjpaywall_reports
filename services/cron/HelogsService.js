@@ -67,7 +67,7 @@ computeHelogsReports = async(req, res) => {
             req.month = Number(req.month) + 1;
             console.log('computeHelogsReports -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth())
+            if (req.month <= new Date().getMonth() + 1)
                 computeHelogsReports(req, res);
         }
     });
@@ -111,7 +111,7 @@ computeHelogsUniqueSuccessReports = async(req, res) => {
             req.month = Number(req.month) + 1;
             console.log('computeHelogsUniqueSuccessReports -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= new Date().getMonth())
+            if (req.month <= new Date().getMonth() + 1)
                 computeHelogsUniqueSuccessReports(req, res);
         }
     });
