@@ -3,13 +3,15 @@ const SubscriberService = require('../services/cron/SubscriberService');
 const SubscriptionService = require('../services/cron/SubscriptionService');
 const BillingHistoryService = require('../services/cron/BillingHistoryService');
 const CallbackSendService = require('../services/cron/CallbackSendService');
-const HelogsService = require('../services/cron/HelogsService');
 const RevenueNetAdditionService = require('../services/cron/RevenueNetAdditionService');
 const SubscriptionBillingHistoryService = require('../services/cron/SubscriptionBillingHistoryService');
 const TransactionsBillingHistoryService = require('../services/cron/TransactionsBillingHistoryService');
 const SubscriberSubscriptionsReports = require('../services/cron/SubscriberSubscriptionsReports');
 const SubscriberTransactionsReports = require('../services/cron/SubscriberTransactionsReports');
 const AffiliateReportService = require('../services/cron/AffiliateReportService');
+
+const HelogsService = require('../services/cron/HelogsService');
+const LogsService = require('../services/cron/LogsService');
 
 exports.computeUserReports = async (req,res) =>  {
     await UserService.computeUserReports(req,res);
@@ -54,6 +56,16 @@ exports.computeHelogsReports = async (req,res) =>  {
 exports.computeHelogsUniqueSuccessReports = async (req,res) =>  {
     HelogsService.computeHelogsUniqueSuccessReports(req,res);
     res.send("computeHelogsUniqueSuccessReports - Executed\n");
+};
+
+exports.computeLogsReports = async (req,res) =>  {
+    LogsService.computeLogsReports(req,res);
+    res.send("computeLogsReports - Executed\n");
+};
+
+exports.computeLogsUniqueSuccessReports = async (req,res) =>  {
+    LogsService.computeLogsUniqueSuccessReports(req,res);
+    res.send("computeLogsUniqueSuccessReports - Executed\n");
 };
 
 exports.computeTransactionsAvgReports = async (req,res) =>  {
