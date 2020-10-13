@@ -8,11 +8,11 @@ function computeNextDate(req){
 
     let fromDate, toDate, day, month;
 
-    day = req.day ? req.day : 30;
+    day = req.day ? req.day : 22;
     day = day > 9 ? day : '0'+Number(day);
     req.day = day;
 
-    month = req.month ? req.month : 6;
+    month = req.month ? req.month : 5;
     month = month > 9 ? month : '0'+Number(month);
     req.month = month;
 
@@ -29,8 +29,8 @@ function computeNextDate(req){
     return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
 }
 
-computeLogsReports = async(req, res) => {
-    console.log('computeLogsReports');
+computeLogsPageViewReports = async(req, res) => {
+    console.log('computeLogsPageViewReports');
 
     let dateData, fromDate, toDate, day, month, finalList = [];
     /*
@@ -45,36 +45,36 @@ computeLogsReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    console.log('computeLogsReports: ', fromDate, toDate);
-    logsRepo.getLogsByDateRange(req, fromDate, toDate).then( async function(logsData) {
-        console.log('logsData: ', logsData);
+    console.log('computeLogsPageViewReports: ', fromDate, toDate);
+    logsRepo.getLogsByDateRange(req, fromDate, toDate).then( async function(logsPageViewData) {
+        console.log('logsPageViewData: ', logsPageViewData);
 
-        if (logsData.length > 0){
-            finalList = computeLogsData(logsData);
+        if (logsPageViewData.length > 0){
+            finalList = computeLogsPageViewData(logsPageViewData);
 
             console.log('finalList.length : ', finalList);
-                insertNewRecord(finalList, 'logs', new Date(setDate(fromDate, 0, 0, 0, 0)));
+                insertNewRecord(finalList, 'pageView', new Date(setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeLogsReports -> day : ', day, req.day, getDaysInMonth(month));
+        console.log('computeLogsPageViewReports -> day : ', day, req.day, getDaysInMonth(month));
 
         if (req.day <= getDaysInMonth(month))
-            computeLogsReports(req, res);
+            computeLogsPageViewReports(req, res);
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('computeLogsReports -> month : ', month, req.month, new Date().getMonth());
+            console.log('computeLogsPageViewReports -> month : ', month, req.month, new Date().getMonth());
 
             if (req.month <= new Date().getMonth())
-                computeLogsReports(req, res);
+                computeLogsPageViewReports(req, res);
         }
     });
 };
 
-computeLogsUniqueSuccessReports = async(req, res) => {
-    console.log('computeLogsUniqueSuccessReports');
+computeLogsSubscribeButtonClickReports = async(req, res) => {
+    console.log('computeLogsSubscribeButtonClickReports');
 
     let dateData, fromDate, toDate, day, month, finalList = [];
     /*
@@ -89,120 +89,120 @@ computeLogsUniqueSuccessReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    console.log('computeLogsUniqueSuccessReports: ', fromDate, toDate);
-    logsRepo.getLogsDistictDataByDateRange(req, fromDate, toDate).then( async function(logsData) {
-        console.log('logsData: ', logsData);
+    console.log('computeLogsSubscribeButtonClickReports: ', fromDate, toDate);
+    logsRepo.getLogsDistictDataByDateRange(req, fromDate, toDate).then( async function(logsSubscribeClicks) {
+        console.log('logsSubscribeClicks: ', logsSubscribeClicks);
 
-        if (logsData.length > 0){
-            finalList = computeLogsUniqueSuccess(logsData);
+        if (logsSubscribeClicks.length > 0){
+            finalList = computeLogsSubscribeClicks(logsSubscribeClicks);
 
             console.log('finalList.length : ', finalList);
-                insertNewRecord(finalList, 'unique', new Date(setDate(fromDate, 0, 0, 0, 0)));
+                insertNewRecord(finalList, 'subsClicks', new Date(setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeLogsUniqueSuccessReports -> day : ', day, req.day, getDaysInMonth(month));
+        console.log('computeLogsSubscribeButtonClickReports -> day : ', day, req.day, getDaysInMonth(month));
 
         if (req.day <= getDaysInMonth(month))
-            computeLogsUniqueSuccessReports(req, res);
+            computeLogsSubscribeButtonClickReports(req, res);
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('computeLogsUniqueSuccessReports -> month : ', month, req.month, new Date().getMonth());
+            console.log('computeLogsSubscribeButtonClickReports -> month : ', month, req.month, new Date().getMonth());
 
             if (req.month <= new Date().getMonth())
-                computeLogsUniqueSuccessReports(req, res);
+                computeLogsSubscribeButtonClickReports(req, res);
         }
     });
 };
 
-function computeLogsData(logsRawData) {
+function computeLogsPageViewData(logsPageViewData) {
 
-    let rawData, helog, logsObj, sourceObj, logsWise = [], sourceWise = [];
-    for (let i=0; i < logsRawData.length; i++) {
+    let rawData, pageView, logsPageViewObj, sourceObj, logsWise = [], sourceWise = [];
+    for (let i=0; i < logsPageViewData.length; i++) {
 
-        rawData = logsRawData[i];
+        rawData = logsPageViewData[i];
         sourceObj = _.clone(cloneSourceWiseObj());
-        logsObj = _.clone(clonelogsObj());
+        logsPageViewObj = _.clone(cloneLogsPageViewObj());
 
-        for (let j = 0; j < rawData.logs.length; j++) {
-            helog = rawData.logs[j];
+        for (let j = 0; j < rawData.pageView.length; j++) {
+            pageView = rawData.pageView[j];
 
             //collect data => source wise, get Mids count
             //app, web, gdn2, HE, he, affiliate
-            if (helog.source === 'app')
-                sourceObj = sourceWiseMidsCount(helog, 'app', sourceObj);
-            else if (helog.source === 'web')
-                sourceObj = sourceWiseMidsCount(helog, 'web', sourceObj);
-            else if (helog.source === 'gdn2')
-                sourceObj = sourceWiseMidsCount(helog, 'gdn2', sourceObj);
-            else if (helog.source === 'HE')
-                sourceObj = sourceWiseMidsCount(helog, 'HE', sourceObj);
-            else if (helog.source === 'he')
-                sourceObj = sourceWiseMidsCount(helog, 'he', sourceObj);
-            else if (helog.source === 'affiliate')
-                sourceObj = sourceWiseMidsCount(helog, 'affiliate', sourceObj);
-            else if (helog.source === 'null')
-                sourceObj = sourceWiseMidsCount(helog, 'null', sourceObj);
+            if (pageView.source === 'app')
+                sourceObj = sourceWiseMidsCount(pageView, 'app', sourceObj);
+            else if (pageView.source === 'web')
+                sourceObj = sourceWiseMidsCount(pageView, 'web', sourceObj);
+            else if (pageView.source === 'gdn2')
+                sourceObj = sourceWiseMidsCount(pageView, 'gdn2', sourceObj);
+            else if (pageView.source === 'HE')
+                sourceObj = sourceWiseMidsCount(pageView, 'HE', sourceObj);
+            else if (pageView.source === 'he')
+                sourceObj = sourceWiseMidsCount(pageView, 'he', sourceObj);
+            else if (pageView.source === 'affiliate')
+                sourceObj = sourceWiseMidsCount(pageView, 'affiliate', sourceObj);
+            else if (pageView.source === 'null')
+                sourceObj = sourceWiseMidsCount(pageView, 'null', sourceObj);
 
             //collect data => Affiliate mid wise, get its count
             //1, 1569, aff3a, aff3, goonj, gdn, gdn2
-            if (helog.mid === '1')
-                logsObj['1'] = logsObj['1'] + helog.count;
-            else if (helog.mid === '1569')
-                logsObj['1569'] = logsObj['1569'] + helog.count;
-            else if (helog.mid === 'aff3a')
-                logsObj['aff3a'] = logsObj['aff3a'] + helog.count;
-            else if (helog.mid === 'aff3')
-                logsObj['aff3'] = logsObj['aff3'] + helog.count;
-            else if (helog.mid === 'goonj')
-                logsObj['goonj'] = logsObj['goonj'] + helog.count;
-            else if (helog.mid === 'gdn')
-                logsObj['gdn'] = logsObj['gdn'] + helog.count;
-            else if (helog.mid === 'gdn2')
-                logsObj['gdn2'] = logsObj['gdn2'] + helog.count;
+            if (pageView.mid === '1')
+                logsPageViewObj['1'] = logsPageViewObj['1'] + pageView.count;
+            else if (pageView.mid === '1569')
+                logsPageViewObj['1569'] = logsPageViewObj['1569'] + pageView.count;
+            else if (pageView.mid === 'aff3a')
+                logsPageViewObj['aff3a'] = logsPageViewObj['aff3a'] + pageView.count;
+            else if (pageView.mid === 'aff3')
+                logsPageViewObj['aff3'] = logsPageViewObj['aff3'] + pageView.count;
+            else if (pageView.mid === 'goonj')
+                logsPageViewObj['goonj'] = logsPageViewObj['goonj'] + pageView.count;
+            else if (pageView.mid === 'gdn')
+                logsPageViewObj['gdn'] = logsPageViewObj['gdn'] + pageView.count;
+            else if (pageView.mid === 'gdn2')
+                logsPageViewObj['gdn2'] = logsPageViewObj['gdn2'] + pageView.count;
         }
 
         sourceWise.push(sourceObj);
-        logsWise.push(logsObj);
+        logsWise.push(logsPageViewObj);
     }
 
     //sourceWise, statusWise, packageWise, sourceWise
     return {logsWise: logsWise, sourceWise: sourceWise};
 }
 
-function computeLogsUniqueSuccess(logsRawData) {
+function computeLogsSubscribeClicks(logsSubscribeClicks) {
 
-    let rawData, helog, logsObj, logsWise = [];
-    for (let i=0; i < logsRawData.length; i++) {
+    let rawData, subsClicks, logsSubscibeObj, logsWise = [];
+    for (let i=0; i < logsSubscribeClicks.length; i++) {
 
-        rawData = logsRawData[i];
-        logsObj = _.clone(clonelogsObj());
+        rawData = logsSubscribeClicks[i];
+        logsSubscibeObj = _.clone(clonelogsSubscibeObj());
 
-        for (let j = 0; j < rawData.logs.length; j++) {
-            helog = rawData.logs[j];
+        for (let j = 0; j < rawData.subsClicks.length; j++) {
+            subsClicks = rawData.subsClicks[j];
 
             //collect data => Affiliate mid wise, get its count
             //1, 1569, aff3a, aff3, goonj, gdn, gdn2
-            if (helog.mid === '1')
-                logsObj['1'] = logsObj['1'] + 1;
-            else if (helog.mid === '1569')
-                logsObj['1569'] = logsObj['1569'] + 1;
-            else if (helog.mid === 'aff3a')
-                logsObj['aff3a'] = logsObj['aff3a'] + 1;
-            else if (helog.mid === 'aff3')
-                logsObj['aff3'] = logsObj['aff3'] + 1;
-            else if (helog.mid === 'goonj')
-                logsObj['goonj'] = logsObj['goonj'] + 1;
-            else if (helog.mid === 'gdn')
-                logsObj['gdn'] = logsObj['gdn'] + 1;
-            else if (helog.mid === 'gdn2')
-                logsObj['gdn2'] = logsObj['gdn2'] + 1;
+            if (subsClicks.mid === '1')
+                logsSubscibeObj['1'] = logsSubscibeObj['1'] + 1;
+            else if (subsClicks.mid === '1569')
+                logsSubscibeObj['1569'] = logsSubscibeObj['1569'] + 1;
+            else if (subsClicks.mid === 'aff3a')
+                logsSubscibeObj['aff3a'] = logsSubscibeObj['aff3a'] + 1;
+            else if (subsClicks.mid === 'aff3')
+                logsSubscibeObj['aff3'] = logsSubscibeObj['aff3'] + 1;
+            else if (subsClicks.mid === 'goonj')
+                logsSubscibeObj['goonj'] = logsSubscibeObj['goonj'] + 1;
+            else if (subsClicks.mid === 'gdn')
+                logsSubscibeObj['gdn'] = logsSubscibeObj['gdn'] + 1;
+            else if (subsClicks.mid === 'gdn2')
+                logsSubscibeObj['gdn2'] = logsSubscibeObj['gdn2'] + 1;
 
         }
 
-        logsWise.push(logsObj);
+        logsWise.push(logsSubscibeObj);
     }
 
     //sourceWise, statusWise, packageWise, sourceWise
@@ -212,53 +212,53 @@ function computeLogsUniqueSuccess(logsRawData) {
 function insertNewRecord(data, type, dateString) {
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
     affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
-        console.log('data logs: ', data);
+        console.log('data pageView: ', data);
         if (result.length > 0){
             result = result[0];
-            if (type === 'logs')
-                result.logs = data;
-            else if (type === 'unique')
-                result.logsUniqueSuccessHe = data;
+            if (type === 'pageView')
+                result.logsPageView = data;
+            else if (type === 'subsClicks')
+                result.logsSubscribeClick = data;
 
             affiliateRepo.updateReport(result, result._id);
         }
         else{
             let obj = {};
-            if (type === 'logs')
-                obj.logs = data;
-            else if (type === 'unique')
-                obj.logsUniqueSuccessHe = data;
+            if (type === 'pageView')
+                obj.logsPageView = data;
+            else if (type === 'subsClicks')
+                obj.logsSubscribeClick = data;
 
             obj.date = dateString;
-            affiliateRepo.createReport({logs: data, date: dateString});
+            affiliateRepo.createReport({pageView: data, date: dateString});
         }
     });
 }
 
-function sourceWiseMidsCount(helog, source, dataObj) {
+function sourceWiseMidsCount(pageView, source, dataObj) {
     console.log('source: ', source);
 
-    if (helog.mid === '1')
-        dataObj[source]['1'] = dataObj[source]['1'] + helog.count;
-    else if (helog.mid === '1569')
-        dataObj[source]['1569'] = dataObj[source]['1569'] + helog.count;
-    else if (helog.mid === 'aff3')
-        dataObj[source]['aff3'] = dataObj[source]['aff3'] + helog.count;
-    else if (helog.mid === 'aff3a')
-        dataObj[source]['aff3a'] = dataObj[source]['aff3a'] + helog.count;
-    else if (helog.mid === 'gdn')
-        dataObj[source]['gdn'] = dataObj[source]['gdn'] + helog.count;
-    else if (helog.mid === 'gdn2')
-        dataObj[source]['gdn2'] = dataObj[source]['gdn2'] + helog.count;
-    else if (helog.mid === 'goonj')
-        dataObj[source]['goonj'] = dataObj[source]['goonj'] + helog.count;
+    if (pageView.mid === '1')
+        dataObj[source]['1'] = dataObj[source]['1'] + pageView.count;
+    else if (pageView.mid === '1569')
+        dataObj[source]['1569'] = dataObj[source]['1569'] + pageView.count;
+    else if (pageView.mid === 'aff3')
+        dataObj[source]['aff3'] = dataObj[source]['aff3'] + pageView.count;
+    else if (pageView.mid === 'aff3a')
+        dataObj[source]['aff3a'] = dataObj[source]['aff3a'] + pageView.count;
+    else if (pageView.mid === 'gdn')
+        dataObj[source]['gdn'] = dataObj[source]['gdn'] + pageView.count;
+    else if (pageView.mid === 'gdn2')
+        dataObj[source]['gdn2'] = dataObj[source]['gdn2'] + pageView.count;
+    else if (pageView.mid === 'goonj')
+        dataObj[source]['goonj'] = dataObj[source]['goonj'] + pageView.count;
 
     console.log('dataObj: ', dataObj);
 
     return dataObj;
 }
 
-function clonelogsObj() {
+function cloneLogsPageViewObj() {
     return {
         '1': 0,
         '1569': 0,
@@ -294,6 +294,6 @@ function getDaysInMonth(month) {
 }
 
 module.exports = {
-    computeLogsReports: computeLogsReports,
-    computeLogsUniqueSuccessReports: computeLogsUniqueSuccessReports,
+    computeLogsPageViewReports: computeLogsPageViewReports,
+    computeLogsSubscribeButtonClickReports: computeLogsSubscribeButtonClickReports,
 };

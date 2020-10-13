@@ -11,8 +11,8 @@ const affiliateReport = new Schema({
     sourceWise: {type: Object, default: undefined},
     helogs: {type: Object, default: undefined},
     helogsUniqueSuccessHe: {type: Object, default: undefined},
-    logs: {type: Object, default: undefined},
-    logsUniqueSuccessHe: {type: Object, default: undefined},
+    logsPageView: {type: Object, default: undefined},
+    logsSubscribeClick: {type: Object, default: undefined},
     date: { type: Date, default: Date.now }
 }, { strict: true });
 

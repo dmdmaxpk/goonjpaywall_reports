@@ -186,19 +186,19 @@ function computeHelogsUniqueSuccess(helogsRawData) {
             //collect data => Affiliate mid wise, get its count
             //1, 1569, aff3a, aff3, goonj, gdn, gdn2
             if (helog.mid === '1')
-                helogsObj['1'] = helogsObj['1'] + 1;
+                helogsObj['1'] = helogsObj['1'] + helog.count;
             else if (helog.mid === '1569')
-                helogsObj['1569'] = helogsObj['1569'] + 1;
+                helogsObj['1569'] = helogsObj['1569'] + helog.count;
             else if (helog.mid === 'aff3a')
-                helogsObj['aff3a'] = helogsObj['aff3a'] + 1;
+                helogsObj['aff3a'] = helogsObj['aff3a'] + helog.count;
             else if (helog.mid === 'aff3')
-                helogsObj['aff3'] = helogsObj['aff3'] + 1;
+                helogsObj['aff3'] = helogsObj['aff3'] + helog.count;
             else if (helog.mid === 'goonj')
-                helogsObj['goonj'] = helogsObj['goonj'] + 1;
+                helogsObj['goonj'] = helogsObj['goonj'] + helog.count;
             else if (helog.mid === 'gdn')
-                helogsObj['gdn'] = helogsObj['gdn'] + 1;
+                helogsObj['gdn'] = helogsObj['gdn'] + helog.count;
             else if (helog.mid === 'gdn2')
-                helogsObj['gdn2'] = helogsObj['gdn2'] + 1;
+                helogsObj['gdn2'] = helogsObj['gdn2'] + helog.count;
 
         }
 
@@ -218,7 +218,7 @@ function insertNewRecord(data, type, dateString) {
             if (type === 'helogs')
                 result.helogs = data;
             else if (type === 'unique')
-                result.helogsUniqueSuccessHe = data;
+                result.uniqueSuccessHe = data;
 
             affiliateRepo.updateReport(result, result._id);
         }
@@ -227,7 +227,7 @@ function insertNewRecord(data, type, dateString) {
             if (type === 'helogs')
                 obj.helogs = data;
             else if (type === 'unique')
-                obj.helogsUniqueSuccessHe = data;
+                obj.uniqueSuccessHe = data;
 
             obj.date = dateString;
             affiliateRepo.createReport({helogs: data, date: dateString});

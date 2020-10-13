@@ -125,12 +125,12 @@ class LogsRepo {
                             }},
                         { $group:{
                                 _id: {added_dtm: "$_id.added_dtm"},
-                                logs: { $push:  { service: "$_id.service", source: "$_id.source", mid: "$_id.mid", count: "$count" }}
+                                pageView: { $push:  { service: "$_id.service", source: "$_id.source", mid: "$_id.mid", count: "$count" }}
                             }},
                         { $project: {
                                 _id: 0,
                                 added_dtm: "$_id.added_dtm",
-                                logs: "$logs"
+                                pageView: "$pageView"
                             }}
                     ], {allowDiskUse: true}).toArray(function(err, items) {
                         if(err){
@@ -171,12 +171,12 @@ class LogsRepo {
                             }},
                         { $group:{
                                 _id: {added_dtm: "$_id.added_dtm"},
-                                logs: { $push:  { mid: "$_id.mid", count: "$count" }}
+                                subsClicks: { $push:  { mid: "$_id.mid", count: "$count" }}
                             }},
                         { $project: {
                                 _id: 0,
                                 added_dtm: "$_id.added_dtm",
-                                logs: "$logs"
+                                subsClicks: "$subsClicks"
                             }}
                     ], {allowDiskUse: true}).toArray(function(err, items) {
                         if(err){

@@ -58,14 +58,14 @@ exports.computeHelogsUniqueSuccessReports = async (req,res) =>  {
     res.send("computeHelogsUniqueSuccessReports - Executed\n");
 };
 
-exports.computeLogsReports = async (req,res) =>  {
-    LogsService.computeLogsReports(req,res);
-    res.send("computeLogsReports - Executed\n");
+exports.computeLogsPageViewReports = async (req,res) =>  {
+    LogsService.computeLogsPageViewReports(req,res);
+    res.send("computeLogsPageViewReports - Executed\n");
 };
 
-exports.computeLogsUniqueSuccessReports = async (req,res) =>  {
-    LogsService.computeLogsUniqueSuccessReports(req,res);
-    res.send("computeLogsUniqueSuccessReports - Executed\n");
+exports.computeLogsSubscribeButtonClickReports = async (req,res) =>  {
+    LogsService.computeLogsSubscribeButtonClickReports(req,res);
+    res.send("computeLogsSubscribeButtonClickReports - Executed\n");
 };
 
 exports.computeTransactionsAvgReports = async (req,res) =>  {
