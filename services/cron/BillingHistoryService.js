@@ -39,7 +39,7 @@ computeBillingHistoryReports = async(req, res) => {
         if (req.day <= helper.getDaysInMonth(month)){
             if (month < helper.getTodayMonthNo())
                 computeBillingHistoryReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
                 computeBillingHistoryReports(req, res);
         }
         else{

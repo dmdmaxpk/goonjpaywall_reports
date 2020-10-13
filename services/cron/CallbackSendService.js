@@ -39,7 +39,7 @@ computeCallbackSendReports = async(req, res) => {
         if (req.day <= helper.getDaysInMonth(month)){
             if (month < helper.getTodayMonthNo())
                 computeCallbackSendReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
                 computeCallbackSendReports(req, res);
         }
         else{

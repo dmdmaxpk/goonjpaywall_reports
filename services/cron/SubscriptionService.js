@@ -40,7 +40,7 @@ computeSubscriptionReports = async(req, res) => {
         if (req.day <= helper.getDaysInMonth(month)){
             if (month < helper.getTodayMonthNo())
                 computeSubscriptionReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
                 computeSubscriptionReports(req, res);
         }
         else{

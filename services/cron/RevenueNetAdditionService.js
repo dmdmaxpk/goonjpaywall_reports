@@ -38,7 +38,7 @@ computeRevenueNetAdditionReports = async(req, res) => {
         if (req.day <= helper.getDaysInMonth(month)){
             if (month < helper.getTodayMonthNo())
                 computeRevenueNetAdditionReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
                 computeRevenueNetAdditionReports(req, res);
         }
         else{

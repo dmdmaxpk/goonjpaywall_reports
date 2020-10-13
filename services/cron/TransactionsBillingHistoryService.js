@@ -36,7 +36,7 @@ computeTransactionsAvgReports = async(req, res) => {
         if (req.day <= helper.getDaysInMonth(month)){
             if (month < helper.getTodayMonthNo())
                 computeTransactionsAvgReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getDayOfMonth(req.day, month))
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
                 computeTransactionsAvgReports(req, res);
         }
         else{

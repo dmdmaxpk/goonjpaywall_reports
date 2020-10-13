@@ -28,8 +28,8 @@ class Helper {
     static getDaysInMonth(month) {
         return new Date(2020, month, 0).getDate();
     }
-    static getDayOfMonth(day, month) {
-        return new Date(month+'/'+day+'/2020').getDate();
+    static getTodayDayNo() {
+        return new Date().getDate();
     }
     static getTodayMonthNo() {
         return new Date().getMonth() + 1;
