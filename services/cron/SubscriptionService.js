@@ -74,12 +74,6 @@ function computeSubscriberData(subscriptions) {
                 if (outer_added_dtm === inner_added_dtm){
                     dateInMili = inner_added_dtm;
 
-                    //Active, inactive subscriptions
-                    if (innerObj.active)
-                        newObj.active = newObj.active + 1;
-                    else
-                        newObj.nonActive = newObj.nonActive + 1;
-
                     //Package wise subscriptions
                     if(innerObj.subscribed_package_id === 'QDfC')
                         newObj.package.dailyLive = newObj.package.dailyLive + 1;
@@ -130,10 +124,16 @@ function computeSubscriberData(subscriptions) {
 
                     // Active Subscribers - Subscription wise
                     if (innerObj.subscription_status){
-                        if (innerObj.subscription_status === "trial" || innerObj.subscription_status === "graced" || innerObj.subscription_status === "billed")
+                        if (innerObj.subscription_status === "trial" || innerObj.subscription_status === "graced" || innerObj.subscription_status === "billed"){
+                            //Active subscriptions
+                            newObj.active = newObj.active + 1;
                             subscriberObj.active = subscriberObj.active + 1;
-                        else
+                        }
+                        else{
+                            //inactive subscriptions
+                            newObj.nonActive = newObj.nonActive + 1;
                             subscriberObj.nonActive = subscriberObj.nonActive + 1;
+                        }
 
                         subscriberObj.added_dtm = outerObj.added_dtm;
                         subscriberObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
