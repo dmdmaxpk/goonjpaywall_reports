@@ -216,10 +216,10 @@ sourceWiseSubscriptionReport = async (rawDataSet, params) =>{
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, subscription, innerObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dayDataObj = {app: 0, web: 0, gdn2: 0, HE: 0};
-    let dataObj = {app: 0, web: 0, gdn2: 0, HE: 0};
-    let weeklyDataObj = {app: 0, web: 0, gdn2: 0, HE: 0};
-    let monthlyDataObj = {app: 0, web: 0, gdn2: 0, HE: 0};
+    let dayDataObj = {app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0};
+    let dataObj = {app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0};
+    let weeklyDataObj = {app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0};
+    let monthlyDataObj = {app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){

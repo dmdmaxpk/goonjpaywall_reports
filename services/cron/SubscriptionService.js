@@ -100,7 +100,7 @@ function computeSubscriberData(subscriptions) {
                     else if(innerObj.source === 'HE')
                         newObj.source.HE = newObj.source.HE + 1;
                      else if(innerObj.source === 'affiliate_web')
-                        newObj.source.affiliate_web = newObj.source.affiliate_web + 1;
+                        newObj.source.affiliate_web = Number(newObj.source.affiliate_web) + 1;
 
                     //Affiliate mid wise subscriptions
                     if(innerObj.affiliate_mid){
