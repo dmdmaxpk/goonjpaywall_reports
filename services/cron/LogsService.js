@@ -110,23 +110,6 @@ function computeLogsPageViewData(logsPageViewData) {
         for (let j = 0; j < rawData.pageView.length; j++) {
             pageView = rawData.pageView[j];
 
-            //collect data => source wise, get Mids count
-            //app, web, gdn2, HE, he, affiliate
-            if (pageView.source === 'app')
-                sourceObj = sourceWiseMidsCount(pageView, 'app', sourceObj);
-            else if (pageView.source === 'web')
-                sourceObj = sourceWiseMidsCount(pageView, 'web', sourceObj);
-            else if (pageView.source === 'gdn2')
-                sourceObj = sourceWiseMidsCount(pageView, 'gdn2', sourceObj);
-            else if (pageView.source === 'HE')
-                sourceObj = sourceWiseMidsCount(pageView, 'HE', sourceObj);
-            else if (pageView.source === 'he')
-                sourceObj = sourceWiseMidsCount(pageView, 'he', sourceObj);
-            else if (pageView.source === 'affiliate')
-                sourceObj = sourceWiseMidsCount(pageView, 'affiliate', sourceObj);
-            else if (pageView.source === 'null')
-                sourceObj = sourceWiseMidsCount(pageView, 'null', sourceObj);
-
             //collect data => Affiliate mid wise, get its count
             //1, 1569, aff3a, aff3, goonj, gdn, gdn2
             if (pageView.mid === '1')
@@ -159,7 +142,7 @@ function computeLogsSubscribeClicks(logsSubscribeClicks) {
     for (let i=0; i < logsSubscribeClicks.length; i++) {
 
         rawData = logsSubscribeClicks[i];
-        logsSubscibeObj = _.clone(clonelogsSubscibeObj());
+        logsSubscibeObj = _.clone(clonelogsObj());
 
         for (let j = 0; j < rawData.subsClicks.length; j++) {
             subsClicks = rawData.subsClicks[j];
@@ -239,6 +222,17 @@ function sourceWiseMidsCount(pageView, source, dataObj) {
     return dataObj;
 }
 
+function clonelogsObj() {
+    return {
+        '1': 0,
+        '1569': 0,
+        aff3: 0,
+        aff3a: 0,
+        gdn: 0,
+        gdn2: 0,
+        goonj: 0
+    }
+}
 function cloneLogsPageViewObj() {
     return {
         '1': 0,
@@ -250,7 +244,7 @@ function cloneLogsPageViewObj() {
         goonj: 0
     }
 }
-function cloneSourceWiseObj() {
+function cloneLogsSourceWiseObj() {
     let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
     //app, web, gdn2, HE, he, affiliate
     return {

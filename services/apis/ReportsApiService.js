@@ -1,5 +1,7 @@
 const container = require("../../configurations/container");
 const reportsRepo = require('../../repos/apis/ReportsRepo');
+const affiliateRepo = require('../../repos/apis/AffiliateRepo');
+const subscriberReportsRepo = require('../../repos/apis/SubscriberReportsRepo');
 const reportsTransformer = container.resolve('reportsTransformer');
 
 // Import Compute Files to access its factory functions
@@ -11,17 +13,17 @@ const subscriptionService = require("./compute/SubscriptionService");
 const transactionService = require("./compute/TransactionService");
 const trialService = require("./compute/TrialService");
 const usersService = require("./compute/UsersService");
+const affiliateService = require("./compute/AffiliateService");
 
 generateReportsData = async (req,res) => {
     try {
         let params = req.query, rawDataSet;
-        if (req.reportType === '') 
-            rawDataSet = await reportsRepo.generateReportsData(params);
-        else if (req.reportType === '')
-            rawDataSet = await reportsRepo.generateReportsData(params);
-        else if (req.reportType === '') 
+        if (req.reportType === 'affiliate')
+            rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
+        else
             rawDataSet = await reportsRepo.generateReportsData(params);
 
+        console.log("rawDataSet", rawDataSet);
         if (params.type === 'users'){
             if (params.sub_type === 'active_inactive')
                 return usersService.computeVerifiedUserReport(rawDataSet, params);
@@ -135,6 +137,18 @@ generateReportsData = async (req,res) => {
                     return transactionService.computeTransactingSubscribersOperatorWiseReport(rawDataSet, params);
                 else if(params.transactions === 'price_wise')
                     return transactionService.computeTransactingSubscribersPriceWiseReport(rawDataSet, params);
+            }
+        }
+        else if (params.type === 'affiliate'){
+            if (params.sub_type === 'helogs'){
+                if (params.helogs === 'helogsWise')
+                    return affiliateService.computeHelogsReport(rawDataSet, params);
+                else if (params.helogs === 'sourceWise')
+                    return affiliateService.computeHelogsSourceWiseReport(rawDataSet, params);
+            }
+            else if (params.sub_type === 'uniqueSuccessHe'){
+                if (params.uniqueSuccessHe === 'helogsWise')
+                    return affiliateService.computeUniqueSuccessHeWiseReport(rawDataSet, params);
             }
         }
     }catch (e) {

@@ -16,13 +16,13 @@ updateReport = async (data, id) => {
     return await SubscriberReport.updateOne({ '_id': id }, data);
 };
 
-generateReportsData = async (params) => {
-    console.log('generateReportsData: ', params.from_date, params.to_date);
+generateSubscriberReportsData = async (params) => {
+    console.log('generateSubscriberReportsData: ', params.from_date, params.to_date);
     return await SubscriberReport.find( { $and:[{date:{$gte:new Date(params.from_date)}}, {date:{$lte:new Date(params.to_date)}}] });
 };
 
 module.exports = {
-    generateReportsData: generateReportsData,
+    generateSubscriberReportsData: generateSubscriberReportsData,
     getReportByDateString: getReportByDateString,
     createReport: createReport,
     updateReport: updateReport
