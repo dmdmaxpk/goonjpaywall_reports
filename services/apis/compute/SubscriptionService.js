@@ -285,7 +285,7 @@ sourceWiseSubscriptionReport = async (rawDataSet, params) =>{
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({app: 0, web: 0, gdn2: 0, HE: 0});
+                    monthlyDataObj = _.clone({app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0});
                     month_from_date = null;
                 }
 
@@ -294,14 +294,14 @@ sourceWiseSubscriptionReport = async (rawDataSet, params) =>{
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({app: 0, web: 0, gdn2: 0, HE: 0});
+                    weeklyDataObj = _.clone({app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0});
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({app: 0, web: 0, gdn2: 0, HE: 0});
+                dayDataObj = _.clone({app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0});
             }
         }
 
