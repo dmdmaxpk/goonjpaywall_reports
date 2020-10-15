@@ -5,7 +5,7 @@ const  _ = require('lodash');
 
 // User Compute Functions
 computeAffiliateReport = async (rawDataSet, params) =>{
-    console.log('computeAffiliateReport');
+    console.log('computeAffiliateReport', params);
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, computedData, partKey;
