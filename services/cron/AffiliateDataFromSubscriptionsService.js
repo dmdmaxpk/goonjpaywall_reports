@@ -69,22 +69,21 @@ function computeAffiliateData(subscriptionsRawData) {
             history = rawData.history[j];
 
             //collect data => billing_status to package - then package to affiliate_type, then get mids count
-            if (history.status) {
-                if (history.package_id === 'QDfC') {
-                    if (history.affiliate === "HE")
-                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
-                    else if (history.affiliate === "affiliate_web")
-                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
-                }
-                else if (history.package_id === 'QDfG') {
-                    if (history.affiliate === "HE")
-                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
-                    else if (history.affiliate === "affiliate_web")
-                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
-                }
+            if (history.package_id === 'QDfC') {
+                if (history.affiliate === "HE")
+                    affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
+                else if (history.affiliate === "affiliate_web")
+                    affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
+            }
+            else if (history.package_id === 'QDfG') {
+                if (history.affiliate === "HE")
+                    affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
+                else if (history.affiliate === "affiliate_web")
+                    affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
             }
 
             //collect data => billing_status wise, get Mids count
+            //Success, trial, Affiliate callback sent
             if (history.status === 'Success')
                 statusWiseObj = wiseMidsCount(history, 'success', statusWiseObj);
             else if (history.status === 'trial')
@@ -149,7 +148,15 @@ function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, dat
     });
 }
 
-function affliateWiseMidsCount(history, status, package_id, affiliate, dataObj) {
+function affliateWiseMidsCount(history, billing_status, package_id, affiliate, dataObj) {
+
+    let status;
+    if (billing_status === 'Success')
+        status = 'success';
+    else if (billing_status === 'trial')
+        status = 'trial';
+    else if (billing_status === 'Affiliate callback sent')
+        status = 'callback_sent';
 
     if (history.affiliate_mid === '1')
         dataObj[status][package_id][affiliate]['1'] = dataObj[status][package_id][affiliate]['1'] + history.count;

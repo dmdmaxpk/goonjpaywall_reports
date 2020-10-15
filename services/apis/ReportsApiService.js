@@ -167,6 +167,8 @@ generateReportsData = async (req,res) => {
     }
 };
 
+//helogs_wise, source_wise
+
 module.exports = {
     generateReportsData: generateReportsData,
 };
