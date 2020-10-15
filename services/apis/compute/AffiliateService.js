@@ -144,7 +144,7 @@ computeAffiliateReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, params, 'Data not exist.');
     }
 };
 
@@ -284,7 +284,7 @@ computeHelogsDataReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, params, 'Data not exist.');
     }
 };
 computeUniqueSuccessHeWiseReport = async (rawDataSet, params) => {
@@ -420,7 +420,7 @@ computeUniqueSuccessHeWiseReport = async (rawDataSet, params) => {
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, params, 'Data not exist.');
     }
 };
 
