@@ -217,40 +217,63 @@ class SubscriptionRepository {
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
-                        { $match:{
-                            mid: {$in: ["1", "1569", "aff3", "aff3a", "goonj", "gdn", "gdn2"]},
-                            "req_body.response_msisdn":{$ne:null},
-                            $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                        {
+                            $match:{
+                                source: {$in: ["HE","affiliate_web"]},
+                                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                            }
+                        },{
+                            $lookup: {
+                                from: "billinghistories",
+                                let: {subscriber_id: "$subscriber_id", package_id: "$subscribed_package_id"},
+                                pipeline:[
+                                    { $match:
+                                        { $expr:
+                                            { $and:[
+                                                {$eq: ["$subscriber_id", "$$subscriber_id" ]},
+                                                {$eq: ["$package_id", "$$package_id" ]},
+                                                {$in: ["$billing_status",
+                                                    [ "Success", "trial", "Affiliate callback sent" ]
+                                                ]},
+                                                {$gt: ["$billing_dtm", new Date(from)]},
+                                                {$lt: ["$billing_dtm", new Date(to)]}
+                                            ]}
+                                        }
+                                    }],
+                                as: "history"
+                            }
+                        },
+                        { $unwind: "$history" },
+                        { $project:{
+                            affiliate: "$source",
+                            affiliate_mid: "$affiliate_mid",
+                            status: "$history.billing_status",
+                            package_id: "$history.package_id",
+                            day: { "$dayOfMonth" : "$history.billing_dtm"},
+                            month: { "$month" : "$history.billing_dtm" },
+                            year:{ "$year": "$history.billing_dtm" }
                         }},
                         { $project:{
-                            mid: "$mid",
-                            msisdn: "$req_body.response_msisdn",
-                            day: { "$dayOfMonth" : "$added_dtm"},
-                            month: { "$month" : "$added_dtm" },
-                            year:{ "$year": "$added_dtm" },
-                        }},
-                        { $project:{
-                            added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
-                            mid: "$mid",
-                            msisdn: "$msisdn"
+                            billing_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
+                            status: "$status",
+                            package_id: "$package_id",
+                            affiliate: "$affiliate",
+                            affiliate_mid: "$affiliate_mid"
                         }},
                         { $group:{
-                            _id: {added_dtm: "$added_dtm", msisdn: "$msisdn"}, mid: {$first: "$mid"}
-                        }},
-                        { $group:{
-                            _id:  {added_dtm: "$_id.added_dtm", mid: "$mid"},
+                            _id: {billing_dtm: "$billing_dtm", status: "$status", package_id: "$package_id", affiliate: "$affiliate", affiliate_mid: "$affiliate_mid"},
                             count: {$sum: 1}
                         }},
                         { $group:{
-                            _id: {added_dtm: "$_id.added_dtm"},
-                            helogs: { $push:  { mid: "$_id.mid", count: "$count" }}
+                            _id: {billing_dtm: "$_id.billing_dtm"},
+                            history: { $push:  { status: "$_id.status", package_id: "$_id.package_id", affiliate: "$_id.affiliate", affiliate_mid: "$_id.affiliate_mid", count: "$count" }}
                         }},
                         { $project: {
                             _id: 0,
-                            added_dtm: "$_id.added_dtm",
-                            helogs: "$helogs"
+                            billing_dtm: "$_id.billing_dtm",
+                            history: "$history"
                         }}
-                    ], {allowDiskUse: true}).toArray(function(err, items) {
+                    ]).toArray(function(err, items) {
                         if(err){
                             console.log('getAffiliateDataDateRange - err: ', err.message);
                             resolve([]);

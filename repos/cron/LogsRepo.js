@@ -62,7 +62,7 @@ class LogsRepo {
                             }},
                         { $project:{
                                 mid: "$mid",
-                                msisdn: "req_body.response_msisdn",
+                                msisdn: "$req_body.response_msisdn",
                                 day: { "$dayOfMonth" : "$added_dtm"},
                                 month: { "$month" : "$added_dtm" },
                                 year:{ "$year": "$added_dtm" },
@@ -73,12 +73,15 @@ class LogsRepo {
                                 msisdn: "$msisdn"
                             }},
                         { $group:{
-                                _id: {added_dtm: "$added_dtm", mid: "$mid", msisdn: "$msisdn"},
+                                _id: {added_dtm: "$added_dtm", msisdn: "$msisdn"}, mid: {$first: "$mid"}
+                            }},
+                        { $group:{
+                                _id:  {added_dtm: "$_id.added_dtm", mid: "$mid"},
                                 count: {$sum: 1}
                             }},
                         { $group:{
                                 _id: {added_dtm: "$_id.added_dtm"},
-                                helogs: { $push:  { mid: "$_id.mid", msisdn: "$msisdn", count: "$count" }}
+                                helogs: { $push:  { mid: "$_id.mid", count: "$count" }}
                             }},
                         { $project: {
                                 _id: 0,
@@ -110,6 +113,7 @@ class LogsRepo {
                         }},
                         { $project:{
                             mid: "$req_body.mid",
+                            msisdn: "req_body.response_msisdn",
                             day: { "$dayOfMonth" : "$added_dtm"},
                             month: { "$month" : "$added_dtm" },
                             year:{ "$year": "$added_dtm" },
@@ -117,9 +121,13 @@ class LogsRepo {
                         { $project:{
                             added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
                             mid: "$mid",
+                            msisdn: "msisdn",
                         }},
                         { $group:{
-                            _id: {added_dtm: "$added_dtm", mid: "$mid"},
+                            _id: {added_dtm: "$added_dtm", msisdn: "$msisdn"}, mid: {$first: "$mid"}
+                        }},
+                        { $group:{
+                            _id:  {added_dtm: "$_id.added_dtm", mid: "$mid"},
                             count: {$sum: 1}
                         }},
                         { $group:{
@@ -129,7 +137,7 @@ class LogsRepo {
                         { $project: {
                             _id: 0,
                             added_dtm: "$_id.added_dtm",
-                            pageView: "$pageView"
+                            pageView: "$helogs"
                         }}
                     ], {allowDiskUse: true}).toArray(function(err, items) {
                         if(err){
