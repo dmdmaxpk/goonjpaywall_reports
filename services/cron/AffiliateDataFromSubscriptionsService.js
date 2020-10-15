@@ -60,7 +60,7 @@ function computeAffiliateData(subscriptionsRawData) {
     for (let i=0; i < subscriptionsRawData.length; i++) {
 
         rawData = subscriptionsRawData[i];
-        affiliateObj = _.clone(cloneAffiliateObj());
+        affiliateObj = _.clone(cloneAffiliateWiseObj());
         statusWiseObj = _.clone(cloneStatusWiseObj());
         packageWiseObj = _.clone(clonePackageWiseObj());
         sourceWiseObj = _.clone(cloneSourceWiseObj());
@@ -199,6 +199,16 @@ function wiseMidsCount(history, wise, dataObj) {
 }
 
 function cloneAffiliateObj() {
+    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
+    return {
+        trial: _.clone(mids),
+        QDfC: _.clone(mids),
+        QDfG: _.clone(mids),
+        billing_dtm: '',
+        billing_dtm_hours: ''
+    }
+}
+function cloneAffiliateWiseObj() {
     let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
     let affiliate = {
         QDfC: { HE: _.clone(mids), affiliate_web: _.clone(mids) },

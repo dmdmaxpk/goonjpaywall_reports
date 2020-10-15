@@ -102,32 +102,14 @@ computeHelogsUniqueSuccessReports = async(req, res) => {
 
 function computeHelogsData(helogsRawData) {
 
-    let rawData, helog, helogsObj, sourceObj, helogsWise = [], sourceWise = [];
+    let rawData, helog, helogsObj, helogsWise = [];
     for (let i=0; i < helogsRawData.length; i++) {
 
         rawData = helogsRawData[i];
-        sourceObj = _.clone(cloneSourceWiseObj());
         helogsObj = _.clone(cloneHelogsObj());
 
         for (let j = 0; j < rawData.helogs.length; j++) {
             helog = rawData.helogs[j];
-
-            //collect data => source wise, get Mids count
-            //app, web, gdn2, HE, he, affiliate
-            if (helog.source === 'app')
-                sourceObj = sourceWiseMidsCount(helog, 'app', sourceObj);
-            else if (helog.source === 'web')
-                sourceObj = sourceWiseMidsCount(helog, 'web', sourceObj);
-            else if (helog.source === 'gdn2')
-                sourceObj = sourceWiseMidsCount(helog, 'gdn2', sourceObj);
-            else if (helog.source === 'HE')
-                sourceObj = sourceWiseMidsCount(helog, 'HE', sourceObj);
-            else if (helog.source === 'he')
-                sourceObj = sourceWiseMidsCount(helog, 'he', sourceObj);
-            else if (helog.source === 'affiliate')
-                sourceObj = sourceWiseMidsCount(helog, 'affiliate', sourceObj);
-            else if (helog.source === 'null')
-                sourceObj = sourceWiseMidsCount(helog, 'null', sourceObj);
 
             //collect data => Affiliate mid wise, get its count
             //1, 1569, aff3a, aff3, goonj, gdn, gdn2
@@ -147,12 +129,11 @@ function computeHelogsData(helogsRawData) {
                 helogsObj['gdn2'] = helogsObj['gdn2'] + helog.count;
         }
 
-        sourceWise.push(sourceObj);
         helogsWise.push(helogsObj);
     }
 
     //sourceWise, statusWise, packageWise, sourceWise
-    return {helogsWise: helogsWise, sourceWise: sourceWise};
+    return helogsWise;
 }
 
 function computeHelogsUniqueSuccess(helogsRawData) {
@@ -218,29 +199,6 @@ function insertNewRecord(data, type, dateString) {
     });
 }
 
-function sourceWiseMidsCount(helog, source, dataObj) {
-    console.log('source: ', source);
-
-    if (helog.mid === '1')
-        dataObj[source]['1'] = dataObj[source]['1'] + helog.count;
-    else if (helog.mid === '1569')
-        dataObj[source]['1569'] = dataObj[source]['1569'] + helog.count;
-    else if (helog.mid === 'aff3')
-        dataObj[source]['aff3'] = dataObj[source]['aff3'] + helog.count;
-    else if (helog.mid === 'aff3a')
-        dataObj[source]['aff3a'] = dataObj[source]['aff3a'] + helog.count;
-    else if (helog.mid === 'gdn')
-        dataObj[source]['gdn'] = dataObj[source]['gdn'] + helog.count;
-    else if (helog.mid === 'gdn2')
-        dataObj[source]['gdn2'] = dataObj[source]['gdn2'] + helog.count;
-    else if (helog.mid === 'goonj')
-        dataObj[source]['goonj'] = dataObj[source]['goonj'] + helog.count;
-
-    console.log('dataObj: ', dataObj);
-
-    return dataObj;
-}
-
 function cloneHelogsObj() {
     return {
         '1': 0,
@@ -252,20 +210,6 @@ function cloneHelogsObj() {
         goonj: 0
     }
 }
-function cloneSourceWiseObj() {
-    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
-    //app, web, gdn2, HE, he, affiliate
-    return {
-        app: _.clone(mids),
-        web: _.clone(mids),
-        gdn2: _.clone(mids),
-        HE: _.clone(mids),
-        he: _.clone(mids),
-        affiliate: _.clone(mids),
-        'null': _.clone(mids)
-    }
-}
-
 
 module.exports = {
     computeHelogsReports: computeHelogsReports,
