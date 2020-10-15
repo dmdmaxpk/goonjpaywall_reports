@@ -18,6 +18,7 @@ computeHelogsDataReport = async (rawDataSet, params) =>{
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
+            console.log('outerObj: ', outerObj);
             if (outerObj.helogs){
                 helogs = outerObj.helogs;
                 console.log('helogs.helogsWise: ', helogs.helogsWise);
