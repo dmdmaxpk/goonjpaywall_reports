@@ -74,7 +74,7 @@ class ReportsValidator{
                 if (params.sub_type === 'subscriptions')
                     this.checkSubTypeIsNull(params.helogs, "Affiliate data from subscriptions", ['subscriptions', 'affiliate_wise', 'status_wise', 'package_wise', 'source_wise']);
                 else if (params.sub_type === 'helogs')
-                    this.checkSubTypeIsNull(params.helogs, "HE logs", ['helogs_wise', 'source_wise']);
+                    this.checkSubTypeIsNull(params.helogs, "HE logs", ['helogs_wise']);
                 else if (params.sub_type === 'unique_successHe')
                     this.checkSubTypeIsNull(params.uniqueSuccessHe, "Unique Success HE", ['helogs_wise']);
 
