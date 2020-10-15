@@ -31,7 +31,7 @@ computeAffiliateReport = async (rawDataSet, params) =>{
                     }
                 }
             }
-            else if (outerObj.uniqueSuccessHe) {
+            if (outerObj.uniqueSuccessHe) {
                 partKey = outerObj.uniqueSuccessHe;
                 if (partKey.helogsWise) {
                     innerObj = partKey.helogsWise[0];
@@ -42,7 +42,7 @@ computeAffiliateReport = async (rawDataSet, params) =>{
                     monthlyDataObj = computedData.monthlyDataObj;
                 }
             }
-            else if (outerObj.logsPageView) {
+            if (outerObj.logsPageView) {
                 innerObj = outerObj.logsPageView[0];
                 computedData = computeAffiliateHeData('pageViews', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                 dataObj = computedData.dataObj;
@@ -50,7 +50,7 @@ computeAffiliateReport = async (rawDataSet, params) =>{
                 weeklyDataObj = computedData.weeklyDataObj;
                 monthlyDataObj = computedData.monthlyDataObj;
             }
-            else if (outerObj.logsSubscribeClick) {
+            if (outerObj.logsSubscribeClick) {
                 innerObj = outerObj.logsSubscribeClick[0];
                 computedData = computeAffiliateHeData('subscribeClicks', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                 dataObj = computedData.dataObj;
