@@ -13,7 +13,7 @@ computeAffiliateReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 1, 2);
+    dateData = helper.computeNextDate(req, 6, 19);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -105,14 +105,14 @@ function computeAffiliateData(subscriptionsRawData) {
 
         }
 
-        affiliateObj.added_dtm = history.added_dtm;
-        statusWiseObj.added_dtm = history.added_dtm;
-        packageWiseObj.added_dtm = history.added_dtm;
-        sourceWiseObj.added_dtm = history.added_dtm;
-        affiliateObj.added_dtm_hours = helper.setDate(new Date(history.added_dtm), null, 0, 0, 0);
-        statusWiseObj.added_dtm_hours = helper.setDate(new Date(history.added_dtm), null, 0, 0, 0);
-        packageWiseObj.added_dtm_hours = helper.setDate(new Date(history.added_dtm), null, 0, 0, 0);
-        sourceWiseObj.added_dtm_hours = helper.setDate(new Date(history.added_dtm), null, 0, 0, 0);
+        affiliateObj.billing_dtm = history.billing_dtm;
+        statusWiseObj.billing_dtm = history.billing_dtm;
+        packageWiseObj.billing_dtm = history.billing_dtm;
+        sourceWiseObj.billing_dtm = history.billing_dtm;
+        affiliateObj.billing_dtm_hours = helper.setDate(new Date(history.billing_dtm), null, 0, 0, 0);
+        statusWiseObj.billing_dtm_hours = helper.setDate(new Date(history.billing_dtm), null, 0, 0, 0);
+        packageWiseObj.billing_dtm_hours = helper.setDate(new Date(history.billing_dtm), null, 0, 0, 0);
+        sourceWiseObj.billing_dtm_hours = helper.setDate(new Date(history.billing_dtm), null, 0, 0, 0);
 
         affiliateWise.push(affiliateObj);
         statusWise.push(statusWiseObj);
@@ -208,8 +208,8 @@ function cloneAffiliateObj() {
         success: _.clone(affiliate),
         trial: _.clone(affiliate),
         callback_sent: _.clone(affiliate),
-        added_dtm: '',
-        added_dtm_hours: ''
+        billing_dtm: '',
+        billing_dtm_hours: ''
     }
 }
 function cloneStatusWiseObj() {
@@ -218,8 +218,8 @@ function cloneStatusWiseObj() {
         success: _.clone(mids),
         trial: _.clone(mids),
         callback_sent: _.clone(mids),
-        added_dtm: '',
-        added_dtm_hours: ''
+        billing_dtm: '',
+        billing_dtm_hours: ''
     }
 }
 function clonePackageWiseObj() {
@@ -227,8 +227,8 @@ function clonePackageWiseObj() {
     return {
         QDfC: _.clone(mids),
         QDfG: _.clone(mids),
-        added_dtm: '',
-        added_dtm_hours: ''
+        billing_dtm: '',
+        billing_dtm_hours: ''
     }
 }
 function cloneSourceWiseObj() {
@@ -236,8 +236,8 @@ function cloneSourceWiseObj() {
     return {
         HE: _.clone(mids),
         affiliate_web: _.clone(mids),
-        added_dtm: '',
-        added_dtm_hours: ''
+        billing_dtm: '',
+        billing_dtm_hours: ''
     }
 }
 
