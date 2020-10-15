@@ -93,9 +93,9 @@ function computeAffiliateData(subscriptionsRawData) {
 
             //collect data => package wise, get Mids count
             if (history.package_id === 'QDfC')
-                packageWiseObj = wiseMidsCount(history, 'QDfC', packageWiseObj);
+                packageWiseObj = packageWiseMidsCount(history, 'QDfC', packageWiseObj);
             else if (history.package_id === 'QDfG')
-                packageWiseObj = wiseMidsCount(history, 'QDfG', packageWiseObj);
+                packageWiseObj = packageWiseMidsCount(history, 'QDfG', packageWiseObj);
 
             //collect data => source wise, get Mids count
             if (history.affiliate === 'HE')
@@ -173,6 +173,29 @@ function affliateWiseMidsCount(history, billing_status, package_id, affiliate, d
     else if (history.affiliate_mid === 'goonj')
         dataObj[status][package_id][affiliate]['goonj'] = dataObj[status][package_id][affiliate]['goonj'] + history.count;
 
+    return dataObj;
+}
+function packageWiseMidsCount(history, wise, dataObj) {
+    console.log('packageWiseMidsCount: ', packageWiseMidsCount);
+
+    if (history.affiliate_mid === '1569' && history.status === 'Affiliate callback sent')
+        dataObj[wise]['1569'] = dataObj[wise]['1569'] + history.count;
+    else if (history.affiliate_mid === 'aff3' && history.status === 'Affiliate callback sent')
+        dataObj[wise]['aff3'] = dataObj[wise]['aff3'] + history.count;
+    else if (history.affiliate_mid === 'aff3a' && history.status === 'Affiliate callback sent')
+        dataObj[wise]['aff3a'] = dataObj[wise]['aff3a'] + history.count;
+    else if (history.affiliate_mid === 'goonj' && history.status === 'Affiliate callback sent')
+        dataObj[wise]['goonj'] = dataObj[wise]['goonj'] + history.count;
+
+    else if (history.affiliate_mid === 'gdn' && history.status === 'Success')
+        dataObj[wise]['gdn'] = dataObj[wise]['gdn'] + history.count;
+    else if (history.affiliate_mid === 'gdn2' && history.status === 'Success')
+        dataObj[wise]['gdn2'] = dataObj[wise]['gdn2'] + history.count;
+    else if (history.affiliate_mid === '1' && history.status === 'Success')
+        dataObj[wise]['1'] = dataObj[wise]['1'] + history.count;
+
+
+    console.log('dataObj: ', dataObj);
     return dataObj;
 }
 function wiseMidsCount(history, wise, dataObj) {
