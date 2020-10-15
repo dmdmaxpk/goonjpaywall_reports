@@ -137,7 +137,7 @@ class LogsRepo {
                         { $project: {
                             _id: 0,
                             added_dtm: "$_id.added_dtm",
-                            pageView: "$helogs"
+                            pageView: "$pageView"
                         }}
                     ], {allowDiskUse: true}).toArray(function(err, items) {
                         if(err){
