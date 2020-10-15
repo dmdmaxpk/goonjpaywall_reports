@@ -69,7 +69,7 @@ computeHelogsUniqueSuccessReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('computeHelogsUniqueSuccessReports: ', fromDate, toDate);
-    logsRepo.getHelogsDistictDataByDateRange(req, fromDate, toDate).then( async function(helogsData) {
+    logsRepo.getHelogsUniqueSuccessByDateRange(req, fromDate, toDate).then( async function(helogsData) {
         console.log('helogsData: ', helogsData);
 
         if (helogsData.length > 0){

@@ -49,9 +49,9 @@ class LogsRepo {
         });
     }
 
-    async getHelogsDistictDataByDateRange (req, from, to) {
+    async getHelogsUniqueSuccessByDateRange (req, from, to) {
         return new Promise((resolve, reject) => {
-            console.log('getHelogsDistictDataByDateRange: ', from, to);
+            console.log('getHelogsUniqueSuccessByDateRange: ', from, to);
             req.db.collection('helogs', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
@@ -62,6 +62,7 @@ class LogsRepo {
                             }},
                         { $project:{
                                 mid: "$mid",
+                                msisdn: "req_body.response_msisdn",
                                 day: { "$dayOfMonth" : "$added_dtm"},
                                 month: { "$month" : "$added_dtm" },
                                 year:{ "$year": "$added_dtm" },
@@ -69,14 +70,15 @@ class LogsRepo {
                         { $project:{
                                 added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
                                 mid: "$mid",
+                                msisdn: "$msisdn"
                             }},
                         { $group:{
-                                _id: {added_dtm: "$added_dtm", mid: "$mid"},
+                                _id: {added_dtm: "$added_dtm", mid: "$mid", msisdn: "$msisdn"},
                                 count: {$sum: 1}
                             }},
                         { $group:{
                                 _id: {added_dtm: "$_id.added_dtm"},
-                                helogs: { $push:  { mid: "$_id.mid", count: "$count" }}
+                                helogs: { $push:  { mid: "$_id.mid", msisdn: "$msisdn", count: "$count" }}
                             }},
                         { $project: {
                                 _id: 0,
@@ -85,7 +87,7 @@ class LogsRepo {
                             }}
                     ], {allowDiskUse: true}).toArray(function(err, items) {
                         if(err){
-                            console.log('getHelogsDistictDataByDateRange - err: ', err.message);
+                            console.log('getHelogsUniqueSuccessByDateRange - err: ', err.message);
                             resolve([]);
                         }
                         resolve(items);
