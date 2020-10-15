@@ -8,7 +8,7 @@ const SubscriptionBillingHistoryService = require('../services/cron/Subscription
 const TransactionsBillingHistoryService = require('../services/cron/TransactionsBillingHistoryService');
 const SubscriberSubscriptionsReports = require('../services/cron/SubscriberSubscriptionsReports');
 const SubscriberTransactionsReports = require('../services/cron/SubscriberTransactionsReports');
-const AffiliateReportService = require('../services/cron/AffiliateReportService');
+const AffiliateSubscriptionsService = require('../services/cron/AffiliateDataFromSubscriptionsService');
 
 const HelogsService = require('../services/cron/HelogsService');
 const LogsService = require('../services/cron/LogsService');
@@ -84,6 +84,6 @@ exports.computeRevenueNetAdditionReports = async (req,res) =>  {
 };
 
 exports.computeAffiliateReports = async (req,res) =>  {
-    AffiliateReportService.computeAffiliateReports(req,res);
+    AffiliateSubscriptionsService.computeAffiliateReports(req,res);
     res.send("computeAffiliateReports - Executed\n");
 };

@@ -1,7 +1,7 @@
 const container = require("../../configurations/container");
 const affiliateRepo = require('../../repos/apis/AffiliateRepo');
-const helper = require('../../helper/helper');
 const subscriptionRepo = container.resolve('subscriptionRepository');
+const helper = require('../../helper/helper');
 const  _ = require('lodash');
 
 
@@ -69,18 +69,18 @@ function computeAffiliateData(subscriptionsRawData) {
             history = rawData.history[j];
 
             //collect data => billing_status to package - then package to affiliate_type, then get mids count
-            if (history.status === 'Success') {
+            if (history.status) {
                 if (history.package_id === 'QDfC') {
                     if (history.affiliate === "HE")
-                        affiliateObj = affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj);
+                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
                     else if (history.affiliate === "affiliate_web")
-                        affiliateObj = affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj);
+                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
                 }
                 else if (history.package_id === 'QDfG') {
                     if (history.affiliate === "HE")
-                        affiliateObj = affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj);
+                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
                     else if (history.affiliate === "affiliate_web")
-                        affiliateObj = affliateWiseMidsCount(history, history.package_id, history.affiliate, affiliateObj);
+                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
                 }
             }
 
@@ -149,22 +149,22 @@ function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, dat
     });
 }
 
-function affliateWiseMidsCount(history, package_id, affiliate, dataObj) {
+function affliateWiseMidsCount(history, status, package_id, affiliate, dataObj) {
 
     if (history.affiliate_mid === '1')
-        dataObj['status'][package_id][affiliate]['1'] = dataObj['status'][package_id][affiliate]['1'] + history.count;
+        dataObj[status][package_id][affiliate]['1'] = dataObj[status][package_id][affiliate]['1'] + history.count;
     else if (history.affiliate_mid === '1569')
-        dataObj['status'][package_id][affiliate]['1569'] = dataObj['status'][package_id][affiliate]['1569'] + history.count;
+        dataObj[status][package_id][affiliate]['1569'] = dataObj[status][package_id][affiliate]['1569'] + history.count;
     else if (history.affiliate_mid === 'aff3')
-        dataObj['status'][package_id][affiliate]['aff3'] = dataObj['status'][package_id][affiliate]['aff3'] + history.count;
+        dataObj[status][package_id][affiliate]['aff3'] = dataObj[status][package_id][affiliate]['aff3'] + history.count;
     else if (history.affiliate_mid === 'aff3a')
-        dataObj['status'][package_id][affiliate]['aff3a'] = dataObj['status'][package_id][affiliate]['aff3a'] + history.count;
+        dataObj[status][package_id][affiliate]['aff3a'] = dataObj[status][package_id][affiliate]['aff3a'] + history.count;
     else if (history.affiliate_mid === 'gdn')
-        dataObj['status'][package_id][affiliate]['gdn'] = dataObj['status'][package_id][affiliate]['gdn'] + history.count;
+        dataObj[status][package_id][affiliate]['gdn'] = dataObj[status][package_id][affiliate]['gdn'] + history.count;
     else if (history.affiliate_mid === 'gdn2')
-        dataObj['status'][package_id][affiliate]['gdn2'] = dataObj['status'][package_id][affiliate]['gdn2'] + history.count;
+        dataObj[status][package_id][affiliate]['gdn2'] = dataObj[status][package_id][affiliate]['gdn2'] + history.count;
     else if (history.affiliate_mid === 'goonj')
-        dataObj['status'][package_id][affiliate]['goonj'] = dataObj['status'][package_id][affiliate]['goonj'] + history.count;
+        dataObj[status][package_id][affiliate]['goonj'] = dataObj[status][package_id][affiliate]['goonj'] + history.count;
 
     return dataObj;
 }
@@ -193,17 +193,14 @@ function wiseMidsCount(history, wise, dataObj) {
 
 function cloneAffiliateObj() {
     let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
+    let affiliate = {
+        QDfC: { HE: _.clone(mids), affiliate_web: _.clone(mids) },
+        QDfG: { HE: _.clone(mids), affiliate_web: _.clone(mids) }
+    };
     return {
-        status: {
-            QDfC: {
-                HE: _.clone(mids),
-                affiliate_web: _.clone(mids)
-            },
-            QDfG: {
-                HE: _.clone(mids),
-                affiliate_web: _.clone(mids)
-            }
-        },
+        success: _.clone(affiliate),
+        trial: _.clone(affiliate),
+        callback_sent: _.clone(affiliate),
         added_dtm: '',
         added_dtm_hours: ''
     }
