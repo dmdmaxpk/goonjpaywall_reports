@@ -69,14 +69,14 @@ class ReportsValidator{
                 break;
             case 'affiliate':
                 this.checkDateIsNull(params, "Generate Affiliate Reports");
-                this.checkSubTypeIsNull(params.sub_type, "Affiliate", ['subscriptions', 'helogs', 'unique_successHe']);
+                this.checkSubTypeIsNull(params.sub_type, "Affiliate", ['affiliate', 'subscriptions', 'helogs', 'unique_successHe']);
 
                 if (params.sub_type === 'subscriptions')
-                    this.checkSubTypeIsNull(params.helogs, "Affiliate data from subscriptions", ['subscriptions', 'affiliate_wise', 'status_wise', 'package_wise', 'source_wise']);
+                    this.checkSubTypeIsNull(params.subscriptions, "Affiliate data from subscriptions", ['subscriptions_mid', 'affiliate_wise', 'status_wise', 'package_wise', 'source_wise']);
                 else if (params.sub_type === 'helogs')
                     this.checkSubTypeIsNull(params.helogs, "HE logs", ['helogs_wise']);
                 else if (params.sub_type === 'unique_successHe')
-                    this.checkSubTypeIsNull(params.uniqueSuccessHe, "Unique Success HE", ['helogs_wise']);
+                    this.checkSubTypeIsNull(params.unique_successHe, "Unique Success HE", ['helogs_wise']);
 
                 break;
             case 'visitors':

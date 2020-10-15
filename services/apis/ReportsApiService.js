@@ -139,25 +139,27 @@ generateReportsData = async (req,res) => {
             }
         }
         else if (params.type === 'affiliate'){
-            if (params.sub_type === 'subscriptions') {
-                if (params.helogs === 'subscriptions')
-                    return affiliateService.computeSubscriptionsDataReport(rawDataSet, params);
-                else if (params.helogs === 'affiliate_wise')
-                    return affiliateService.computeAffiliateDataReport(rawDataSet, params);
-                else if (params.helogs === 'source_wise')
-                    return affiliateService.computeAffiliateDataSourceWiseReport(rawDataSet, params);
-                else if (params.helogs === 'package_wise')
-                    return affiliateService.computeAffiliateDataPackageWiseReport(rawDataSet, params);
-                else if (params.helogs === 'status_wise')
-                    return affiliateService.computeAffiliateDataStatusWiseReport(rawDataSet, params);
-            }
+            if (params.sub_type === 'affiliate')
+                return affiliateService.computeAffiliateReport(rawDataSet, params);
             else if (params.sub_type === 'helogs'){
                 if (params.helogs === 'helogs_wise')
                     return affiliateService.computeHelogsDataReport(rawDataSet, params);
             }
             else if (params.sub_type === 'unique_successHe'){
-                if (params.uniqueSuccessHe === 'helogs_wise')
+                if (params.unique_successHe === 'helogs_wise')
                     return affiliateService.computeUniqueSuccessHeWiseReport(rawDataSet, params);
+            }
+            else if (params.sub_type === 'subscriptions') {
+                if (params.subscriptions === 'subscriptions_mid')
+                    return affiliateService.computeSubscriptionsMidDataReport(rawDataSet, params);
+                else if (params.subscriptions === 'affiliate_wise')
+                    return affiliateService.computeAffiliateDataReport(rawDataSet, params);
+                else if (params.subscriptions === 'source_wise')
+                    return affiliateService.computeAffiliateDataSourceWiseReport(rawDataSet, params);
+                else if (params.subscriptions === 'package_wise')
+                    return affiliateService.computeAffiliateDataPackageWiseReport(rawDataSet, params);
+                else if (params.subscriptions === 'status_wise')
+                    return affiliateService.computeAffiliateDataStatusWiseReport(rawDataSet, params);
             }
         }
     }catch (e) {
