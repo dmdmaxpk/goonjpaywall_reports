@@ -14,7 +14,6 @@ computeAffiliateReport = async (rawDataSet, params) =>{
     let dayDataObj = _.clone(cloneAffiliateObj());
     let weeklyDataObj = _.clone(cloneAffiliateObj());
     let monthlyDataObj = _.clone(cloneAffiliateObj());
-    console.log('monthlyDataObj: ', monthlyDataObj);
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -139,12 +138,10 @@ computeAffiliateReport = async (rawDataSet, params) =>{
         // add date range (start-date, end-date)
         dataObj = _.clone(dataObj);
         dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
-        console.log('==========', params);
-
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformErrorCatchData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 
@@ -284,7 +281,7 @@ computeHelogsDataReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformErrorCatchData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 computeUniqueSuccessHeWiseReport = async (rawDataSet, params) => {
@@ -420,7 +417,7 @@ computeUniqueSuccessHeWiseReport = async (rawDataSet, params) => {
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformErrorCatchData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 

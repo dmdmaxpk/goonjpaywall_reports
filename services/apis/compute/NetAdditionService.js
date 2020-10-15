@@ -158,7 +158,7 @@ computeNetAdditionsSourceWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(2, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 computeNetAdditionsPackageWiseReport = async (rawDataSet, params) =>{
@@ -275,7 +275,7 @@ computeNetAdditionsPackageWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(2, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 computeNetAdditionsPaywallWiseReport = async (rawDataSet, params) =>{
@@ -376,7 +376,7 @@ computeNetAdditionsPaywallWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(2, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 computeNetAdditionsOperatorWiseReport = async (rawDataSet, params) =>{
@@ -477,7 +477,7 @@ computeNetAdditionsOperatorWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(2, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 computeNetAdditionsReport = async (rawDataSet, params) =>{
@@ -576,7 +576,7 @@ computeNetAdditionsReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 

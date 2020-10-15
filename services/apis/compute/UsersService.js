@@ -108,7 +108,7 @@ computeVerifiedUserReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 computeAccessingServiceUserReport = async (rawDataSet, params) =>{
@@ -201,7 +201,7 @@ computeUniquePayingUserReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 computeFullPartialChargedUserReport = async (rawDataSet, params) =>{
@@ -303,7 +303,7 @@ computeFullPartialChargedUserReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 computeReturningUserReport = async (rawDataSet, params) =>{
@@ -390,7 +390,7 @@ computeReturningUserReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 computeUserBilledPackageWiseReport = async (rawDataSet, params) =>{
@@ -507,7 +507,7 @@ computeUserBilledPackageWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 computeUserBilledPaywallWiseReport = async (rawDataSet, params) =>{
@@ -605,7 +605,7 @@ computeUserBilledPaywallWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 computeUserBilledOperatorWiseReport = async (rawDataSet, params) =>{
@@ -703,7 +703,7 @@ computeUserBilledOperatorWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
-        return reportsTransformer.transformTheData(false, params, 'Data not exist.');
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
 

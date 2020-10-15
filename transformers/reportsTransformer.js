@@ -3,7 +3,6 @@ class ReportsTransformer {
 
     //Transform Error catch Data
     transformErrorCatchData (status, message) {
-        console.log('transformErrorCatchData: ');
         return {
             status: status,
             statusTest: (status ? 'Success' : 'Failed'),
@@ -13,9 +12,6 @@ class ReportsTransformer {
 
     //Transform The Data
     transformTheData (treeLevel, status, totalCount, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, message) {
-
-        console.log('transformTheData: ', params);
-
         return {
             treeLevel: treeLevel,
             status: status,
