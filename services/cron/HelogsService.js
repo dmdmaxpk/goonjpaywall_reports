@@ -28,7 +28,7 @@ computeHelogsReports = async(req, res) => {
             finalList = computeHelogsData(helogsData);
 
             console.log('finalList.length : ', finalList);
-                insertNewRecord(finalList, 'helogs', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+            insertNewRecord(finalList, 'helogs', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
@@ -76,7 +76,7 @@ computeHelogsUniqueSuccessReports = async(req, res) => {
             finalList = computeHelogsUniqueSuccess(helogsData);
 
             console.log('finalList.length : ', finalList);
-                insertNewRecord(finalList, 'unique', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+            insertNewRecord(finalList, 'unique', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
@@ -213,7 +213,7 @@ function insertNewRecord(data, type, dateString) {
                 obj.uniqueSuccessHe = data;
 
             obj.date = dateString;
-            affiliateRepo.createReport({helogs: data, date: dateString});
+            affiliateRepo.createReport(obj);
         }
     });
 }

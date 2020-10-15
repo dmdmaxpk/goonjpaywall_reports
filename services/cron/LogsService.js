@@ -27,7 +27,7 @@ computeLogsPageViewReports = async(req, res) => {
             finalList = computeLogsPageViewData(logsPageViewData);
 
             console.log('finalList.length : ', finalList);
-                insertNewRecord(finalList, 'pageView', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+            insertNewRecord(finalList, 'pageView', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
@@ -74,7 +74,7 @@ computeLogsSubscribeClicksReports = async(req, res) => {
             finalList = computeLogsSubscribeClicks(logsSubscribeClicks);
 
             console.log('finalList.length : ', finalList);
-                insertNewRecord(finalList, 'subsClicks', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+            insertNewRecord(finalList, 'subsClicks', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
@@ -100,12 +100,11 @@ computeLogsSubscribeClicksReports = async(req, res) => {
 
 function computeLogsPageViewData(logsPageViewData) {
 
-    let rawData, pageView, logsPageViewObj, sourceObj, logsWise = [], sourceWise = [];
+    let rawData, pageView, logsPageViewObj, logsWise = [];
     for (let i=0; i < logsPageViewData.length; i++) {
 
         rawData = logsPageViewData[i];
-        sourceObj = _.clone(cloneSourceWiseObj());
-        logsPageViewObj = _.clone(cloneLogsPageViewObj());
+        logsPageViewObj = _.clone(clonelogsObj());
 
         for (let j = 0; j < rawData.pageView.length; j++) {
             pageView = rawData.pageView[j];
@@ -128,17 +127,16 @@ function computeLogsPageViewData(logsPageViewData) {
                 logsPageViewObj['gdn2'] = logsPageViewObj['gdn2'] + pageView.count;
         }
 
-        sourceWise.push(sourceObj);
         logsWise.push(logsPageViewObj);
     }
 
     //sourceWise, statusWise, packageWise, sourceWise
-    return {logsWise: logsWise, sourceWise: sourceWise};
+    return logsWise;
 }
 
 function computeLogsSubscribeClicks(logsSubscribeClicks) {
 
-    let rawData, subsClicks, logsSubscibeObj, logsWise = [];
+    let rawData, subsClicks, logsSubscibeObj, subscribeClick = [];
     for (let i=0; i < logsSubscribeClicks.length; i++) {
 
         rawData = logsSubscribeClicks[i];
@@ -166,11 +164,11 @@ function computeLogsSubscribeClicks(logsSubscribeClicks) {
 
         }
 
-        logsWise.push(logsSubscibeObj);
+        subscribeClick.push(logsSubscibeObj);
     }
 
     //sourceWise, statusWise, packageWise, sourceWise
-    return {logsWise: logsWise};
+    return subscribeClick;
 }
 
 function insertNewRecord(data, type, dateString) {
@@ -194,32 +192,9 @@ function insertNewRecord(data, type, dateString) {
                 obj.logsSubscribeClick = data;
 
             obj.date = dateString;
-            affiliateRepo.createReport({pageView: data, date: dateString});
+            affiliateRepo.createReport(obj);
         }
     });
-}
-
-function sourceWiseMidsCount(pageView, source, dataObj) {
-    console.log('source: ', source);
-
-    if (pageView.mid === '1')
-        dataObj[source]['1'] = dataObj[source]['1'] + pageView.count;
-    else if (pageView.mid === '1569')
-        dataObj[source]['1569'] = dataObj[source]['1569'] + pageView.count;
-    else if (pageView.mid === 'aff3')
-        dataObj[source]['aff3'] = dataObj[source]['aff3'] + pageView.count;
-    else if (pageView.mid === 'aff3a')
-        dataObj[source]['aff3a'] = dataObj[source]['aff3a'] + pageView.count;
-    else if (pageView.mid === 'gdn')
-        dataObj[source]['gdn'] = dataObj[source]['gdn'] + pageView.count;
-    else if (pageView.mid === 'gdn2')
-        dataObj[source]['gdn2'] = dataObj[source]['gdn2'] + pageView.count;
-    else if (pageView.mid === 'goonj')
-        dataObj[source]['goonj'] = dataObj[source]['goonj'] + pageView.count;
-
-    console.log('dataObj: ', dataObj);
-
-    return dataObj;
 }
 
 function clonelogsObj() {
@@ -231,30 +206,6 @@ function clonelogsObj() {
         gdn: 0,
         gdn2: 0,
         goonj: 0
-    }
-}
-function cloneLogsPageViewObj() {
-    return {
-        '1': 0,
-        '1569': 0,
-        aff3: 0,
-        aff3a: 0,
-        gdn: 0,
-        gdn2: 0,
-        goonj: 0
-    }
-}
-function cloneLogsSourceWiseObj() {
-    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
-    //app, web, gdn2, HE, he, affiliate
-    return {
-        app: _.clone(mids),
-        web: _.clone(mids),
-        gdn2: _.clone(mids),
-        HE: _.clone(mids),
-        he: _.clone(mids),
-        affiliate: _.clone(mids),
-        'null': _.clone(mids)
     }
 }
 
