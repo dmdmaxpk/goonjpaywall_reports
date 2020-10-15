@@ -218,38 +218,38 @@ class SubscriptionRepository {
                 if (!err) {
                     collection.aggregate([
                         { $match:{
-                                mid: {$in: ["1", "1569", "aff3", "aff3a", "goonj", "gdn", "gdn2"]},
-                                "req_body.response_msisdn":{$ne:null},
-                                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
-                            }},
+                            mid: {$in: ["1", "1569", "aff3", "aff3a", "goonj", "gdn", "gdn2"]},
+                            "req_body.response_msisdn":{$ne:null},
+                            $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                        }},
                         { $project:{
-                                mid: "$mid",
-                                msisdn: "$req_body.response_msisdn",
-                                day: { "$dayOfMonth" : "$added_dtm"},
-                                month: { "$month" : "$added_dtm" },
-                                year:{ "$year": "$added_dtm" },
-                            }},
+                            mid: "$mid",
+                            msisdn: "$req_body.response_msisdn",
+                            day: { "$dayOfMonth" : "$added_dtm"},
+                            month: { "$month" : "$added_dtm" },
+                            year:{ "$year": "$added_dtm" },
+                        }},
                         { $project:{
-                                added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
-                                mid: "$mid",
-                                msisdn: "$msisdn"
-                            }},
+                            added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
+                            mid: "$mid",
+                            msisdn: "$msisdn"
+                        }},
                         { $group:{
-                                _id: {added_dtm: "$added_dtm", msisdn: "$msisdn"}, mid: {$first: "$mid"}
-                            }},
+                            _id: {added_dtm: "$added_dtm", msisdn: "$msisdn"}, mid: {$first: "$mid"}
+                        }},
                         { $group:{
-                                _id:  {added_dtm: "$_id.added_dtm", mid: "$mid"},
-                                count: {$sum: 1}
-                            }},
+                            _id:  {added_dtm: "$_id.added_dtm", mid: "$mid"},
+                            count: {$sum: 1}
+                        }},
                         { $group:{
-                                _id: {added_dtm: "$_id.added_dtm"},
-                                helogs: { $push:  { mid: "$_id.mid", count: "$count" }}
-                            }},
+                            _id: {added_dtm: "$_id.added_dtm"},
+                            helogs: { $push:  { mid: "$_id.mid", count: "$count" }}
+                        }},
                         { $project: {
-                                _id: 0,
-                                added_dtm: "$_id.added_dtm",
-                                helogs: "$helogs"
-                            }}
+                            _id: 0,
+                            added_dtm: "$_id.added_dtm",
+                            helogs: "$helogs"
+                        }}
                     ], {allowDiskUse: true}).toArray(function(err, items) {
                         if(err){
                             console.log('getAffiliateDataDateRange - err: ', err.message);
