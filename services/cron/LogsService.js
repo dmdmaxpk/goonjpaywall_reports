@@ -148,19 +148,19 @@ function computeLogsSubscribeClicks(logsSubscribeClicks) {
             //collect data => Affiliate mid wise, get its count
             //1, 1569, aff3a, aff3, goonj, gdn, gdn2
             if (subsClicks.mid === '1')
-                logsSubscibeObj['1'] = logsSubscibeObj['1'] + 1;
+                logsSubscibeObj['1'] = logsSubscibeObj['1'] + subsClicks.count;
             else if (subsClicks.mid === '1569')
-                logsSubscibeObj['1569'] = logsSubscibeObj['1569'] + 1;
+                logsSubscibeObj['1569'] = logsSubscibeObj['1569'] + subsClicks.count;
             else if (subsClicks.mid === 'aff3a')
-                logsSubscibeObj['aff3a'] = logsSubscibeObj['aff3a'] + 1;
+                logsSubscibeObj['aff3a'] = logsSubscibeObj['aff3a'] + subsClicks.count;
             else if (subsClicks.mid === 'aff3')
-                logsSubscibeObj['aff3'] = logsSubscibeObj['aff3'] + 1;
+                logsSubscibeObj['aff3'] = logsSubscibeObj['aff3'] + subsClicks.count;
             else if (subsClicks.mid === 'goonj')
-                logsSubscibeObj['goonj'] = logsSubscibeObj['goonj'] + 1;
+                logsSubscibeObj['goonj'] = logsSubscibeObj['goonj'] + subsClicks.count;
             else if (subsClicks.mid === 'gdn')
-                logsSubscibeObj['gdn'] = logsSubscibeObj['gdn'] + 1;
+                logsSubscibeObj['gdn'] = logsSubscibeObj['gdn'] + subsClicks.count;
             else if (subsClicks.mid === 'gdn2')
-                logsSubscibeObj['gdn2'] = logsSubscibeObj['gdn2'] + 1;
+                logsSubscibeObj['gdn2'] = logsSubscibeObj['gdn2'] + subsClicks.count;
 
         }
 
