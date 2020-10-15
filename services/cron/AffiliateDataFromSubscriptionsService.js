@@ -13,7 +13,7 @@ computeAffiliateReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 2, 7);
+    dateData = helper.computeNextDate(req, 7, 25);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -176,7 +176,7 @@ function affliateWiseMidsCount(history, billing_status, package_id, affiliate, d
     return dataObj;
 }
 function packageWiseMidsCount(history, wise, dataObj) {
-    console.log('packageWiseMidsCount: ', packageWiseMidsCount);
+    console.log('packageWiseMidsCount: ');
 
     if (history.affiliate_mid === '1569' && history.status === 'Affiliate callback sent')
         dataObj[wise]['1569'] = dataObj[wise]['1569'] + history.count;
