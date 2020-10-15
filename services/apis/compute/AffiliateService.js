@@ -67,6 +67,24 @@ computeAffiliateReport = async (rawDataSet, params) =>{
                 weeklyDataObj = computedData.weeklyDataObj;
                 monthlyDataObj = computedData.monthlyDataObj;
             }
+            if (outerObj.packageWise) {
+                partKey = outerObj.packageWise[0];
+                innerObj = partKey.QDfG;
+                computedData = computeAffiliateHeData('liveWeekly', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                dataObj = computedData.dataObj;
+                dayDataObj = computedData.dayDataObj;
+                weeklyDataObj = computedData.weeklyDataObj;
+                monthlyDataObj = computedData.monthlyDataObj;
+            }
+            if (outerObj.statusWise) {
+                partKey = outerObj.statusWise[0];
+                innerObj = partKey.trial;
+                computedData = computeAffiliateHeData('liveTrial', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                dataObj = computedData.dataObj;
+                dayDataObj = computedData.dayDataObj;
+                weeklyDataObj = computedData.weeklyDataObj;
+                monthlyDataObj = computedData.monthlyDataObj;
+            }
 
             // reset start_date for both month & week so can update with latest one
             if (week_from_date === null)
