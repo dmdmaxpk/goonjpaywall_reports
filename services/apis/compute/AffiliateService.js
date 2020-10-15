@@ -20,9 +20,12 @@ computeHelogsDataReport = async (rawDataSet, params) =>{
             outerObj = rawDataSet[i];
             if (outerObj.helogs){
                 helogs = outerObj.helogs;
+                console.log('helogs.helogsWise: ', helogs.helogsWise);
                 if (helogs.helogsWise){
                     for (let j=0; j<helogs.helogsWise.length; j++){
                         innerObj = helogs.helogsWise[j];
+                        console.log('innerObj: ', innerObj);
+
                         if (innerObj['1']){
                             dataObj['1'] = dataObj['1'] + innerObj['1'];
                             dayDataObj['1'] = dayDataObj['1'] + innerObj['1'];
