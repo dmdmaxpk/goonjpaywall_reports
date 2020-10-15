@@ -14,6 +14,7 @@ computeAffiliateReport = async (rawDataSet, params) =>{
     let dayDataObj = _.clone(cloneAffiliateObj());
     let weeklyDataObj = _.clone(cloneAffiliateObj());
     let monthlyDataObj = _.clone(cloneAffiliateObj());
+    console.log('monthlyDataObj: ', monthlyDataObj);
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
