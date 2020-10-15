@@ -18,7 +18,7 @@ const affiliateService = require("./compute/AffiliateService");
 generateReportsData = async (req,res) => {
     try {
         let params = req.query, rawDataSet;
-        if (req.type === 'affiliate')
+        if (params.type === 'affiliate')
             rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
         else
             rawDataSet = await reportsRepo.generateReportsData(params);
