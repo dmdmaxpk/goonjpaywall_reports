@@ -139,14 +139,26 @@ generateReportsData = async (req,res) => {
             }
         }
         else if (params.type === 'affiliate'){
-            if (params.sub_type === 'helogs'){
-                if (params.helogs === 'helogsWise')
-                    return affiliateService.computeHelogsReport(rawDataSet, params);
-                else if (params.helogs === 'sourceWise')
-                    return affiliateService.computeHelogsSourceWiseReport(rawDataSet, params);
+            if (params.sub_type === 'subscriptions') {
+                if (params.helogs === 'subscriptions')
+                    return affiliateService.computeSubscriptionsDataReport(rawDataSet, params);
+                else if (params.helogs === 'affiliate_wise')
+                    return affiliateService.computeAffiliateDataReport(rawDataSet, params);
+                else if (params.helogs === 'source_wise')
+                    return affiliateService.computeAffiliateDataSourceWiseReport(rawDataSet, params);
+                else if (params.helogs === 'package_wise')
+                    return affiliateService.computeAffiliateDataPackageWiseReport(rawDataSet, params);
+                else if (params.helogs === 'status_wise')
+                    return affiliateService.computeAffiliateDataStatusWiseReport(rawDataSet, params);
             }
-            else if (params.sub_type === 'uniqueSuccessHe'){
-                if (params.uniqueSuccessHe === 'helogsWise')
+            else if (params.sub_type === 'helogs'){
+                if (params.helogs === 'helogs_wise')
+                    return affiliateService.computeHelogsDataReport(rawDataSet, params);
+                else if (params.helogs === 'source_wise')
+                    return affiliateService.computeHelogsDataSourceWiseReport(rawDataSet, params);
+            }
+            else if (params.sub_type === 'unique_successHe'){
+                if (params.uniqueSuccessHe === 'helogs_wise')
                     return affiliateService.computeUniqueSuccessHeWiseReport(rawDataSet, params);
             }
         }

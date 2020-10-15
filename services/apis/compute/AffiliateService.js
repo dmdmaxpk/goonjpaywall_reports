@@ -4,8 +4,8 @@ const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
 // User Compute Functions
-computeHelogsReport = async (rawDataSet, params) =>{
-    console.log('computeTotalSubscribersReport');
+computeHelogsDataReport = async (rawDataSet, params) =>{
+    console.log('computeHelogsDataReport');
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, subscribers;
@@ -97,8 +97,8 @@ computeHelogsReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(false, params, 'Data not exist.');
     }
 };
-computeHelogsSourceWiseReport = async (rawDataSet, params) =>{
-    console.log('computeActiveSubscribersReport');
+computeHelogsDataSourceWiseReport = async (rawDataSet, params) =>{
+    console.log('computeHelogsDataSourceWiseReport');
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, subscribers, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
@@ -196,8 +196,40 @@ computeHelogsSourceWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformTheData(false, params, 'Data not exist.');
     }
 };
+computeUniqueSuccessHeWiseReport = async (rawDataSet, params) => {
+    console.log('computeUniqueSuccessHeWiseReport');
+
+};
+
+
+computeSubscriptionsDataReport = async (rawDataSet, params) => {
+    console.log('computeSubscriptionsDataReport');
+
+};
+computeAffiliateDataReport = async (rawDataSet, params) => {
+    console.log('computeAffiliateDataReport');
+
+};
+computeAffiliateDataSourceWiseReport = async (rawDataSet, params) => {
+    console.log('computeAffiliateDataSourceWiseReport');
+
+};
+computeAffiliateDataPackageWiseReport = async (rawDataSet, params) => {
+    console.log('computeAffiliateDataPackageWiseReport');
+
+};
+computeAffiliateDataStatusWiseReport = async (rawDataSet, params) => {
+    console.log('computeAffiliateDataStatusWiseReport');
+
+};
 
 module.exports = {
-    computeHelogsReport: computeHelogsReport,
-    computeHelogsSourceWiseReport: computeHelogsSourceWiseReport,
+    computeHelogsDataReport: computeHelogsDataReport,
+    computeHelogsDataSourceWiseReport: computeHelogsDataSourceWiseReport,
+    computeUniqueSuccessHeWiseReport: computeUniqueSuccessHeWiseReport,
+    computeSubscriptionsDataReport: computeSubscriptionsDataReport,
+    computeAffiliateDataReport: computeAffiliateDataReport,
+    computeAffiliateDataSourceWiseReport: computeAffiliateDataSourceWiseReport,
+    computeAffiliateDataPackageWiseReport: computeAffiliateDataPackageWiseReport,
+    computeAffiliateDataStatusWiseReport: computeAffiliateDataStatusWiseReport
 };
