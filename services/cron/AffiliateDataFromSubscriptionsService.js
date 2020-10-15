@@ -105,14 +105,14 @@ function computeAffiliateData(subscriptionsRawData) {
 
         }
 
-        affiliateObj.billing_dtm = history.billing_dtm;
-        statusWiseObj.billing_dtm = history.billing_dtm;
-        packageWiseObj.billing_dtm = history.billing_dtm;
-        sourceWiseObj.billing_dtm = history.billing_dtm;
-        affiliateObj.billing_dtm_hours = helper.setDate(new Date(history.billing_dtm), null, 0, 0, 0);
-        statusWiseObj.billing_dtm_hours = helper.setDate(new Date(history.billing_dtm), null, 0, 0, 0);
-        packageWiseObj.billing_dtm_hours = helper.setDate(new Date(history.billing_dtm), null, 0, 0, 0);
-        sourceWiseObj.billing_dtm_hours = helper.setDate(new Date(history.billing_dtm), null, 0, 0, 0);
+        affiliateObj.billing_dtm = rawData.billing_dtm;
+        statusWiseObj.billing_dtm = rawData.billing_dtm;
+        packageWiseObj.billing_dtm = rawData.billing_dtm;
+        sourceWiseObj.billing_dtm = rawData.billing_dtm;
+        affiliateObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
+        statusWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
+        packageWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
+        sourceWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
 
         affiliateWise.push(affiliateObj);
         statusWise.push(statusWiseObj);
