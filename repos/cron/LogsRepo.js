@@ -113,7 +113,7 @@ class LogsRepo {
                         }},
                         { $project:{
                             mid: "$req_body.mid",
-                            msisdn: "req_body.response_msisdn",
+                            msisdn: "$req_body.msisdn",
                             day: { "$dayOfMonth" : "$added_dtm"},
                             month: { "$month" : "$added_dtm" },
                             year:{ "$year": "$added_dtm" },
@@ -121,7 +121,7 @@ class LogsRepo {
                         { $project:{
                             added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
                             mid: "$mid",
-                            msisdn: "msisdn",
+                            msisdn: "$msisdn",
                         }},
                         { $group:{
                             _id: {added_dtm: "$added_dtm", msisdn: "$msisdn"}, mid: {$first: "$mid"}
