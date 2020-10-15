@@ -14,7 +14,7 @@ class ReportsTransformer {
     //Transform The Data
     transformTheData (treeLevel, status, totalCount, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, message) {
 
-        console.log('transformTheData: ');
+        console.log('transformTheData: ', params);
 
         return {
             treeLevel: treeLevel,
