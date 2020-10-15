@@ -34,35 +34,29 @@ computeAffiliateReport = async (rawDataSet, params) =>{
             else if (outerObj.uniqueSuccessHe) {
                 partKey = outerObj.uniqueSuccessHe;
                 if (partKey.helogsWise) {
-                    if (partKey.helogsWise[0]) {
-                        innerObj = partKey.helogsWise[0];
-                        computedData = computeAffiliateHeData('uniqueSuccessHe', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                        dataObj = computedData.dataObj;
-                        dayDataObj = computedData.dayDataObj;
-                        weeklyDataObj = computedData.weeklyDataObj;
-                        monthlyDataObj = computedData.monthlyDataObj;
-                    }
+                    innerObj = partKey.helogsWise[0];
+                    computedData = computeAffiliateHeData('uniqueSuccessHe', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                    dataObj = computedData.dataObj;
+                    dayDataObj = computedData.dayDataObj;
+                    weeklyDataObj = computedData.weeklyDataObj;
+                    monthlyDataObj = computedData.monthlyDataObj;
                 }
             }
             else if (outerObj.logsPageView) {
-                if (outerObj.logsPageView[0]) {
-                    innerObj = outerObj.logsPageView[0];
-                    computedData = computeAffiliateHeData('pageViews', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                    dataObj = computedData.dataObj;
-                    dayDataObj = computedData.dayDataObj;
-                    weeklyDataObj = computedData.weeklyDataObj;
-                    monthlyDataObj = computedData.monthlyDataObj;
-                }
+                innerObj = outerObj.logsPageView[0];
+                computedData = computeAffiliateHeData('pageViews', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                dataObj = computedData.dataObj;
+                dayDataObj = computedData.dayDataObj;
+                weeklyDataObj = computedData.weeklyDataObj;
+                monthlyDataObj = computedData.monthlyDataObj;
             }
             else if (outerObj.logsSubscribeClick) {
-                if (outerObj.logsSubscribeClick[0]) {
-                    innerObj = outerObj.logsSubscribeClick[0];
-                    computedData = computeAffiliateHeData('subscribeClicks', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                    dataObj = computedData.dataObj;
-                    dayDataObj = computedData.dayDataObj;
-                    weeklyDataObj = computedData.weeklyDataObj;
-                    monthlyDataObj = computedData.monthlyDataObj;
-                }
+                innerObj = outerObj.logsSubscribeClick[0];
+                computedData = computeAffiliateHeData('subscribeClicks', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                dataObj = computedData.dataObj;
+                dayDataObj = computedData.dayDataObj;
+                weeklyDataObj = computedData.weeklyDataObj;
+                monthlyDataObj = computedData.monthlyDataObj;
             }
 
             // reset start_date for both month & week so can update with latest one
