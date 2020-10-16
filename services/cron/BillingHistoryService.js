@@ -68,6 +68,7 @@ computeBillingHistoryReports = async(req, res) => {
 
 function computeBillingHistoryData(data) {
 
+    console.log('computeBillingHistoryData');
     let dateInMili, outer_added_dtm, inner_added_dtm, successfulSubs = 0, totalSubs = 0;
 
     let billingStatusNewObj, outerObj, innerObj, fullAndPartialCharging, unSubSourceWise,
