@@ -1035,7 +1035,7 @@ computePageViewDataReport = async  (rawDataSet, params) => {
     }
 };
 
-computeSubscribeClickDataReport = async  () => {
+computeSubscribeClickDataReport = async  (rawDataSet, params) => {
     console.log('computeSubscribeClickDataReport');
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
