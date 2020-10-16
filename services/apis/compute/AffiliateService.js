@@ -100,6 +100,16 @@ computeAffiliateReport = async (rawDataSet, params) =>{
                 monthlyDataObj = computedData.monthlyDataObj;
             }
 
+            //get Affiliate mids total count - Subscriptions Mids
+            if (outerObj.subscriptions) {
+                innerObj = outerObj.statusWise[0];
+                computedData = computeAffiliateHeData('subscriptons', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                dataObj = computedData.dataObj;
+                dayDataObj = computedData.dayDataObj;
+                weeklyDataObj = computedData.weeklyDataObj;
+                monthlyDataObj = computedData.monthlyDataObj;
+            }
+
             // reset start_date for both month & week so can update with latest one
             if (week_from_date === null)
                 week_from_date = outerObj.date;
@@ -1369,6 +1379,7 @@ function cloneAffiliateObj (){
         uniqueSuccessHe:  _.clone(mids),
         pageViews:  _.clone(mids),
         subscribeClicks:  _.clone(mids),
+        subscriptons:  _.clone(mids),
         liveTrial:  _.clone(mids),
         liveDaily:  _.clone(mids),
         liveWeekly:  _.clone(mids)
