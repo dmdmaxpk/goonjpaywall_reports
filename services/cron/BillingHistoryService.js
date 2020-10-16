@@ -7,9 +7,10 @@ const  _ = require('lodash');
 let billingHistory = [], returningUserList = [], fullAndPartialChargeList = [],
     sourceWiseUnSubList = [], sourceWiseTrail = [], uniquePayingUsers = [], successRate = [];
 let limitData = 400000, lastRecode, fetchedRecordsLength = 0;
+let fromDate, toDate, day, month, computedData;
+
 computeBillingHistoryReports = async(req, res) => {
     console.log('computeBillingHistoryReports');
-    let fromDate, toDate, day, month, computedData;
 
     /*
     * Compute date and time for data fetching from db
