@@ -26,13 +26,6 @@ computeBillingHistoryReports = async(req, res) => {
     billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, limitData).then(function (result) {
         console.log('result: ', result.length, result);
 
-        lastRecode = result[result.length - 1];
-        console.log('lastRecode: ', lastRecode, fromDate);
-
-        fromDate = lastRecode.billing_dtm;
-        console.log('fromDate: ', fromDate);
-
-        return;
         if (result.length > 0){
             computedData = computeBillingHistoryData(result);
             console.log('computedData: ', computedData);
@@ -63,8 +56,8 @@ computeBillingHistoryReports = async(req, res) => {
                 }, 5000);
             }
             else{
-                lastRecode = result[result.length];
-                toDate = lastRecode.added_dtm;
+                lastRecode = result[result.length - 1];
+                fromDate = lastRecode.billing_dtm;
                 computeBillingHistoryReports(req, res);
             }
         }
