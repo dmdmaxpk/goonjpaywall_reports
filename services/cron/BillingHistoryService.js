@@ -7,7 +7,7 @@ const  _ = require('lodash');
 let billingHistory = [], returningUserList = [], fullAndPartialChargeList = [],
     sourceWiseUnSubList = [], sourceWiseTrail = [], uniquePayingUsers = [], successRate = [];
 let limitData = 400000, lastRecode, fetchedRecordsLength = 0;
-let fromDate, toDate, day, month, computedData;
+let fromDate, toDate, day, month, computedData, hoursFromISODate;
 
 computeBillingHistoryReports = async(req, res) => {
     console.log('computeBillingHistoryReports');
@@ -355,6 +355,7 @@ function computeBillingHistoryData(data) {
 }
 
 function insertNewRecord(dateString) {
+    hoursFromISODate = dateString;
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
     console.log('=>=>=>=>=>=>=> successRate', successRate);
@@ -363,7 +364,7 @@ function insertNewRecord(dateString) {
         if (result.length > 0){
             result = result[0];
 
-            if (helper.splitHoursFromISODate(dateString)){
+            if (helper.splitHoursFromISODate(hoursFromISODate)){
                 console.log('=>=>=>=>=>=>=> splitHoursFromISODate - IF');
 
                 result.billingHistory = billingHistory;
