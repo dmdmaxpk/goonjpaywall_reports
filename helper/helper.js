@@ -36,11 +36,15 @@ class Helper {
     }
     static splitHoursFromISODate(dateString){
         console.log('splitHoursFromISODate: ', dateString);
-        dateString = _.split(dateString, 'T', 2)[1];
-        dateString = _.split(dateString, ':', 1)[0];
-        console.log('hours: ', dateString);
+        // dateString = _.split(dateString, 'T', 2)[1];
+        // dateString = _.split(dateString, ':', 1)[0];
+        // console.log('hours: ', dateString);
+        //
+        // return (dateString === '00');
 
-        return (dateString === '00');
+        dateString = new Date(dateString).getHours() - 5;
+        console.log('dateString: ', dateString);
+        return (dateString > 0)
     }
 
     static computeNextDate(req, sDay, sMonth){
