@@ -102,7 +102,7 @@ computeAffiliateReport = async (rawDataSet, params) =>{
 
             //get Affiliate mids total count - Subscriptions Mids
             if (outerObj.subscriptions) {
-                innerObj = outerObj.statusWise[0];
+                innerObj = outerObj.subscriptions[0];
                 computedData = computeAffiliateHeData('subscriptons', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                 dataObj = computedData.dataObj;
                 dayDataObj = computedData.dayDataObj;
