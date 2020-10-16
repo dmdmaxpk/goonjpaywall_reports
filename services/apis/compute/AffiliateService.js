@@ -941,7 +941,7 @@ computeAffiliateDataStatusWiseReport = async (rawDataSet, params) => {
     }
 };
 
-computePageViewDataReport = async  () => {
+computePageViewDataReport = async  (rawDataSet, params) => {
     console.log('computeAffiliateDataStatusWiseReport');
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
