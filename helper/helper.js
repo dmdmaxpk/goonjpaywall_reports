@@ -35,6 +35,7 @@ class Helper {
         return new Date().getMonth() + 1;
     }
     static splitHoursFromISODate(date){
+        console.log('splitHoursFromISODate: ', date);
         date = date.split('T');
         date = date[1].split(':');
 
