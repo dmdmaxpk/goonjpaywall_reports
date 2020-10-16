@@ -34,12 +34,13 @@ class Helper {
     static getTodayMonthNo() {
         return new Date().getMonth() + 1;
     }
-    static splitHoursFromISODate(date){
-        console.log('splitHoursFromISODate: ', date);
-        date = date.split('T');
-        date = date[1].split(':');
+    static splitHoursFromISODate(dateString){
+        console.log('splitHoursFromISODate: ', dateString);
+        dateString = dateString.split('T')[1];
+        dateString = dateString.split(':')[0];
+        console.log('hours: ', dateString);
 
-        if (date[0] === '00')
+        if (dateString === '00')
             return true;
         else
             return false;
