@@ -6,7 +6,7 @@ const  _ = require('lodash');
 
 let billingHistory = [], returningUserList = [], fullAndPartialChargeList = [],
     sourceWiseUnSubList = [], sourceWiseTrail = [], uniquePayingUsers = [], successRate = [];
-let limitData = 400000, lastRecode, fetchedRecordsLength;
+let limitData = 400000, lastRecode, fetchedRecordsLength = 0;
 computeBillingHistoryReports = async(req, res) => {
     console.log('computeBillingHistoryReports');
     let fromDate, toDate, day, month, computedData;
@@ -16,6 +16,7 @@ computeBillingHistoryReports = async(req, res) => {
     * Script will execute to fetch data as per day
     * */
     if (fetchedRecordsLength === 0 || fetchedRecordsLength < limitData){
+        console.log('computeNextDate function');
         dateData = helper.computeNextDate(req, 1, 6);
         req = dateData.req;
         day = dateData.day;
