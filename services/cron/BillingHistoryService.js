@@ -26,7 +26,7 @@ computeBillingHistoryReports = async(req, res) => {
     billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, limitData).then(function (result) {
         console.log('result: ', result.length, result);
 
-        lastRecode = result[result.length];
+        lastRecode = result[result.length - 1];
         console.log('lastRecode: ', lastRecode, toDate);
 
         toDate = lastRecode.added_dtm;
