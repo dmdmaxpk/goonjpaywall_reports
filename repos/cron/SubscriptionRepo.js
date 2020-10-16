@@ -294,7 +294,7 @@ class SubscriptionRepository {
                         {
                             $match:{
                                 source: {$in: ["HE","affiliate_web"]},
-                                $and:[{added_dtm:{$gte:new Date("2020-07-17T00:00:00.000Z")}}, {added_dtm:{$lte:new Date("2020-07-17T23:59:59.000Z")}}]
+                                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                             }
                         },
                         { $project:{
