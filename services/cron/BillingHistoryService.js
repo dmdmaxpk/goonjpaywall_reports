@@ -27,10 +27,10 @@ computeBillingHistoryReports = async(req, res) => {
         console.log('result: ', result.length, result);
 
         lastRecode = result[result.length - 1];
-        console.log('lastRecode: ', lastRecode, toDate);
+        console.log('lastRecode: ', lastRecode, fromDate);
 
-        toDate = lastRecode.added_dtm;
-        console.log('toDate: ', toDate);
+        fromDate = lastRecode.billing_dtm;
+        console.log('fromDate: ', fromDate);
 
         return;
         if (result.length > 0){
