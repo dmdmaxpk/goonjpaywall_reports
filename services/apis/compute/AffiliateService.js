@@ -443,7 +443,213 @@ computeSubscriptionsMidDataReport = async (rawDataSet, params) => {
 computeAffiliateDataReport = async (rawDataSet, params) => {
     console.log('computeAffiliateDataReport');
 
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, innerObj, statusWise, packageWise, sourceWise, computedData;
+    let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let midsObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let sourceObj = {HE: _.clone(midsObj), affiliate_web: _.clone(midsObj)};
+    let packageOBj = {liveDaily: _.clone(sourceObj), liveWeekly: _.clone(sourceObj)};
+
+    let dataObj = {success: _.clone(packageOBj), trial: _.clone(packageOBj), callback_sent: _.clone(packageOBj)};
+    let dayDataObj = {success: _.clone(packageOBj), trial: _.clone(packageOBj), callback_sent: _.clone(packageOBj)};
+    let weeklyDataObj = {success: _.clone(packageOBj), trial: _.clone(packageOBj), callback_sent: _.clone(packageOBj)};
+    let monthlyDataObj = {success: _.clone(packageOBj), trial: _.clone(packageOBj), callback_sent: _.clone(packageOBj)};
+
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+            if (outerObj.affiliateWise){
+                statusWise = outerObj.affiliateWise[0];
+                //If billing Status is "Success" - then package to source (HE, affiliate_web)
+                if (statusWise.success) {
+                    packageWise = statusWise.success;
+                    if (packageWise.QDfC) {
+                        sourceWise = packageWise.QDfC;
+                        if (sourceWise.HE){
+                            innerObj = sourceWise.HE;
+                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = computedData.dataObj;
+                            dayDataObj = computedData.dayDataObj;
+                            weeklyDataObj = computedData.weeklyDataObj;
+                            monthlyDataObj = computedData.monthlyDataObj;
+                        }
+                        if (sourceWise.affiliate_web) {
+                            innerObj = sourceWise.affiliate_web;
+                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = computedData.dataObj;
+                            dayDataObj = computedData.dayDataObj;
+                            weeklyDataObj = computedData.weeklyDataObj;
+                            monthlyDataObj = computedData.monthlyDataObj;
+                        }
+                    }
+                    if (packageWise.QDfG){
+                        sourceWise = packageWise.QDfC;
+                        if (sourceWise.HE){
+                            innerObj = sourceWise.HE;
+                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = computedData.dataObj;
+                            dayDataObj = computedData.dayDataObj;
+                            weeklyDataObj = computedData.weeklyDataObj;
+                            monthlyDataObj = computedData.monthlyDataObj;
+                        }
+                        if (sourceWise.affiliate_web) {
+                            innerObj = sourceWise.affiliate_web;
+                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = computedData.dataObj;
+                            dayDataObj = computedData.dayDataObj;
+                            weeklyDataObj = computedData.weeklyDataObj;
+                            monthlyDataObj = computedData.monthlyDataObj;
+                        }
+                    }
+                }
+
+                //If billing Status is "trial" - then package to source (HE, affiliate_web)
+                if (statusWise.trial){
+                    packageWise = statusWise.trial;
+                    if (packageWise.QDfC) {
+                        sourceWise = packageWise.QDfC;
+                        if (sourceWise.HE){
+                            innerObj = sourceWise.HE;
+                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = computedData.dataObj;
+                            dayDataObj = computedData.dayDataObj;
+                            weeklyDataObj = computedData.weeklyDataObj;
+                            monthlyDataObj = computedData.monthlyDataObj;
+                        }
+                        if (sourceWise.affiliate_web) {
+                            innerObj = sourceWise.affiliate_web;
+                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = computedData.dataObj;
+                            dayDataObj = computedData.dayDataObj;
+                            weeklyDataObj = computedData.weeklyDataObj;
+                            monthlyDataObj = computedData.monthlyDataObj;
+                        }
+                    }
+                    if (packageWise.QDfG){
+                        sourceWise = packageWise.QDfC;
+                        if (sourceWise.HE){
+                            innerObj = sourceWise.HE;
+                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = computedData.dataObj;
+                            dayDataObj = computedData.dayDataObj;
+                            weeklyDataObj = computedData.weeklyDataObj;
+                            monthlyDataObj = computedData.monthlyDataObj;
+                        }
+                        if (sourceWise.affiliate_web) {
+                            innerObj = sourceWise.affiliate_web;
+                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = computedData.dataObj;
+                            dayDataObj = computedData.dayDataObj;
+                            weeklyDataObj = computedData.weeklyDataObj;
+                            monthlyDataObj = computedData.monthlyDataObj;
+                        }
+                    }
+                }
+
+                //If billing Status is "callback_sent" - then package to source (HE, affiliate_web)
+                if (statusWise.callback_sent) {
+                    packageWise = statusWise.callback_sent;
+                    if (packageWise.QDfC) {
+                        sourceWise = packageWise.QDfC;
+                        if (sourceWise.HE){
+                            innerObj = sourceWise.HE;
+                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = computedData.dataObj;
+                            dayDataObj = computedData.dayDataObj;
+                            weeklyDataObj = computedData.weeklyDataObj;
+                            monthlyDataObj = computedData.monthlyDataObj;
+                        }
+                        if (sourceWise.affiliate_web) {
+                            innerObj = sourceWise.affiliate_web;
+                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = computedData.dataObj;
+                            dayDataObj = computedData.dayDataObj;
+                            weeklyDataObj = computedData.weeklyDataObj;
+                            monthlyDataObj = computedData.monthlyDataObj;
+                        }
+                    }
+                    if (packageWise.QDfG){
+                        sourceWise = packageWise.QDfC;
+                        if (sourceWise.HE){
+                            innerObj = sourceWise.HE;
+                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = computedData.dataObj;
+                            dayDataObj = computedData.dayDataObj;
+                            weeklyDataObj = computedData.weeklyDataObj;
+                            monthlyDataObj = computedData.monthlyDataObj;
+                        }
+                        if (sourceWise.affiliate_web) {
+                            innerObj = sourceWise.affiliate_web;
+                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = computedData.dataObj;
+                            dayDataObj = computedData.dayDataObj;
+                            weeklyDataObj = computedData.weeklyDataObj;
+                            monthlyDataObj = computedData.monthlyDataObj;
+                        }
+                    }
+                }
+
+
+                // reset start_date for both month & week so can update with latest one
+                if (week_from_date === null)
+                    week_from_date = outerObj.date;
+
+                if (month_from_date === null)
+                    month_from_date = outerObj.date;
+
+                monthNo = new Date(outerObj.date).getMonth() + 1;
+                dayNo = new Date(outerObj.date).getDate();
+
+                // Monthly Data Count
+                if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
+                    monthlyDataObj.from_date = month_from_date;
+                    monthlyDataObj.to_date = outerObj.date;
+                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                    monthlyDataObj = _.clone({success: _.clone(packageOBj), trial: _.clone(packageOBj), callback_sent: _.clone(packageOBj)});
+                    month_from_date = null;
+                }
+
+                // Weekly Data Count
+                if (Number(dayNo) % 7 === 0){
+                    weeklyDataObj.from_date = week_from_date;
+                    weeklyDataObj.to_date = outerObj.date;
+                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                    weeklyDataObj = _.clone({success: _.clone(packageOBj), trial: _.clone(packageOBj), callback_sent: _.clone(packageOBj)});
+                    week_from_date = null;
+                }
+
+                // Day Wise Date Count
+                dayDataObj.date = outerObj.date;
+                dayWiseTotalCount.push(_.clone(dayDataObj));
+                dayDataObj = _.clone({success: _.clone(packageOBj), trial: _.clone(packageOBj), callback_sent: _.clone(packageOBj)});
+            }
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // Total Count Data
+        // add date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
+    }
 };
+
 computeAffiliateDataSourceWiseReport = async (rawDataSet, params) => {
     console.log('computeAffiliateDataSourceWiseReport');
 
@@ -631,6 +837,7 @@ computeAffiliateDataPackageWiseReport = async (rawDataSet, params) => {
         return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
+
 computeAffiliateDataStatusWiseReport = async (rawDataSet, params) => {
     console.log('computeAffiliateDataStatusWiseReport');
 
