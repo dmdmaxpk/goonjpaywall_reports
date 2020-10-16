@@ -211,9 +211,9 @@ class SubscriptionRepository {
         });
     }
 
-    async getAffiliateDataDateRange (req, from, to){
+    async getAffiliateDataByDateRange (req, from, to){
         return new Promise((resolve, reject) => {
-            console.log('getAffiliateDataDateRange: ', from, to);
+            console.log('getAffiliateDataByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
@@ -275,13 +275,60 @@ class SubscriptionRepository {
                         }}
                     ]).toArray(function(err, items) {
                         if(err){
-                            console.log('getAffiliateDataDateRange - err: ', err.message);
+                            console.log('getAffiliateDataByDateRange - err: ', err.message);
                             resolve([]);
                         }
                         resolve(items);
                     });
                 }
             })
+        });
+    }
+
+    async getAffiliateMidFromSubscriptionsByDateRange (req, from, to) {
+        return new Promise((resolve, reject) => {
+            console.log('getAffiliateMidFromSubscriptionsByDateRange: ', from, to);
+            req.db.collection('subscriptions', function (err, collection) {
+                if (!err) {
+                    collection.aggregate([
+                        {
+                            $match:{
+                                source: {$in: ["HE","affiliate_web"]},
+                                $and:[{added_dtm:{$gte:new Date("2020-07-17T00:00:00.000Z")}}, {added_dtm:{$lte:new Date("2020-07-17T23:59:59.000Z")}}]
+                            }
+                        },
+                        { $project:{
+                                affiliate_mid: "$affiliate_mid",
+                                day: { "$dayOfMonth" : "$added_dtm"},
+                                month: { "$month" : "$added_dtm" },
+                                year:{ "$year": "$added_dtm" }
+                            }},
+                        { $project:{
+                                added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
+                                affiliate_mid: "$affiliate_mid"
+                            }},
+                        { $group:{
+                                _id: {added_dtm: "$added_dtm", affiliate_mid: "$affiliate_mid"},
+                                count: {$sum: 1}
+                            }},
+                        { $group:{
+                                _id: {added_dtm: "$_id.added_dtm"},
+                                affiliate_mids: { $push:  {affiliate_mid: "$_id.affiliate_mid", count: "$count" }}
+                            }},
+                        { $project: {
+                                _id: 0,
+                                added_dtm: "$_id.added_dtm",
+                                affiliate_mids: "$affiliate_mids"
+                            }}
+                    ]).toArray(function(err, items) {
+                        if(err){
+                            console.log('getAffiliateMidFromSubscriptionsByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            });
         });
     }
 }

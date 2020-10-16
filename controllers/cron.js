@@ -87,3 +87,8 @@ exports.computeAffiliateReports = async (req,res) =>  {
     AffiliateSubscriptionsService.computeAffiliateReports(req,res);
     res.send("computeAffiliateReports - Executed\n");
 };
+
+exports.computeAffiliateMidsFromSubscriptionsReports = async (req,res) =>  {
+    AffiliateSubscriptionsService.computeAffiliateMidsFromSubscriptionsReports(req,res);
+    res.send("computeAffiliateMidsFromSubscriptionsReports - Executed\n");
+};

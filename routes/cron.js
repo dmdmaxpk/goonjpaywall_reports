@@ -36,6 +36,9 @@ router.route('/compute-revenue-net-addition-reports')
 router.route('/compute-affiliate-reports')
     .get(connecton.connect, controller.computeAffiliateReports);
 
+router.route('/compute-affiliate-mids-from-subscriptions-reports')
+    .get(connecton.connect, controller.computeAffiliateMidsFromSubscriptionsReports);
+
 router.route('/compute-helogs-logger-reports')
     .get(connecton.connect, controller.computeHelogsReports);
 
