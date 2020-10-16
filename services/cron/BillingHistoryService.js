@@ -51,10 +51,12 @@ computeBillingHistoryReports = async(req, res) => {
                     computeBillingHistoryReports(req, res);
             }
             else{
-                console.log('fetchedRecordsLength < limitData ELSE CASE->->->->->-> : ');
+                console.log('fetchedRecordsLength < limitData ELSE CASE->->->->->-> : ', fromDate);
 
                 lastRecode = result[fetchedRecordsLength - 1];
                 fromDate = lastRecode.billing_dtm;
+                console.log('fetchedRecordsLength < limitData ELSE CASE->->->->->-> : ', fromDate);
+
                 computeBillingHistoryReports(req, res);
             }
         }
