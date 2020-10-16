@@ -6,6 +6,7 @@ const  _ = require('lodash');
 
 let billingHistory = [], returningUserList = [], fullAndPartialChargeList = [],
     sourceWiseUnSubList = [], sourceWiseTrail = [], uniquePayingUsers = [], successRate = [];
+let limitData = 450000, lastRecode;
 computeBillingHistoryReports = async(req, res) => {
     console.log('computeBillingHistoryReports');
     let fromDate, toDate, day, month, computedData;
@@ -14,7 +15,7 @@ computeBillingHistoryReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 28, 5);
+    dateData = helper.computeNextDate(req, 1, 6);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -22,9 +23,16 @@ computeBillingHistoryReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('computeBillingHistoryReports: ', fromDate, toDate);
-    billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate).then(function (result) {
+    billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, limitData).then(function (result) {
         console.log('result: ', result.length, result);
 
+        lastRecode = result[result.length];
+        console.log('lastRecode: ', lastRecode, toDate);
+
+        toDate = lastRecode.added_dtm;
+        console.log('toDate: ', toDate);
+
+        return;
         if (result.length > 0){
             computedData = computeBillingHistoryData(result);
             console.log('computedData: ', computedData);
@@ -43,14 +51,22 @@ computeBillingHistoryReports = async(req, res) => {
                 computeBillingHistoryReports(req, res);
         }
         else{
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
 
-            setTimeout(function () {
-                if (req.month <= helper.getTodayMonthNo())
-                    computeBillingHistoryReports(req, res);
-            }, 15000);
+            if (result.length < 450000){
+                setTimeout(function () {
+                    req.day = 1;
+                    req.month = Number(req.month) + 1;
+                    console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
+
+                    if (req.month <= helper.getTodayMonthNo())
+                        computeBillingHistoryReports(req, res);
+                }, 5000);
+            }
+            else{
+                lastRecode = result[result.length];
+                toDate = lastRecode.added_dtm;
+                computeBillingHistoryReports(req, res);
+            }
         }
     });
 };
