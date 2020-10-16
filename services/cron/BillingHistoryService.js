@@ -14,7 +14,7 @@ computeBillingHistoryReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 1, 2);
+    dateData = helper.computeNextDate(req, 20, 5);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -43,12 +43,14 @@ computeBillingHistoryReports = async(req, res) => {
                 computeBillingHistoryReports(req, res);
         }
         else{
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
+            setTimeout(function () {
+                req.day = 1;
+                req.month = Number(req.month) + 1;
+                console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= helper.getTodayMonthNo())
-                computeBillingHistoryReports(req, res);
+                if (req.month <= helper.getTodayMonthNo())
+                    computeBillingHistoryReports(req, res);
+            }, 15000);
         }
     });
 };

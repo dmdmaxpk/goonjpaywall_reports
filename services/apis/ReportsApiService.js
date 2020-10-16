@@ -23,7 +23,7 @@ generateReportsData = async (req,res) => {
         else
             rawDataSet = await reportsRepo.generateReportsData(params);
 
-        if (params.type === 'users'){
+        if (params.type === 'users') {
             if (params.sub_type === 'active_inactive')
                 return usersService.computeVerifiedUserReport(rawDataSet, params);
             else if (params.sub_type === 'accessing_service')
