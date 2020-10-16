@@ -467,7 +467,7 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
                         sourceWise = packageWise.QDfC;
                         if (sourceWise.HE){
                             innerObj = sourceWise.HE;
-                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            computedData = computeAffiliateWiseData('success', 'liveDaily', 'HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = computedData.dataObj;
                             dayDataObj = computedData.dayDataObj;
                             weeklyDataObj = computedData.weeklyDataObj;
@@ -475,7 +475,7 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
                         }
                         if (sourceWise.affiliate_web) {
                             innerObj = sourceWise.affiliate_web;
-                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            computedData = computeAffiliateWiseData('success', 'liveDaily', 'affiliate_web', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = computedData.dataObj;
                             dayDataObj = computedData.dayDataObj;
                             weeklyDataObj = computedData.weeklyDataObj;
@@ -483,10 +483,10 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
                         }
                     }
                     if (packageWise.QDfG){
-                        sourceWise = packageWise.QDfC;
+                        sourceWise = packageWise.QDfG;
                         if (sourceWise.HE){
                             innerObj = sourceWise.HE;
-                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            computedData = computeAffiliateWiseData('success', 'liveWeekly', 'HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = computedData.dataObj;
                             dayDataObj = computedData.dayDataObj;
                             weeklyDataObj = computedData.weeklyDataObj;
@@ -494,7 +494,7 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
                         }
                         if (sourceWise.affiliate_web) {
                             innerObj = sourceWise.affiliate_web;
-                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            computedData = computeAffiliateWiseData('success', 'liveWeekly', 'affiliate_web', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = computedData.dataObj;
                             dayDataObj = computedData.dayDataObj;
                             weeklyDataObj = computedData.weeklyDataObj;
@@ -510,7 +510,7 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
                         sourceWise = packageWise.QDfC;
                         if (sourceWise.HE){
                             innerObj = sourceWise.HE;
-                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            computedData = computeAffiliateWiseData('trial', 'liveDaily', 'HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = computedData.dataObj;
                             dayDataObj = computedData.dayDataObj;
                             weeklyDataObj = computedData.weeklyDataObj;
@@ -518,7 +518,7 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
                         }
                         if (sourceWise.affiliate_web) {
                             innerObj = sourceWise.affiliate_web;
-                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            computedData = computeAffiliateWiseData('trial', 'liveDaily', 'affiliate_web', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = computedData.dataObj;
                             dayDataObj = computedData.dayDataObj;
                             weeklyDataObj = computedData.weeklyDataObj;
@@ -526,10 +526,10 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
                         }
                     }
                     if (packageWise.QDfG){
-                        sourceWise = packageWise.QDfC;
+                        sourceWise = packageWise.QDfG;
                         if (sourceWise.HE){
                             innerObj = sourceWise.HE;
-                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            computedData = computeAffiliateWiseData('trial', 'liveWeekly', 'HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = computedData.dataObj;
                             dayDataObj = computedData.dayDataObj;
                             weeklyDataObj = computedData.weeklyDataObj;
@@ -537,7 +537,7 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
                         }
                         if (sourceWise.affiliate_web) {
                             innerObj = sourceWise.affiliate_web;
-                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            computedData = computeAffiliateWiseData('trial', 'liveWeekly', 'affiliate_web', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = computedData.dataObj;
                             dayDataObj = computedData.dayDataObj;
                             weeklyDataObj = computedData.weeklyDataObj;
@@ -553,7 +553,7 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
                         sourceWise = packageWise.QDfC;
                         if (sourceWise.HE){
                             innerObj = sourceWise.HE;
-                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            computedData = computeAffiliateWiseData('callback_sent', 'liveDaily', 'HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = computedData.dataObj;
                             dayDataObj = computedData.dayDataObj;
                             weeklyDataObj = computedData.weeklyDataObj;
@@ -561,7 +561,7 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
                         }
                         if (sourceWise.affiliate_web) {
                             innerObj = sourceWise.affiliate_web;
-                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            computedData = computeAffiliateWiseData('callback_sent', 'liveDaily', 'affiliate_web', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = computedData.dataObj;
                             dayDataObj = computedData.dayDataObj;
                             weeklyDataObj = computedData.weeklyDataObj;
@@ -569,10 +569,10 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
                         }
                     }
                     if (packageWise.QDfG){
-                        sourceWise = packageWise.QDfC;
+                        sourceWise = packageWise.QDfG;
                         if (sourceWise.HE){
                             innerObj = sourceWise.HE;
-                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            computedData = computeAffiliateWiseData('callback_sent', 'liveWeekly', 'HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = computedData.dataObj;
                             dayDataObj = computedData.dayDataObj;
                             weeklyDataObj = computedData.weeklyDataObj;
@@ -580,7 +580,7 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
                         }
                         if (sourceWise.affiliate_web) {
                             innerObj = sourceWise.affiliate_web;
-                            computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            computedData = computeAffiliateWiseData('callback_sent', 'liveWeekly', 'affiliate_web', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = computedData.dataObj;
                             dayDataObj = computedData.dayDataObj;
                             weeklyDataObj = computedData.weeklyDataObj;
@@ -982,6 +982,52 @@ function computeAffiliateHeData(part, innerObj, dataObj, dayDataObj, weeklyDataO
         dayDataObj[part]['gdn2'] = dayDataObj[part]['gdn2'] + innerObj.gdn2;
         weeklyDataObj[part]['gdn2'] = weeklyDataObj[part]['gdn2'] + innerObj.gdn2;
         monthlyDataObj[part]['gdn2'] = monthlyDataObj[part]['gdn2'] + innerObj.gdn2;
+    }
+
+    return {dataObj: dataObj, dayDataObj: dayDataObj, weeklyDataObj: weeklyDataObj, monthlyDataObj: monthlyDataObj}
+}
+function computeAffiliateWiseData(statusWise, packageWise, sourceWise, innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj) {
+    if (innerObj['1']){
+        dataObj[statusWise][packageWise][sourceWise]['1'] = dataObj[statusWise][packageWise][sourceWise]['1'] + innerObj['1'];
+        dayDataObj[statusWise][packageWise][sourceWise]['1'] = dayDataObj[statusWise][packageWise][sourceWise]['1'] + innerObj['1'];
+        weeklyDataObj[statusWise][packageWise][sourceWise]['1'] = weeklyDataObj[statusWise][packageWise][sourceWise]['1'] + innerObj['1'];
+        monthlyDataObj[statusWise][packageWise][sourceWise]['1'] = monthlyDataObj[statusWise][packageWise][sourceWise]['1'] + innerObj['1'];
+    }
+    if (innerObj['1569']){
+        dataObj[statusWise][packageWise][sourceWise]['1569'] = dataObj[statusWise][packageWise][sourceWise]['1569'] + innerObj['1569'];
+        dayDataObj[statusWise][packageWise][sourceWise]['1569'] = dayDataObj[statusWise][packageWise][sourceWise]['1569'] + innerObj['1569'];
+        weeklyDataObj[statusWise][packageWise][sourceWise]['1569'] = weeklyDataObj[statusWise][packageWise][sourceWise]['1569'] + innerObj['1569'];
+        monthlyDataObj[statusWise][packageWise][sourceWise]['1569'] = monthlyDataObj[statusWise][packageWise][sourceWise]['1569'] + innerObj['1569'];
+    }
+    if (innerObj.aff3){
+        dataObj[statusWise][packageWise][sourceWise]['aff3'] = dataObj[statusWise][packageWise][sourceWise]['aff3'] + innerObj.aff3;
+        dayDataObj[statusWise][packageWise][sourceWise]['aff3'] = dayDataObj[statusWise][packageWise][sourceWise]['aff3'] + innerObj.aff3;
+        weeklyDataObj[statusWise][packageWise][sourceWise]['aff3'] = weeklyDataObj[statusWise][packageWise][sourceWise]['aff3'] + innerObj.aff3;
+        monthlyDataObj[statusWise][packageWise][sourceWise]['aff3'] = monthlyDataObj[statusWise][packageWise][sourceWise]['aff3'] + innerObj.aff3;
+    }
+    if (innerObj.aff3a){
+        dataObj[statusWise][packageWise][sourceWise]['aff3a'] = dataObj[statusWise][packageWise][sourceWise]['aff3a'] + innerObj.aff3a;
+        dayDataObj[statusWise][packageWise][sourceWise]['aff3a'] = dayDataObj[statusWise][packageWise][sourceWise]['aff3a'] + innerObj.aff3a;
+        weeklyDataObj[statusWise][packageWise][sourceWise]['aff3a'] = weeklyDataObj[statusWise][packageWise][sourceWise]['aff3a'] + innerObj.aff3a;
+        monthlyDataObj[statusWise][packageWise][sourceWise]['aff3a'] = monthlyDataObj[statusWise][packageWise][sourceWise]['aff3a'] + innerObj.aff3a;
+    }
+    if (innerObj.goonj){
+        dataObj[statusWise][packageWise][sourceWise]['goonj'] = dataObj[statusWise][packageWise][sourceWise]['goonj'] + innerObj.goonj;
+        dayDataObj[statusWise][packageWise][sourceWise]['goonj'] = dayDataObj[statusWise][packageWise][sourceWise]['goonj'] + innerObj.goonj;
+        weeklyDataObj[statusWise][packageWise][sourceWise]['goonj'] = weeklyDataObj[statusWise][packageWise][sourceWise]['goonj'] + innerObj.goonj;
+        monthlyDataObj[statusWise][packageWise][sourceWise]['goonj'] = monthlyDataObj[statusWise][packageWise][sourceWise]['goonj'] + innerObj.goonj;
+    }
+    if (innerObj.gdn){
+        dataObj[statusWise][packageWise][sourceWise]['gdn'] = dataObj[statusWise][packageWise][sourceWise]['gdn'] + innerObj.gdn;
+        dayDataObj[statusWise][packageWise][sourceWise]['gdn'] = dayDataObj[statusWise][packageWise][sourceWise]['gdn'] + innerObj.gdn;
+        weeklyDataObj[statusWise][packageWise][sourceWise]['gdn'] = weeklyDataObj[statusWise][packageWise][sourceWise]['gdn'] + innerObj.gdn;
+        monthlyDataObj[statusWise][packageWise][sourceWise]['gdn'] = monthlyDataObj[statusWise][packageWise][sourceWise]['gdn'] + innerObj.gdn;
+    }
+    if (innerObj.gdn2){
+        dataObj[statusWise][packageWise][sourceWise]['gdn2'] = dataObj[statusWise][packageWise][sourceWise]['gdn2'] + innerObj.gdn2;
+        dayDataObj[statusWise][packageWise][sourceWise]['gdn2'] = dayDataObj[statusWise][packageWise][sourceWise]['gdn2'] + innerObj.gdn2;
+        weeklyDataObj[statusWise][packageWise][sourceWise]['gdn2'] = weeklyDataObj[statusWise][packageWise][sourceWise]['gdn2'] + innerObj.gdn2;
+        monthlyDataObj[statusWise][packageWise][sourceWise]['gdn2'] = monthlyDataObj[statusWise][packageWise][sourceWise]['gdn2'] + innerObj.gdn2;
     }
 
     return {dataObj: dataObj, dayDataObj: dayDataObj, weeklyDataObj: weeklyDataObj, monthlyDataObj: monthlyDataObj}
