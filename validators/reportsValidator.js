@@ -76,7 +76,7 @@ class ReportsValidator{
                 else if (params.sub_type === 'helogs')
                     this.checkSubTypeIsNull(params.helogs, "HE logs", ['helogs_wise']);
                 else if (params.sub_type === 'unique_success_he')
-                    this.checkSubTypeIsNull(params.unique_successHe, "Unique Success HE", ['helogs_wise']);
+                    this.checkSubTypeIsNull(params.unique_success_he, "Unique Success HE", ['helogs_wise']);
 
                 break;
             case 'visitors':
