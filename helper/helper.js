@@ -35,9 +35,9 @@ class Helper {
         return new Date().getMonth() + 1;
     }
     static splitHoursFromISODate(dateString){
-        console.log('splitHoursFromISODate: ', dateString, String(dateString));
-        dateString = _.split(dateString, 'T')[1];
-        dateString = _.split(dateString, ':')[0];
+        console.log('splitHoursFromISODate: ', dateString);
+        dateString = _.split(dateString, 'T', 2)[1];
+        dateString = _.split(dateString, ':', 1)[0];
         console.log('hours: ', dateString);
 
         return (dateString === '00');
