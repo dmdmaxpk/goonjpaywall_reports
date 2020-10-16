@@ -8,7 +8,7 @@ class BillingHistoryRepository {
                     console.log('getBillingHistoryByDateRange: ', from, to);
                     collection.find({
                         $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
-                    })
+                    }, { allowDiskUse: true })
                     .toArray(function(err, items) {
                         if(err){
                             console.log('getBillingHistoryByDateRange - err: ', err.message);
