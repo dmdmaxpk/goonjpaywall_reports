@@ -18,6 +18,8 @@ computeAffiliateReport = async (rawDataSet, params) =>{
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
+
+            //get Affiliate mids total count HE wise
             if (outerObj.helogs) {
                 partKey = outerObj.helogs;
                 if (partKey.helogsWise) {
@@ -31,6 +33,8 @@ computeAffiliateReport = async (rawDataSet, params) =>{
                     }
                 }
             }
+
+            //get Affiliate mids total count Unique Success wise
             if (outerObj.uniqueSuccessHe) {
                 partKey = outerObj.uniqueSuccessHe;
                 if (partKey.helogsWise) {
@@ -42,6 +46,8 @@ computeAffiliateReport = async (rawDataSet, params) =>{
                     monthlyDataObj = computedData.monthlyDataObj;
                 }
             }
+
+            //get Affiliate mids total count Page view wise
             if (outerObj.logsPageView) {
                 innerObj = outerObj.logsPageView[0];
                 computedData = computeAffiliateHeData('pageViews', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
@@ -50,6 +56,8 @@ computeAffiliateReport = async (rawDataSet, params) =>{
                 weeklyDataObj = computedData.weeklyDataObj;
                 monthlyDataObj = computedData.monthlyDataObj;
             }
+
+            //get Affiliate mids total count Subscribe Clicks  wise
             if (outerObj.logsSubscribeClick) {
                 innerObj = outerObj.logsSubscribeClick[0];
                 computedData = computeAffiliateHeData('subscribeClicks', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
@@ -58,6 +66,8 @@ computeAffiliateReport = async (rawDataSet, params) =>{
                 weeklyDataObj = computedData.weeklyDataObj;
                 monthlyDataObj = computedData.monthlyDataObj;
             }
+
+            //get Affiliate mids total count - live daily
             if (outerObj.packageWise) {
                 partKey = outerObj.packageWise[0];
                 innerObj = partKey.QDfC;
@@ -67,6 +77,8 @@ computeAffiliateReport = async (rawDataSet, params) =>{
                 weeklyDataObj = computedData.weeklyDataObj;
                 monthlyDataObj = computedData.monthlyDataObj;
             }
+
+            //get Affiliate mids total count - live weekly
             if (outerObj.packageWise) {
                 partKey = outerObj.packageWise[0];
                 innerObj = partKey.QDfG;
@@ -76,6 +88,8 @@ computeAffiliateReport = async (rawDataSet, params) =>{
                 weeklyDataObj = computedData.weeklyDataObj;
                 monthlyDataObj = computedData.monthlyDataObj;
             }
+
+            //get Affiliate mids total count - live trial
             if (outerObj.statusWise) {
                 partKey = outerObj.statusWise[0];
                 innerObj = partKey.trial;
@@ -433,6 +447,95 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
 computeAffiliateDataSourceWiseReport = async (rawDataSet, params) => {
     console.log('computeAffiliateDataSourceWiseReport');
 
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, innerObj, sourceWise, computedData;
+    let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let dataObj = {HE: _.clone(mids), affiliate_web: _.clone(mids)};
+    let dayDataObj = {HE: _.clone(mids), affiliate_web: _.clone(mids)};
+    let weeklyDataObj = {HE: _.clone(mids), affiliate_web: _.clone(mids)};
+    let monthlyDataObj = {HE: _.clone(mids), affiliate_web: _.clone(mids)};
+
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+            if (outerObj.sourceWise){
+                sourceWise = outerObj.sourceWise[0];
+                if (sourceWise.HE) {
+                    innerObj = sourceWise.HE;
+                    computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                    dataObj = computedData.dataObj;
+                    dayDataObj = computedData.dayDataObj;
+                    weeklyDataObj = computedData.weeklyDataObj;
+                    monthlyDataObj = computedData.monthlyDataObj;
+                }
+                if (sourceWise.affiliate_web) {
+                    innerObj = sourceWise.affiliate_web;
+                    computedData = computeAffiliateHeData('affiliate_web', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                    dataObj = computedData.dataObj;
+                    dayDataObj = computedData.dayDataObj;
+                    weeklyDataObj = computedData.weeklyDataObj;
+                    monthlyDataObj = computedData.monthlyDataObj;
+                }
+
+                // reset start_date for both month & week so can update with latest one
+                if (week_from_date === null)
+                    week_from_date = outerObj.date;
+
+                if (month_from_date === null)
+                    month_from_date = outerObj.date;
+
+                monthNo = new Date(outerObj.date).getMonth() + 1;
+                dayNo = new Date(outerObj.date).getDate();
+
+                // Monthly Data Count
+                if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
+                    monthlyDataObj.from_date = month_from_date;
+                    monthlyDataObj.to_date = outerObj.date;
+                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                    monthlyDataObj = _.clone({HE: _.clone(mids), affiliate_web: _.clone(mids)});
+                    month_from_date = null;
+                }
+
+                // Weekly Data Count
+                if (Number(dayNo) % 7 === 0){
+                    weeklyDataObj.from_date = week_from_date;
+                    weeklyDataObj.to_date = outerObj.date;
+                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                    weeklyDataObj = _.clone({HE: _.clone(mids), affiliate_web: _.clone(mids)});
+                    week_from_date = null;
+                }
+
+                // Day Wise Date Count
+                dayDataObj.date = outerObj.date;
+                dayWiseTotalCount.push(_.clone(dayDataObj));
+                dayDataObj = _.clone({HE: _.clone(mids), affiliate_web: _.clone(mids)});
+            }
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // Total Count Data
+        // add date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
+    }
 };
 computeAffiliateDataPackageWiseReport = async (rawDataSet, params) => {
     console.log('computeAffiliateDataPackageWiseReport');
@@ -501,6 +604,7 @@ function cloneAffiliateObj (){
         liveWeekly:  _.clone(mids)
     };
 }
+
 module.exports = {
     computeAffiliateReport: computeAffiliateReport,
     computeHelogsDataReport: computeHelogsDataReport,
