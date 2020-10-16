@@ -34,7 +34,15 @@ class Helper {
     static getTodayMonthNo() {
         return new Date().getMonth() + 1;
     }
+    static splitHoursFromISODate(date){
+        date = date.split('T');
+        date = date[1].split(':');
 
+        if (date[0] === '00')
+            return true;
+        else
+            return false;
+    }
 
     static computeNextDate(req, sDay, sMonth){
 

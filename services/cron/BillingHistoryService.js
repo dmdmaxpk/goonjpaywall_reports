@@ -38,7 +38,9 @@ computeBillingHistoryReports = async(req, res) => {
         }
 
         // Get compute data for next time slot
-        req.day = Number(req.day) + 1;
+        if (fetchedRecordsLength < limitData)
+            req.day = Number(req.day) + 1;
+
         console.log('getChargeDetailsByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
 
         if (req.day <= helper.getDaysInMonth(month)){
@@ -58,7 +60,6 @@ computeBillingHistoryReports = async(req, res) => {
             req.day = 1;
             req.month = Number(req.month) + 1;
             console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
-
             if (req.month <= helper.getTodayMonthNo())
                 computeBillingHistoryReports(req, res);
         }
@@ -361,13 +362,28 @@ function insertNewRecord(dateString) {
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0){
             result = result[0];
-            result.billingHistory = billingHistory;
-            result.returningUsers = returningUserList;
-            result.fullAndPartialChargeUser = fullAndPartialChargeList;
-            result.sourceWiseUnSub = sourceWiseUnSubList;
-            result.sourceWiseTrail = sourceWiseTrail;
-            result.uniquePayingUsers = uniquePayingUsers;
-            result.successRate = successRate;
+
+            if (helper.splitHoursFromISODate(dateString)){
+                console.log('=>=>=>=>=>=>=> splitHoursFromISODate - IF');
+
+                result.billingHistory = billingHistory;
+                result.returningUsers = returningUserList;
+                result.fullAndPartialChargeUser = fullAndPartialChargeList;
+                result.sourceWiseUnSub = sourceWiseUnSubList;
+                result.sourceWiseTrail = sourceWiseTrail;
+                result.uniquePayingUsers = uniquePayingUsers;
+                result.successRate = successRate;
+            } else{
+                console.log('=>=>=>=>=>=>=> splitHoursFromISODate - ELSE');
+
+                result.billingHistory.concat(billingHistory);
+                result.returningUsers.concat(returningUserList);
+                result.fullAndPartialChargeUser.concat(fullAndPartialChargeList);
+                result.sourceWiseUnSub.concat(sourceWiseUnSubList);
+                result.sourceWiseTrail.concat(sourceWiseTrail);
+                result.uniquePayingUsers.concat(uniquePayingUsers);
+                result.successRate.concat(successRate);
+            }
             reportsRepo.updateReport(result, result._id);
         }
         else{
