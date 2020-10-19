@@ -25,7 +25,7 @@ computeBillingHistoryReports = async(req, res) => {
     }
 
     console.log('computeBillingHistoryReports: ', fromDate, toDate);
-    billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, dataLimit).then(function (result) {
+    billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate).then(function (result) {
         console.log('result: ', result.length);
         fetchedRecordsLength = result.length;
 

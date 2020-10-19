@@ -4,7 +4,6 @@ const subscriptionRepo = container.resolve('subscriptionRepository');
 const helper = require('../../helper/helper');
 const  _ = require('lodash');
 
-
 computeAffiliateReports = async(req, res) => {
     console.log('computeAffiliateReports: ');
     let fromDate, toDate, day, month, computedData = [];
@@ -52,7 +51,6 @@ computeAffiliateReports = async(req, res) => {
         }
     });
 };
-
 computeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
     console.log('computeAffiliateMidsFromSubscriptionsReports: ');
     let fromDate, toDate, day, month, affiliateMidsData = [];
@@ -99,45 +97,6 @@ computeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
         }
     });
 };
-
-function computeAffiliateMidsData(affiliateMidsData) {
-
-    let rawData, innerObj, affiliateMidsObj = { aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0, '1565': 0, '1': 0, 'null': 0 },
-        affiliateMids = [];
-    for (let i=0; i < affiliateMidsData.length; i++) {
-        rawData = affiliateMidsData[i];
-        for (let j = 0; j < rawData.affiliate_mids.length; j++) {
-            innerObj = rawData.affiliate_mids[j];
-
-            //collect data => billing_status wise, get Mids count
-            //Success, trial, Affiliate callback sent
-            if(innerObj.affiliate_mid === 'aff3')
-                affiliateMidsObj.aff3 = affiliateMidsObj.aff3 + innerObj.count;
-            else if(innerObj.affiliate_mid === 'aff3a')
-                affiliateMidsObj.aff3a = affiliateMidsObj.aff3a + innerObj.count;
-            else if(innerObj.affiliate_mid === 'gdn')
-                affiliateMidsObj.gdn = affiliateMidsObj.gdn + innerObj.count;
-            else if(innerObj.affiliate_mid === 'gdn2')
-                affiliateMidsObj.gdn2 = affiliateMidsObj.gdn2 + innerObj.count;
-            else if(innerObj.affiliate_mid === 'goonj')
-                affiliateMidsObj.goonj = affiliateMidsObj.goonj + innerObj.count;
-            else if(innerObj.affiliate_mid === '1565')
-                affiliateMidsObj['1565'] = affiliateMidsObj['1565'] + innerObj.count;
-            else if(innerObj.affiliate_mid === '1')
-                affiliateMidsObj['1'] = affiliateMidsObj['1'] + innerObj.count;
-            else if(innerObj.affiliate_mid === 'null')
-                affiliateMidsObj['null'] = affiliateMidsObj['null'] + innerObj.count;
-
-        }
-
-        affiliateMidsObj.billing_dtm = rawData.billing_dtm;
-        affiliateMidsObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
-
-        affiliateMids.push(affiliateMidsObj);
-    }
-
-    return affiliateMids;
-}
 
 function computeAffiliateData(subscriptionsRawData) {
 
@@ -209,23 +168,45 @@ function computeAffiliateData(subscriptionsRawData) {
     //affiliateWise, statusWise, packageWise, sourceWise
     return {affiliateWise: affiliateWise, statusWise: statusWise, packageWise: packageWise, sourceWise: sourceWise};
 }
+function computeAffiliateMidsData(affiliateMidsData) {
 
-function insertAffiliateMidsNewRecord(affiliateMidsData, dateString) {
-    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
-    affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
-        if (result.length > 0) {
-            result = result[0];
-            result.subscriptions = affiliateMidsData;
+    let rawData, innerObj, affiliateMidsObj = { aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0, '1565': 0, '1': 0, 'null': 0 },
+        affiliateMids = [];
+    for (let i=0; i < affiliateMidsData.length; i++) {
+        rawData = affiliateMidsData[i];
+        for (let j = 0; j < rawData.affiliate_mids.length; j++) {
+            innerObj = rawData.affiliate_mids[j];
 
-            affiliateRepo.updateReport(result, result._id);
+            //collect data => billing_status wise, get Mids count
+            //Success, trial, Affiliate callback sent
+            if(innerObj.affiliate_mid === 'aff3')
+                affiliateMidsObj.aff3 = affiliateMidsObj.aff3 + innerObj.count;
+            else if(innerObj.affiliate_mid === 'aff3a')
+                affiliateMidsObj.aff3a = affiliateMidsObj.aff3a + innerObj.count;
+            else if(innerObj.affiliate_mid === 'gdn')
+                affiliateMidsObj.gdn = affiliateMidsObj.gdn + innerObj.count;
+            else if(innerObj.affiliate_mid === 'gdn2')
+                affiliateMidsObj.gdn2 = affiliateMidsObj.gdn2 + innerObj.count;
+            else if(innerObj.affiliate_mid === 'goonj')
+                affiliateMidsObj.goonj = affiliateMidsObj.goonj + innerObj.count;
+            else if(innerObj.affiliate_mid === '1565')
+                affiliateMidsObj['1565'] = affiliateMidsObj['1565'] + innerObj.count;
+            else if(innerObj.affiliate_mid === '1')
+                affiliateMidsObj['1'] = affiliateMidsObj['1'] + innerObj.count;
+            else if(innerObj.affiliate_mid === 'null')
+                affiliateMidsObj['null'] = affiliateMidsObj['null'] + innerObj.count;
+
         }
-        else
-            affiliateRepo.createReport({
-                subscriptions: affiliateMidsData,
-                date: dateString
-            });
-    });
+
+        affiliateMidsObj.billing_dtm = rawData.billing_dtm;
+        affiliateMidsObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
+
+        affiliateMids.push(affiliateMidsObj);
+    }
+
+    return affiliateMids;
 }
+
 function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, dateString) {
     //affiliateWise, statusWise, packageWise, sourceWise
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
@@ -245,6 +226,22 @@ function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, dat
                 statusWise: statusWise,
                 packageWise: packageWise,
                 sourceWise: sourceWise,
+                date: dateString
+            });
+    });
+}
+function insertAffiliateMidsNewRecord(affiliateMidsData, dateString) {
+    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
+    affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
+        if (result.length > 0) {
+            result = result[0];
+            result.subscriptions = affiliateMidsData;
+
+            affiliateRepo.updateReport(result, result._id);
+        }
+        else
+            affiliateRepo.createReport({
+                subscriptions: affiliateMidsData,
                 date: dateString
             });
     });

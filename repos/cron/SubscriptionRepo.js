@@ -1,3 +1,4 @@
+const config = require('../../config');
 
 class SubscriptionRepository {
     async getSubscriptionsByDateRange (req, from, to) {
@@ -88,7 +89,9 @@ class SubscriptionRepository {
                                 isCallbAckSent: {$cond: { if: { $and: [{$gte: ["$callbackhistorySize",1]},{$eq: [ "$isValidUser",true ]} ] } ,then:"yes",else:"no" }} ,
                                 callBackSentTime: {$cond: {if: "$isValidUser", then: "$billing_dm" , else: "" } }
                             }
-                        }
+                        },
+                        { $sort : { added_dtm : 1} },
+                        { $limit : config.cron_db_query_data_limit }
                     ])
                     .toArray(function(err, items) {
                         if(err){
@@ -222,7 +225,8 @@ class SubscriptionRepository {
                                 source: {$in: ["HE","affiliate_web"]},
                                 $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                             }
-                        },{
+                        },
+                        {
                             $lookup: {
                                 from: "billinghistories",
                                 let: {subscriber_id: "$subscriber_id", package_id: "$subscribed_package_id"},
@@ -312,14 +316,14 @@ class SubscriptionRepository {
                                 count: {$sum: 1}
                             }},
                         { $group:{
-                                _id: {added_dtm: "$_id.added_dtm"},
-                                affiliate_mids: { $push:  {affiliate_mid: "$_id.affiliate_mid", count: "$count" }}
-                            }},
+                            _id: {added_dtm: "$_id.added_dtm"},
+                            affiliate_mids: { $push:  {affiliate_mid: "$_id.affiliate_mid", count: "$count" }}
+                        }},
                         { $project: {
-                                _id: 0,
-                                added_dtm: "$_id.added_dtm",
-                                affiliate_mids: "$affiliate_mids"
-                            }}
+                            _id: 0,
+                            added_dtm: "$_id.added_dtm",
+                            affiliate_mids: "$affiliate_mids"
+                        }}
                     ]).toArray(function(err, items) {
                         if(err){
                             console.log('getAffiliateMidFromSubscriptionsByDateRange - err: ', err.message);

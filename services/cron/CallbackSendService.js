@@ -2,50 +2,65 @@ const container = require("../../configurations/container");
 const reportsRepo = require('../../repos/apis/ReportsRepo');
 const subscriptionRepo = container.resolve('subscriptionRepository');
 const helper = require('../../helper/helper');
+const config = require('../../config');
 const  _ = require('lodash');
 
+let fromDate, toDate, day, month, hoursFromISODate, finalList = [];
+let lastRecode, fetchedRecordsLength = 0, dataLimit = config.cron_db_query_data_limit;
 
 computeCallbackSendReports = async(req, res) => {
     console.log('computeCallbackSendReports');
-    let fromDate, toDate, day, month, finalList = [];
 
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 1, 2);
-    req = dateData.req;
-    day = dateData.day;
-    month = dateData.month;
-    fromDate = dateData.fromDate;
-    toDate = dateData.toDate;
+    if (fetchedRecordsLength === 0 || fetchedRecordsLength < dataLimit){
+        dateData = helper.computeNextDate(req, 1, 7);
+        req = dateData.req;
+        day = dateData.day;
+        month = dateData.month;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+    }
 
     console.log('computeCallbackSendReports: ', fromDate, toDate);
     subscriptionRepo.getCallbackSendByDateRange(req, fromDate, toDate).then(function (subscriptions) {
         console.log('subscriptions: ', subscriptions.length);
+        fetchedRecordsLength = subscriptions.length;
 
-        if (subscriptions.length > 0){
+        if (fetchedRecordsLength > 0){
             finalList = computeUserData(subscriptions);
-
-            console.log('finalList.length : ', finalList.length, finalList);
-            if (finalList.length > 0)
-                insertNewRecord(finalList,  new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+            insertNewRecord(finalList,  new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
-        req.day = Number(req.day) + 1;
-        console.log('getCallbackSendByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
+        if (fetchedRecordsLength < dataLimit)
+            req.day = Number(req.day) + 1;
 
+        console.log('-> day : ', day, req.day, helper.getDaysInMonth(month));
         if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
+            console.log('dataLimit - fetchedRecordsLength: ', dataLimit, fetchedRecordsLength);
+            if (fetchedRecordsLength < dataLimit) {
+                console.log('Yes less: ', fetchedRecordsLength < dataLimit);
+                if (month < helper.getTodayMonthNo())
+                    computeCallbackSendReports(req, res);
+                else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+                    computeCallbackSendReports(req, res);
+            }
+            else{
+                console.log('Yes greater  - fromDate before: ', fromDate);
+                lastRecode = subscriptions[fetchedRecordsLength - 1];
+                fromDate = _.clone(lastRecode.added_dtm);
+                console.log('Yes greater  - fromDate after: ', fromDate);
+
                 computeCallbackSendReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeCallbackSendReports(req, res);
+            }
         }
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('getCallbackSendByDateRange -> month : ', month, req.month, new Date().getMonth());
+            console.log('-> month : ', month, req.month, new Date().getMonth());
 
             if (req.month <= helper.getTodayMonthNo())
                 computeCallbackSendReports(req, res);
@@ -85,13 +100,15 @@ function computeUserData(subscriptions) {
 }
 
 function insertNewRecord(data, dateString) {
-    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
+    hoursFromISODate = _.clone(dateString);
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
-        console.log('result calbackSend: ', result);
-        console.log('data calbackSend: ', data);
         if (result.length > 0){
             result = result[0];
-            result.callbackSend = data;
+            if (helper.splitHoursFromISODate(hoursFromISODate))
+                result.callbackSend = data;
+            else
+                result.callbackSend.concat(data);
+
             reportsRepo.updateReport(result, result._id);
         }
         else
