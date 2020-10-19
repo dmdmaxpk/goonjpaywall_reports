@@ -39,9 +39,9 @@ class Helper {
         dateString = new Date(dateString).getHours();
         console.log('dateString: ', dateString, typeof dateString);
         if (dateString > 0)
-            return true;
+            return false;
         else
-            return false
+            return true;
     }
 
     static computeNextDate(req, sDay, sMonth){
