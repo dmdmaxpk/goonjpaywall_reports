@@ -37,8 +37,11 @@ class Helper {
     static splitHoursFromISODate(dateString){
         console.log('splitHoursFromISODate: ', dateString, new Date(dateString));
         dateString = new Date(dateString).getHours();
-        console.log('dateString: ', dateString);
-        return (dateString > 0)
+        console.log('dateString: ', dateString, typeof dateString);
+        if (dateString > 0)
+            return true;
+        else
+            return false
     }
 
     static computeNextDate(req, sDay, sMonth){
