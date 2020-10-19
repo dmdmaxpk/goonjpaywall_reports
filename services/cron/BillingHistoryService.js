@@ -44,8 +44,8 @@ computeBillingHistoryReports = async(req, res) => {
         console.log('getChargeDetailsByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
 
         if (req.day <= helper.getDaysInMonth(month)){
-            console.logg('fetchedRecordsLength: ', fetchedRecordsLength);
-            console.logg('limitData: ', limitData);
+            console.log('fetchedRecordsLength: ', fetchedRecordsLength);
+            console.log('limitData: ', limitData);
             if (fetchedRecordsLength < limitData) {
                 console.logg('yes less: ', fetchedRecordsLength < limitData);
 
