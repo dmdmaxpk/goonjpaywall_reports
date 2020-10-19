@@ -29,24 +29,24 @@ computeBillingHistoryReports = async(req, res) => {
         console.log('result: ', result.length);
         fetchedRecordsLength = result.length;
 
+        // Compute net result and store in database
+        if (fetchedRecordsLength > 0){
+            computedData = computeBillingHistoryData(result);
+            pushDataInArray(computedData);
+            insertNewRecord(fromDate);
+        }
+
         // Get compute data for next time slot
         if (fetchedRecordsLength < limitData)
             req.day = Number(req.day) + 1;
 
-        console.log('getChargeDetailsByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
+        console.log('-> day : ', day, req.day, helper.getDaysInMonth(month));
 
         if (req.day <= helper.getDaysInMonth(month)){
             console.log('fetchedRecordsLength: ', fetchedRecordsLength);
             console.log('limitData: ', limitData);
             if (fetchedRecordsLength < limitData) {
-                console.log('yes less: ', fetchedRecordsLength < limitData);
-
-                // Compute net result and store in database
-                if (fetchedRecordsLength > 0){
-                    computedData = computeBillingHistoryData(result);
-                    pushDataInArray(computedData);
-                    insertNewRecord(fromDate);
-                }
+                console.log('Yes less: ', fetchedRecordsLength < limitData);
 
                 if (month < helper.getTodayMonthNo())
                     computeBillingHistoryReports(req, res);
@@ -54,25 +54,18 @@ computeBillingHistoryReports = async(req, res) => {
                     computeBillingHistoryReports(req, res);
             }
             else{
-                console.log('fetchedRecordsLength < limitData ELSE CASE->->->->->-> : ', fromDate);
-
+                console.log('Yes greater  - fromDate before: ', fromDate);
                 lastRecode = result[fetchedRecordsLength - 1];
                 fromDate = lastRecode.billing_dtm;
-                console.log('fetchedRecordsLength < limitData ELSE CASE->->->->->-> : ', fromDate);
+                console.log('Yes greater  - fromDate before: ', fromDate);
 
-                // Compute net result and store in database
-                if (fetchedRecordsLength > 0){
-                    computedData = computeBillingHistoryData(result);
-                    pushDataInArray(computedData);
-                    insertNewRecord(fromDate);
-                }
                 computeBillingHistoryReports(req, res);
             }
         }
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
+            console.log('-> month : ', month, req.month, new Date().getMonth());
             if (req.month <= helper.getTodayMonthNo())
                 computeBillingHistoryReports(req, res);
         }

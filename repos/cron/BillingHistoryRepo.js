@@ -2,10 +2,8 @@
 class BillingHistoryRepository {
     async getBillingHistoryByDateRange (req, from, to, limitData) {
         return new Promise((resolve, reject) => {
-            console.log('getBillingHistoryByDateRange: ', from, to);
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
-                    console.log('getBillingHistoryByDateRange: ', from, to);
                     collection.find({
                         $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
                     }, { allowDiskUse: true })
