@@ -16,7 +16,7 @@ computeBillingHistoryReports = async(req, res) => {
     * Script will execute to fetch data as per day
     * */
     if (fetchedRecordsLength === 0 || fetchedRecordsLength < dataLimit){
-        dateData = helper.computeNextDate(req, 29, 6);
+        dateData = helper.computeNextDate(req, 1, 7);
         req = dateData.req;
         day = dateData.day;
         month = dateData.month;
