@@ -8,6 +8,7 @@ class BillingHistoryRepository {
                     collection.find({
                         $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
                     }, { allowDiskUse: true })
+                    .sort({billing_dtm: 1})
                     .limit(config.cron_db_query_data_limit)
                     .toArray(function(err, items) {
                         if(err){
