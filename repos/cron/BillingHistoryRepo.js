@@ -1,4 +1,4 @@
-const config = require('../../config');
+const config = require('./../../config');
 class BillingHistoryRepository {
     async getBillingHistoryByDateRange (req, from, to) {
         return new Promise((resolve, reject) => {
