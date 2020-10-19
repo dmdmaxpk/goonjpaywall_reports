@@ -54,7 +54,7 @@ computeBillingHistoryReports = async(req, res) => {
             else{
                 console.log('Yes greater  - fromDate before: ', fromDate);
                 lastRecode = result[fetchedRecordsLength - 1];
-                fromDate = lastRecode.billing_dtm;
+                fromDate = _.clone(lastRecode.billing_dtm);
                 console.log('Yes greater  - fromDate after: ', fromDate);
 
                 computeBillingHistoryReports(req, res);
