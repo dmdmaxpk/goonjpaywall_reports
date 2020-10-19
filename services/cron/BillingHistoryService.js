@@ -28,11 +28,6 @@ computeBillingHistoryReports = async(req, res) => {
     billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, limitData).then(function (result) {
         console.log('result: ', result.length);
         fetchedRecordsLength = result.length;
-        if (fetchedRecordsLength > 0){
-            computedData = computeBillingHistoryData(result);
-            pushDataInArray(computedData);
-            insertNewRecord(fromDate);
-        }
 
         // Get compute data for next time slot
         if (fetchedRecordsLength < limitData)
@@ -46,6 +41,13 @@ computeBillingHistoryReports = async(req, res) => {
             if (fetchedRecordsLength < limitData) {
                 console.log('yes less: ', fetchedRecordsLength < limitData);
 
+                // Compute net result and store in database
+                if (fetchedRecordsLength > 0){
+                    computedData = computeBillingHistoryData(result);
+                    pushDataInArray(computedData);
+                    insertNewRecord(fromDate);
+                }
+
                 if (month < helper.getTodayMonthNo())
                     computeBillingHistoryReports(req, res);
                 else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
@@ -58,6 +60,12 @@ computeBillingHistoryReports = async(req, res) => {
                 fromDate = lastRecode.billing_dtm;
                 console.log('fetchedRecordsLength < limitData ELSE CASE->->->->->-> : ', fromDate);
 
+                // Compute net result and store in database
+                if (fetchedRecordsLength > 0){
+                    computedData = computeBillingHistoryData(result);
+                    pushDataInArray(computedData);
+                    insertNewRecord(fromDate);
+                }
                 computeBillingHistoryReports(req, res);
             }
         }
