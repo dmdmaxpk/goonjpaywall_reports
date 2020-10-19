@@ -7,7 +7,7 @@ const  _ = require('lodash');
 
 let billingHistory = [], returningUserList = [], fullAndPartialChargeList = [],
     sourceWiseUnSubList = [], sourceWiseTrail = [], uniquePayingUsers = [], successRate = [];
-let lastRecode, fetchedRecordsLength = 0;
+let lastRecode, fetchedRecordsLength = 0, dataLimit = config.cron_db_query_data_limit;
 let fromDate, toDate, day, month, computedData, hoursFromISODate;
 
 computeBillingHistoryReports = async(req, res) => {
@@ -15,9 +15,8 @@ computeBillingHistoryReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    if (fetchedRecordsLength === 0 || fetchedRecordsLength < config.cron_db_query_data_limit){
-        console.log('computeNextDate function');
-        dateData = helper.computeNextDate(req, 1, 6);
+    if (fetchedRecordsLength === 0 || fetchedRecordsLength < dataLimit){
+        dateData = helper.computeNextDate(req, 29, 6);
         req = dateData.req;
         day = dateData.day;
         month = dateData.month;
@@ -26,7 +25,7 @@ computeBillingHistoryReports = async(req, res) => {
     }
 
     console.log('computeBillingHistoryReports: ', fromDate, toDate);
-    billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, config.cron_db_query_data_limit).then(function (result) {
+    billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, dataLimit).then(function (result) {
         console.log('result: ', result.length);
         fetchedRecordsLength = result.length;
 
@@ -38,16 +37,14 @@ computeBillingHistoryReports = async(req, res) => {
         }
 
         // Get compute data for next time slot
-        if (fetchedRecordsLength < config.cron_db_query_data_limit)
+        if (fetchedRecordsLength < dataLimit)
             req.day = Number(req.day) + 1;
 
         console.log('-> day : ', day, req.day, helper.getDaysInMonth(month));
-
         if (req.day <= helper.getDaysInMonth(month)){
-            console.log('fetchedRecordsLength: ', fetchedRecordsLength);
-            console.log('config.cron_db_query_data_limit: ', config.cron_db_query_data_limit);
-            if (fetchedRecordsLength < config.cron_db_query_data_limit) {
-                console.log('Yes less: ', fetchedRecordsLength < config.cron_db_query_data_limit);
+            console.log('dataLimit - fetchedRecordsLength: ', dataLimit, fetchedRecordsLength);
+            if (fetchedRecordsLength < dataLimit) {
+                console.log('Yes less: ', fetchedRecordsLength < dataLimit);
 
                 if (month < helper.getTodayMonthNo())
                     computeBillingHistoryReports(req, res);
@@ -367,7 +364,6 @@ function insertNewRecord(dateString) {
             result = result[0];
 
             if (helper.splitHoursFromISODate(hoursFromISODate)){
-                console.log('insertNewRecord - if');
                 result.billingHistory = billingHistory;
                 result.returningUsers = returningUserList;
                 result.fullAndPartialChargeUser = fullAndPartialChargeList;
@@ -376,7 +372,6 @@ function insertNewRecord(dateString) {
                 result.uniquePayingUsers = uniquePayingUsers;
                 result.successRate = successRate;
             } else{
-                console.log('insertNewRecord - else');
                 result.billingHistory.concat(billingHistory);
                 result.returningUsers.concat(returningUserList);
                 result.fullAndPartialChargeUser.concat(fullAndPartialChargeList);

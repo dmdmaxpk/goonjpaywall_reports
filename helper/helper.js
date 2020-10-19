@@ -37,7 +37,7 @@ class Helper {
     static splitHoursFromISODate(dateString){
         console.log('splitHoursFromISODate: ', dateString, new Date(dateString));
         dateString = new Date(dateString).getHours();
-        console.log('dateString: ', dateString, typeof dateString);
+        console.log('dateString: ', dateString);
         if (dateString > 0)
             return false;
         else
