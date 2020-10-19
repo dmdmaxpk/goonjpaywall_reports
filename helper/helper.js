@@ -53,16 +53,12 @@ class Helper {
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
-        console.log('day : ', day, req.day);
-        console.log('month : ', month, req.month);
-
         fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
         toDate  = _.clone(fromDate);
         toDate.setHours(23);
         toDate.setMinutes(59);
         toDate.setSeconds(59);
 
-        console.log('computeNextDate: ', fromDate, toDate);
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }
 }

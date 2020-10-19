@@ -57,7 +57,7 @@ computeBillingHistoryReports = async(req, res) => {
                 console.log('Yes greater  - fromDate before: ', fromDate);
                 lastRecode = result[fetchedRecordsLength - 1];
                 fromDate = lastRecode.billing_dtm;
-                console.log('Yes greater  - fromDate before: ', fromDate);
+                console.log('Yes greater  - fromDate after: ', fromDate);
 
                 computeBillingHistoryReports(req, res);
             }
@@ -359,7 +359,7 @@ function computeBillingHistoryData(data) {
 }
 
 function insertNewRecord(dateString) {
-    hoursFromISODate = dateString;
+    hoursFromISODate = _.clone(dateString);
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0){
