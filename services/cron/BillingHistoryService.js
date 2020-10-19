@@ -10,8 +10,6 @@ let limitData = 400000, lastRecode, fetchedRecordsLength = 0;
 let fromDate, toDate, day, month, computedData, hoursFromISODate;
 
 computeBillingHistoryReports = async(req, res) => {
-    console.log('computeBillingHistoryReports');
-
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
@@ -32,7 +30,6 @@ computeBillingHistoryReports = async(req, res) => {
         fetchedRecordsLength = result.length;
         if (fetchedRecordsLength > 0){
             computedData = computeBillingHistoryData(result);
-            console.log('computedData: ', computedData);
             pushDataInArray(computedData);
             insertNewRecord(fromDate);
         }
@@ -47,7 +44,7 @@ computeBillingHistoryReports = async(req, res) => {
             console.log('fetchedRecordsLength: ', fetchedRecordsLength);
             console.log('limitData: ', limitData);
             if (fetchedRecordsLength < limitData) {
-                console.logg('yes less: ', fetchedRecordsLength < limitData);
+                console.log('yes less: ', fetchedRecordsLength < limitData);
 
                 if (month < helper.getTodayMonthNo())
                     computeBillingHistoryReports(req, res);
@@ -349,8 +346,6 @@ function computeBillingHistoryData(data) {
         }
     }
 
-    console.log('==============================================================');
-    console.log('successRateArr: ', successRateArr.length, successRateArr);
     return {
         billingHistory: billingHistoryArr,
         returningUserList: returningUserListArr,
@@ -365,16 +360,11 @@ function computeBillingHistoryData(data) {
 function insertNewRecord(dateString) {
     hoursFromISODate = dateString;
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
-    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
-    console.log('=>=>=>=>=>=>=> successRate', successRate);
-
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0){
             result = result[0];
 
             if (helper.splitHoursFromISODate(hoursFromISODate)){
-                console.log('=>=>=>=>=>=>=> splitHoursFromISODate - IF');
-
                 result.billingHistory = billingHistory;
                 result.returningUsers = returningUserList;
                 result.fullAndPartialChargeUser = fullAndPartialChargeList;
@@ -383,8 +373,6 @@ function insertNewRecord(dateString) {
                 result.uniquePayingUsers = uniquePayingUsers;
                 result.successRate = successRate;
             } else{
-                console.log('=>=>=>=>=>=>=> splitHoursFromISODate - ELSE');
-
                 result.billingHistory.concat(billingHistory);
                 result.returningUsers.concat(returningUserList);
                 result.fullAndPartialChargeUser.concat(fullAndPartialChargeList);
@@ -419,7 +407,6 @@ function resetDataArray() {
 }
 
 function pushDataInArray(computedData) {
-    console.log('pushDataInArray', );
     push(computedData.billingHistory, 'billingHistory');
     push(computedData.returningUserList, 'returningUserList');
     push(computedData.fullAndPartialChargeList, 'fullAndPartialChargeList');
@@ -427,19 +414,10 @@ function pushDataInArray(computedData) {
     push(computedData.sourceWiseTrail, 'sourceWiseTrail');
     push(computedData.uniquePayingUsers, 'uniquePayingUsers');
     push(computedData.successRate, 'successRate');
-
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-    console.log('successRate', successRate.length);
-
 }
 
 function push(data, type) {
-    console.log('push', type);
-    console.log('data', data);
-
     _.reduce(data , function(obj,d) {
-        console.log('type', type);
-
         if (type === 'billingHistory')
             billingHistory.push(d);
         else if (type === 'returningUserList')
