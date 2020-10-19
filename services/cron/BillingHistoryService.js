@@ -6,7 +6,7 @@ const  _ = require('lodash');
 
 let billingHistory = [], returningUserList = [], fullAndPartialChargeList = [],
     sourceWiseUnSubList = [], sourceWiseTrail = [], uniquePayingUsers = [], successRate = [];
-let limitData = 400000, lastRecode, fetchedRecordsLength = 0;
+let lastRecode, fetchedRecordsLength = 0;
 let fromDate, toDate, day, month, computedData, hoursFromISODate;
 
 computeBillingHistoryReports = async(req, res) => {
@@ -14,7 +14,7 @@ computeBillingHistoryReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    if (fetchedRecordsLength === 0 || fetchedRecordsLength < limitData){
+    if (fetchedRecordsLength === 0 || fetchedRecordsLength < config.cron_db_query_data_limit){
         console.log('computeNextDate function');
         dateData = helper.computeNextDate(req, 1, 6);
         req = dateData.req;
@@ -25,7 +25,7 @@ computeBillingHistoryReports = async(req, res) => {
     }
 
     console.log('computeBillingHistoryReports: ', fromDate, toDate);
-    billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, limitData).then(function (result) {
+    billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, config.cron_db_query_data_limit).then(function (result) {
         console.log('result: ', result.length);
         fetchedRecordsLength = result.length;
 
@@ -37,16 +37,16 @@ computeBillingHistoryReports = async(req, res) => {
         }
 
         // Get compute data for next time slot
-        if (fetchedRecordsLength < limitData)
+        if (fetchedRecordsLength < config.cron_db_query_data_limit)
             req.day = Number(req.day) + 1;
 
         console.log('-> day : ', day, req.day, helper.getDaysInMonth(month));
 
         if (req.day <= helper.getDaysInMonth(month)){
             console.log('fetchedRecordsLength: ', fetchedRecordsLength);
-            console.log('limitData: ', limitData);
-            if (fetchedRecordsLength < limitData) {
-                console.log('Yes less: ', fetchedRecordsLength < limitData);
+            console.log('config.cron_db_query_data_limit: ', config.cron_db_query_data_limit);
+            if (fetchedRecordsLength < config.cron_db_query_data_limit) {
+                console.log('Yes less: ', fetchedRecordsLength < config.cron_db_query_data_limit);
 
                 if (month < helper.getTodayMonthNo())
                     computeBillingHistoryReports(req, res);

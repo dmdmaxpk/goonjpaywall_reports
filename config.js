@@ -1,5 +1,6 @@
 const env = process.env.NODE_ENV || 'development';
 
+let cron_db_query_data_limit = 400000;
 let config = {
     development: {
         port: '3006',
@@ -7,7 +8,8 @@ let config = {
             logger: 'mongodb://localhost:27017',
             goonjpaywall: 'mongodb://localhost:27017',
             goonj_paywall_reports: 'mongodb://localhost:27017/goonj_paywall_reports'
-        }
+        },
+        cron_db_query_data_limit: cron_db_query_data_limit
     },
     staging: {
         port: '3006',
@@ -15,11 +17,13 @@ let config = {
             logger: 'mongodb://mongodb:27017',
             goonjpaywall: 'mongodb://mongodb:27017',
             goonj_paywall_reports: 'mongodb://mongodb:27017/goonj_paywall_reports'
-        }
+        },
+        cron_db_query_data_limit: cron_db_query_data_limit
     },
     production: {
         port: process.env.PW_PORT,
-        mongoDB: process.env.PW_MONGO_DB_URL
+        mongoDB: process.env.PW_MONGO_DB_URL,
+        cron_db_query_data_limit: cron_db_query_data_limit
     }
 };
 
