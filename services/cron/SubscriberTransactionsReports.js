@@ -23,7 +23,7 @@ computeSubscriberTransactionsReports = async(req, res) => {
 
     console.log('computeSubscriberTransactionsReports: ', fromDate, toDate);
     billingHistoryRepo.getSubscriberTransactionsByDateRange(req, fromDate, toDate).then(function (transactions) {
-        console.log('transactions: ', transactions);
+        console.log('transactions: ', transactions.length);
 
         if (transactions.length > 0){
             finalList = computeTransactionsData(transactions);
@@ -176,16 +176,17 @@ function insertNewRecord(data, fromHours, dateString) {
             result = result[0];
             if (fromHours === 00 || fromHours === '00')
                 result.transactions = data;
-            else
-                result.transactions.concat(data);
+            else{
+                if (result.transactions)
+                    result.transactions.concat(data);
+                else
+                    result.transactions = data;
+            }
 
             subscriberReportsRepo.updateReport(result, result._id);
         }
-        else{
-
-            console.log('data:' , data);
+        else
             subscriberReportsRepo.createReport({transactions: data, date: dateString});
-        }
     });
 }
 

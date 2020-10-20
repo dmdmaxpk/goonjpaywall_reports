@@ -23,7 +23,7 @@ computeSubscriberSubscriptionsReports = async(req, res) => {
 
     console.log('computeSubscriberSubscriptionsReports: ', fromDate, toDate);
     subscriptionRepository.getSubscriberSubscriptionsByDateRange(req, fromDate, toDate).then(function (subscriptions) {
-        console.log('subscriptions: ', subscriptions);
+        console.log('subscriptions: ', subscriptions.length);
 
         if (subscriptions.length > 0){
             finalList = computeSubscriptionsData(subscriptions);
