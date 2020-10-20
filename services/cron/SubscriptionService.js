@@ -63,29 +63,29 @@ computeSubscriptionReports = async(req, res) => {
                     }
                 });
             }
+        }
 
-            console.log('============================');
+        console.log('============================');
 
-            // Get compute data for next time slot
-            req.day = Number(req.day) + 1;
-            console.log('computeSubscriptionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        // Get compute data for next time slot
+        req.day = Number(req.day) + 1;
+        console.log('computeSubscriptionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-            if (req.day <= helper.getDaysInMonth(month)){
-                console.log('IF');
-                if (month < helper.getTodayMonthNo())
-                    computeSubscriptionReports(req, res);
-                else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                    computeSubscriptionReports(req, res);
-            }
-            else{
-                console.log('ELSE');
-                req.day = 1;
-                req.month = Number(req.month) + 1;
-                console.log('computeSubscriptionReports -> month : ', month, req.month, new Date().getMonth());
+        if (req.day <= helper.getDaysInMonth(month)){
+            console.log('IF');
+            if (month < helper.getTodayMonthNo())
+                computeSubscriptionReports(req, res);
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+                computeSubscriptionReports(req, res);
+        }
+        else{
+            console.log('ELSE');
+            req.day = 1;
+            req.month = Number(req.month) + 1;
+            console.log('computeSubscriptionReports -> month : ', month, req.month, new Date().getMonth());
 
-                if (req.month <= helper.getTodayMonthNo())
-                    computeSubscriptionReports(req, res);
-            }
+            if (req.month <= helper.getTodayMonthNo())
+                computeSubscriptionReports(req, res);
         }
     });
 };
