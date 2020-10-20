@@ -2,11 +2,13 @@ const container = require("../../configurations/container");
 const reportsRepo = require('../../repos/apis/ReportsRepo');
 const subscriptionRepo = container.resolve('subscriptionRepository');
 const helper = require('../../helper/helper');
+const config = require('../../config');
 const  _ = require('lodash');
 
+let fromDate, toDate, day, month, chargeDetailList = [], transactingSubsList = [];
+let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeChargeDetailsReports = async(req, res) => {
     console.log('computeChargeDetailsReports');
-    let fromDate, toDate, day, month, chargeDetailList = [], transactingSubsList = [];
 
     /*
     * Compute date and time for data fetching from db
@@ -19,21 +21,56 @@ computeChargeDetailsReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    console.log('computeChargeDetailsReports: ', fromDate, toDate);
-    subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate).then(function (chargeDetails) {
-        console.log('chargeDetails: ', chargeDetails.length);
+    /*
+    * Get total count from db
+    * */
+    helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(function (totalCount) {
+        computeChunks = helper.getChunks(totalCount);
+        totalChunks = computeChunks.chunks;
+        lastLimit = computeChunks.lastChunkCount;
+        let skip = 0;
 
-        if (chargeDetails.length > 0){
-            finalData = computeChargeDetailData(chargeDetails);
-            transactingSubsList = finalData.transactingSubsList;
-            chargeDetailList = finalData.chargeDetailList;
+        //Loop over no.of chunks
+        for (i = 0 ; i < totalChunks; i++){
+            subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, limit).then(function (chargeDetails) {
+                console.log('chargeDetails: ', chargeDetails.length);
 
-            console.log('chargeDetailList.length : ', chargeDetailList.length, chargeDetailList);
-            console.log('transactingSubsList.length : ', transactingSubsList.length, transactingSubsList);
-            insertNewRecord(transactingSubsList, chargeDetailList, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                //set skip variable to limit data
+                skip = skip + limit;
+
+                // Now compute and store data in DB
+                if (chargeDetails.length > 0){
+                    finalData = computeChargeDetailData(chargeDetails);
+                    transactingSubsList = finalData.transactingSubsList;
+                    chargeDetailList = finalData.chargeDetailList;
+
+                    console.log('chargeDetailList.length : ', chargeDetailList.length, chargeDetailList);
+                    console.log('transactingSubsList.length : ', transactingSubsList.length, transactingSubsList);
+                    insertNewRecord(transactingSubsList, chargeDetailList, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                }
+            });
         }
 
-        // Get compute data for next time slot
+
+        // fetch last chunk Data from DB
+        if (lastLimit > 0){
+            subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, lastLimit).then(function (chargeDetails) {
+                console.log('chargeDetails: ', chargeDetails.length);
+
+                if (chargeDetails.length > 0){
+                    finalData = computeChargeDetailData(chargeDetails);
+                    transactingSubsList = finalData.transactingSubsList;
+                    chargeDetailList = finalData.chargeDetailList;
+
+                    console.log('chargeDetailList.length : ', chargeDetailList.length, chargeDetailList);
+                    console.log('transactingSubsList.length : ', transactingSubsList.length, transactingSubsList);
+                    insertNewRecord(transactingSubsList, chargeDetailList, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                }
+            });
+        }
+
+
+        // Recurring - get and compute data for next day - time slot
         req.day = Number(req.day) + 1;
         console.log('getChargeDetailsByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
 

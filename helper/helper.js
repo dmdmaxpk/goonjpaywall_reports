@@ -1,4 +1,4 @@
-
+const config = require('../config');
 const  _ = require('lodash');
 
 //Helper class - define all basic functions
@@ -63,6 +63,65 @@ class Helper {
         toDate.setSeconds(59);
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
+    }
+
+    static computeNextEightHoursDate(req, sDay, sMonth){
+
+        let fromDate, toDate, day, month, fromHours, toHours;
+
+        day = req.day ? req.day : sDay;
+        day = day > 9 ? day : '0'+Number(day);
+        req.day = day;
+
+        month = req.month ? req.month : sMonth;
+        month = month > 9 ? month : '0'+Number(month);
+        req.month = month;
+
+        fromHours = req.fromHours ? req.fromHours : 0;
+        fromHours = fromHours > 9 ? fromHours : '0'+Number(fromHours);
+        req.fromHours = fromHours;
+
+        toHours = req.toHours ? req.toHours : 7;
+        toHours = toHours > 9 ? toHours : '0'+Number(toHours);
+        req.toHours = toHours;
+
+        console.log('day : ', day, req.day);
+        console.log('month : ', month, req.month);
+        console.log('fromHours : ', fromHours, req.fromHours);
+        console.log('toHours : ', toHours, req.toHours);
+
+        fromDate  = new Date('2020-'+month+'-'+day+'T'+(fromHours)+':00:00.000Z');
+        toDate  = _.clone(fromDate);
+        toDate.setHours(toHours);
+        toDate.setMinutes(59);
+        toDate.setSeconds(59);
+
+        return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate, fromHours: fromHours, toHours: toHours};
+    }
+
+    static getChunks(totalCount){
+        let chunks, lastChunkCount;
+
+        chunks = totalCount / config.cron_db_query_data_limit;
+        lastChunkCount = totalCount % config.cron_db_query_data_limit;
+
+        return {chunks: chunks, lastChunkCount: lastChunkCount}
+    }
+
+    static async getTotalCount (req, from, to, collectionName) {
+        return new Promise((resolve, reject) => {
+            req.db.collection(collectionName, function (err, collection) {
+                if (!err) {
+                    let dtm = (collectionName === 'bilinghistories') ? 'billing_dtm' : 'added_dtm';
+                    collection.countDocuments({
+                        $and:[
+                            {dtm:{$gte:new Date(from)}},
+                            {dtm:{$lte:new Date(to)}}
+                            ]
+                    })
+                }
+            });
+        });
     }
 }
 

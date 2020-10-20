@@ -4,20 +4,22 @@ const subscriptionRepository = container.resolve('subscriptionRepository');
 const helper = require('../../helper/helper');
 const  _ = require('lodash');
 
+let fromHours, toHours, fromDate, toDate, day, month, finalList = [];
 computeSubscriberSubscriptionsReports = async(req, res) => {
     console.log('computeSubscriberSubscriptionsReports: ');
-    let fromDate, toDate, day, month, finalList = [];
 
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 1, 2);
+    dateData = helper.computeNextEightHoursDate(req, 1, 2);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
+    fromHours = dateData.fromHours;
+    toHours = dateData.toHours;
 
     console.log('computeSubscriberSubscriptionsReports: ', fromDate, toDate);
     subscriptionRepository.getSubscriberSubscriptionsByDateRange(req, fromDate, toDate).then(function (subscriptions) {
@@ -31,23 +33,37 @@ computeSubscriberSubscriptionsReports = async(req, res) => {
                 insertNewRecord(finalList, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
-        // Get compute data for next time slot
-        req.day = Number(req.day) + 1;
-        console.log('computeSubscriberSubscriptionsReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        if (Number(req.toHours) < 23) {
+            console.log('Number(req.toHours) if: ', Number(req.toHours));
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
-                computeSubscriberSubscriptionsReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeSubscriberSubscriptionsReports(req, res);
+            //increment in hours ('from' to 'to') for next data-chunk
+            req.fromHours = Number(req.fromHours) + 8;
+            req.toHours = Number(req.toHours) + 8;
+
+            // Compute Data for next data-chuck
+            computeSubscriberTransactionsReports(req, res);
         }
         else{
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('computeSubscriberSubscriptionsReports -> month : ', month, req.month, new Date().getMonth());
+            // Get compute data for next time slot
+            req.day = Number(req.day) + 1;
+            console.log('computeSubscriberSubscriptionsReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-            if (req.month <= helper.getTodayMonthNo())
-                computeSubscriberSubscriptionsReports(req, res);
+            if (req.day <= helper.getDaysInMonth(month)){
+                if (month < helper.getTodayMonthNo())
+                    computeSubscriberSubscriptionsReports(req, res);
+                else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+                    computeSubscriberSubscriptionsReports(req, res);
+            }
+            else{
+                req.day = 1;
+                req.month = Number(req.month) + 1;
+                req.fromHours = 0; req.toHours = 7;
+
+                console.log('computeSubscriberSubscriptionsReports -> month : ', month, req.month, new Date().getMonth());
+
+                if (req.month <= helper.getTodayMonthNo())
+                    computeSubscriberSubscriptionsReports(req, res);
+            }
         }
     });
 };
@@ -145,7 +161,10 @@ function insertNewRecord(data, dateString) {
         console.log('result subscriptions: ', result);
         if (result.length > 0) {
             result = result[0];
-            result.subscriptions = data;
+            if (fromHours === 00 || fromHours === '00')
+                result.subscriptions = data;
+            else
+                result.subscriptions.concat(data);
 
             subscriberReportsRepo.updateReport(result, result._id);
         }

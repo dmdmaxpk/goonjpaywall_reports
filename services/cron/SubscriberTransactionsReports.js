@@ -4,20 +4,22 @@ const billingHistoryRepo = container.resolve('billingHistoryRepository');
 const helper = require('../../helper/helper');
 const  _ = require('lodash');
 
+let fromHours, toHours, fromDate, toDate, day, month, finalList = [];
 computeSubscriberTransactionsReports = async(req, res) => {
     console.log('computeSubscriberTransactionsReports: ');
-    let fromDate, toDate, day, month, finalList = [];
 
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 1, 2);
+    dateData = helper.computeNextEightHoursDate(req, 1, 2);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
+    fromHours = dateData.fromHours;
+    toHours = dateData.toHours;
 
     console.log('computeSubscriberTransactionsReports: ', fromDate, toDate);
     billingHistoryRepo.getSubscriberTransactionsByDateRange(req, fromDate, toDate).then(function (transactions) {
@@ -28,26 +30,39 @@ computeSubscriberTransactionsReports = async(req, res) => {
 
             console.log('finalList.length : ', finalList.length);
             if (finalList.length > 0)
-                insertNewRecord(finalList, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                insertNewRecord(finalList, fromHours, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
-        // Get compute data for next time slot
-        req.day = Number(req.day) + 1;
-        console.log('computeSubscriberTransactionsReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        if (Number(req.toHours) < 23) {
+            console.log('Number(req.toHours) if: ', Number(req.toHours));
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
-                computeSubscriberTransactionsReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeSubscriberTransactionsReports(req, res);
+            //increment in hours ('from' to 'to') for next data-chunk
+            req.fromHours = Number(req.fromHours) + 8;
+            req.toHours = Number(req.toHours) + 8;
+
+            // Compute Data for next data-chuck
+            computeSubscriberTransactionsReports(req, res);
         }
         else{
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('computeSubscriberTransactionsReports -> month : ', month, req.month, new Date().getMonth());
+            // Get compute data for next time slot
+            req.day = Number(req.day) + 1;
+            console.log('computeSubscriberTransactionsReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-            if (req.month <= helper.getTodayMonthNo())
-                computeSubscriberTransactionsReports(req, res);
+            if (req.day <= helper.getDaysInMonth(month)){
+                if (month < helper.getTodayMonthNo())
+                    computeSubscriberTransactionsReports(req, res);
+                else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+                    computeSubscriberTransactionsReports(req, res);
+            }
+            else{
+                req.day = 1;
+                req.month = Number(req.month) + 1;
+                req.fromHours = 0; req.toHours = 7;
+                console.log('computeSubscriberTransactionsReports -> month : ', month, req.month, new Date().getMonth());
+
+                if (req.month <= helper.getTodayMonthNo())
+                    computeSubscriberTransactionsReports(req, res);
+            }
         }
     });
 };
@@ -153,13 +168,17 @@ function computeTransactionsData(transactionsRawData) {
     return finalList;
 }
 
-function insertNewRecord(data, dateString) {
-    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
+function insertNewRecord(data, fromHours, dateString) {
+    console.log('=>=>=>=>=>=>=> insertNewRecord');
+    console.log('=>=>=>=>=>=>=> fromHours', fromHours, ', dateString: ', dateString);
     subscriberReportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         console.log('result transaction: ', result);
         if (result.length > 0) {
             result = result[0];
-            result.transactions = data;
+            if (fromHours === 00 || fromHours === '00')
+                result.transactions = data;
+            else
+                result.transactions.concat(data);
 
             subscriberReportsRepo.updateReport(result, result._id);
         }

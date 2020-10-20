@@ -4,9 +4,10 @@ const subscriptionRepo = container.resolve('subscriptionRepository');
 const helper = require('../../helper/helper');
 const  _ = require('lodash');
 
+let fromDate, toDate, day, month, finalData, finalList = [], subscribersFinalList = [];
+let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeSubscriptionReports = async(req, res) => {
     console.log('computeSubscriptionReports');
-    let fromDate, toDate, day, month, finalData, finalList = [], subscribersFinalList = [];
 
     /*
     * Compute date and time for data fetching from db
@@ -19,18 +20,49 @@ computeSubscriptionReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    console.log('computeSubscriptionReports: ', fromDate, toDate);
-    subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate).then(function (subscriptions) {
-        console.log('subscriptions: ', subscriptions.length);
+    helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(function (totalCount) {
+        computeChunks = helper.getChunks(totalCount);
+        totalChunks = computeChunks.chunks;
+        lastLimit = computeChunks.lastChunkCount;
+        let skip = 0;
 
-        if (subscriptions.length > 0){
-            finalData = computeSubscriberData(subscriptions);
-            finalList = finalData.finalList;
-            subscribersFinalList = finalData.subscribersFinalList;
-            console.log('finalList.length : ', finalList.length, finalList);
-            console.log('subscribersFinalList.length : ', subscribersFinalList.length, subscribersFinalList);
-            if (finalList.length > 0 || subscribersFinalList.length > 0)
-                insertNewRecord(finalList, subscribersFinalList,  new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+        //Loop over no.of chunks
+        for (i = 0 ; i < totalChunks; i++){
+            subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, limit).then(function (subscriptions) {
+                console.log('subscriptions: ', subscriptions.length);
+
+                //set skip variable to limit data
+                skip = skip + limit;
+
+                // Now compute and store data in DB
+                if (subscriptions.length > 0){
+                    finalData = computeSubscriptionsData(subscriptions);
+                    finalList = finalData.finalList;
+                    subscribersFinalList = finalData.subscribersFinalList;
+                    console.log('finalList.length : ', finalList.length, finalList);
+                    console.log('subscribersFinalList.length : ', subscribersFinalList.length, subscribersFinalList);
+                    if (finalList.length > 0 || subscribersFinalList.length > 0)
+                        insertNewRecord(finalList, subscribersFinalList,  new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                }
+            });
+        }
+
+        // fetch last chunk Data from DB
+        if (lastLimit > 0){
+            subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, lastLimit).then(function (subscriptions) {
+                console.log('subscriptions: ', subscriptions.length);
+
+                // Now compute and store data in DB
+                if (subscriptions.length > 0){
+                    finalData = computeSubscriptionsData(subscriptions);
+                    finalList = finalData.finalList;
+                    subscribersFinalList = finalData.subscribersFinalList;
+                    console.log('finalList.length : ', finalList.length, finalList);
+                    console.log('subscribersFinalList.length : ', subscribersFinalList.length, subscribersFinalList);
+                    if (finalList.length > 0 || subscribersFinalList.length > 0)
+                        insertNewRecord(finalList, subscribersFinalList,  new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                }
+            });
         }
 
         // Get compute data for next time slot
@@ -54,7 +86,7 @@ computeSubscriptionReports = async(req, res) => {
     });
 };
 
-function computeSubscriberData(subscriptions) {
+function computeSubscriptionsData(subscriptions) {
 
     let dateInMili, outer_added_dtm, inner_added_dtm, newObj, outerObj, innerObj, subscriberObj, finalList = [], subscribersFinalList = [];
     for (let j=0; j < subscriptions.length; j++) {

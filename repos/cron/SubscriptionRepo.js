@@ -1,14 +1,14 @@
 const config = require('../../config');
 
 class SubscriptionRepository {
-    async getSubscriptionsByDateRange (req, from, to) {
+    async getSubscriptionsByDateRange (req, from, to, skip, limit) {
         return new Promise((resolve, reject) => {
-            console.log('getSubscriptionsByDateRange: ', from, to);
+            console.log('getSubscriptionsByDateRange: ', from, to, skip, limit);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
                     collection.find({
                         $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
-                    }).toArray(function(err, items) {
+                    }).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
                             console.log('getSubscriptionsByDateRange - err: ', err.message);
                             resolve([]);
@@ -105,9 +105,9 @@ class SubscriptionRepository {
         });
     }
 
-    async getChargeDetailsByDateRange (req, from, to){
+    async getChargeDetailsByDateRange (req, from, to, skip, limit){
         return new Promise((resolve, reject) => {
-            console.log('getChargeDetailsByDateRange: ', from, to);
+            console.log('getChargeDetailsByDateRange: ', from, to, skip, limit);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
                     collection.aggregate( [
@@ -164,7 +164,7 @@ class SubscriptionRepository {
                                 billing_dtm: "$billing_dtm",
                             }
                         },
-                    ]).toArray(function(err, items) {
+                    ]).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
                             console.log('getChargeDetailsByDateRange - err: ', err.message);
                             resolve([]);
