@@ -21,7 +21,7 @@ computeSubscriptionReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
+    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
         if (totalCount > 0){
             computeChunks = helper.getChunks(totalCount);
             totalChunks = computeChunks.chunks;
@@ -30,8 +30,8 @@ computeSubscriptionReports = async(req, res) => {
 
             //Loop over no.of chunks
             for (i = 0 ; i < totalChunks; i++){
-                subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, limit).then(async function (subscriptions) {
-                    console.log('subscriptions: ', subscriptions.length);
+                await subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, limit).then(async function (subscriptions) {
+                    console.log('subscriptions 1: ', subscriptions.length);
 
                     //set skip variable to limit data
                     skip = skip + limit;
@@ -49,8 +49,8 @@ computeSubscriptionReports = async(req, res) => {
 
             // fetch last chunk Data from DB
             if (lastLimit > 0){
-                subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (subscriptions) {
-                    console.log('subscriptions: ', subscriptions.length);
+                await subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (subscriptions) {
+                    console.log('subscriptions 2: ', subscriptions.length);
 
                     // Now compute and store data in DB
                     if (subscriptions.length > 0){
@@ -62,6 +62,8 @@ computeSubscriptionReports = async(req, res) => {
                     }
                 });
             }
+
+            console.log('============================');
 
             // Get compute data for next time slot
             req.day = Number(req.day) + 1;
