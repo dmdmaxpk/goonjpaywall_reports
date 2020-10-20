@@ -110,8 +110,12 @@ class Helper {
 
     static async getTotalCount (req, from, to, collectionName) {
         return new Promise((resolve, reject) => {
-            let dtm = (collectionName === 'billinghistories') ? 'billing_dtm' : 'added_dtm';
-            let condition = [ {dtm:{$gte:new Date("2020-07-17T00:00:00.000Z")}}, {dtm:{$lte:new Date("2020-07-17T23:59:59.000Z")}} ];
+            let condition;
+            if (collectionName === 'billinghistories')
+                condition = [ {billing_dtm:{$gte:new Date("2020-07-17T00:00:00.000Z")}}, {billing_dtm:{$lte:new Date("2020-07-17T23:59:59.000Z")}} ];
+            else
+                condition = [ {added_dtm:{$gte:new Date("2020-07-17T00:00:00.000Z")}}, {added_dtm:{$lte:new Date("2020-07-17T23:59:59.000Z")}} ];
+
             console.log('condition: ', condition);
 
             req.db.collection(collectionName, async function (err, collection) {
