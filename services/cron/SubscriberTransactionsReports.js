@@ -172,7 +172,6 @@ function insertNewRecord(data, fromHours, dateString) {
     console.log('=>=>=>=>=>=>=> insertNewRecord');
     console.log('=>=>=>=>=>=>=> fromHours', fromHours, ', dateString: ', dateString);
     subscriberReportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
-        console.log('result transaction: ', result);
         if (result.length > 0) {
             result = result[0];
             if (fromHours === 00 || fromHours === '00')
