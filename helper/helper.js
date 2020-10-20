@@ -118,10 +118,12 @@ class Helper {
                 if (!err) {
                     let dtm = (collectionName === 'billinghistories') ? 'billing_dtm' : 'added_dtm';
                     console.log('dtm: ', dtm);
-                    console.log('collection: ', collection);
+                    console.log('collection: ', collection.countDocuments({
+                        $and:[ {dtm:{$gte:new Date("2020-07-17T00:00:00.000Z")}}, {dtm:{$lte:new Date("2020-07-17T23:59:59.000Z")}} ]
+                    }));
 
                     let documentCount = await collection.countDocuments({
-                        $and:[ {dtm:{$gte:new Date("2020-07-17T00:00:00.000Z")}}, {dtm:{$lte:new Date("2020-07-17T23:59:59.000Z")}} ]
+                        $and:[ {added_dtm:{$gte:new Date("2020-07-17T00:00:00.000Z")}}, {added_dtm:{$lte:new Date("2020-07-17T23:59:59.000Z")}} ]
                     });
 
                     console.log('documentCount: ', documentCount);
