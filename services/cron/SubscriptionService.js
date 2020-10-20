@@ -21,6 +21,7 @@ computeSubscriptionReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
+    console.log('fromDate: ', fromDate, toDate);
     await helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
         if (totalCount > 0){
             computeChunks = helper.getChunks(totalCount);
