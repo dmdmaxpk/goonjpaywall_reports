@@ -218,13 +218,13 @@ function insertNewRecord(finalList, subscribersFinalList, dateString) {
                 }
             }
 
-            console.log('result: ', result);
-            reportsRepo.updateReport(result, result._id);
+            console.log('result: ');
+            // reportsRepo.updateReport(result, result._id);
         }
         else{
             let subscribers = {activeInActive: ''};
             subscribers.activeInActive = subscribersFinalList;
-            reportsRepo.createReport({subscriptions: finalList, subscribers: subscribers, date: dateString});
+            // reportsRepo.createReport({subscriptions: finalList, subscribers: subscribers, date: dateString});
         }
     });
 }
