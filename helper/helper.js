@@ -117,18 +117,10 @@ class Helper {
                 if (!err) {
                     let dtm = (collectionName === 'billinghistories') ? 'billing_dtm' : 'added_dtm';
                     console.log('dtm: ', dtm);
-                    collection.countDocuments({
-                        $and:[
-                            {dtm:{$gte:new Date(from)}},
-                            {dtm:{$lte:new Date(to)}}
-                            ]
-                    }).toArray(function(err, items) {
-                        if(err){
-                            console.log('Collection name ', collectionName, ' - err: ', err.message);
-                            resolve(0);
-                        }
-                        resolve(items);
-                    });
+                    resolve(collection.countDocuments({
+                            $and:[ {dtm:{$gte:new Date(from)}}, {dtm:{$lte:new Date(to)}} ]
+                        })
+                    )
                 }
             });
         });
