@@ -21,7 +21,7 @@ computeSubscriptionReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(function (totalCount) {
+    helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
         if (totalCount > 0){
             computeChunks = helper.getChunks(totalCount);
             totalChunks = computeChunks.chunks;
@@ -83,11 +83,6 @@ computeSubscriptionReports = async(req, res) => {
                 if (req.month <= helper.getTodayMonthNo())
                     computeSubscriptionReports(req, res);
             }
-
-
-            console.log('out');
-            console.log('req.day: ', req.day);
-            console.log('req.month: ', req.month);
         }
     });
 };
