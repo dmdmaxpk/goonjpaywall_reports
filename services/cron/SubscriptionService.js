@@ -41,10 +41,8 @@ computeSubscriptionReports = async(req, res) => {
                         finalData = computeSubscriptionsData(subscriptions);
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
-                        console.log('finalList.length : ', finalList.length, finalList);
-                        console.log('subscribersFinalList.length : ', subscribersFinalList.length, subscribersFinalList);
                         if (finalList.length > 0 || subscribersFinalList.length > 0)
-                            insertNewRecord(finalList, subscribersFinalList,  new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                            insertNewRecord(finalList, subscribersFinalList, fromDate);
                     }
                 });
             }
@@ -59,10 +57,8 @@ computeSubscriptionReports = async(req, res) => {
                         finalData = computeSubscriptionsData(subscriptions);
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
-                        console.log('finalList.length : ', finalList.length, finalList);
-                        console.log('subscribersFinalList.length : ', subscribersFinalList.length, subscribersFinalList);
                         if (finalList.length > 0 || subscribersFinalList.length > 0)
-                            insertNewRecord(finalList, subscribersFinalList,  new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                            insertNewRecord(finalList, subscribersFinalList, fromDate);
                     }
                 });
             }
@@ -188,6 +184,7 @@ function computeSubscriptionsData(subscriptions) {
 
 function insertNewRecord(finalList, subscribersFinalList, dateString) {
     hoursFromISODate = _.clone(dateString);
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
