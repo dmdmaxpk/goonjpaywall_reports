@@ -192,7 +192,7 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString) {
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
-    await reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
+    await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0){
             result = result[0];
 
@@ -217,12 +217,12 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString) {
             }
 
             console.log('result: ');
-            // reportsRepo.updateReport(result, result._id);
+            await reportsRepo.updateReport(result, result._id);
         }
         else{
             let subscribers = {activeInActive: ''};
             subscribers.activeInActive = subscribersFinalList;
-            // reportsRepo.createReport({subscriptions: finalList, subscribers: subscribers, date: dateString});
+            await reportsRepo.createReport({subscriptions: finalList, subscribers: subscribers, date: dateString});
         }
     });
 }
