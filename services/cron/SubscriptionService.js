@@ -22,10 +22,13 @@ computeSubscriptionReports = async(req, res) => {
     toDate = dateData.toDate;
 
     helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(function (totalCount) {
+        console.log('totalCount', totalCount);
         computeChunks = helper.getChunks(totalCount);
         totalChunks = computeChunks.chunks;
         lastLimit = computeChunks.lastChunkCount;
         let skip = 0;
+
+        console.log('computeChunks', computeChunks);
 
         //Loop over no.of chunks
         for (i = 0 ; i < totalChunks; i++){

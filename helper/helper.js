@@ -113,6 +113,7 @@ class Helper {
             req.db.collection(collectionName, function (err, collection) {
                 if (!err) {
                     let dtm = (collectionName === 'bilinghistories') ? 'billing_dtm' : 'added_dtm';
+                    console.log('dtm: ', dtm);
                     collection.countDocuments({
                         $and:[
                             {dtm:{$gte:new Date(from)}},
