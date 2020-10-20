@@ -1,5 +1,7 @@
 const container = require("../../configurations/container");
 const subscriberReportsRepo = require('../../repos/apis/SubscriberReportsRepo');
+const reportsRepo = require('../../repos/apis/ReportsRepo');
+
 const subscriptionRepository = container.resolve('subscriptionRepository');
 const helper = require('../../helper/helper');
 const  _ = require('lodash');
@@ -157,7 +159,7 @@ function computeSubscriptionsData(subscriptionsRawData) {
 
 function insertNewRecord(data, fromHours, dateString) {
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
-    subscriberReportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
+    reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0) {
             result = result[0];
             if (fromHours === 00 || fromHours === '00'){
@@ -176,12 +178,12 @@ function insertNewRecord(data, fromHours, dateString) {
                     result.subscribers.subscriptions = data;
                 }
             }
-            subscriberReportsRepo.updateReport(result, result._id);
+            reportsRepo.updateReport(result, result._id);
         }
         else{
             let subscribers = {subscriptions: ''};
             subscribers.subscriptions = data;
-            subscriberReportsRepo.createReport({subscribers: subscribers, date: dateString});
+            reportsRepo.createReport({subscribers: subscribers, date: dateString});
         }
     });
 }
