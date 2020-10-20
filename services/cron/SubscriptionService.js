@@ -2,6 +2,7 @@ const container = require("../../configurations/container");
 const reportsRepo = require('../../repos/apis/ReportsRepo');
 const subscriptionRepo = container.resolve('subscriptionRepository');
 const helper = require('../../helper/helper');
+const config = require('../../config');
 const  _ = require('lodash');
 
 let fromDate, toDate, day, month, finalData, finalList = [], subscribersFinalList = [];
