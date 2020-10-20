@@ -161,15 +161,29 @@ function insertNewRecord(data, fromHours, dateString) {
         console.log('result subscriptions: ', result);
         if (result.length > 0) {
             result = result[0];
-            if (fromHours === 00 || fromHours === '00')
-                result.subscriptions = data;
-            else
-                result.subscriptions.concat(data);
-
+            if (fromHours === 00 || fromHours === '00'){
+                if (result.subscribers)
+                    result.subscribers.subscriptions = data;
+                else{
+                    result.subscribers = {subscriptions: ''};
+                    result.subscribers.subscriptions = data;
+                }
+            }
+            else{
+                if (result.subscribers)
+                    result.subscribers.subscriptions.concat(data);
+                else{
+                    result.subscribers = {subscriptions: ''};
+                    result.subscribers.subscriptions = data;
+                }
+            }
             subscriberReportsRepo.updateReport(result, result._id);
         }
-        else
-            subscriberReportsRepo.createReport({subscriptions: data, date: dateString});
+        else{
+            let subscribers = {subscriptions: ''};
+            subscribers.subscriptions = data;
+            subscriberReportsRepo.createReport({subscribers: subscribers, date: dateString});
+        }
     });
 }
 
