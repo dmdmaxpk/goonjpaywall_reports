@@ -114,14 +114,14 @@ class Helper {
             console.log('from: ', from);
             console.log('to: ',  to);
 
-            req.db.collection(collectionName, function (err, collection) {
+            req.db.collection(collectionName, async function (err, collection) {
                 if (!err) {
                     let dtm = (collectionName === 'billinghistories') ? 'billing_dtm' : 'added_dtm';
                     console.log('dtm: ', dtm);
-                    resolve(collection.countDocuments({
-                            $and:[ {dtm:{$gte:new Date("2020-07-17T00:00:00.000Z")}}, {dtm:{$lte:new Date("2020-07-17T23:59:59.000Z")}} ]
-                        })
-                    )
+
+                    resolve( await collection.countDocuments({
+                        $and:[ {dtm:{$gte:new Date("2020-07-17T00:00:00.000Z")}}, {dtm:{$lte:new Date("2020-07-17T23:59:59.000Z")}} ]
+                    }))
                 }
             });
         });
