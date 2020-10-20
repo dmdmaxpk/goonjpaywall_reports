@@ -30,7 +30,7 @@ computeSubscriberSubscriptionsReports = async(req, res) => {
 
             console.log('finalList.length : ', finalList.length);
             if (finalList.length > 0)
-                insertNewRecord(finalList, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                insertNewRecord(finalList, fromHours, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         if (Number(req.toHours) < 23) {
@@ -155,7 +155,7 @@ function computeSubscriptionsData(subscriptionsRawData) {
     return finalList;
 }
 
-function insertNewRecord(data, dateString) {
+function insertNewRecord(data, fromHours, dateString) {
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
     subscriberReportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         console.log('result subscriptions: ', result);

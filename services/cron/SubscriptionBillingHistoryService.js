@@ -5,7 +5,7 @@ const helper = require('../../helper/helper');
 const config = require('../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, chargeDetailList = [], transactingSubsList = [];
+let fromDate, toDate, day, month, hoursFromISODate, chargeDetailList = [], transactingSubsList = [];
 let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeChargeDetailsReports = async(req, res) => {
     console.log('computeChargeDetailsReports');
@@ -396,13 +396,20 @@ function computeChargeDetailData(chargeDetails) {
 }
 
 function insertNewRecord(transactingSubsList, chargeDetailList, dateString) {
+    hoursFromISODate = _.clone(dateString);
+
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         console.log('getReportByDateString - result : ', transactingSubsList, chargeDetailList);
         if (result.length > 0) {
             result = result[0];
-            result.chargeDetails = chargeDetailList;
-            result.transactions = transactingSubsList;
+            if (helper.splitHoursFromISODate(hoursFromISODate)) {
+                result.chargeDetails = chargeDetailList;
+                result.transactions = transactingSubsList;
+            }else{
+                result.chargeDetails.concat(chargeDetailList);
+                result.transactions.concat(transactingSubsList);
+            }
 
             reportsRepo.updateReport(result, result._id);
         }

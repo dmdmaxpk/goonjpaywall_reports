@@ -5,7 +5,7 @@ const helper = require('../../helper/helper');
 const config = require('../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, finalData, finalList = [], subscribersFinalList = [];
+let fromDate, toDate, day, month, finalData, hoursFromISODate, finalList = [], subscribersFinalList = [];
 let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeSubscriptionReports = async(req, res) => {
     console.log('computeSubscriptionReports');
@@ -187,20 +187,32 @@ function computeSubscriptionsData(subscriptions) {
 }
 
 function insertNewRecord(finalList, subscribersFinalList, dateString) {
+    hoursFromISODate = _.clone(dateString);
+
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
-        console.log('result subscriptions: ', result);
         if (result.length > 0){
             result = result[0];
-            result.subscriptions = finalList;
 
-            if (result.subscribers)
-                result.subscribers.activeInActive = subscribersFinalList;
-            else{
-                result.subscribers = {activeInActive: ''};
-                result.subscribers.activeInActive = subscribersFinalList;
+            if (helper.splitHoursFromISODate(hoursFromISODate)){
+                result.subscriptions = finalList;
+
+                if (result.subscribers)
+                    result.subscribers.activeInActive = subscribersFinalList;
+                else{
+                    result.subscribers = {activeInActive: ''};
+                    result.subscribers.activeInActive = subscribersFinalList;
+                }
+            }else{
+                result.subscriptions.concat(finalList);
+
+                if (result.subscribers)
+                    result.subscribers.activeInActive.concat(subscribersFinalList);
+                else{
+                    result.subscribers = {activeInActive: ''};
+                    result.subscribers.activeInActive = subscribersFinalList;
+                }
             }
-            console.log('result.subscribers: ', result.subscribers);
 
             console.log('result: ', result);
             reportsRepo.updateReport(result, result._id);
