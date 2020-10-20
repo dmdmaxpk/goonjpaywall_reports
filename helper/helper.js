@@ -111,7 +111,8 @@ class Helper {
     static async getTotalCount (req, from, to, collectionName) {
         return new Promise((resolve, reject) => {
             console.log('collectionName: ', collectionName);
-            console.log('req.db: ', req.db);
+            console.log('from: ', from);
+            console.log('to: ',  to);
 
             req.db.collection(collectionName, function (err, collection) {
                 if (!err) {
