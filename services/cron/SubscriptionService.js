@@ -28,7 +28,7 @@ computeSubscriptionReports = async(req, res) => {
         lastLimit = computeChunks.lastChunkCount;
         let skip = 0;
 
-        console.log('computeChunks', computeChunks);
+        console.log('computeChunks', computeChunks); return ;
 
         //Loop over no.of chunks
         for (i = 0 ; i < totalChunks; i++){

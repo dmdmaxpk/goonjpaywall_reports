@@ -110,16 +110,25 @@ class Helper {
 
     static async getTotalCount (req, from, to, collectionName) {
         return new Promise((resolve, reject) => {
+            console.log('collectionName: ', collectionName);
+            console.log('req.db: ', req.db);
+
             req.db.collection(collectionName, function (err, collection) {
                 if (!err) {
-                    let dtm = (collectionName === 'bilinghistories') ? 'billing_dtm' : 'added_dtm';
+                    let dtm = (collectionName === 'billinghistories') ? 'billing_dtm' : 'added_dtm';
                     console.log('dtm: ', dtm);
                     collection.countDocuments({
                         $and:[
                             {dtm:{$gte:new Date(from)}},
                             {dtm:{$lte:new Date(to)}}
                             ]
-                    })
+                    }).toArray(function(err, items) {
+                        if(err){
+                            console.log('Collection name ', collectionName, ' - err: ', err.message);
+                            resolve(0);
+                        }
+                        resolve(items);
+                    });
                 }
             });
         });
