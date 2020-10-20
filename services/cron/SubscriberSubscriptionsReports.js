@@ -163,16 +163,28 @@ function insertNewRecord(data, fromHours, dateString) {
         if (result.length > 0) {
             result = result[0];
             if (fromHours === 00 || fromHours === '00'){
-                if (result.subscribers)
-                    result.subscribers.subscriptions = data;
+                if (result.subscribers){
+                    if (result.subscribers.hasOwnProperty('subscriptions'))
+                        result.subscribers.subscriptions = data;
+                    else{
+                        result.subscribers = {subscriptions: ''};
+                        result.subscribers.subscriptions = data;
+                    }
+                }
                 else{
                     result.subscribers = {subscriptions: ''};
                     result.subscribers.subscriptions = data;
                 }
             }
             else{
-                if (result.subscribers)
-                    result.subscribers.subscriptions.concat(data);
+                if (result.subscribers){
+                    if (result.subscribers.hasOwnProperty('subscriptions'))
+                        result.subscribers.subscriptions.concat(data);
+                    else {
+                        result.subscribers = {subscriptions: ''};
+                        result.subscribers.subscriptions = data;
+                    }
+                }
                 else{
                     result.subscribers = {subscriptions: ''};
                     result.subscribers.subscriptions = data;
