@@ -23,69 +23,71 @@ computeSubscriptionReports = async(req, res) => {
 
     helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(function (totalCount) {
         console.log('totalCount', totalCount);
-        computeChunks = helper.getChunks(totalCount);
-        totalChunks = computeChunks.chunks;
-        lastLimit = computeChunks.lastChunkCount;
-        let skip = 0;
+        if (totalCount > 0){
+            computeChunks = helper.getChunks(totalCount);
+            totalChunks = computeChunks.chunks;
+            lastLimit = computeChunks.lastChunkCount;
+            let skip = 0;
 
-        console.log('computeChunks', computeChunks); return ;
+            console.log('computeChunks', computeChunks); return ;
 
-        //Loop over no.of chunks
-        for (i = 0 ; i < totalChunks; i++){
-            subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, limit).then(function (subscriptions) {
-                console.log('subscriptions: ', subscriptions.length);
+            //Loop over no.of chunks
+            for (i = 0 ; i < totalChunks; i++){
+                subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, limit).then(function (subscriptions) {
+                    console.log('subscriptions: ', subscriptions.length);
 
-                //set skip variable to limit data
-                skip = skip + limit;
+                    //set skip variable to limit data
+                    skip = skip + limit;
 
-                // Now compute and store data in DB
-                if (subscriptions.length > 0){
-                    finalData = computeSubscriptionsData(subscriptions);
-                    finalList = finalData.finalList;
-                    subscribersFinalList = finalData.subscribersFinalList;
-                    console.log('finalList.length : ', finalList.length, finalList);
-                    console.log('subscribersFinalList.length : ', subscribersFinalList.length, subscribersFinalList);
-                    if (finalList.length > 0 || subscribersFinalList.length > 0)
-                        insertNewRecord(finalList, subscribersFinalList,  new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
-                }
-            });
-        }
+                    // Now compute and store data in DB
+                    if (subscriptions.length > 0){
+                        finalData = computeSubscriptionsData(subscriptions);
+                        finalList = finalData.finalList;
+                        subscribersFinalList = finalData.subscribersFinalList;
+                        console.log('finalList.length : ', finalList.length, finalList);
+                        console.log('subscribersFinalList.length : ', subscribersFinalList.length, subscribersFinalList);
+                        if (finalList.length > 0 || subscribersFinalList.length > 0)
+                            insertNewRecord(finalList, subscribersFinalList,  new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                    }
+                });
+            }
 
-        // fetch last chunk Data from DB
-        if (lastLimit > 0){
-            subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, lastLimit).then(function (subscriptions) {
-                console.log('subscriptions: ', subscriptions.length);
+            // fetch last chunk Data from DB
+            if (lastLimit > 0){
+                subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, lastLimit).then(function (subscriptions) {
+                    console.log('subscriptions: ', subscriptions.length);
 
-                // Now compute and store data in DB
-                if (subscriptions.length > 0){
-                    finalData = computeSubscriptionsData(subscriptions);
-                    finalList = finalData.finalList;
-                    subscribersFinalList = finalData.subscribersFinalList;
-                    console.log('finalList.length : ', finalList.length, finalList);
-                    console.log('subscribersFinalList.length : ', subscribersFinalList.length, subscribersFinalList);
-                    if (finalList.length > 0 || subscribersFinalList.length > 0)
-                        insertNewRecord(finalList, subscribersFinalList,  new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
-                }
-            });
-        }
+                    // Now compute and store data in DB
+                    if (subscriptions.length > 0){
+                        finalData = computeSubscriptionsData(subscriptions);
+                        finalList = finalData.finalList;
+                        subscribersFinalList = finalData.subscribersFinalList;
+                        console.log('finalList.length : ', finalList.length, finalList);
+                        console.log('subscribersFinalList.length : ', subscribersFinalList.length, subscribersFinalList);
+                        if (finalList.length > 0 || subscribersFinalList.length > 0)
+                            insertNewRecord(finalList, subscribersFinalList,  new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                    }
+                });
+            }
 
-        // Get compute data for next time slot
-        req.day = Number(req.day) + 1;
-        console.log('computeSubscriptionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+            // Get compute data for next time slot
+            req.day = Number(req.day) + 1;
+            console.log('computeSubscriptionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
-                computeSubscriptionReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeSubscriptionReports(req, res);
-        }
-        else{
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('computeSubscriptionReports -> month : ', month, req.month, new Date().getMonth());
+            if (req.day <= helper.getDaysInMonth(month)){
+                if (month < helper.getTodayMonthNo())
+                    computeSubscriptionReports(req, res);
+                else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+                    computeSubscriptionReports(req, res);
+            }
+            else{
+                req.day = 1;
+                req.month = Number(req.month) + 1;
+                console.log('computeSubscriptionReports -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= helper.getTodayMonthNo())
-                computeSubscriptionReports(req, res);
+                if (req.month <= helper.getTodayMonthNo())
+                    computeSubscriptionReports(req, res);
+            }
         }
     });
 };

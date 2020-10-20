@@ -100,10 +100,14 @@ class Helper {
     }
 
     static getChunks(totalCount){
-        let chunks, lastChunkCount;
+        let chunks, lastChunkCount = 0;
 
-        chunks = totalCount / config.cron_db_query_data_limit;
-        lastChunkCount = totalCount % config.cron_db_query_data_limit;
+        chunks = Math.round(totalCount / config.cron_db_query_data_limit) ;
+        chunks = chunks > 0 ? chunks : 1;
+
+        if (totalCount > config.cron_db_query_data_limit)
+            lastChunkCount = totalCount % config.cron_db_query_data_limit;
+
 
         return {chunks: chunks, lastChunkCount: lastChunkCount}
     }
@@ -112,20 +116,15 @@ class Helper {
         return new Promise((resolve, reject) => {
             let condition;
             if (collectionName === 'billinghistories')
-                condition = [ {billing_dtm:{$gte:new Date("2020-07-17T00:00:00.000Z")}}, {billing_dtm:{$lte:new Date("2020-07-17T23:59:59.000Z")}} ];
+                condition = [ {billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}} ];
             else
-                condition = [ {added_dtm:{$gte:new Date("2020-07-17T00:00:00.000Z")}}, {added_dtm:{$lte:new Date("2020-07-17T23:59:59.000Z")}} ];
-
-            console.log('condition: ', condition);
+                condition = [ {added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}} ];
 
             req.db.collection(collectionName, async function (err, collection) {
-                if (!err) {
+                if (!err)
+                    resolve(await collection.countDocuments({ $and: condition }));
 
-                    let documentCount = await collection.countDocuments({ $and: condition });
-
-                    console.log('documentCount: ', documentCount);
-                    resolve(documentCount);
-                }
+                resolve(0);
             });
         });
     }
