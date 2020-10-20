@@ -24,7 +24,7 @@ computeChargeDetailsReports = async(req, res) => {
     /*
     * Get total count from db
     * */
-    helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(function (totalCount) {
+    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
         if (totalCount > 0){
             computeChunks = helper.getChunks(totalCount);
             totalChunks = computeChunks.chunks;
@@ -33,7 +33,7 @@ computeChargeDetailsReports = async(req, res) => {
 
             //Loop over no.of chunks
             for (i = 0 ; i < totalChunks; i++){
-                subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, limit).then(function (chargeDetails) {
+                await subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, limit).then(async function (chargeDetails) {
                     console.log('chargeDetails: ', chargeDetails.length);
 
                     //set skip variable to limit data
@@ -47,7 +47,7 @@ computeChargeDetailsReports = async(req, res) => {
 
                         console.log('chargeDetailList.length : ', chargeDetailList.length, chargeDetailList);
                         console.log('transactingSubsList.length : ', transactingSubsList.length, transactingSubsList);
-                        insertNewRecord(transactingSubsList, chargeDetailList, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                        await insertNewRecord(transactingSubsList, chargeDetailList, fromDate);
                     }
                 });
             }
@@ -55,7 +55,7 @@ computeChargeDetailsReports = async(req, res) => {
 
             // fetch last chunk Data from DB
             if (lastLimit > 0){
-                subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, lastLimit).then(function (chargeDetails) {
+                await subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (chargeDetails) {
                     console.log('chargeDetails: ', chargeDetails.length);
 
                     if (chargeDetails.length > 0){
@@ -65,30 +65,30 @@ computeChargeDetailsReports = async(req, res) => {
 
                         console.log('chargeDetailList.length : ', chargeDetailList.length, chargeDetailList);
                         console.log('transactingSubsList.length : ', transactingSubsList.length, transactingSubsList);
-                        insertNewRecord(transactingSubsList, chargeDetailList, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                        await insertNewRecord(transactingSubsList, chargeDetailList, fromDate);
                     }
                 });
             }
+        }
 
 
-            // Recurring - get and compute data for next day - time slot
-            req.day = Number(req.day) + 1;
-            console.log('getChargeDetailsByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
+        // Recurring - get and compute data for next day - time slot
+        req.day = Number(req.day) + 1;
+        console.log('getChargeDetailsByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-            if (req.day <= helper.getDaysInMonth(month)){
-                if (month < helper.getTodayMonthNo())
-                    computeChargeDetailsReports(req, res);
-                else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                    computeChargeDetailsReports(req, res);
-            }
-            else{
-                req.day = 1;
-                req.month = Number(req.month) + 1;
-                console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
+        if (req.day <= helper.getDaysInMonth(month)){
+            if (month < helper.getTodayMonthNo())
+                computeChargeDetailsReports(req, res);
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+                computeChargeDetailsReports(req, res);
+        }
+        else{
+            req.day = 1;
+            req.month = Number(req.month) + 1;
+            console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
 
-                if (req.month <= helper.getTodayMonthNo())
-                    computeChargeDetailsReports(req, res);
-            }
+            if (req.month <= helper.getTodayMonthNo())
+                computeChargeDetailsReports(req, res);
         }
     });
 };
@@ -117,264 +117,257 @@ function computeChargeDetailData(chargeDetails) {
                     micro_charge = innerObj.micro_charge === false ? false : true;
                     dateInMili = inner_added_dtm;
 
-                    //Transactions and Charge details
+                    //Source wise Charge Details
+                    if (innerObj.source === 'app'){
+                        transactionObj.transactions.source.app = transactionObj.transactions.source.app + 1;
+                        transactionObj.subscribers.source.app = transactionObj.subscribers.source.app + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.source.app.full = chargeDetailObj.source.app.full + price;
+                        else
+                            chargeDetailObj.source.app.micro = chargeDetailObj.source.app.micro + price;
+
+                        chargeDetailObj.source.app.total = chargeDetailObj.source.app.total + price;
+                    }
+                    else if (innerObj.source === 'web'){
+                        transactionObj.transactions.source.web = transactionObj.transactions.source.web + 1;
+                        transactionObj.subscribers.source.web = transactionObj.subscribers.source.web + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.source.web.full = chargeDetailObj.source.web.full + price;
+                        else
+                            chargeDetailObj.source.web.micro = chargeDetailObj.source.web.micro + price;
+
+                        chargeDetailObj.source.web.total = chargeDetailObj.source.web.total + price;
+                    }
+                    else if (innerObj.source === 'HE'){
+                        transactionObj.transactions.source.HE = transactionObj.transactions.source.HE + 1;
+                        transactionObj.subscribers.source.HE = transactionObj.subscribers.source.HE + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.source.HE.full = chargeDetailObj.source.HE.full + price;
+                        else
+                            chargeDetailObj.source.HE.micro = chargeDetailObj.source.HE.micro + price;
+
+                        chargeDetailObj.source.HE.total = chargeDetailObj.source.HE.total + price;
+                    }
+                    else if (innerObj.source === 'sms'){
+                        transactionObj.transactions.source.sms = transactionObj.transactions.source.sms + 1;
+                        transactionObj.subscribers.source.sms = transactionObj.subscribers.source.sms + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.source.sms.full = chargeDetailObj.source.sms.full + price;
+                        else
+                            chargeDetailObj.source.sms.micro = chargeDetailObj.source.sms.micro + price;
+
+                        chargeDetailObj.source.sms.total = chargeDetailObj.source.sms.total + price;
+                    }
+                    else if (innerObj.source === 'gdn2'){
+                        transactionObj.transactions.source.gdn2 = transactionObj.transactions.source.gdn2 + 1;
+                        transactionObj.subscribers.source.gdn2 = transactionObj.subscribers.source.gdn2 + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.source.gdn2.full = chargeDetailObj.source.gdn2.full + price;
+                        else
+                            chargeDetailObj.source.gdn2.micro = chargeDetailObj.source.gdn2.micro + price;
+
+                        chargeDetailObj.source.gdn2.total = chargeDetailObj.source.gdn2.total + price;
+                    }
+                    else if (innerObj.source === 'CP'){
+                        transactionObj.transactions.source.CP = transactionObj.transactions.source.CP + 1;
+                        transactionObj.subscribers.source.CP = transactionObj.subscribers.source.CP + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.source.CP.full = chargeDetailObj.source.CP.full + price;
+                        else
+                            chargeDetailObj.source.CP.micro = chargeDetailObj.source.CP.micro + price;
+
+                        chargeDetailObj.source.CP.total = chargeDetailObj.source.CP.total + price;
+                    }
+                    else if (innerObj.source === 'null'){
+                        transactionObj.transactions.source.null = transactionObj.transactions.source.null + 1;
+                        transactionObj.subscribers.source.null = transactionObj.subscribers.source.null + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.source.null.full = chargeDetailObj.source.null.full + price;
+                        else
+                            chargeDetailObj.source.null.micro = chargeDetailObj.source.null.micro + price;
+
+                        chargeDetailObj.source.null.total = chargeDetailObj.source.null.total + price;
+                    }
+                    else if (innerObj.source === 'affiliate_web'){
+                        transactionObj.transactions.source.affiliate_web = transactionObj.transactions.source.affiliate_web + 1;
+                        transactionObj.subscribers.source.affiliate_web = transactionObj.subscribers.source.affiliate_web + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.source.affiliate_web.full = chargeDetailObj.source.affiliate_web.full + price;
+                        else
+                            chargeDetailObj.source.affiliate_web.micro = chargeDetailObj.source.affiliate_web.micro + price;
+
+                        chargeDetailObj.source.affiliate_web.total = chargeDetailObj.source.affiliate_web.total + price;
+                    }
+                    else if (innerObj.source === 'system_after_grace_end'){
+                        transactionObj.transactions.source.system_after_grace_end = transactionObj.transactions.source.system_after_grace_end + 1;
+                        transactionObj.subscribers.source.system_after_grace_end = transactionObj.subscribers.source.system_after_grace_end + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.source.system_after_grace_end.full = chargeDetailObj.source.system_after_grace_end.full + price;
+                        else
+                            chargeDetailObj.source.system_after_grace_end.micro = chargeDetailObj.source.system_after_grace_end.micro + price;
+
+                        chargeDetailObj.source.system_after_grace_end.total = chargeDetailObj.source.system_after_grace_end.total + price;
+                    }
+
+                    //Package wise Charge Details
+                    if(innerObj.package === 'QDfC'){
+                        transactionObj.transactions.package.dailyLive = transactionObj.transactions.package.dailyLive + 1;
+                        transactionObj.subscribers.package.dailyLive = transactionObj.subscribers.package.dailyLive + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.package.dailyLive.full = chargeDetailObj.package.dailyLive.full + price;
+                        else
+                            chargeDetailObj.package.dailyLive.micro = chargeDetailObj.package.dailyLive.micro + price;
+
+                        chargeDetailObj.package.dailyLive.total = chargeDetailObj.package.dailyLive.total + price;
+                    }
+                    else if(innerObj.package === 'QDfG'){
+                        transactionObj.transactions.package.weeklyLive = transactionObj.transactions.package.weeklyLive + 1;
+                        transactionObj.subscribers.package.weeklyLive = transactionObj.subscribers.package.weeklyLive + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.package.weeklyLive.full = chargeDetailObj.package.weeklyLive.full + price;
+                        else
+                            chargeDetailObj.package.weeklyLive.micro = chargeDetailObj.package.weeklyLive.micro + price;
+
+                        chargeDetailObj.package.weeklyLive.total = chargeDetailObj.package.weeklyLive.total + price;
+                    }
+                    else if(innerObj.package === 'QDfH'){
+                        transactionObj.transactions.package.dailyComedy = transactionObj.transactions.package.dailyComedy + 1;
+                        transactionObj.subscribers.package.dailyComedy = transactionObj.subscribers.package.dailyComedy + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.package.dailyComedy.full = chargeDetailObj.package.dailyComedy.full + price;
+                        else
+                            chargeDetailObj.package.dailyComedy.micro = chargeDetailObj.package.dailyComedy.micro + price;
+
+                        chargeDetailObj.package.dailyComedy.total = chargeDetailObj.package.dailyComedy.total + price;
+                    }
+                    else if(innerObj.package === 'QDfI'){
+                        transactionObj.transactions.package.weeklyComedy = transactionObj.transactions.package.weeklyComedy + 1;
+                        transactionObj.subscribers.package.weeklyComedy = transactionObj.subscribers.package.weeklyComedy + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.package.weeklyComedy.full = chargeDetailObj.package.weeklyComedy.full + price;
+                        else
+                            chargeDetailObj.package.weeklyComedy.micro = chargeDetailObj.package.weeklyComedy.micro + price;
+
+                        chargeDetailObj.package.weeklyComedy.total = chargeDetailObj.package.weeklyComedy.total + price;
+                    }
+
+                    //Paywall wise Charge Details
+                    if(innerObj.paywall === 'Dt6Gp70c'){
+                        transactionObj.transactions.paywall.comedy = transactionObj.transactions.paywall.comedy + 1;
+                        transactionObj.subscribers.paywall.comedy = transactionObj.subscribers.paywall.comedy + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.paywall.comedy.full = chargeDetailObj.paywall.comedy.full + price;
+                        else
+                            chargeDetailObj.paywall.comedy.micro = chargeDetailObj.paywall.comedy.micro + price;
+
+                        chargeDetailObj.paywall.comedy.total = chargeDetailObj.paywall.comedy.total + price;
+                    }
+                    else if(innerObj.paywall === 'ghRtjhT7'){
+                        transactionObj.transactions.paywall.live = transactionObj.transactions.paywall.live + 1;
+                        transactionObj.subscribers.paywall.live = transactionObj.subscribers.paywall.live + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.paywall.live.full = chargeDetailObj.paywall.live.full + price;
+                        else
+                            chargeDetailObj.paywall.live.micro = chargeDetailObj.paywall.live.micro + price;
+
+                        chargeDetailObj.paywall.live.total = chargeDetailObj.paywall.live.total + price;
+                    }
+
+                    //Operator wise Charge Details
+                    if(innerObj.operator === 'telenor' || !innerObj.hasOwnProperty('operator')){
+                        transactionObj.transactions.operator.telenor = transactionObj.transactions.operator.telenor + 1;
+                        transactionObj.subscribers.operator.telenor = transactionObj.subscribers.operator.telenor + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.operator.telenor.full = chargeDetailObj.operator.telenor.full + price;
+                        else
+                            chargeDetailObj.operator.telenor.micro = chargeDetailObj.operator.telenor.micro + price;
+
+                        chargeDetailObj.operator.telenor.total = chargeDetailObj.operator.telenor.total + price;
+                    }
+                    else if(innerObj.operator === 'easypaisa'){
+                        transactionObj.transactions.operator.easypaisa = transactionObj.transactions.operator.easypaisa + 1;
+                        transactionObj.subscribers.operator.easypaisa = transactionObj.subscribers.operator.easypaisa + 1;
+
+                        if(!micro_charge)
+                            chargeDetailObj.operator.easypaisa.full = chargeDetailObj.operator.easypaisa.full + price;
+                        else
+                            chargeDetailObj.operator.easypaisa.micro = chargeDetailObj.operator.easypaisa.micro + price;
+
+                        chargeDetailObj.operator.easypaisa.total = chargeDetailObj.operator.easypaisa.total + price;
+                    }
+
+
+                    //Price wise charge & transaction details
+                    if (innerObj.price === 15){
+                        transactionObj.transactions.price['15'] = transactionObj.transactions.price['15'] + 1;
+                        transactionObj.subscribers.price['15'] = transactionObj.subscribers.price['15'] + 1;
+                    }
+                    else if (innerObj.price === 11){
+                        transactionObj.transactions.price['11'] = transactionObj.transactions.price['11'] + 1;
+                        transactionObj.subscribers.price['11'] = transactionObj.subscribers.price['11'] + 1;
+                    }
+                    else if (innerObj.price === 10){
+                        transactionObj.transactions.price['10'] = transactionObj.transactions.price['10'] + 1;
+                        transactionObj.subscribers.price['10'] = transactionObj.subscribers.price['10'] + 1;
+                    }
+                    else if (innerObj.price === 7){
+                        transactionObj.transactions.price['7'] = transactionObj.transactions.price['7'] + 1;
+                        transactionObj.subscribers.price['7'] = transactionObj.subscribers.price['7'] + 1;
+                    }
+                    else if (innerObj.price === 5){
+                        transactionObj.transactions.price['5'] = transactionObj.transactions.price['5'] + 1;
+                        transactionObj.subscribers.price['5'] = transactionObj.subscribers.price['5'] + 1;
+                    }
+                    else if(innerObj.price === 4){
+                        transactionObj.transactions.price['4'] = transactionObj.transactions.price['4'] + 1;
+                        transactionObj.subscribers.price['4'] = transactionObj.subscribers.price['4'] + 1;
+                    }
+                    else if (innerObj.price === 2){
+                        transactionObj.transactions.price['2'] = transactionObj.transactions.price['2'] + 1;
+                        transactionObj.subscribers.price['2'] = transactionObj.subscribers.price['2'] + 1;
+                    }
+
+                    if(!micro_charge)
+                        chargeDetailObj.chargeType.full = chargeDetailObj.chargeType.full + price;
+                    else
+                        chargeDetailObj.chargeType.micro = chargeDetailObj.chargeType.micro + price;
+
+
+
+                    //Transactions success/failure rate and net total
                     if (innerObj.billing_status === 'Success' || innerObj.billing_status === 'billed'){
-
-                        //Source wise Charge Details
-                        if (innerObj.source === 'app'){
-                            transactionObj.transactions.source.app = transactionObj.transactions.source.app + 1;
-                            transactionObj.subscribers.source.app = transactionObj.subscribers.source.app + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.source.app.full = chargeDetailObj.source.app.full + price;
-                            else
-                                chargeDetailObj.source.app.micro = chargeDetailObj.source.app.micro + price;
-
-                            chargeDetailObj.source.app.total = chargeDetailObj.source.app.total + price;
-                        }
-                        else if (innerObj.source === 'web'){
-                            transactionObj.transactions.source.web = transactionObj.transactions.source.web + 1;
-                            transactionObj.subscribers.source.web = transactionObj.subscribers.source.web + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.source.web.full = chargeDetailObj.source.web.full + price;
-                            else
-                                chargeDetailObj.source.web.micro = chargeDetailObj.source.web.micro + price;
-
-                            chargeDetailObj.source.web.total = chargeDetailObj.source.web.total + price;
-                        }
-                        else if (innerObj.source === 'HE'){
-                            transactionObj.transactions.source.HE = transactionObj.transactions.source.HE + 1;
-                            transactionObj.subscribers.source.HE = transactionObj.subscribers.source.HE + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.source.HE.full = chargeDetailObj.source.HE.full + price;
-                            else
-                                chargeDetailObj.source.HE.micro = chargeDetailObj.source.HE.micro + price;
-
-                            chargeDetailObj.source.HE.total = chargeDetailObj.source.HE.total + price;
-                        }
-                        else if (innerObj.source === 'sms'){
-                            transactionObj.transactions.source.sms = transactionObj.transactions.source.sms + 1;
-                            transactionObj.subscribers.source.sms = transactionObj.subscribers.source.sms + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.source.sms.full = chargeDetailObj.source.sms.full + price;
-                            else
-                                chargeDetailObj.source.sms.micro = chargeDetailObj.source.sms.micro + price;
-
-                            chargeDetailObj.source.sms.total = chargeDetailObj.source.sms.total + price;
-                        }
-                        else if (innerObj.source === 'gdn2'){
-                            transactionObj.transactions.source.gdn2 = transactionObj.transactions.source.gdn2 + 1;
-                            transactionObj.subscribers.source.gdn2 = transactionObj.subscribers.source.gdn2 + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.source.gdn2.full = chargeDetailObj.source.gdn2.full + price;
-                            else
-                                chargeDetailObj.source.gdn2.micro = chargeDetailObj.source.gdn2.micro + price;
-
-                            chargeDetailObj.source.gdn2.total = chargeDetailObj.source.gdn2.total + price;
-                        }
-                        else if (innerObj.source === 'CP'){
-                            transactionObj.transactions.source.CP = transactionObj.transactions.source.CP + 1;
-                            transactionObj.subscribers.source.CP = transactionObj.subscribers.source.CP + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.source.CP.full = chargeDetailObj.source.CP.full + price;
-                            else
-                                chargeDetailObj.source.CP.micro = chargeDetailObj.source.CP.micro + price;
-
-                            chargeDetailObj.source.CP.total = chargeDetailObj.source.CP.total + price;
-                        }
-                        else if (innerObj.source === 'null'){
-                            transactionObj.transactions.source.null = transactionObj.transactions.source.null + 1;
-                            transactionObj.subscribers.source.null = transactionObj.subscribers.source.null + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.source.null.full = chargeDetailObj.source.null.full + price;
-                            else
-                                chargeDetailObj.source.null.micro = chargeDetailObj.source.null.micro + price;
-
-                            chargeDetailObj.source.null.total = chargeDetailObj.source.null.total + price;
-                        }
-                        else if (innerObj.source === 'affiliate_web'){
-                            transactionObj.transactions.source.affiliate_web = transactionObj.transactions.source.affiliate_web + 1;
-                            transactionObj.subscribers.source.affiliate_web = transactionObj.subscribers.source.affiliate_web + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.source.affiliate_web.full = chargeDetailObj.source.affiliate_web.full + price;
-                            else
-                                chargeDetailObj.source.affiliate_web.micro = chargeDetailObj.source.affiliate_web.micro + price;
-
-                            chargeDetailObj.source.affiliate_web.total = chargeDetailObj.source.affiliate_web.total + price;
-                        }
-                        else if (innerObj.source === 'system_after_grace_end'){
-                            transactionObj.transactions.source.system_after_grace_end = transactionObj.transactions.source.system_after_grace_end + 1;
-                            transactionObj.subscribers.source.system_after_grace_end = transactionObj.subscribers.source.system_after_grace_end + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.source.system_after_grace_end.full = chargeDetailObj.source.system_after_grace_end.full + price;
-                            else
-                                chargeDetailObj.source.system_after_grace_end.micro = chargeDetailObj.source.system_after_grace_end.micro + price;
-
-                            chargeDetailObj.source.system_after_grace_end.total = chargeDetailObj.source.system_after_grace_end.total + price;
-                        }
-
-                        //Package wise Charge Details
-                        if(innerObj.package === 'QDfC'){
-                            transactionObj.transactions.package.dailyLive = transactionObj.transactions.package.dailyLive + 1;
-                            transactionObj.subscribers.package.dailyLive = transactionObj.subscribers.package.dailyLive + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.package.dailyLive.full = chargeDetailObj.package.dailyLive.full + price;
-                            else
-                                chargeDetailObj.package.dailyLive.micro = chargeDetailObj.package.dailyLive.micro + price;
-
-                            chargeDetailObj.package.dailyLive.total = chargeDetailObj.package.dailyLive.total + price;
-                        }
-                        else if(innerObj.package === 'QDfG'){
-                            transactionObj.transactions.package.weeklyLive = transactionObj.transactions.package.weeklyLive + 1;
-                            transactionObj.subscribers.package.weeklyLive = transactionObj.subscribers.package.weeklyLive + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.package.weeklyLive.full = chargeDetailObj.package.weeklyLive.full + price;
-                            else
-                                chargeDetailObj.package.weeklyLive.micro = chargeDetailObj.package.weeklyLive.micro + price;
-
-                            chargeDetailObj.package.weeklyLive.total = chargeDetailObj.package.weeklyLive.total + price;
-                        }
-                        else if(innerObj.package === 'QDfH'){
-                            transactionObj.transactions.package.dailyComedy = transactionObj.transactions.package.dailyComedy + 1;
-                            transactionObj.subscribers.package.dailyComedy = transactionObj.subscribers.package.dailyComedy + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.package.dailyComedy.full = chargeDetailObj.package.dailyComedy.full + price;
-                            else
-                                chargeDetailObj.package.dailyComedy.micro = chargeDetailObj.package.dailyComedy.micro + price;
-
-                            chargeDetailObj.package.dailyComedy.total = chargeDetailObj.package.dailyComedy.total + price;
-                        }
-                        else if(innerObj.package === 'QDfI'){
-                            transactionObj.transactions.package.weeklyComedy = transactionObj.transactions.package.weeklyComedy + 1;
-                            transactionObj.subscribers.package.weeklyComedy = transactionObj.subscribers.package.weeklyComedy + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.package.weeklyComedy.full = chargeDetailObj.package.weeklyComedy.full + price;
-                            else
-                                chargeDetailObj.package.weeklyComedy.micro = chargeDetailObj.package.weeklyComedy.micro + price;
-
-                            chargeDetailObj.package.weeklyComedy.total = chargeDetailObj.package.weeklyComedy.total + price;
-                        }
-
-                        //Paywall wise Charge Details
-                        if(innerObj.paywall === 'Dt6Gp70c'){
-                            transactionObj.transactions.paywall.comedy = transactionObj.transactions.paywall.comedy + 1;
-                            transactionObj.subscribers.paywall.comedy = transactionObj.subscribers.paywall.comedy + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.paywall.comedy.full = chargeDetailObj.paywall.comedy.full + price;
-                            else
-                                chargeDetailObj.paywall.comedy.micro = chargeDetailObj.paywall.comedy.micro + price;
-
-                            chargeDetailObj.paywall.comedy.total = chargeDetailObj.paywall.comedy.total + price;
-                        }
-                        else if(innerObj.paywall === 'ghRtjhT7'){
-                            transactionObj.transactions.paywall.live = transactionObj.transactions.paywall.live + 1;
-                            transactionObj.subscribers.paywall.live = transactionObj.subscribers.paywall.live + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.paywall.live.full = chargeDetailObj.paywall.live.full + price;
-                            else
-                                chargeDetailObj.paywall.live.micro = chargeDetailObj.paywall.live.micro + price;
-
-                            chargeDetailObj.paywall.live.total = chargeDetailObj.paywall.live.total + price;
-                        }
-
-                        //Operator wise Charge Details
-                        if(innerObj.operator === 'telenor' || !innerObj.hasOwnProperty('operator')){
-                            transactionObj.transactions.operator.telenor = transactionObj.transactions.operator.telenor + 1;
-                            transactionObj.subscribers.operator.telenor = transactionObj.subscribers.operator.telenor + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.operator.telenor.full = chargeDetailObj.operator.telenor.full + price;
-                            else
-                                chargeDetailObj.operator.telenor.micro = chargeDetailObj.operator.telenor.micro + price;
-
-                            chargeDetailObj.operator.telenor.total = chargeDetailObj.operator.telenor.total + price;
-                        }
-                        else if(innerObj.operator === 'easypaisa'){
-                            transactionObj.transactions.operator.easypaisa = transactionObj.transactions.operator.easypaisa + 1;
-                            transactionObj.subscribers.operator.easypaisa = transactionObj.subscribers.operator.easypaisa + 1;
-
-                            if(!micro_charge)
-                                chargeDetailObj.operator.easypaisa.full = chargeDetailObj.operator.easypaisa.full + price;
-                            else
-                                chargeDetailObj.operator.easypaisa.micro = chargeDetailObj.operator.easypaisa.micro + price;
-
-                            chargeDetailObj.operator.easypaisa.total = chargeDetailObj.operator.easypaisa.total + price;
-                        }
-
-
-                        //Price wise charge & transaction details
-                        if (innerObj.price === 15){
-                            transactionObj.transactions.price['15'] = transactionObj.transactions.price['15'] + 1;
-                            transactionObj.subscribers.price['15'] = transactionObj.subscribers.price['15'] + 1;
-                        }
-                        else if (innerObj.price === 11){
-                            transactionObj.transactions.price['11'] = transactionObj.transactions.price['11'] + 1;
-                            transactionObj.subscribers.price['11'] = transactionObj.subscribers.price['11'] + 1;
-                        }
-                        else if (innerObj.price === 10){
-                            transactionObj.transactions.price['10'] = transactionObj.transactions.price['10'] + 1;
-                            transactionObj.subscribers.price['10'] = transactionObj.subscribers.price['10'] + 1;
-                        }
-                        else if (innerObj.price === 7){
-                            transactionObj.transactions.price['7'] = transactionObj.transactions.price['7'] + 1;
-                            transactionObj.subscribers.price['7'] = transactionObj.subscribers.price['7'] + 1;
-                        }
-                        else if (innerObj.price === 5){
-                            transactionObj.transactions.price['5'] = transactionObj.transactions.price['5'] + 1;
-                            transactionObj.subscribers.price['5'] = transactionObj.subscribers.price['5'] + 1;
-                        }
-                        else if(innerObj.price === 4){
-                            transactionObj.transactions.price['4'] = transactionObj.transactions.price['4'] + 1;
-                            transactionObj.subscribers.price['4'] = transactionObj.subscribers.price['4'] + 1;
-                        }
-                        else if (innerObj.price === 2){
-                            transactionObj.transactions.price['2'] = transactionObj.transactions.price['2'] + 1;
-                            transactionObj.subscribers.price['2'] = transactionObj.subscribers.price['2'] + 1;
-                        }
-
                         //Success rate
                         transactionObj.transactions.successRate = transactionObj.transactions.successRate + 1;
                         transactionObj.transactions.netTotal = transactionObj.transactions.netTotal + 1;
-
-                        if(!micro_charge)
-                            chargeDetailObj.chargeType.full = chargeDetailObj.chargeType.full + price;
-                        else
-                            chargeDetailObj.chargeType.micro = chargeDetailObj.chargeType.micro + price;
-
-                        // Add Timestemps
-                        transactionObj.added_dtm = outerObj.added_dtm;
-                        transactionObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
-
-                        chargeDetailObj.added_dtm = outerObj.added_dtm;
-                        chargeDetailObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
                     }
-                    else if (innerObj.billing_status === 'graced'){
-
+                    else{
                         //Failure Rate
                         transactionObj.transactions.netTotal = transactionObj.transactions.netTotal + 1;
                         transactionObj.transactions.failureRate = transactionObj.transactions.failureRate + 1;
-
-                        // Add Timestemps
-                        transactionObj.added_dtm = outerObj.added_dtm;
-                        transactionObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
-
-                        chargeDetailObj.added_dtm = outerObj.added_dtm;
-                        chargeDetailObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
                     }
+
+                    // Add Timestemps
+                    chargeDetailObj.added_dtm = outerObj.added_dtm;
+                    chargeDetailObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+
+                    transactionObj.added_dtm = outerObj.added_dtm;
+                    transactionObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
                 }
             }
 
@@ -395,11 +388,12 @@ function computeChargeDetailData(chargeDetails) {
     return {transactingSubsList: transactingSubsList, chargeDetailList: chargeDetailList};
 }
 
-function insertNewRecord(transactingSubsList, chargeDetailList, dateString) {
+async function insertNewRecord(transactingSubsList, chargeDetailList, dateString) {
     hoursFromISODate = _.clone(dateString);
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
-    reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
+    await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         console.log('getReportByDateString - result : ', transactingSubsList, chargeDetailList);
         if (result.length > 0) {
             result = result[0];
@@ -411,10 +405,10 @@ function insertNewRecord(transactingSubsList, chargeDetailList, dateString) {
                 result.transactions.concat(transactingSubsList);
             }
 
-            reportsRepo.updateReport(result, result._id);
+            await reportsRepo.updateReport(result, result._id);
         }
         else
-            reportsRepo.createReport({transactions: transactingSubsList, chargeDetails: chargeDetailList, date: dateString});
+            await reportsRepo.createReport({transactions: transactingSubsList, chargeDetails: chargeDetailList, date: dateString});
     });
 }
 
