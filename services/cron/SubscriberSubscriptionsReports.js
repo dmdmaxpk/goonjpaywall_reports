@@ -41,7 +41,7 @@ computeSubscriberSubscriptionsReports = async(req, res) => {
             req.toHours = Number(req.toHours) + 8;
 
             // Compute Data for next data-chuck
-            computeSubscriberTransactionsReports(req, res);
+            computeSubscriberSubscriptionsReports(req, res);
         }
         else{
             // Get compute data for next time slot
