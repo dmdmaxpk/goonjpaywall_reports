@@ -30,7 +30,7 @@ computeSubscriptionReports = async(req, res) => {
 
             //Loop over no.of chunks
             for (i = 0 ; i < totalChunks; i++){
-                subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, limit).then(function (subscriptions) {
+                subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, limit).then(async function (subscriptions) {
                     console.log('subscriptions: ', subscriptions.length);
 
                     //set skip variable to limit data
@@ -42,14 +42,14 @@ computeSubscriptionReports = async(req, res) => {
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
                         if (finalList.length > 0 || subscribersFinalList.length > 0)
-                            insertNewRecord(finalList, subscribersFinalList, fromDate);
+                            await insertNewRecord(finalList, subscribersFinalList, fromDate);
                     }
                 });
             }
 
             // fetch last chunk Data from DB
             if (lastLimit > 0){
-                subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, lastLimit).then(function (subscriptions) {
+                subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (subscriptions) {
                     console.log('subscriptions: ', subscriptions.length);
 
                     // Now compute and store data in DB
@@ -58,7 +58,7 @@ computeSubscriptionReports = async(req, res) => {
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
                         if (finalList.length > 0 || subscribersFinalList.length > 0)
-                            insertNewRecord(finalList, subscribersFinalList, fromDate);
+                            await insertNewRecord(finalList, subscribersFinalList, fromDate);
                     }
                 });
             }
@@ -189,12 +189,12 @@ function computeSubscriptionsData(subscriptions) {
     return {finalList: finalList, subscribersFinalList: subscribersFinalList};
 }
 
-function insertNewRecord(finalList, subscribersFinalList, dateString) {
+async function insertNewRecord(finalList, subscribersFinalList, dateString) {
     hoursFromISODate = _.clone(dateString);
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
-    reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
+    await reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0){
             result = result[0];
 
