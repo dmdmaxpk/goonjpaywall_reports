@@ -112,7 +112,7 @@ class Helper {
         return {chunks: chunks, lastChunkCount: lastChunkCount}
     }
 
-    static async getTotalCount (req, from, to, collectionName, query) {
+    static async getTotalCount (req, from, to, collectionName, conditionType, query) {
         return new Promise((resolve, reject) => {
             req.db.collection(collectionName, async function (err, collection) {
                 if (!err)
