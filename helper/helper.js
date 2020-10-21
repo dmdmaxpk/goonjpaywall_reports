@@ -117,19 +117,15 @@ class Helper {
             req.db.collection(collectionName, async function (err, collection){
                 if (!err){
                     try {
-                        console.log('collection: ', collection);
                         await collection.aggregate(query).toArray(async function(err, count) {
                             if(err){
-                                console.error(' - err: ', err.message);
+                                console.error(collectionName, ' count query - err: ', err.message);
                                 await resolve(0);
                             }
 
-                            console.log('count: ', count);
                             await resolve(count);
                         });
                     }catch (e) {
-                        console.error('catch block: ');
-
                         await resolve(0);
                     }
                 }
