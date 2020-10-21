@@ -27,7 +27,7 @@ computeCallbackSendReports = async(req, res) => {
 
     await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', 'aggregate', query).then(async function (totalCount) {
         console.log('totalCount: ', totalCount); return;
-        
+
         if (totalCount > 0){
             computeChunks = helper.getChunks(totalCount);
             totalChunks = computeChunks.chunks;
