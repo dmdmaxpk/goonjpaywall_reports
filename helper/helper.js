@@ -118,18 +118,23 @@ class Helper {
                 if (!err){
                     try {
                         console.log('collection: ', collection);
-                        collection.aggregate(query).toArray(function(err, items) {
+                        collection.aggregate(query).toArray(function(err, count) {
                             if(err){
-                                console.log('getCallbackSendByDateRange - err: ', err.message);
-                                resolve([]);
+                                console.error(' - err: ', err.message);
+                                resolve(0);
                             }
 
-                            resolve(items);
+                            console.log('count: ', count);
+                            resolve(count);
                         });
                     }catch (e) {
-                        reject(e);
+                        console.error('catch block: ');
+
+                        resolve(0);
                     }
                 }
+
+                console.log('out from IF: ');
 
                 resolve(0);
             });
