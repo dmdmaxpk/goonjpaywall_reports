@@ -1,5 +1,6 @@
 const config = require('../config');
 const  _ = require('lodash');
+const moment = require('moment-timezone');
 
 //Helper class - define all basic functions
 class Helper {
@@ -25,23 +26,95 @@ class Helper {
         date.setMilliseconds(mi);
         return date;
     }
+
     static getDaysInMonth(month) {
         return new Date(2020, month, 0).getDate();
     }
+
     static getTodayDayNo() {
         return new Date().getDate();
     }
+
     static getTodayMonthNo() {
         return new Date().getMonth() + 1;
     }
+
     static splitHoursFromISODate(dateString){
         console.log('splitHoursFromISODate: ', dateString, new Date(dateString));
         dateString = new Date(dateString).getHours();
         console.log('dateString: ', dateString);
+
         if (dateString > 0)
             return false;
         else
             return true;
+    }
+
+    static setDateWithTimezone(date){
+        date = moment.tz(date, "Asia/Karachi");
+        return date;
+    }
+
+    static computeTodayDate(req){
+        let fromDate, toDate, day, month;
+
+        fromDate  = new Date();
+        fromDate.setHours(00);
+        fromDate.setMinutes(00);
+        fromDate.setSeconds(00);
+
+        day = req.day ? req.day : fromDate.getDate();
+        day = day > 9 ? day : '0'+Number(day);
+        req.day = day;
+
+        month = req.month ? req.month : fromDate.getMonth()+1;
+        month = month > 9 ? month : '0'+Number(month);
+        req.month = month;
+
+        toDate  = _.clone(fromDate);
+        toDate.setHours(23);
+        toDate.setMinutes(59);
+        toDate.setSeconds(59);
+
+        return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
+    }
+
+    static computeTodayEightHoursDate(req){
+
+        let fromDate, toDate, day, month, fromHours, toHours;
+
+        fromDate  = new Date();
+        fromDate.setHours(00);
+        fromDate.setMinutes(00);
+        fromDate.setSeconds(00);
+
+        day = req.day ? req.day : fromDate.getDate();
+        day = day > 9 ? day : '0'+Number(day);
+        req.day = day;
+
+        month = req.month ? req.month : fromDate.getMonth()+1;
+        month = month > 9 ? month : '0'+Number(month);
+        req.month = month;
+
+        fromHours = req.fromHours ? req.fromHours : 0;
+        fromHours = fromHours > 9 ? fromHours : '0'+Number(fromHours);
+        req.fromHours = fromHours;
+
+        toHours = req.toHours ? req.toHours : 7;
+        toHours = toHours > 9 ? toHours : '0'+Number(toHours);
+        req.toHours = toHours;
+
+        console.log('day : ', day, req.day);
+        console.log('month : ', month, req.month);
+        console.log('fromHours : ', fromHours, req.fromHours);
+        console.log('toHours : ', toHours, req.toHours);
+
+        toDate  = _.clone(fromDate);
+        toDate.setHours(toHours);
+        toDate.setMinutes(59);
+        toDate.setSeconds(59);
+
+        return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate, fromHours: fromHours, toHours: toHours};
     }
 
     static computeNextDate(req, sDay, sMonth){

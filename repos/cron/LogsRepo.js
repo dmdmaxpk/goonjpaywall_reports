@@ -14,6 +14,12 @@ class LogsRepo {
                             source: "$source",
                             mid: "$mid",
                             service: "$service",
+                            added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                        }},
+                        { $project:{
+                            source: "$source",
+                            mid: "$mid",
+                            service: "$service",
                             day: { "$dayOfMonth" : "$added_dtm"},
                             month: { "$month" : "$added_dtm" },
                             year:{ "$year": "$added_dtm" }
@@ -56,38 +62,43 @@ class LogsRepo {
                 if (!err) {
                     collection.aggregate([
                         { $match:{
-                                mid: {$in: ["1", "1569", "aff3", "aff3a", "goonj", "gdn", "gdn2"]},
-                                "req_body.response_msisdn":{$ne:null},
-                                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
-                            }},
+                            mid: {$in: ["1", "1569", "aff3", "aff3a", "goonj", "gdn", "gdn2"]},
+                            "req_body.response_msisdn":{$ne:null},
+                            $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                        }},
                         { $project:{
-                                mid: "$mid",
-                                msisdn: "$req_body.response_msisdn",
-                                day: { "$dayOfMonth" : "$added_dtm"},
-                                month: { "$month" : "$added_dtm" },
-                                year:{ "$year": "$added_dtm" },
-                            }},
+                            mid: "$mid",
+                            msisdn: "$req_body.response_msisdn",
+                            added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                        }},
                         { $project:{
-                                added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
-                                mid: "$mid",
-                                msisdn: "$msisdn"
-                            }},
+                            mid: "$mid",
+                            msisdn: "$req_body.response_msisdn",
+                            day: { "$dayOfMonth" : "$added_dtm"},
+                            month: { "$month" : "$added_dtm" },
+                            year:{ "$year": "$added_dtm" }
+                        }},
+                        { $project:{
+                            added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
+                            mid: "$mid",
+                            msisdn: "$msisdn"
+                        }},
                         { $group:{
-                                _id: {added_dtm: "$added_dtm", msisdn: "$msisdn"}, mid: {$first: "$mid"}
-                            }},
+                            _id: {added_dtm: "$added_dtm", msisdn: "$msisdn"}, mid: {$first: "$mid"}
+                        }},
                         { $group:{
-                                _id:  {added_dtm: "$_id.added_dtm", mid: "$mid"},
-                                count: {$sum: 1}
-                            }},
+                            _id:  {added_dtm: "$_id.added_dtm", mid: "$mid"},
+                            count: {$sum: 1}
+                        }},
                         { $group:{
-                                _id: {added_dtm: "$_id.added_dtm"},
-                                helogs: { $push:  { mid: "$_id.mid", count: "$count" }}
-                            }},
+                            _id: {added_dtm: "$_id.added_dtm"},
+                            helogs: { $push:  { mid: "$_id.mid", count: "$count" }}
+                        }},
                         { $project: {
-                                _id: 0,
-                                added_dtm: "$_id.added_dtm",
-                                helogs: "$helogs"
-                            }}
+                            _id: 0,
+                            added_dtm: "$_id.added_dtm",
+                            helogs: "$helogs"
+                        }}
                     ], {allowDiskUse: true}).toArray(function(err, items) {
                         if(err){
                             console.log('getHelogsUniqueSuccessByDateRange - err: ', err.message);
@@ -114,14 +125,19 @@ class LogsRepo {
                         { $project:{
                             mid: "$req_body.mid",
                             msisdn: "$req_body.msisdn",
+                            added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                        }},
+                        { $project:{
+                            mid: "$req_body.mid",
+                            msisdn: "$req_body.msisdn",
                             day: { "$dayOfMonth" : "$added_dtm"},
                             month: { "$month" : "$added_dtm" },
-                            year:{ "$year": "$added_dtm" },
+                            year:{ "$year": "$added_dtm" }
                         }},
                         { $project:{
                             added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
                             mid: "$mid",
-                            msisdn: "$msisdn",
+                            msisdn: "$msisdn"
                         }},
                         { $group:{
                             _id: {added_dtm: "$added_dtm", msisdn: "$msisdn"}, mid: {$first: "$mid"}
@@ -158,33 +174,37 @@ class LogsRepo {
                 if (!err) {
                     collection.aggregate([
                         { $match:{
-                                "method": "subscribe",
-                                "req_body.affiliate_mid": {$in: ["1", "1569", "aff3", "aff3a", "goonj", "gdn", "gdn2"]},
-                                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
-                            }},
+                            "method": "subscribe",
+                            "req_body.affiliate_mid": {$in: ["1", "1569", "aff3", "aff3a", "goonj", "gdn", "gdn2"]},
+                            $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                        }},
                         { $project:{
-                                mid: "$req_body.affiliate_mid",
-                                day: { "$dayOfMonth" : "$added_dtm"},
-                                month: { "$month" : "$added_dtm" },
-                                year:{ "$year": "$added_dtm" },
-                            }},
+                            mid: "$req_body.affiliate_mid",
+                            added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                        }},
                         { $project:{
-                                added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
-                                mid: "$mid",
-                            }},
+                            mid: "$req_body.affiliate_mid",
+                            day: { "$dayOfMonth" : "$added_dtm"},
+                            month: { "$month" : "$added_dtm" },
+                            year:{ "$year": "$added_dtm" }
+                        }},
+                        { $project:{
+                            added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
+                            mid: "$mid"
+                        }},
                         { $group:{
-                                _id: {added_dtm: "$added_dtm", mid: "$mid"},
-                                count: {$sum: 1}
-                            }},
+                            _id: {added_dtm: "$added_dtm", mid: "$mid"},
+                            count: {$sum: 1}
+                        }},
                         { $group:{
-                                _id: {added_dtm: "$_id.added_dtm"},
-                                subsClicks: { $push:  { mid: "$_id.mid", count: "$count" }}
-                            }},
+                            _id: {added_dtm: "$_id.added_dtm"},
+                            subsClicks: { $push:  { mid: "$_id.mid", count: "$count" }}
+                        }},
                         { $project: {
-                                _id: 0,
-                                added_dtm: "$_id.added_dtm",
-                                subsClicks: "$subsClicks"
-                            }}
+                            _id: 0,
+                            added_dtm: "$_id.added_dtm",
+                            subsClicks: "$subsClicks"
+                        }}
                     ], {allowDiskUse: true}).toArray(function(err, items) {
                         if(err){
                             console.log('getLogsSubscribeClicksByDateRange - err: ', err.message);

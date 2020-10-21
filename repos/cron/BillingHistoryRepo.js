@@ -1,14 +1,26 @@
-const config = require('../../config');
 
 class BillingHistoryRepository {
     async getBillingHistoryByDateRange (req, from, to, skip, limit) {
         return new Promise((resolve, reject) => {
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
-                    collection.find({
+                    collection.aggregate( [
+                        {$match : {
                             $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
-                        }, { allowDiskUse: true }
-                    ).skip(skip).limit(limit).toArray(function(err, items) {
+                        }},
+                        {$project: {
+                            billing_status: "$billing_status",
+                            package_id: "$package_id",
+                            paywall_id: "$paywall_id",
+                            operator: "$operator",
+                            micro_charge: "$micro_charge",
+                            user_id: "$user_id",
+                            source: "$source",
+                            price: "$price",
+                            operator_response: "$operator_response",
+                            billing_dtm: { '$dateToString' : { date: "$billing_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                        }}
+                    ], { allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
                             console.log('getBillingHistoryByDateRange - err: ', err.message);
                             resolve([]);
@@ -38,7 +50,7 @@ class BillingHistoryRepository {
                         },
                         { $project: {
                                 source:"$source",
-                                added_dtm:"$added_dtm",
+                                added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } },
                                 subscription_status:"$subscription_status",
                                 bill_status: { $filter: {
                                         input: "$histories",
@@ -65,7 +77,7 @@ class BillingHistoryRepository {
                         {$match: { numOfFailed: {$gte: 1}  }},
                         {$project: {
                                 _id: 0,
-                                added_dtm:"$added_dtm",
+                                added_dtm: "$added_dtm",
                                 source:"$source",
                                 subscription_status:"$subscription_status",
                                 billing_status:"$billing_status",
@@ -75,7 +87,7 @@ class BillingHistoryRepository {
                                 billing_dtm: "$billing_dtm",
                             }
                         }
-                    ]).skip(skip).limit(limit).toArray(function(err, items) {
+                    ], { allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
                             console.log('getnetAdditionByDateRange - err: ', err.message);
                             resolve([]);
@@ -104,15 +116,14 @@ class BillingHistoryRepository {
                                 package_id: "$package_id",
                                 operator: "$operator",
                                 billing_status: "$billing_status",
-                                billing_dtm: "$billing_dtm"
+                                billing_dtm: { '$dateToString' : { date: "$billing_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
                             }}
                         }},
                         { $project: {
                             subscriber_id: "$_id",
                             transactions: "$data",
                         }},
-                    ], { allowDiskUse: true })
-                    .toArray(function(err, items) {
+                    ], { allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getSubscriberTransactionsByDateRange - err: ', err.message);
                             resolve([]);

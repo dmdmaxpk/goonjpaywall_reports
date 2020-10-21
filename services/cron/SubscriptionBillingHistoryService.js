@@ -14,6 +14,8 @@ computeChargeDetailsReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
+
+    // dateData = helper.computeTodayDate(req);
     dateData = helper.computeNextDate(req, 1, 2);
     req = dateData.req;
     day = dateData.day;
@@ -395,7 +397,6 @@ async function insertNewRecord(transactingSubsList, chargeDetailList, dateString
 
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
-        console.log('getReportByDateString - result : ', transactingSubsList, chargeDetailList);
         if (result.length > 0) {
             result = result[0];
             if (helper.splitHoursFromISODate(hoursFromISODate)) {

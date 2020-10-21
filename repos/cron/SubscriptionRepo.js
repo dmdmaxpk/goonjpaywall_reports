@@ -1,4 +1,3 @@
-const config = require('../../config');
 
 class SubscriptionRepository {
     async getSubscriptionsByDateRange (req, from, to, skip, limit) {
@@ -6,9 +5,19 @@ class SubscriptionRepository {
             console.log('getSubscriptionsByDateRange: ', from, to, skip, limit);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
-                    collection.find({
-                        $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
-                    }).skip(skip).limit(limit).toArray(function(err, items) {
+                    collection.aggregate( [
+                        {$match : {
+                            $and: [{added_dtm: {$gte: new Date(from)}}, {added_dtm: {$lte: new Date(to)}}]
+                        }},
+                        {$project: {
+                            subscribed_package_id: "$subscribed_package_id",
+                            paywall_id: "$paywall_id",
+                            source: "$source",
+                            affiliate_mid: "$affiliate_mid",
+                            subscription_status: "$subscription_status",
+                            added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } },
+                        }}
+                    ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
                             console.log('getSubscriptionsByDateRange - err: ', err.message);
                             resolve([]);
@@ -45,7 +54,7 @@ class SubscriptionRepository {
                             $project: {
                                 tid: "$affiliate_unique_transaction_id",
                                 mid: "$affiliate_mid",
-                                added_dtm: "$added_dtm",
+                                added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } },
                                 active: "$active",
                                 callbackhistory: {
                                     $filter: {
@@ -89,7 +98,7 @@ class SubscriptionRepository {
                                 callBackSentTime: {$cond: {if: "$isValidUser", then: "$billing_dm" , else: "" } }
                             }
                         }
-                    ]).skip(skip).limit(limit).toArray(function(err, items) {
+                    ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
                             console.log('getCallbackSendByDateRange - err: ', err.message);
                             resolve([]);
@@ -118,7 +127,7 @@ class SubscriptionRepository {
                         },
                         { $project: {
                                 source:"$source",
-                                added_dtm:"$added_dtm",
+                                added_dtm:{ '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } },
                                 subscription_status:"$subscription_status",
                                 succeses: { $filter: {
                                         input: "$histories",
@@ -160,7 +169,7 @@ class SubscriptionRepository {
                                 billing_dtm: "$billing_dtm",
                             }
                         },
-                    ]).skip(skip).limit(limit).toArray(function(err, items) {
+                    ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
                             console.log('getChargeDetailsByDateRange - err: ', err.message);
                             resolve([]);
@@ -191,14 +200,14 @@ class SubscriptionRepository {
                                         payment_source: "$payment_source",
                                         subscribed_package_id: "$subscribed_package_id",
                                         subscription_status: "$subscription_status",
-                                        added_dtm: "$added_dtm"
+                                        added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
                                 }}
                             }},
                         { $project: {
                                 subscriber_id: "$_id",
                                 subscriptions: "$data",
                         }}
-                    ]).toArray(function(err, items) {
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getSubscriberSubscriptionsByDateRange - err: ', err.message);
                             resolve([]);
@@ -249,9 +258,16 @@ class SubscriptionRepository {
                             affiliate_mid: "$affiliate_mid",
                             status: "$history.billing_status",
                             package_id: "$history.package_id",
-                            day: { "$dayOfMonth" : "$history.billing_dtm"},
-                            month: { "$month" : "$history.billing_dtm" },
-                            year:{ "$year": "$history.billing_dtm" }
+                            billing_dtm: { '$dateToString' : { date: "$history.billing_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                        }},
+                        { $project:{
+                            affiliate: "$source",
+                            affiliate_mid: "$affiliate_mid",
+                            status: "$billing_status",
+                            package_id: "$package_id",
+                            day: { "$dayOfMonth" : "$billing_dtm"},
+                            month: { "$month" : "$billing_dtm" },
+                            year:{ "$year": "$billing_dtm" }
                         }},
                         { $project:{
                             billing_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
@@ -273,7 +289,7 @@ class SubscriptionRepository {
                             billing_dtm: "$_id.billing_dtm",
                             history: "$history"
                         }}
-                    ]).toArray(function(err, items) {
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getAffiliateDataByDateRange - err: ', err.message);
                             resolve([]);
@@ -299,6 +315,10 @@ class SubscriptionRepository {
                         },
                         { $project:{
                                 affiliate_mid: "$affiliate_mid",
+                                added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                            }},
+                        { $project:{
+                                affiliate_mid: "$affiliate_mid",
                                 day: { "$dayOfMonth" : "$added_dtm"},
                                 month: { "$month" : "$added_dtm" },
                                 year:{ "$year": "$added_dtm" }
@@ -320,7 +340,7 @@ class SubscriptionRepository {
                             added_dtm: "$_id.added_dtm",
                             affiliate_mids: "$affiliate_mids"
                         }}
-                    ]).toArray(function(err, items) {
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getAffiliateMidFromSubscriptionsByDateRange - err: ', err.message);
                             resolve([]);
