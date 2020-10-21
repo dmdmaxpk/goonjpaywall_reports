@@ -22,10 +22,8 @@ computeCallbackSendReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('fromDate: ', fromDate, toDate);
-
     query = countQuery(fromDate, toDate);
-
-    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', 'aggregate', query).then(async function (totalCount) {
+    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
         console.log('totalCount: ', totalCount); return;
 
         if (totalCount > 0){
