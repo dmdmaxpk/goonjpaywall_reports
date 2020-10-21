@@ -113,7 +113,7 @@ class Helper {
     }
 
     static async getTotalCount (req, from, to, collectionName, query) {
-        return new Promise((resolve, reject) => {
+        return await new Promise(async(resolve, reject) => {
             req.db.collection(collectionName, async function (err, collection){
                 if (!err){
                     try {
@@ -133,10 +133,6 @@ class Helper {
                         await resolve(0);
                     }
                 }
-
-                console.log('out from IF: ');
-
-                await resolve(0);
             });
         });
     }
