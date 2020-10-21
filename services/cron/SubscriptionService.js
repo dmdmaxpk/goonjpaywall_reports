@@ -65,8 +65,6 @@ computeSubscriptionReports = async(req, res) => {
             }
         }
 
-        console.log('============================');
-
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
         console.log('computeSubscriptionReports -> day : ', day, req.day, helper.getDaysInMonth(month));

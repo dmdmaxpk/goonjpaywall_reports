@@ -89,9 +89,7 @@ class SubscriptionRepository {
                                 isCallbAckSent: {$cond: { if: { $and: [{$gte: ["$callbackhistorySize",1]},{$eq: [ "$isValidUser",true ]} ] } ,then:"yes",else:"no" }} ,
                                 callBackSentTime: {$cond: {if: "$isValidUser", then: "$billing_dm" , else: "" } }
                             }
-                        },
-                        { $sort : { added_dtm : 1} },
-                        { $limit : config.cron_db_query_data_limit }
+                        }
                     ])
                     .toArray(function(err, items) {
                         if(err){

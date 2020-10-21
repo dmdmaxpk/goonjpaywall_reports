@@ -6,8 +6,7 @@ const config = require('../../config');
 const  _ = require('lodash');
 
 let fromDate, toDate, day, month, hoursFromISODate, finalList = [];
-let lastRecode, fetchedRecordsLength = 0, dataLimit = config.cron_db_query_data_limit;
-
+let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeCallbackSendReports = async(req, res) => {
     console.log('computeCallbackSendReports');
 
@@ -15,52 +14,68 @@ computeCallbackSendReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    if (fetchedRecordsLength === 0 || fetchedRecordsLength < dataLimit){
-        dateData = helper.computeNextDate(req, 1, 7);
-        req = dateData.req;
-        day = dateData.day;
-        month = dateData.month;
-        fromDate = dateData.fromDate;
-        toDate = dateData.toDate;
-    }
+    dateData = helper.computeNextDate(req, 1, 7);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
 
-    console.log('computeCallbackSendReports: ', fromDate, toDate);
-    subscriptionRepo.getCallbackSendByDateRange(req, fromDate, toDate).then(function (subscriptions) {
-        console.log('subscriptions: ', subscriptions.length);
-        fetchedRecordsLength = subscriptions.length;
+    console.log('fromDate: ', fromDate, toDate);
+    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
+        if (totalCount > 0){
+            computeChunks = helper.getChunks(totalCount);
+            totalChunks = computeChunks.chunks;
+            lastLimit = computeChunks.lastChunkCount;
+            let skip = 0;
 
-        if (fetchedRecordsLength > 0){
-            finalList = computeUserData(subscriptions);
-            insertNewRecord(finalList,  new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+
+            //Loop over no.of chunks
+            for (i = 0 ; i < totalChunks; i++){
+                await subscriptionRepo.getCallbackSendByDateRange(req, fromDate, toDate, skip, limit).then(async function (subscriptions) {
+                    console.log('subscriptions 1: ', subscriptions.length);
+
+                    //set skip variable to limit data
+                    skip = skip + limit;
+
+                    // Now compute and store data in DB
+                    if (subscriptions.length > 0){
+                        finalList = computeUserData(subscriptions);
+                        insertNewRecord(finalList, fromDate);
+                    }
+                });
+            }
+
+            // fetch last chunk Data from DB
+            if (lastLimit > 0){
+                await subscriptionRepo.getCallbackSendByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (subscriptions) {
+                    console.log('subscriptions 2: ', subscriptions.length);
+
+                    // Now compute and store data in DB
+                    if (subscriptions.length > 0){
+                        finalList = computeUserData(subscriptions);
+                        insertNewRecord(finalList, fromDate);
+                    }
+                });
+            }
         }
 
         // Get compute data for next time slot
-        if (fetchedRecordsLength < dataLimit)
-            req.day = Number(req.day) + 1;
+        req.day = Number(req.day) + 1;
+        console.log('computeCallbackSendReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        console.log('-> day : ', day, req.day, helper.getDaysInMonth(month));
         if (req.day <= helper.getDaysInMonth(month)){
-            console.log('dataLimit - fetchedRecordsLength: ', dataLimit, fetchedRecordsLength);
-            if (fetchedRecordsLength < dataLimit) {
-                console.log('Yes less: ', fetchedRecordsLength < dataLimit);
-                if (month < helper.getTodayMonthNo())
-                    computeCallbackSendReports(req, res);
-                else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                    computeCallbackSendReports(req, res);
-            }
-            else{
-                console.log('Yes greater  - fromDate before: ', fromDate);
-                lastRecode = subscriptions[fetchedRecordsLength - 1];
-                fromDate = _.clone(lastRecode.added_dtm);
-                console.log('Yes greater  - fromDate after: ', fromDate);
-
+            console.log('IF');
+            if (month < helper.getTodayMonthNo())
                 computeCallbackSendReports(req, res);
-            }
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+                computeCallbackSendReports(req, res);
         }
         else{
+            console.log('ELSE');
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('-> month : ', month, req.month, new Date().getMonth());
+            console.log('computeCallbackSendReports -> month : ', month, req.month, new Date().getMonth());
 
             if (req.month <= helper.getTodayMonthNo())
                 computeCallbackSendReports(req, res);
@@ -101,6 +116,8 @@ function computeUserData(subscriptions) {
 
 function insertNewRecord(data, dateString) {
     hoursFromISODate = _.clone(dateString);
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
+
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0){
             result = result[0];
