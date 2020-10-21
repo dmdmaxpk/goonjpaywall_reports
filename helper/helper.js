@@ -112,20 +112,42 @@ class Helper {
         return {chunks: chunks, lastChunkCount: lastChunkCount}
     }
 
-    static async getTotalCount (req, from, to, collectionName, query) {
+    static async getTotalCount (req, from, to, collectionName, query=null) {
         return await new Promise(async(resolve, reject) => {
             req.db.collection(collectionName, async function (err, collection){
                 if (!err){
-                    try {
-                        await collection.aggregate(query).toArray(async function(err, count) {
-                            if(err){
-                                console.error(collectionName, ' count query - err: ', err.message);
-                                await resolve(0);
-                            }
-                            (count.length > 0) ? await resolve(count[0].count) : await resolve(0);
-                        });
-                    }catch (e) {
-                        await resolve(0);
+                    if (query === null) {
+                        console.log('getTotalCount - if case');
+                        try {
+                            let condition;
+                            if (collectionName === 'billinghistories')
+                                condition = [ {billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}} ];
+                            else
+                                condition = [ {added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}} ];
+
+                            req.db.collection(collectionName, async function (err, collection) {
+                                if (!err)
+                                    resolve(await collection.countDocuments({ $and: condition }));
+
+                                resolve(0);
+                            });
+                        }catch (e) {
+                            await resolve(0);
+                        }
+                    }
+                    else{
+                        console.log('getTotalCount - else case');
+                        try {
+                            await collection.aggregate(query).toArray(async function(err, count) {
+                                if(err){
+                                    console.error(collectionName, ' count query - err: ', err.message);
+                                    await resolve(0);
+                                }
+                                (count.length > 0) ? await resolve(count[0].count) : await resolve(0);
+                            });
+                        }catch (e) {
+                            await resolve(0);
+                        }
                     }
                 }
             });

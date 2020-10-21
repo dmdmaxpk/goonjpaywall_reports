@@ -206,6 +206,7 @@ function countQuery(from, to){
         }
     ];
 }
+
 module.exports = {
     computeCallbackSendReports: computeCallbackSendReports,
 };
