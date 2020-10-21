@@ -6,7 +6,7 @@ const config = require('../../config');
 const  _ = require('lodash');
 
 let fromDate, toDate, day, month, hoursFromISODate, chargeDetailList = [], transactingSubsList = [];
-let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
+let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeChargeDetailsReports = async(req, res) => {
     console.log('computeChargeDetailsReports');
 
@@ -24,7 +24,8 @@ computeChargeDetailsReports = async(req, res) => {
     /*
     * Get total count from db
     * */
-    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
+    query = countQuery(fromDate, toDate);
+    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
         if (totalCount > 0){
             computeChunks = helper.getChunks(totalCount);
             totalChunks = computeChunks.chunks;
@@ -529,6 +530,66 @@ function cloneTransactionObj() {
     }
 }
 
+function countQuery(from, to){
+    return [
+        {$match : {
+                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+            }},
+        {$lookup:{
+                from: "billinghistories",
+                localField: "subscriber_id",
+                foreignField: "subscriber_id",
+                as: "histories"}
+        },
+        { $project: {
+                source:"$source",
+                added_dtm:"$added_dtm",
+                subscription_status:"$subscription_status",
+                succeses: { $filter: {
+                        input: "$histories",
+                        as: "history",
+                        cond: { $or: [
+                                { $eq: ['$$history.billing_status',"Success"] },
+                                { $eq: ['$$history.billing_status',"graced"] },
+                            ]}
+                    }} }
+        },
+        {$project: {
+                source:"$source",
+                added_dtm:"$added_dtm",
+                numOfSucc: { $size:"$succeses" },
+                subscription_status:"$subscription_status",
+                billing_status: {"$arrayElemAt": ["$succeses.billing_status",0]},
+                price: {"$arrayElemAt": ["$succeses.price",0]},
+                discount: {"$arrayElemAt": ["$succeses.discount",0]},
+                package: {"$arrayElemAt": ["$succeses.package_id",0]},
+                paywall: {"$arrayElemAt": ["$succeses.paywall_id",0]},
+                operator: {"$arrayElemAt": ["$succeses.operator",0]},
+                micro_charge: {"$arrayElemAt": ["$succeses.micro_charge",0]},
+                billing_dtm: {"$arrayElemAt": ["$succeses.billing_dtm",0]}
+            }
+        },
+        {$match: { numOfSucc: {$gte: 1}  }},
+        {$project: {
+                _id: 0,
+                added_dtm:"$added_dtm",
+                source:"$source",
+                subscription_status:"$subscription_status",
+                billing_status:"$billing_status",
+                price: "$price",
+                discount: "$discount",
+                package: "$package",
+                paywall: "$paywall",
+                operator: "$operator",
+                micro_charge: "$micro_charge",
+                billing_dtm: "$billing_dtm",
+            }
+        },
+        {
+            $count: "count"
+        }
+    ];
+}
 
 module.exports = {
     computeChargeDetailsReports: computeChargeDetailsReports,

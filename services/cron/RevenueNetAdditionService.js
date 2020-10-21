@@ -5,8 +5,8 @@ const helper = require('../../helper/helper');
 const config = require('../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, finalData, finalList = [];
-let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
+let fromDate, toDate, day, month, finalData, hoursFromISODate, finalList = [];
+let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeRevenueNetAdditionReports = async(req, res) => {
     console.log('computeRevenueNetAdditionReports');
 
@@ -22,7 +22,11 @@ computeRevenueNetAdditionReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('fromDate: ', fromDate, toDate);
-    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
+    query = countQuery(fromDate, toDate);
+
+    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
+        console.log('totalCount: ', totalCount);
+
         if (totalCount > 0){
             computeChunks = helper.getChunks(totalCount);
             totalChunks = computeChunks.chunks;
@@ -41,7 +45,7 @@ computeRevenueNetAdditionReports = async(req, res) => {
                     if (netAdditions.length > 0){
                         finalData = computeNetAdditionRevenueData(netAdditions);
                         finalList = finalData.finalList;
-                        console.log('finalList.length : ', finalList.length, finalList);
+                        console.log('finalList.length : ', finalList.length);
                         if (finalList.length > 0)
                             insertNewRecord(finalList, fromDate);
                     }
@@ -57,7 +61,7 @@ computeRevenueNetAdditionReports = async(req, res) => {
                     if (netAdditions.length > 0){
                         finalData = computeNetAdditionRevenueData(netAdditions);
                         finalList = finalData.finalList;
-                        console.log('finalList.length : ', finalList.length, finalList);
+                        console.log('finalList.length : ', finalList.length);
                         if (finalList.length > 0)
                             insertNewRecord(finalList, fromDate);
                     }
@@ -326,6 +330,62 @@ function cloneInfoObj() {
         added_dtm: '',
         added_dtm_hours: ''
     };
+}
+
+function countQuery(from, to){
+    return [
+        {$match : {
+                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+            }},
+        {$lookup:{
+                from: "billinghistories",
+                localField: "subscriber_id",
+                foreignField: "subscriber_id",
+                as: "histories"}
+        },
+        { $project: {
+                source:"$source",
+                added_dtm:"$added_dtm",
+                subscription_status:"$subscription_status",
+                bill_status: { $filter: {
+                        input: "$histories",
+                        as: "history",
+                        cond: { $or: [
+                                { $eq: ['$$history.billing_status',"expired"] },
+                                { $eq: ['$$history.billing_status',"unsubscribe-request-recieved"] },
+                                { $eq: ['$$history.billing_status',"unsubscribe-request-received-and-expired"] }
+                            ]}
+                    }} }
+        },
+        {$project: {
+                source:"$source",
+                added_dtm:"$added_dtm",
+                numOfFailed: { $size:"$bill_status" },
+                subscription_status:"$subscription_status",
+                billing_status: {"$arrayElemAt": ["$bill_status.billing_status",0]},
+                package: {"$arrayElemAt": ["$bill_status.package_id",0]},
+                paywall: {"$arrayElemAt": ["$bill_status.paywall_id",0]},
+                operator: {"$arrayElemAt": ["$bill_status.operator",0]},
+                billing_dtm: {"$arrayElemAt": ["$bill_status.billing_dtm",0]}
+            }
+        },
+        {$match: { numOfFailed: {$gte: 1}  }},
+        {$project: {
+                _id: 0,
+                added_dtm:"$added_dtm",
+                source:"$source",
+                subscription_status:"$subscription_status",
+                billing_status:"$billing_status",
+                package: "$package",
+                paywall: "$paywall",
+                operator: "$operator",
+                billing_dtm: "$billing_dtm",
+            }
+        },
+        {
+            $count: "count"
+        }
+    ];
 }
 
 module.exports = {

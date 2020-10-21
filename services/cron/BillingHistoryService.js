@@ -7,63 +7,79 @@ const  _ = require('lodash');
 
 let billingHistory = [], returningUserList = [], fullAndPartialChargeList = [],
     sourceWiseUnSubList = [], sourceWiseTrail = [], uniquePayingUsers = [], successRate = [];
-let lastRecode, fetchedRecordsLength = 0, dataLimit = config.cron_db_query_data_limit;
 let fromDate, toDate, day, month, computedData, hoursFromISODate;
+let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 
 computeBillingHistoryReports = async(req, res) => {
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    if (fetchedRecordsLength === 0 || fetchedRecordsLength < dataLimit){
-        dateData = helper.computeNextDate(req, 1, 7);
-        req = dateData.req;
-        day = dateData.day;
-        month = dateData.month;
-        fromDate = dateData.fromDate;
-        toDate = dateData.toDate;
-    }
+    dateData = helper.computeNextDate(req, 1, 2);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
 
-    console.log('computeBillingHistoryReports: ', fromDate, toDate);
-    billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate).then(function (result) {
-        console.log('result: ', result.length);
-        fetchedRecordsLength = result.length;
+    await helper.getTotalCount(req, fromDate, toDate, 'billinghistories').then(async function (totalCount) {
+        console.log('totalCount: ', totalCount);
 
-        // Compute net result and store in database
-        if (fetchedRecordsLength > 0){
-            computedData = computeBillingHistoryData(result);
-            pushDataInArray(computedData);
-            insertNewRecord(fromDate);
+        if (totalCount > 0){
+            computeChunks = helper.getChunks(totalCount);
+            totalChunks = computeChunks.chunks;
+            lastLimit = computeChunks.lastChunkCount;
+            let skip = 0;
+
+            //Loop over no.of chunks
+            for (i = 0 ; i < totalChunks; i++){
+                await billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, skip, limit).then(async function (result) {
+                    console.log('subscriptions 1: ', subscriptions.length);
+
+                    //set skip variable to limit data
+                    skip = skip + limit;
+
+                    // Now compute and store data in DB
+                    if (result.length > 0){
+                        computedData = computeBillingHistoryData(result);
+                        pushDataInArray(computedData);
+                        insertNewRecord(fromDate);
+                    }
+                });
+            }
+
+            // fetch last chunk Data from DB
+            if (lastLimit > 0){
+                await billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (result) {
+                    console.log('result 2: ', result.length);
+
+                    // Now compute and store data in DB
+                    if (result.length > 0){
+                        computedData = computeBillingHistoryData(result);
+                        pushDataInArray(computedData);
+                        insertNewRecord(fromDate);
+                    }
+                });
+            }
         }
 
         // Get compute data for next time slot
-        if (fetchedRecordsLength < dataLimit)
-            req.day = Number(req.day) + 1;
+        req.day = Number(req.day) + 1;
+        console.log('computeCallbackSendReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        console.log('-> day : ', day, req.day, helper.getDaysInMonth(month));
         if (req.day <= helper.getDaysInMonth(month)){
-            console.log('dataLimit - fetchedRecordsLength: ', dataLimit, fetchedRecordsLength);
-            if (fetchedRecordsLength < dataLimit) {
-                console.log('Yes less: ', fetchedRecordsLength < dataLimit);
-
-                if (month < helper.getTodayMonthNo())
-                    computeBillingHistoryReports(req, res);
-                else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                    computeBillingHistoryReports(req, res);
-            }
-            else{
-                console.log('Yes greater  - fromDate before: ', fromDate);
-                lastRecode = result[fetchedRecordsLength - 1];
-                fromDate = _.clone(lastRecode.billing_dtm);
-                console.log('Yes greater  - fromDate after: ', fromDate);
-
+            console.log('IF');
+            if (month < helper.getTodayMonthNo())
                 computeBillingHistoryReports(req, res);
-            }
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+                computeBillingHistoryReports(req, res);
         }
         else{
+            console.log('ELSE');
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('-> month : ', month, req.month, new Date().getMonth());
+            console.log('computeCallbackSendReports -> month : ', month, req.month, new Date().getMonth());
+
             if (req.month <= helper.getTodayMonthNo())
                 computeBillingHistoryReports(req, res);
         }
@@ -359,6 +375,7 @@ function computeBillingHistoryData(data) {
 function insertNewRecord(dateString) {
     hoursFromISODate = _.clone(dateString);
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
+
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0){
             result = result[0];

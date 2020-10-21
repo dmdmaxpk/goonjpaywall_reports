@@ -1,16 +1,14 @@
 const config = require('../../config');
 
 class BillingHistoryRepository {
-    async getBillingHistoryByDateRange (req, from, to) {
+    async getBillingHistoryByDateRange (req, from, to, skip, limit) {
         return new Promise((resolve, reject) => {
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
                     collection.find({
-                        $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
-                    }, { allowDiskUse: true })
-                    .sort({billing_dtm: 1})
-                    .limit(config.cron_db_query_data_limit)
-                    .toArray(function(err, items) {
+                            $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+                        }, { allowDiskUse: true }
+                    ).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
                             console.log('getBillingHistoryByDateRange - err: ', err.message);
                             resolve([]);
