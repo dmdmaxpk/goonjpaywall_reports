@@ -117,7 +117,14 @@ class Helper {
             req.db.collection(collectionName, async function (err, collection){
                 if (!err){
                     try {
-                        resolve(await collection.aggregate(query));
+                        collection.aggregate(query).toArray(function(err, items) {
+                            if(err){
+                                console.log('getCallbackSendByDateRange - err: ', err.message);
+                                resolve([]);
+                            }
+
+                            resolve(items);
+                        });
                     }catch (e) {
                         reject(e);
                     }
