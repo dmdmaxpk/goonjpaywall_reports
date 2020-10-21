@@ -116,7 +116,7 @@ class Helper {
         return new Promise((resolve, reject) => {
             req.db.collection(collectionName, async function (err, collection){
                 if (!err)
-                    resolve(await collection[conditionType[query]]);
+                    resolve(await collection.aggregate[query]);
 
                 resolve(0);
             });
