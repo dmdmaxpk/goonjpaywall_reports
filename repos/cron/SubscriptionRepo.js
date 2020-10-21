@@ -20,12 +20,11 @@ class SubscriptionRepository {
         });
     }
 
-    async getCallbackSendByDateRange(req, from, to) {
+    async getCallbackSendByDateRange(req, from, to, skip, limit) {
         return new Promise((resolve, reject) => {
             console.log('getCallbackSendByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
-                    console.log('collection: ', collection);
                     collection.aggregate([
                         {
                             $match: {
@@ -90,8 +89,7 @@ class SubscriptionRepository {
                                 callBackSentTime: {$cond: {if: "$isValidUser", then: "$billing_dm" , else: "" } }
                             }
                         }
-                    ])
-                    .toArray(function(err, items) {
+                    ]).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
                             console.log('getCallbackSendByDateRange - err: ', err.message);
                             resolve([]);

@@ -22,7 +22,7 @@ class BillingHistoryRepository {
         });
     }
 
-    async getnetAdditionByDateRange(req, from, to){
+    async getnetAdditionByDateRange(req, from, to, skip, limit){
         return new Promise((resolve, reject) => {
             console.log('getnetAdditionByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {
@@ -77,8 +77,7 @@ class BillingHistoryRepository {
                                 billing_dtm: "$billing_dtm",
                             }
                         }
-                    ])
-                    .toArray(function(err, items) {
+                    ]).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
                             console.log('getnetAdditionByDateRange - err: ', err.message);
                             resolve([]);

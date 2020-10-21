@@ -2,11 +2,13 @@ const container = require("../../configurations/container");
 const reportsRepo = require('../../repos/apis/ReportsRepo');
 const billingHistoryRepo = container.resolve('billingHistoryRepository');
 const helper = require('../../helper/helper');
+const config = require('../../config');
 const  _ = require('lodash');
 
+let fromDate, toDate, day, month, finalData, finalList = [];
+let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeRevenueNetAdditionReports = async(req, res) => {
     console.log('computeRevenueNetAdditionReports');
-    let fromDate, toDate, day, month, finalData, finalList = [];
 
     /*
     * Compute date and time for data fetching from db
@@ -19,16 +21,48 @@ computeRevenueNetAdditionReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    console.log('computeRevenueNetAdditionReports: ', fromDate, toDate);
-    billingHistoryRepo.getnetAdditionByDateRange(req, fromDate, toDate).then(function (netAdditions) {
-        console.log('netAdditions: ', netAdditions.length);
+    console.log('fromDate: ', fromDate, toDate);
+    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
+        if (totalCount > 0){
+            computeChunks = helper.getChunks(totalCount);
+            totalChunks = computeChunks.chunks;
+            lastLimit = computeChunks.lastChunkCount;
+            let skip = 0;
 
-        if (netAdditions.length > 0){
-            finalData = computeNetAdditionRevenueData(netAdditions);
-            finalList = finalData.finalList;
-            console.log('finalList.length : ', finalList.length, finalList);
-            if (finalList.length > 0)
-                insertNewRecord(finalList, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+            //Loop over no.of chunks
+            for (i = 0 ; i < totalChunks; i++){
+                await  billingHistoryRepo.getnetAdditionByDateRange(req, fromDate, toDate, skip, limit).then(async function (netAdditions) {
+                    console.log('netAdditions : ', netAdditions.length);
+
+                    //set skip variable to limit data
+                    skip = skip + limit;
+
+                    // Now compute and store data in DB
+                    if (netAdditions.length > 0){
+                        finalData = computeNetAdditionRevenueData(netAdditions);
+                        finalList = finalData.finalList;
+                        console.log('finalList.length : ', finalList.length, finalList);
+                        if (finalList.length > 0)
+                            insertNewRecord(finalList, fromDate);
+                    }
+                });
+            }
+
+            // fetch last chunk Data from DB
+            if (lastLimit > 0){
+                await  billingHistoryRepo.getnetAdditionByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (netAdditions) {
+                    console.log('netAdditions: ', netAdditions.length);
+
+                    // Now compute and store data in DB
+                    if (netAdditions.length > 0){
+                        finalData = computeNetAdditionRevenueData(netAdditions);
+                        finalList = finalData.finalList;
+                        console.log('finalList.length : ', finalList.length, finalList);
+                        if (finalList.length > 0)
+                            insertNewRecord(finalList, fromDate);
+                    }
+                });
+            }
         }
 
         // Get compute data for next time slot
@@ -36,12 +70,14 @@ computeRevenueNetAdditionReports = async(req, res) => {
         console.log('computeRevenueNetAdditionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
         if (req.day <= helper.getDaysInMonth(month)){
+            console.log('IF');
             if (month < helper.getTodayMonthNo())
                 computeRevenueNetAdditionReports(req, res);
             else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
                 computeRevenueNetAdditionReports(req, res);
         }
         else{
+            console.log('ELSE');
             req.day = 1;
             req.month = Number(req.month) + 1;
             console.log('computeRevenueNetAdditionReports -> month : ', month, req.month, new Date().getMonth());
@@ -238,19 +274,24 @@ function computeNetAdditionRevenueData(netAdditions) {
 }
 
 function insertNewRecord(finalList, dateString) {
+    hoursFromISODate = _.clone(dateString);
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
+
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length);
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         console.log('result: ', result);
         if (result.length > 0){
             result = result[0];
-            result.netAdditions = finalList;
+            if (helper.splitHoursFromISODate(hoursFromISODate))
+                result.netAdditions = finalList;
+            else
+                result.netAdditions.concat(finalList);
 
             console.log('result: ', result);
             reportsRepo.updateReport(result, result._id);
         }
-        else{
+        else
             reportsRepo.createReport({netAdditions: finalList, date: dateString});
-        }
     });
 }
 
