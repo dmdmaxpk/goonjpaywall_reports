@@ -122,7 +122,7 @@ class Helper {
                                 console.error(collectionName, ' count query - err: ', err.message);
                                 await resolve(0);
                             }
-                            await resolve(count[0].count);
+                            (count.length > 0) ? await resolve(count[0].count) : await resolve(0);
                         });
                     }catch (e) {
                         await resolve(0);
