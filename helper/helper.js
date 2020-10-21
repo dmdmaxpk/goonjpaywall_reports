@@ -100,14 +100,14 @@ class Helper {
     }
 
     static getChunks(totalCount){
-        let chunks, lastChunkCount = 0;
+        let chunks = 1, lastChunkCount = 0;
 
-        chunks = Math.round(totalCount / config.cron_db_query_data_limit) ;
-        chunks = chunks > 0 ? chunks : 1;
+        if (totalCount > config.cron_db_query_data_limit){
+            chunks = Math.round(totalCount / config.cron_db_query_data_limit) ;
+            chunks = chunks > 0 ? chunks : 1;
 
-        if (totalCount > config.cron_db_query_data_limit)
             lastChunkCount = totalCount % config.cron_db_query_data_limit;
-
+        }
 
         return {chunks: chunks, lastChunkCount: lastChunkCount}
     }
@@ -123,6 +123,9 @@ class Helper {
                                 await resolve(0);
                             }
 
+                            console.log('count: ', count);
+                            count = count[0].count;
+                            console.log('count - final: ', count);
                             await resolve(count);
                         });
                     }catch (e) {
