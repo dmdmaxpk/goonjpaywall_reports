@@ -112,17 +112,11 @@ class Helper {
         return {chunks: chunks, lastChunkCount: lastChunkCount}
     }
 
-    static async getTotalCount (req, from, to, collectionName) {
+    static async getTotalCount (req, from, to, collectionName, query) {
         return new Promise((resolve, reject) => {
-            let condition;
-            if (collectionName === 'billinghistories')
-                condition = [ {billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}} ];
-            else
-                condition = [ {added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}} ];
-
             req.db.collection(collectionName, async function (err, collection) {
                 if (!err)
-                    resolve(await collection.countDocuments({ $and: condition }));
+                    resolve(await collection[query]);
 
                 resolve(0);
             });

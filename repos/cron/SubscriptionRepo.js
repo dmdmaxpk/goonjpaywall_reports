@@ -88,6 +88,9 @@ class SubscriptionRepository {
                                 isCallbAckSent: {$cond: { if: { $and: [{$gte: ["$callbackhistorySize",1]},{$eq: [ "$isValidUser",true ]} ] } ,then:"yes",else:"no" }} ,
                                 callBackSentTime: {$cond: {if: "$isValidUser", then: "$billing_dm" , else: "" } }
                             }
+                        },
+                        {
+                            $count: "$_id"
                         }
                     ]).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){

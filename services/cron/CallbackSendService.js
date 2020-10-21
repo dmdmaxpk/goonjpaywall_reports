@@ -6,7 +6,7 @@ const config = require('../../config');
 const  _ = require('lodash');
 
 let fromDate, toDate, day, month, hoursFromISODate, finalList = [];
-let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
+let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeCallbackSendReports = async(req, res) => {
     console.log('computeCallbackSendReports');
 
@@ -22,7 +22,12 @@ computeCallbackSendReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('fromDate: ', fromDate, toDate);
-    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
+
+    query = countQuery(fromDate, toDate);
+    console.log('query: ', query); return;
+
+    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
+        console.log('totalCount: ', totalCount);
         if (totalCount > 0){
             computeChunks = helper.getChunks(totalCount);
             totalChunks = computeChunks.chunks;
@@ -133,7 +138,76 @@ function insertNewRecord(data, dateString) {
     });
 }
 
-
+function countQuery(from, to){
+    return aggregate([
+        {
+            $match: {
+                $or:[{source: "HE"},{source: "affiliate_web"}],
+                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+            }
+        },
+        {
+            $lookup:
+                {
+                    from: "billinghistories",
+                    localField: "_id",
+                    foreignField: "subscription_id",
+                    as: "histories"
+                }
+        },
+        {
+            $project: {
+                tid: "$affiliate_unique_transaction_id",
+                mid: "$affiliate_mid",
+                added_dtm: "$added_dtm",
+                active: "$active",
+                callbackhistory: {
+                    $filter: {
+                        input: "$histories",
+                        as: "histor",
+                        cond: {$eq: ["$$histor.billing_status", "Affiliate callback sent" ] }
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                tid: "$tid",
+                mid: "$mid",
+                isValidUser: {$cond: {if: {$eq:["$active",true]}, then: true, else: false } },
+                added_dtm: "$added_dtm",
+                callbackhistorySize: {"$size": "$callbackhistory" },
+                callbackObj: {$arrayElemAt: ["$callbackhistory",0]},
+                added_dm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } },
+            }
+        },
+        {
+            $project: {
+                tid: "$tid",
+                mid: "$mid",
+                isValidUser: "$isValidUser",
+                callbackhistorySize: "$callbackhistorySize",
+                added_dtm: "$added_dtm",
+                added_dm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } },
+                billing_dm: { '$dateToString' : { date: "$callbackObj.billing_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+            }
+        },
+        {
+            $project: {
+                tid: "$tid",
+                mid: "$mid",
+                isValidUser: "$isValidUser",
+                added_dtm:  {$cond: {if: "$isValidUser", then: "$added_dm" , else: "" } },
+                subscription_dtm: "$added_dtm",
+                isCallbAckSent: {$cond: { if: { $and: [{$gte: ["$callbackhistorySize",1]},{$eq: [ "$isValidUser",true ]} ] } ,then:"yes",else:"no" }} ,
+                callBackSentTime: {$cond: {if: "$isValidUser", then: "$billing_dm" , else: "" } }
+            }
+        },
+        {
+            $count: "count"
+        }
+    ]);
+}
 module.exports = {
     computeCallbackSendReports: computeCallbackSendReports,
 };
