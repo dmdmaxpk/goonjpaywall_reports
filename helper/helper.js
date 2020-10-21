@@ -118,25 +118,25 @@ class Helper {
                 if (!err){
                     try {
                         console.log('collection: ', collection);
-                        collection.aggregate(query).toArray(function(err, count) {
+                        await collection.aggregate(query).toArray(async function(err, count) {
                             if(err){
                                 console.error(' - err: ', err.message);
-                                resolve(0);
+                                await resolve(0);
                             }
 
                             console.log('count: ', count);
-                            resolve(count);
+                            await resolve(count);
                         });
                     }catch (e) {
                         console.error('catch block: ');
 
-                        resolve(0);
+                        await resolve(0);
                     }
                 }
 
                 console.log('out from IF: ');
 
-                resolve(0);
+                await resolve(0);
             });
         });
     }
