@@ -214,9 +214,9 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString) {
                 console.log('ELSE');
 
                 if (result.subscriptions)
-                    result.subscriptions = finalList;
-                else
                     result.subscriptions.concat(finalList);
+                else
+                    result.subscriptions = finalList;
 
                 if (result.subscribers)
                     result.subscribers.activeInActive.concat(subscribersFinalList);

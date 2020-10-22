@@ -12,43 +12,43 @@ router.route('/compute-subscriber-reports')
 router.route('/compute-subscriber-subscriptions-reports')
     .get(connecton.connect, controller.computeSubscriberSubscriptionsReports);
 
-router.route('/compute-transactions-avg-reports')
-    .get(connecton.connect, controller.computeTransactionsAvgReports);
-
 router.route('/compute-subscriber-transaction-reports')
     .get(connecton.connect, controller.computeSubscriberTransactionsReports);
+
+router.route('/compute-transactions-avg-reports')
+    .get(connecton.connect, controller.computeTransactionsAvgReports);
 
 router.route('/compute-subscription-reports')
     .get(connecton.connect, controller.computeSubscriptionReports); //**
 
 router.route('/compute-billing-history-reports')
-    .get(connecton.connect, controller.computeBillingHistoryReports); //
+    .get(connecton.connect, controller.computeBillingHistoryReports); //**
 
 router.route('/compute-callback-send-reports')
-    .get(connecton.connect, controller.computeCallbackSendReports); //**
+    .get(connecton.connect, controller.computeCallbackSendReports); //
 
 router.route('/compute-charge-detail-reports')
-    .get(connecton.connect, controller.computeChargeDetailsReports); //**
+    .get(connecton.connect, controller.computeChargeDetailsReports); //
 
 router.route('/compute-revenue-net-addition-reports')
     .get(connecton.connect, controller.computeRevenueNetAdditionReports); //
 
 router.route('/compute-affiliate-reports')
-    .get(connecton.connect, controller.computeAffiliateReports); //**
+    .get(connecton.connect, controller.computeAffiliateReports); //
 
 router.route('/compute-affiliate-mids-from-subscriptions-reports')
-    .get(connecton.connect, controller.computeAffiliateMidsFromSubscriptionsReports); //**
+    .get(connecton.connect, controller.computeAffiliateMidsFromSubscriptionsReports); //
 
 router.route('/compute-helogs-logger-reports')
-    .get(connecton.connect, controller.computeHelogsReports); //**
+    .get(connecton.connect, controller.computeHelogsReports); //
 
 router.route('/compute-helogs-unique-success-logger-reports')
-    .get(connecton.connect, controller.computeHelogsUniqueSuccessReports); //**
+    .get(connecton.connect, controller.computeHelogsUniqueSuccessReports); //
 
 router.route('/compute-page-views-logger-reports')
-    .get(connecton.connect, controller.computeLogsPageViewReports); //**
+    .get(connecton.connect, controller.computeLogsPageViewReports); //
 
 router.route('/compute-subscribe-clicks-logger-reports')
-    .get(connecton.connect, controller.computeLogsSubscribeClicksReports); //**
+    .get(connecton.connect, controller.computeLogsSubscribeClicksReports); //
 
 module.exports = router;
