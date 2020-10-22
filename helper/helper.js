@@ -46,9 +46,9 @@ class Helper {
         console.log('dateString: ', dateString);
 
         if (dateString === 19)
-            return false;
-        else
             return true;
+        else
+            return false;
     }
 
     static setDateWithTimezone(date){
