@@ -51,7 +51,8 @@ class Helper {
     }
 
     static setDateWithTimezone(date){
-        return date.setHours(date.getHours()-5).toISOString();
+        date.setHours(date.getHours()-5);
+        return date.toISOString();
     }
 
     static computeTodayDate(req){
