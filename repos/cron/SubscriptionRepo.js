@@ -15,7 +15,7 @@ class SubscriptionRepository {
                             source: "$source",
                             affiliate_mid: "$affiliate_mid",
                             subscription_status: "$subscription_status",
-                            added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } },
+                            added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } },
                         }}
                     ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){

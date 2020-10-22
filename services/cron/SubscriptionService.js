@@ -48,9 +48,9 @@ computeSubscriptionReports = async(req, res) => {
                         if (finalList.length > 0 || subscribersFinalList.length > 0){
                             console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
                             if (totalChunks > 1 || lastLimit > 0)
-                                await insertNewRecordSync(finalList, subscribersFinalList, fromDate);
+                                await insertNewRecord(finalList, subscribersFinalList, fromDate);
                             else
-                                insertNewRecordAsync(finalList, subscribersFinalList, fromDate);
+                                insertNewRecord(finalList, subscribersFinalList, fromDate);
                         }
                     }
                 });
@@ -67,7 +67,7 @@ computeSubscriptionReports = async(req, res) => {
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
                         if (finalList.length > 0 || subscribersFinalList.length > 0)
-                            insertNewRecordAsync(finalList, subscribersFinalList, fromDate);
+                            insertNewRecord(finalList, subscribersFinalList, fromDate);
                     }
                 });
             }
@@ -193,62 +193,13 @@ function computeSubscriptionsData(subscriptions) {
     return {finalList: finalList, subscribersFinalList: subscribersFinalList};
 }
 
-function insertNewRecordSync(finalList, subscribersFinalList, dateString) {
+async function insertNewRecord(finalList, subscribersFinalList, dateString) {
     console.log('dateString: ', dateString);
 
     hoursFromISODate = _.clone(dateString);
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
-    console.log('=>=>=>=>=>=>=> insertNewRecordSync', dateString, finalList.length, subscribersFinalList.length);
-    reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
-        if (result.length > 0){
-            result = result[0];
-
-            if (helper.splitHoursFromISODate(hoursFromISODate)){
-                console.log('IF');
-
-                result.subscriptions = finalList;
-
-                if (result.subscribers)
-                    result.subscribers.activeInActive = subscribersFinalList;
-                else{
-                    result.subscribers = {activeInActive: ''};
-                    result.subscribers.activeInActive = subscribersFinalList;
-                }
-            }else{
-                console.log('ELSE');
-
-                if (result.subscriptions)
-                    result.subscriptions.concat(finalList);
-                else
-                    result.subscriptions = finalList;
-
-                if (result.subscribers)
-                    result.subscribers.activeInActive.concat(subscribersFinalList);
-                else{
-                    result.subscribers = {activeInActive: ''};
-                    result.subscribers.activeInActive = subscribersFinalList;
-                }
-            }
-
-            console.log('result: ');
-            reportsRepo.updateReport(result, result._id);
-        }
-        else{
-            let subscribers = {activeInActive: ''};
-            subscribers.activeInActive = subscribersFinalList;
-            reportsRepo.createReport({subscriptions: finalList, subscribers: subscribers, date: dateString});
-        }
-    });
-}
-
-async function insertNewRecordAsync(finalList, subscribersFinalList, dateString) {
-    console.log('dateString: ', dateString);
-
-    hoursFromISODate = _.clone(dateString);
-    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
-
-    console.log('=>=>=>=>=>=>=> insertNewRecordAsync', dateString, finalList.length, subscribersFinalList.length);
+    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0){
             result = result[0];
