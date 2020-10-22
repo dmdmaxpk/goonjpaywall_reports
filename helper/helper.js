@@ -59,9 +59,9 @@ class Helper {
         let fromDate, toDate, day, month;
 
         fromDate  = new Date();
-        fromDate.setHours(00);
-        fromDate.setMinutes(00);
-        fromDate.setSeconds(00);
+        fromDate.setHours(0);
+        fromDate.setMinutes(0);
+        fromDate.setSeconds(0);
 
         day = req.day ? req.day : fromDate.getDate();
         day = day > 9 ? day : '0'+Number(day);
@@ -84,9 +84,9 @@ class Helper {
         let fromDate, toDate, day, month, fromHours, toHours;
 
         fromDate  = new Date();
-        fromDate.setHours(00);
-        fromDate.setMinutes(00);
-        fromDate.setSeconds(00);
+        fromDate.setHours(0);
+        fromDate.setMinutes(0);
+        fromDate.setSeconds(0);
 
         day = req.day ? req.day : fromDate.getDate();
         day = day > 9 ? day : '0'+Number(day);
