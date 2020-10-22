@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 // Import database models
 require('./models/Report');
@@ -16,6 +17,7 @@ mongoose.connection.on('error', err => console.error(`Error: ${err.message}`));
 const app = express();
 
 // Middlewares
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(mongoSanitize());
