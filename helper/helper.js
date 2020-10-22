@@ -127,11 +127,9 @@ class Helper {
 
         toDate  = new Date(_.clone(fromDate));
         toDate.setDate(toDate.getDate() + 1);
-        // toDate.setSeconds(toDate.getSeconds() - 1);
         toDate.setHours(23, 59, 59);
         toDate = this.setDateWithTimezone(toDate);
         console.log('computeNextDate - toDate : ', toDate);
-
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }
@@ -159,8 +157,7 @@ class Helper {
         fromDate  = new Date('2020-'+month+'-'+day+'T'+(fromHours)+':00:00.000Z');
         fromDate = this.setDateWithTimezone(fromDate);
 
-        toDate  = _.clone(fromDate);
-        toDate.setHours(toHours, 59, 59);
+        toDate  = new Date('2020-'+month+'-'+day+'T'+(toHours)+':59:59.000Z');
         toDate = this.setDateWithTimezone(toDate);
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate, fromHours: fromHours, toHours: toHours};
