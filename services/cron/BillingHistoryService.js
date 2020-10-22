@@ -36,7 +36,7 @@ computeBillingHistoryReports = async(req, res) => {
             //Loop over no.of chunks
             for (i = 0 ; i < totalChunks; i++){
                 await billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, skip, limit).then(async function (result) {
-                    console.log('subscriptions 1: ', subscriptions.length);
+                    console.log('result 1: ', result.length);
 
                     //set skip variable to limit data
                     skip = skip + limit;
