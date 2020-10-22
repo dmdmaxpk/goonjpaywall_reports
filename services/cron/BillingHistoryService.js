@@ -45,7 +45,10 @@ computeBillingHistoryReports = async(req, res) => {
                     if (result.length > 0){
                         computedData = computeBillingHistoryData(result);
                         pushDataInArray(computedData);
-                        await insertNewRecord(fromDate);
+                        if (totalChunks > 1 || lastLimit > 0)
+                            await insertNewRecord(fromDate);
+                        else
+                            insertNewRecord(fromDate);
                     }
                 });
             }
@@ -59,7 +62,7 @@ computeBillingHistoryReports = async(req, res) => {
                     if (result.length > 0){
                         computedData = computeBillingHistoryData(result);
                         pushDataInArray(computedData);
-                        await insertNewRecord(fromDate);
+                        insertNewRecord(fromDate);
                     }
                 });
             }
