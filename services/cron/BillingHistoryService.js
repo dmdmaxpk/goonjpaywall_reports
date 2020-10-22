@@ -67,7 +67,7 @@ computeBillingHistoryReports = async(req, res) => {
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeCallbackSendReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        console.log('computeBillingHistoryReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
         if (req.day <= helper.getDaysInMonth(month)){
             console.log('IF');
@@ -80,7 +80,7 @@ computeBillingHistoryReports = async(req, res) => {
             console.log('ELSE');
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('computeCallbackSendReports -> month : ', month, req.month, new Date().getMonth());
+            console.log('computeBillingHistoryReports -> month : ', month, req.month, new Date().getMonth());
 
             if (req.month <= helper.getTodayMonthNo())
                 computeBillingHistoryReports(req, res);
