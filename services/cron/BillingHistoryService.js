@@ -383,6 +383,7 @@ function insertNewRecord(dateString) {
             result = result[0];
 
             if (helper.splitHoursFromISODate(hoursFromISODate)){
+                console.log('IF');
                 result.billingHistory = billingHistory;
                 result.returningUsers = returningUserList;
                 result.fullAndPartialChargeUser = fullAndPartialChargeList;
@@ -391,6 +392,8 @@ function insertNewRecord(dateString) {
                 result.uniquePayingUsers = uniquePayingUsers;
                 result.successRate = successRate;
             } else{
+                console.log('ELSE');
+
                 if (result.billingHistory)
                     result.billingHistory.concat(billingHistory);
                 else

@@ -45,7 +45,7 @@ class Helper {
         dateString = new Date(dateString).getHours();
         console.log('dateString: ', dateString);
 
-        if (dateString > 0)
+        if (dateString === 19)
             return false;
         else
             return true;
