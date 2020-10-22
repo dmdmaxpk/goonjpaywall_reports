@@ -51,6 +51,7 @@ class Helper {
     }
 
     static setDateWithTimezone(date){
+        console.log('setDateWithTimezone: ', date);
         date.setHours(date.getHours()-5);
         return date.toISOString();
     }
@@ -122,8 +123,11 @@ class Helper {
 
         fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
         fromDate = this.setDateWithTimezone(fromDate);
+        console.log('computeNextDate - fromDate : ', fromDate);
 
         toDate  = _.clone(fromDate);
+        console.log('computeNextDate - toDate : ', toDate);
+
         toDate.setHours(23, 59, 59);
         toDate = this.setDateWithTimezone(toDate);
 
