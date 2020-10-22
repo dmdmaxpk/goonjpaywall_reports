@@ -1,6 +1,7 @@
 
 class BillingHistoryRepository {
     async getBillingHistoryByDateRange (req, from, to, skip, limit) {
+        console.log('getBillingHistoryByDateRange - ', from, to);
         return new Promise((resolve, reject) => {
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
@@ -18,7 +19,7 @@ class BillingHistoryRepository {
                             source: "$source",
                             price: "$price",
                             operator_response: "$operator_response",
-                            billing_dtm: { '$dateToString' : { date: "billing_dtm", 'timezone' : "Asia/Karachi" } }
+                            billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } }
                         }}
                     ], { allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
