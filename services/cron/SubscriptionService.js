@@ -45,8 +45,13 @@ computeSubscriptionReports = async(req, res) => {
                         finalData = computeSubscriptionsData(subscriptions);
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
-                        if (finalList.length > 0 || subscribersFinalList.length > 0)
-                            await insertNewRecord(finalList, subscribersFinalList, fromDate);
+                        if (finalList.length > 0 || subscribersFinalList.length > 0){
+                            console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
+                            if (totalChunks > 1 || lastLimit > 0)
+                                await insertNewRecord(finalList, subscribersFinalList, fromDate);
+                            else
+                                insertNewRecord(finalList, subscribersFinalList, fromDate);
+                        }
                     }
                 });
             }
