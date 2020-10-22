@@ -391,13 +391,45 @@ function insertNewRecord(dateString) {
                 result.uniquePayingUsers = uniquePayingUsers;
                 result.successRate = successRate;
             } else{
-                result.billingHistory.concat(billingHistory);
-                result.returningUsers.concat(returningUserList);
-                result.fullAndPartialChargeUser.concat(fullAndPartialChargeList);
-                result.sourceWiseUnSub.concat(sourceWiseUnSubList);
-                result.sourceWiseTrail.concat(sourceWiseTrail);
-                result.uniquePayingUsers.concat(uniquePayingUsers);
-                result.successRate.concat(successRate);
+                if (result.billingHistory)
+                    result.billingHistory.concat(billingHistory);
+                else
+                    result.billingHistory = billingHistory;
+
+                if (result.returningUsers)
+                    result.returningUsers.concat(returningUserList);
+                else
+                    result.returningUsers = returningUserList;
+
+                if (result.fullAndPartialChargeUser)
+                    result.fullAndPartialChargeUser.concat(fullAndPartialChargeList);
+                else
+                    result.fullAndPartialChargeUser = fullAndPartialChargeList;
+
+                if (result.sourceWiseUnSub)
+                    result.sourceWiseUnSub.concat(sourceWiseUnSubList);
+                else
+                    result.sourceWiseUnSub = sourceWiseUnSubList;
+
+                if (result.sourceWiseTrail)
+                    result.sourceWiseTrail.concat(sourceWiseTrail);
+                else
+                    result.sourceWiseTrail = sourceWiseTrail;
+
+                if (result.sourceWiseTrail)
+                    result.sourceWiseTrail.concat(sourceWiseTrail);
+                else
+                    result.sourceWiseTrail = sourceWiseTrail;
+
+                if (result.uniquePayingUsers)
+                    result.uniquePayingUsers.concat(uniquePayingUsers);
+                else
+                    result.uniquePayingUsers = uniquePayingUsers;
+
+                if (result.successRate)
+                    result.successRate.concat(successRate);
+                else
+                    result.successRate = successRate;
             }
             reportsRepo.updateReport(result, result._id);
         }
