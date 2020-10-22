@@ -125,7 +125,7 @@ class Helper {
         fromDate = this.setDateWithTimezone(fromDate);
         console.log('computeNextDate - fromDate : ', fromDate);
 
-        toDate  = _.clone(fromDate);
+        toDate  = new Date(_.clone(fromDate));
         console.log('computeNextDate - toDate : ', toDate);
 
         toDate.setHours(23, 59, 59);
