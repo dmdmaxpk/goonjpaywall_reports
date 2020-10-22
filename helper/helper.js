@@ -126,10 +126,10 @@ class Helper {
         console.log('computeNextDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
-        console.log('computeNextDate - toDate : ', toDate);
-
         toDate.setHours(23, 59, 59);
         toDate = this.setDateWithTimezone(toDate);
+        console.log('computeNextDate - toDate : ', toDate);
+
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }
