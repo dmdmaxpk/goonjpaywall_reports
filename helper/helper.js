@@ -17,7 +17,8 @@ class Helper {
         this.db = db;
     }
 
-    static setDate(date, h=null,m, s, mi){
+    static setDate(date, h=null, m, s, mi){
+        date = new Date(date);
         if (h !== null)
             date.setHours(h);
 
@@ -51,7 +52,6 @@ class Helper {
     }
 
     static setDateWithTimezone(date){
-        console.log('setDateWithTimezone: ', date);
         date.setHours(date.getHours()-5);
         return date.toISOString();
     }
