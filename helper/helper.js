@@ -127,8 +127,8 @@ class Helper {
 
         toDate  = new Date(_.clone(fromDate));
         toDate.setDate(toDate.getDate() + 1);
-        toDate.setSeconds(toDate.getSeconds() - 1);
-        // toDate.setHours(23, 59, 59);
+        // toDate.setSeconds(toDate.getSeconds() - 1);
+        toDate.setHours(23, 59, 59);
         toDate = this.setDateWithTimezone(toDate);
         console.log('computeNextDate - toDate : ', toDate);
 
