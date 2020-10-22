@@ -12,7 +12,7 @@ class UserRepository {
                         {$project: {
                                 active:"$active",
                                 operator:"$operator",
-                                added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } },
+                                added_dtm: "$added_dtm",
                             }
                         }
                     ],{ allowDiskUse: true }).toArray(function(err, items) {

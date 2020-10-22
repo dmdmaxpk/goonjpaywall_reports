@@ -179,7 +179,6 @@ function countQuery(from, to){
                 added_dtm: "$added_dtm",
                 callbackhistorySize: {"$size": "$callbackhistory" },
                 callbackObj: {$arrayElemAt: ["$callbackhistory",0]},
-                added_dm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } },
             }
         },
         {
@@ -189,8 +188,7 @@ function countQuery(from, to){
                 isValidUser: "$isValidUser",
                 callbackhistorySize: "$callbackhistorySize",
                 added_dtm: "$added_dtm",
-                added_dm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } },
-                billing_dm: { '$dateToString' : { date: "$callbackObj.billing_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                billing_dm: "$callbackObj.billing_dtm"
             }
         },
         {

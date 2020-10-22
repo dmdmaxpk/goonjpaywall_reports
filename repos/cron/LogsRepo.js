@@ -14,7 +14,7 @@ class LogsRepo {
                             source: "$source",
                             mid: "$mid",
                             service: "$service",
-                            added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                            added_dtm: "$added_dtm"
                         }},
                         { $project:{
                             source: "$source",
@@ -69,7 +69,7 @@ class LogsRepo {
                         { $project:{
                             mid: "$mid",
                             msisdn: "$req_body.response_msisdn",
-                            added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                            added_dtm: "$added_dtm"
                         }},
                         { $project:{
                             mid: "$mid",
@@ -125,7 +125,7 @@ class LogsRepo {
                         { $project:{
                             mid: "$req_body.mid",
                             msisdn: "$req_body.msisdn",
-                            added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                            added_dtm: "$added_dtm"
                         }},
                         { $project:{
                             mid: "$req_body.mid",
@@ -180,7 +180,7 @@ class LogsRepo {
                         }},
                         { $project:{
                             mid: "$req_body.affiliate_mid",
-                            added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                            added_dtm: "$added_dtm"
                         }},
                         { $project:{
                             mid: "$req_body.affiliate_mid",

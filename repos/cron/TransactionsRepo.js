@@ -10,14 +10,14 @@ class TransactionsRepo {
                         { $match: {
                             $and: [
                                 {'billing_status': 'Success'},
-                                {billing_dtm:{$gte:new Date('2020-02-12T00:00:00.000Z')}},
-                                {billing_dtm:{$lte:new Date('2020-02-12T23:59:59.000Z')}}
+                                {billing_dtm:{$gte:new Date(from)}},
+                                {billing_dtm:{$lte:new Date(to)}}
                             ]
                         }},
                         { $project: {
                             $subscriber_id: "$subscriber_id",
                             price: "$price",
-                            $billing_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                            $billing_dtm: "$billing_dtm"
                         }},
                         { $group: {
                             _id: "$subscriber_id",

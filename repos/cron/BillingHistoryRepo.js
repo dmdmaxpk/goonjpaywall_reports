@@ -18,7 +18,7 @@ class BillingHistoryRepository {
                             source: "$source",
                             price: "$price",
                             operator_response: "$operator_response",
-                            billing_dtm: { '$dateToString' : { date: "$billing_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                            billing_dtm: "$billing_dtm"
                         }}
                     ], { allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
@@ -50,7 +50,7 @@ class BillingHistoryRepository {
                         },
                         { $project: {
                                 source:"$source",
-                                added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } },
+                                added_dtm: "$added_dtm",
                                 subscription_status:"$subscription_status",
                                 bill_status: { $filter: {
                                         input: "$histories",
@@ -116,7 +116,7 @@ class BillingHistoryRepository {
                                 package_id: "$package_id",
                                 operator: "$operator",
                                 billing_status: "$billing_status",
-                                billing_dtm: { '$dateToString' : { date: "$billing_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                                billing_dtm: "$billing_dtm"
                             }}
                         }},
                         { $project: {
