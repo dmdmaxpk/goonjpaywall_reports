@@ -45,7 +45,7 @@ computeBillingHistoryReports = async(req, res) => {
                     if (result.length > 0){
                         computedData = computeBillingHistoryData(result);
                         pushDataInArray(computedData);
-                        insertNewRecord(fromDate);
+                        await insertNewRecord(fromDate);
                     }
                 });
             }
@@ -59,7 +59,7 @@ computeBillingHistoryReports = async(req, res) => {
                     if (result.length > 0){
                         computedData = computeBillingHistoryData(result);
                         pushDataInArray(computedData);
-                        insertNewRecord(fromDate);
+                        await insertNewRecord(fromDate);
                     }
                 });
             }
@@ -372,11 +372,11 @@ function computeBillingHistoryData(data) {
     };
 }
 
-function insertNewRecord(dateString) {
+async function insertNewRecord(dateString) {
     hoursFromISODate = _.clone(dateString);
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
-    reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
+    await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0){
             result = result[0];
 
@@ -432,10 +432,10 @@ function insertNewRecord(dateString) {
                 else
                     result.successRate = successRate;
             }
-            reportsRepo.updateReport(result, result._id);
+            await reportsRepo.updateReport(result, result._id);
         }
         else{
-            reportsRepo.createReport({
+            await reportsRepo.createReport({
                 billingHistory: billingHistory,
                 returningUsers: returningUserList,
                 fullAndPartialChargeUser: fullAndPartialChargeList,

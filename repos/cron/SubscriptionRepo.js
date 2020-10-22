@@ -15,7 +15,7 @@ class SubscriptionRepository {
                             source: "$source",
                             affiliate_mid: "$affiliate_mid",
                             subscription_status: "$subscription_status",
-                            added_dtm: "$added_dtm",
+                            added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } },
                         }}
                     ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
@@ -83,8 +83,8 @@ class SubscriptionRepository {
                                 isValidUser: "$isValidUser",
                                 callbackhistorySize: "$callbackhistorySize",
                                 added_dtm: "$added_dtm",
-                                added_dm: "$added_dm",
-                                billing_dm: "$callbackObj.billing_dtm"
+                                added_dm: "$added_dtm",
+                                billing_dm: { '$dateToString' : { date: "$callbackObj.billing_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
                             }
                         },
                         {
@@ -200,7 +200,7 @@ class SubscriptionRepository {
                                         payment_source: "$payment_source",
                                         subscribed_package_id: "$subscribed_package_id",
                                         subscription_status: "$subscription_status",
-                                        added_dtm: "$added_dtm"
+                                        added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
                                 }}
                             }},
                         { $project: {
@@ -258,9 +258,16 @@ class SubscriptionRepository {
                             affiliate_mid: "$affiliate_mid",
                             status: "$history.billing_status",
                             package_id: "$history.package_id",
-                            day: { "$dayOfMonth" : "$history.billing_dtm"},
-                            month: { "$month" : "$history.billing_dtm" },
-                            year:{ "$year": "$history.billing_dtm" }
+                            billing_dtm: { '$dateToString' : { date: "$history.billing_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                        }},
+                        { $project:{
+                            affiliate: "$source",
+                            affiliate_mid: "$affiliate_mid",
+                            status: "$billing_status",
+                            package_id: "$package_id",
+                            day: { "$dayOfMonth" : "$billing_dtm"},
+                            month: { "$month" : "$billing_dtm" },
+                            year:{ "$year": "$billing_dtm" }
                         }},
                         { $project:{
                             billing_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
@@ -306,6 +313,10 @@ class SubscriptionRepository {
                                 $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                             }
                         },
+                        { $project:{
+                                affiliate_mid: "$affiliate_mid",
+                                added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                            }},
                         { $project:{
                                 affiliate_mid: "$affiliate_mid",
                                 day: { "$dayOfMonth" : "$added_dtm"},
