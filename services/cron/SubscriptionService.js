@@ -200,6 +200,8 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString) {
             result = result[0];
 
             if (helper.splitHoursFromISODate(hoursFromISODate)){
+                console.log('IF');
+
                 result.subscriptions = finalList;
 
                 if (result.subscribers)
@@ -209,6 +211,8 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString) {
                     result.subscribers.activeInActive = subscribersFinalList;
                 }
             }else{
+                console.log('ELSE');
+
                 result.subscriptions.concat(finalList);
 
                 if (result.subscribers)
