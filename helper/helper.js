@@ -41,11 +41,11 @@ class Helper {
     }
 
     static splitHoursFromISODate(dateString){
-        console.log('splitHoursFromISODate: ', dateString, new Date(dateString));
+        console.log('splitHoursFromISODate: ', new Date(dateString));
         dateString = new Date(dateString).getHours();
         console.log('dateString: ', dateString);
 
-        if (dateString === 19)
+        if (dateString > 0)
             return true;
         else
             return false;

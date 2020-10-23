@@ -196,8 +196,8 @@ function computeSubscriptionsData(subscriptions) {
 async function insertNewRecord(finalList, subscribersFinalList, dateString) {
     console.log('dateString: ', dateString);
 
-    hoursFromISODate = _.clone(dateString);
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
+    hoursFromISODate = _.clone(dateString);
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
