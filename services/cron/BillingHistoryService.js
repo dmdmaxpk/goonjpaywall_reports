@@ -56,8 +56,6 @@ computeBillingHistoryReports = async(req, res) => {
                             await insertNewRecord(fromDate, i);
 
                         console.log('insertNewRecord - done');
-                        resetDataArray();
-                        console.log('resetDataArray - done');
                     }
                 });
             }
@@ -73,8 +71,7 @@ computeBillingHistoryReports = async(req, res) => {
                     if (result.length > 0){
                         computedData = computeBillingHistoryData(result);
                         pushDataInArray(computedData);
-                        insertNewRecord(fromDate, 1);
-                        resetDataArray();
+                        await insertNewRecord(fromDate, 1);
                     }
                 });
             }
@@ -486,6 +483,9 @@ function resetDataArray() {
 
 function pushDataInArray(computedData) {
     resetDataArray();
+    console.log('pushDataInArray - billingHistory.length: ', billingHistory.length);
+    console.log('pushDataInArray - returningUserList.length: ', returningUserList.length);
+    console.log('pushDataInArray - fullAndPartialChargeList.length: ', fullAndPartialChargeList.length);
     push(computedData.billingHistory, 'billingHistory');
     push(computedData.returningUserList, 'returningUserList');
     push(computedData.fullAndPartialChargeList, 'fullAndPartialChargeList');
@@ -497,9 +497,7 @@ function pushDataInArray(computedData) {
 
 function push(data, type) {
 
-    console.log('push - billingHistory.length: ', billingHistory.length);
-    console.log('push - returningUserList.length: ', returningUserList.length);
-    console.log('push - fullAndPartialChargeList.length: ', fullAndPartialChargeList.length);
+
     _.reduce(data , function(obj,d) {
         if (type === 'billingHistory')
             billingHistory.push(d);
