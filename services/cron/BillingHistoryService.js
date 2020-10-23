@@ -410,7 +410,7 @@ async function insertNewRecord(dateString, mode) {
                 console.log('ELSE');
 
                 if (result.billingHistory){
-                    console.log('result.billingHistory - yes before', result.billingHistory.length);
+                    console.log('result.billingHistory - yes before', result.billingHistory.length, billingHistory.length);
                     result.billingHistory = result.billingHistory.concat(billingHistory);
                     console.log('result.billingHistory - yes after', result.billingHistory.length);
 
@@ -421,7 +421,7 @@ async function insertNewRecord(dateString, mode) {
                 }
 
                 if (result.returningUsers){
-                    console.log('result.returningUsers - yes before', result.returningUsers.length);
+                    console.log('result.returningUsers - yes before', result.returningUsers.length, returningUserList.length);
                     result.returningUsers = result.returningUsers.concat(returningUserList);
                     console.log('result.returningUsers - yes after', result.returningUsers.length);
 
@@ -485,6 +485,7 @@ function resetDataArray() {
 }
 
 function pushDataInArray(computedData) {
+    resetDataArray();
     push(computedData.billingHistory, 'billingHistory');
     push(computedData.returningUserList, 'returningUserList');
     push(computedData.fullAndPartialChargeList, 'fullAndPartialChargeList');
@@ -495,6 +496,10 @@ function pushDataInArray(computedData) {
 }
 
 function push(data, type) {
+
+    console.log('push - billingHistory.length: ', billingHistory.length);
+    console.log('push - returningUserList.length: ', returningUserList.length);
+    console.log('push - fullAndPartialChargeList.length: ', fullAndPartialChargeList.length);
     _.reduce(data , function(obj,d) {
         if (type === 'billingHistory')
             billingHistory.push(d);
