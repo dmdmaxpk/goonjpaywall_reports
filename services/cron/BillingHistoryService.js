@@ -62,6 +62,8 @@ computeBillingHistoryReports = async(req, res) => {
 
             // fetch last chunk Data from DB
             if (lastLimit > 0){
+                console.log('skip - limit: ', skip, lastLimit);
+
                 await billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (result) {
                     console.log('result 2: ', result.length);
 
@@ -476,9 +478,8 @@ async function insertNewRecord(dateString, mode) {
 }
 
 function resetDataArray() {
-    billingHistory = []; returningUserList = []; fullAndPartialChargeList = [];
-    sourceWiseUnSubList = []; sourceWiseTrail = [];
-    uniquePayingUsers = []; successRate = [];
+    billingHistoryArr = []; returningUserListArr = []; fullAndPartialChargeListArr = [];
+    sourceWiseUnSubArr = []; sourceWiseTrailArr = []; uniquePayingUsers = []; successRateArr = [];
 }
 
 function pushDataInArray(computedData) {
