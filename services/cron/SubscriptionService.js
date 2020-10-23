@@ -197,6 +197,7 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString) {
     console.log('dateString: ', dateString);
 
     hoursFromISODate = _.clone(dateString);
+    dateString = new Date(helper.setDateWithTimezone(dateString, 'out'));
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
