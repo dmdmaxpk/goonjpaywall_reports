@@ -56,6 +56,8 @@ computeBillingHistoryReports = async(req, res) => {
                             await insertNewRecord(fromDate, i);
 
                         console.log('insertNewRecord - done');
+                        resetDataArray();
+                        console.log('resetDataArray - done');
                     }
                 });
             }
@@ -72,6 +74,7 @@ computeBillingHistoryReports = async(req, res) => {
                         computedData = computeBillingHistoryData(result);
                         pushDataInArray(computedData);
                         insertNewRecord(fromDate, 1);
+                        resetDataArray();
                     }
                 });
             }
@@ -472,14 +475,13 @@ async function insertNewRecord(dateString, mode) {
                 date: dateString
             });
         }
-
-        resetDataArray();
     });
 }
 
 function resetDataArray() {
-    billingHistoryArr = []; returningUserListArr = []; fullAndPartialChargeListArr = [];
-    sourceWiseUnSubArr = []; sourceWiseTrailArr = []; uniquePayingUsers = []; successRateArr = [];
+    billingHistory = []; returningUserList = []; fullAndPartialChargeList = [];
+    sourceWiseUnSubList = []; sourceWiseTrail = [];
+    uniquePayingUsers = []; successRate = [];
 }
 
 function pushDataInArray(computedData) {
