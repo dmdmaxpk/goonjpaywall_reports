@@ -23,12 +23,12 @@ computeUserReports = async(req, res) => {
 
     console.log('computeUserReports: ', fromDate, toDate);
     userRepo.getUsersByDateRange(req, fromDate, toDate).then(function (users) {
-        console.log('users-1: ', users);
+        console.log('users.length: ', users);
 
         if (users.length > 0){
             finalList = computeUserData(users);
 
-            console.log('finalList.length : ', finalList.length, finalList);
+            console.log('finalList.length : ', finalList.length);
             if (finalList.length > 0)
                 insertNewRecord(finalList, fromDate);
         }
@@ -98,7 +98,6 @@ function insertNewRecord(data, dateString) {
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
-        console.log('result subscriptions: ', result);
         if (result.length > 0) {
             result = result[0];
             result.users = data;

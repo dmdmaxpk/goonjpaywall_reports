@@ -33,10 +33,8 @@ computeBillingHistoryReports = async(req, res) => {
             lastLimit = computeChunks.lastChunkCount;
             let skip = 0;
 
-            console.log('computeChunks: ', computeChunks);
             //Loop over no.of chunks
             for (i = 0 ; i < totalChunks; i++){
-                console.log('skip - limit: ', skip, limit);
                 await billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, skip, limit).then(async function (result) {
                     console.log('result 1: ', result.length);
 
@@ -46,24 +44,14 @@ computeBillingHistoryReports = async(req, res) => {
                     // Now compute and store data in DB
                     if (result.length > 0){
                         computedData = computeBillingHistoryData(result);
-                        console.log('computedData - done');
                         pushDataInArray(computedData);
-                        console.log('pushDataInArray - done');
-
-                        if (totalChunks > 1 || lastLimit > 0)
-                            await insertNewRecord(fromDate, i);
-                        else
-                            await insertNewRecord(fromDate, i);
-
-                        console.log('insertNewRecord - done');
+                        await insertNewRecord(fromDate, i);
                     }
                 });
             }
 
             // fetch last chunk Data from DB
             if (lastLimit > 0){
-                console.log('skip - limit: ', skip, lastLimit);
-
                 await billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (result) {
                     console.log('result 2: ', result.length);
 
@@ -385,7 +373,7 @@ function computeBillingHistoryData(data) {
 }
 
 async function insertNewRecord(dateString, mode) {
-    console.log('insertNewRecord - in');
+    console.log('insertNewRecord- dateString', dateString);
 
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
@@ -395,7 +383,6 @@ async function insertNewRecord(dateString, mode) {
             result = result[0];
 
             if (mode === 0){
-                console.log('IF');
                 result.billingHistory = billingHistory;
                 result.returningUsers = returningUserList;
                 result.fullAndPartialChargeUser = fullAndPartialChargeList;
@@ -404,29 +391,15 @@ async function insertNewRecord(dateString, mode) {
                 result.uniquePayingUsers = uniquePayingUsers;
                 result.successRate = successRate;
             } else{
-                console.log('ELSE');
-
-                if (result.billingHistory){
-                    console.log('result.billingHistory - yes before', result.billingHistory.length, billingHistory.length);
+                if (result.billingHistory)
                     result.billingHistory = result.billingHistory.concat(billingHistory);
-                    console.log('result.billingHistory - yes after', result.billingHistory.length);
-
-                }
-                else{
-                    console.log('result.billingHistory - else');
+                else
                     result.billingHistory = billingHistory;
-                }
 
-                if (result.returningUsers){
-                    console.log('result.returningUsers - yes before', result.returningUsers.length, returningUserList.length);
+                if (result.returningUsers)
                     result.returningUsers = result.returningUsers.concat(returningUserList);
-                    console.log('result.returningUsers - yes after', result.returningUsers.length);
-
-                }
-                else{
-                    console.log('result.returningUsers - else');
+                else
                     result.returningUsers = returningUserList;
-                }
 
                 if (result.fullAndPartialChargeUser)
                     result.fullAndPartialChargeUser = result.fullAndPartialChargeUser.concat(fullAndPartialChargeList);
@@ -483,9 +456,6 @@ function resetDataArray() {
 
 function pushDataInArray(computedData) {
     resetDataArray();
-    console.log('pushDataInArray - billingHistory.length: ', billingHistory.length);
-    console.log('pushDataInArray - returningUserList.length: ', returningUserList.length);
-    console.log('pushDataInArray - fullAndPartialChargeList.length: ', fullAndPartialChargeList.length);
     push(computedData.billingHistory, 'billingHistory');
     push(computedData.returningUserList, 'returningUserList');
     push(computedData.fullAndPartialChargeList, 'fullAndPartialChargeList');
@@ -496,8 +466,6 @@ function pushDataInArray(computedData) {
 }
 
 function push(data, type) {
-
-
     _.reduce(data , function(obj,d) {
         if (type === 'billingHistory')
             billingHistory.push(d);
