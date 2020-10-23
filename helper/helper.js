@@ -171,7 +171,7 @@ class Helper {
         let chunks = 1, lastChunkCount = 0;
 
         if (totalCount > config.cron_db_query_data_limit){
-            chunks = Math.round(totalCount / config.cron_db_query_data_limit) ;
+            chunks = Math.floor(totalCount / config.cron_db_query_data_limit) ;
             chunks = chunks > 0 ? chunks : 1;
 
             lastChunkCount = totalCount % config.cron_db_query_data_limit;

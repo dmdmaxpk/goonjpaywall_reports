@@ -406,7 +406,7 @@ async function insertNewRecord(dateString, mode) {
 
                 if (result.billingHistory){
                     console.log('result.billingHistory - yes before', result.billingHistory.length);
-                    result.billingHistory.concat(billingHistory);
+                    result.billingHistory = result.billingHistory.concat(billingHistory);
                     console.log('result.billingHistory - yes after', result.billingHistory.length);
 
                 }
@@ -417,7 +417,7 @@ async function insertNewRecord(dateString, mode) {
 
                 if (result.returningUsers){
                     console.log('result.returningUsers - yes before', result.returningUsers.length);
-                    result.returningUsers.concat(returningUserList);
+                    result.returningUsers = result.returningUsers.concat(returningUserList);
                     console.log('result.returningUsers - yes after', result.returningUsers.length);
 
                 }
@@ -427,32 +427,32 @@ async function insertNewRecord(dateString, mode) {
                 }
 
                 if (result.fullAndPartialChargeUser)
-                    result.fullAndPartialChargeUser.concat(fullAndPartialChargeList);
+                    result.fullAndPartialChargeUser = result.fullAndPartialChargeUser.concat(fullAndPartialChargeList);
                 else
                     result.fullAndPartialChargeUser = fullAndPartialChargeList;
 
                 if (result.sourceWiseUnSub)
-                    result.sourceWiseUnSub.concat(sourceWiseUnSubList);
+                    result.sourceWiseUnSub = result.sourceWiseUnSub.concat(sourceWiseUnSubList);
                 else
                     result.sourceWiseUnSub = sourceWiseUnSubList;
 
                 if (result.sourceWiseTrail)
-                    result.sourceWiseTrail.concat(sourceWiseTrail);
+                    result.sourceWiseTrail = result.sourceWiseTrail.concat(sourceWiseTrail);
                 else
                     result.sourceWiseTrail = sourceWiseTrail;
 
                 if (result.sourceWiseTrail)
-                    result.sourceWiseTrail.concat(sourceWiseTrail);
+                    result.sourceWiseTrail = result.sourceWiseTrail.concat(sourceWiseTrail);
                 else
                     result.sourceWiseTrail = sourceWiseTrail;
 
                 if (result.uniquePayingUsers)
-                    result.uniquePayingUsers.concat(uniquePayingUsers);
+                    result.uniquePayingUsers = result.uniquePayingUsers.concat(uniquePayingUsers);
                 else
                     result.uniquePayingUsers = uniquePayingUsers;
 
                 if (result.successRate)
-                    result.successRate.concat(successRate);
+                    result.successRate = result.successRate.concat(successRate);
                 else
                     result.successRate = successRate;
             }
