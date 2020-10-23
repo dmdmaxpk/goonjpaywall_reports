@@ -33,8 +33,10 @@ computeBillingHistoryReports = async(req, res) => {
             lastLimit = computeChunks.lastChunkCount;
             let skip = 0;
 
+            console.log('computeChunks: ', computeChunks);
             //Loop over no.of chunks
             for (i = 0 ; i < totalChunks; i++){
+                console.log('skip - limit: ', skip, limit);
                 await billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, skip, limit).then(async function (result) {
                     console.log('result 1: ', result.length);
 
@@ -403,8 +405,10 @@ async function insertNewRecord(dateString, mode) {
                 console.log('ELSE');
 
                 if (result.billingHistory){
-                    console.log('result.billingHistory - yes');
+                    console.log('result.billingHistory - yes before', result.billingHistory.length);
                     result.billingHistory.concat(billingHistory);
+                    console.log('result.billingHistory - yes after', result.billingHistory.length);
+
                 }
                 else{
                     console.log('result.billingHistory - else');
@@ -412,8 +416,10 @@ async function insertNewRecord(dateString, mode) {
                 }
 
                 if (result.returningUsers){
-                    console.log('result.returningUsers - yes');
+                    console.log('result.returningUsers - yes before', result.returningUsers.length);
                     result.returningUsers.concat(returningUserList);
+                    console.log('result.returningUsers - yes after', result.returningUsers.length);
+
                 }
                 else{
                     console.log('result.returningUsers - else');
