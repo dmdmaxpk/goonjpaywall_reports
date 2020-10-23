@@ -402,15 +402,23 @@ async function insertNewRecord(dateString, mode) {
             } else{
                 console.log('ELSE');
 
-                if (result.billingHistory)
+                if (result.billingHistory){
+                    console.log('result.billingHistory - yes');
                     result.billingHistory.concat(billingHistory);
-                else
+                }
+                else{
+                    console.log('result.billingHistory - else');
                     result.billingHistory = billingHistory;
+                }
 
-                if (result.returningUsers)
+                if (result.returningUsers){
+                    console.log('result.returningUsers - yes');
                     result.returningUsers.concat(returningUserList);
-                else
+                }
+                else{
+                    console.log('result.returningUsers - else');
                     result.returningUsers = returningUserList;
+                }
 
                 if (result.fullAndPartialChargeUser)
                     result.fullAndPartialChargeUser.concat(fullAndPartialChargeList);
