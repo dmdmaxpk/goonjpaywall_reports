@@ -44,11 +44,16 @@ computeBillingHistoryReports = async(req, res) => {
                     // Now compute and store data in DB
                     if (result.length > 0){
                         computedData = computeBillingHistoryData(result);
+                        console.log('computedData - done');
                         pushDataInArray(computedData);
+                        console.log('pushDataInArray - done');
+
                         if (totalChunks > 1 || lastLimit > 0)
                             await insertNewRecord(fromDate);
                         else
-                            insertNewRecord(fromDate);
+                            await insertNewRecord(fromDate);
+
+                        console.log('insertNewRecord - done');
                     }
                 });
             }
@@ -376,6 +381,8 @@ function computeBillingHistoryData(data) {
 }
 
 async function insertNewRecord(dateString) {
+    console.log('insertNewRecord - in');
+
     hoursFromISODate = _.clone(dateString);
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
