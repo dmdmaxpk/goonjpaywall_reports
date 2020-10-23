@@ -30,7 +30,7 @@ computeSubscriberReports = async(req, res) => {
 
             console.log('finalList.length : ', finalList.total.length, finalList);
             if (finalList.total.length > 0)
-                insertNewRecord(finalList, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+                insertNewRecord(finalList, fromDate);
         }
 
         // Get compute data for next time slot
@@ -86,6 +86,9 @@ function computeSubscriberData(subscribers) {
 
 function insertNewRecord(data, dateString) {
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
+
+    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         console.log('result subscribers: ', result);
         console.log('data subscribers: ', data);
