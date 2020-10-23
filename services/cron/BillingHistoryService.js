@@ -7,7 +7,7 @@ const  _ = require('lodash');
 
 let billingHistory = [], returningUserList = [], fullAndPartialChargeList = [],
     sourceWiseUnSubList = [], sourceWiseTrail = [], uniquePayingUsers = [], successRate = [];
-let fromDate, toDate, day, month, computedData, hoursFromISODate;
+let fromDate, toDate, day, month, computedData;
 let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 
 computeBillingHistoryReports = async(req, res) => {
@@ -17,7 +17,7 @@ computeBillingHistoryReports = async(req, res) => {
     * */
 
     // dateData = helper.computeTodayDate(req);
-    dateData = helper.computeNextDate(req, 1, 2);
+    dateData = helper.computeNextDate(req, 19, 9);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -49,9 +49,9 @@ computeBillingHistoryReports = async(req, res) => {
                         console.log('pushDataInArray - done');
 
                         if (totalChunks > 1 || lastLimit > 0)
-                            await insertNewRecord(fromDate);
+                            await insertNewRecord(fromDate, i);
                         else
-                            await insertNewRecord(fromDate);
+                            await insertNewRecord(fromDate, i);
 
                         console.log('insertNewRecord - done');
                     }
@@ -67,7 +67,7 @@ computeBillingHistoryReports = async(req, res) => {
                     if (result.length > 0){
                         computedData = computeBillingHistoryData(result);
                         pushDataInArray(computedData);
-                        insertNewRecord(fromDate);
+                        insertNewRecord(fromDate, 1);
                     }
                 });
             }
@@ -355,7 +355,7 @@ function computeBillingHistoryData(data) {
             //Calculate success rate
             successRateObj.total = totalSubs;
             successRateObj.successful = successfulSubs;
-            successRateObj.rate = (totalSubs / successfulSubs) * 100;
+            successRateObj.rate = successfulSubs === 0 ? 0 : (totalSubs / successfulSubs) * 100;
             successRateObj.added_dtm = outerObj.billing_dtm;
             successRateObj.added_dtm_hours = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0);
 
@@ -380,18 +380,17 @@ function computeBillingHistoryData(data) {
     };
 }
 
-async function insertNewRecord(dateString) {
+async function insertNewRecord(dateString, mode) {
     console.log('insertNewRecord - in');
 
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
-    hoursFromISODate = _.clone(dateString);
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0){
             result = result[0];
 
-            if (helper.splitHoursFromISODate(hoursFromISODate)){
+            if (mode === 0){
                 console.log('IF');
                 result.billingHistory = billingHistory;
                 result.returningUsers = returningUserList;

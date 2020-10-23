@@ -5,7 +5,7 @@ const helper = require('../../helper/helper');
 const config = require('../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, finalData, hoursFromISODate, finalList = [], subscribersFinalList = [];
+let fromDate, toDate, day, month, finalData, finalList = [], subscribersFinalList = [];
 let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeSubscriptionReports = async(req, res) => {
     console.log('computeSubscriptionReports');
@@ -48,9 +48,9 @@ computeSubscriptionReports = async(req, res) => {
                         if (finalList.length > 0 || subscribersFinalList.length > 0){
                             console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
                             if (totalChunks > 1 || lastLimit > 0)
-                                await insertNewRecord(finalList, subscribersFinalList, fromDate);
+                                await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
                             else
-                                insertNewRecord(finalList, subscribersFinalList, fromDate);
+                                await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
                         }
                     }
                 });
@@ -67,7 +67,7 @@ computeSubscriptionReports = async(req, res) => {
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
                         if (finalList.length > 0 || subscribersFinalList.length > 0)
-                            insertNewRecord(finalList, subscribersFinalList, fromDate);
+                            insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
                     }
                 });
             }
@@ -193,11 +193,10 @@ function computeSubscriptionsData(subscriptions) {
     return {finalList: finalList, subscribersFinalList: subscribersFinalList};
 }
 
-async function insertNewRecord(finalList, subscribersFinalList, dateString) {
+async function insertNewRecord(finalList, subscribersFinalList, dateString, mode) {
     console.log('dateString: ', dateString);
 
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
-    hoursFromISODate = _.clone(dateString);
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
@@ -205,7 +204,7 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString) {
         if (result.length > 0){
             result = result[0];
 
-            if (helper.splitHoursFromISODate(hoursFromISODate)){
+            if (mode === 0){
                 console.log('IF');
 
                 result.subscriptions = finalList;
