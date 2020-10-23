@@ -377,6 +377,7 @@ function computeBillingHistoryData(data) {
 
 async function insertNewRecord(dateString) {
     hoursFromISODate = _.clone(dateString);
+    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
