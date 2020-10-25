@@ -55,7 +55,9 @@ computeUserReports = async(req, res) => {
 
     if (helper.isToday(fromDate)){
         console.log('computeUserReports - promise - resolved');
-        resolve(1);
+
+        delete req.day;
+        delete req.month;
     }
 };
 

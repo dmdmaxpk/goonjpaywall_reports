@@ -8,58 +8,58 @@ let fromDate, toDate, day, month, finalList = [];
 computeSubscriberReports = async(req, res) => {
     console.log('computeSubscriberReports');
 
-    return new Promise(async (resolve, reject) => {
-        /*
-            * Compute date and time for data fetching from db
-            * Script will execute to fetch data as per day
-            * */
+    /*
+    * Compute date and time for data fetching from db
+    * Script will execute to fetch data as per day
+    * */
 
-        // dateData = helper.computeTodayDate(req);
-        dateData = helper.computeNextDate(req, 1, 2);
-        req = dateData.req;
-        day = dateData.day;
-        month = dateData.month;
-        fromDate = dateData.fromDate;
-        toDate = dateData.toDate;
+    // dateData = helper.computeTodayDate(req);
+    dateData = helper.computeNextDate(req, 1, 2);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
 
-        console.log('computeSubscriberReports: ', fromDate, toDate);
-        await subscriberRepo.getSubscribersByDateRange(req, fromDate, toDate).then(async function (subscribers) {
-            console.log('subscribers: ', subscribers.length);
+    console.log('computeSubscriberReports: ', fromDate, toDate);
+    await subscriberRepo.getSubscribersByDateRange(req, fromDate, toDate).then(async function (subscribers) {
+        console.log('subscribers: ', subscribers.length);
 
-            if (subscribers.length > 0){
-                finalList = computeSubscriberData(subscribers);
+        if (subscribers.length > 0){
+            finalList = computeSubscriberData(subscribers);
 
-                console.log('finalList.length : ', finalList.total.length);
-                if (finalList.total.length > 0)
-                    await insertNewRecord(finalList, fromDate);
-            }
-        });
-
-
-        // Get compute data for next time slot
-        req.day = Number(req.day) + 1;
-        console.log('computeSubscriberReports -> day : ', day, req.day, helper.getDaysInMonth(month));
-
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
-                computeSubscriberReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeSubscriberReports(req, res);
-        }
-        else{
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('computeSubscriberReports -> month : ', month, req.month, new Date().getMonth());
-
-            if (req.month <= helper.getTodayMonthNo())
-                computeSubscriberReports(req, res);
-        }
-
-        if (helper.isToday(fromDate)){
-            console.log('computeUserReports - promise - resolved');
-            resolve(1);
+            console.log('finalList.length : ', finalList.total.length);
+            if (finalList.total.length > 0)
+                await insertNewRecord(finalList, fromDate);
         }
     });
+
+
+    // Get compute data for next time slot
+    req.day = Number(req.day) + 1;
+    console.log('computeSubscriberReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+
+    if (req.day <= helper.getDaysInMonth(month)){
+        if (month < helper.getTodayMonthNo())
+            computeSubscriberReports(req, res);
+        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+            computeSubscriberReports(req, res);
+    }
+    else{
+        req.day = 1;
+        req.month = Number(req.month) + 1;
+        console.log('computeSubscriberReports -> month : ', month, req.month, new Date().getMonth());
+
+        if (req.month <= helper.getTodayMonthNo())
+            computeSubscriberReports(req, res);
+    }
+
+    if (helper.isToday(fromDate)){
+        console.log('computeUserReports - promise - resolved');
+
+        delete req.day;
+        delete req.month;
+    }
 };
 
 function computeSubscriberData(subscribers) {
