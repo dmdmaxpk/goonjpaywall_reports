@@ -16,7 +16,7 @@ computeChargeDetailsReports = async(req, res) => {
     * */
 
     // dateData = helper.computeTodayDate(req);
-    dateData = helper.computeNextDate(req, 20, 9);
+    dateData = helper.computeNextDate(req, 1, 2);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
