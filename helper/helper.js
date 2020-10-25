@@ -24,6 +24,8 @@ class Helper {
     static isToday(someDate) {
         someDate = new Date(someDate);
         someDate = this.setDateWithTimezone(someDate, 'in');
+        someDate = new Date(someDate);
+
         var today = new Date();
         return someDate.getDate() == today.getDate() &&
             someDate.getMonth() == today.getMonth() &&
