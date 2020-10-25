@@ -18,13 +18,20 @@ const helper = require('../../helper/helper');
 cronComputeReports = async(req, res) => {
     console.log('cronComputeReports');
 
-    // compute Users report data
-    await UserService.computeUserReports(req,res);
-    console.log('UserService - computeUserReports **********************************************');
+//     // compute Users report data
+//     await UserService.computeUserReports(req,res);
+//     console.log('UserService - computeUserReports **********************************************');
+//
+// // compute Subscribers report Data
+//     await SubscriberService.computeSubscriberReports(req,res);
+//     console.log('SubscriberService - computeSubscriberReports **********************************************');
 
-// compute Subscribers report Data
-    await SubscriberService.computeSubscriberReports(req,res);
-    console.log('SubscriberService - computeSubscriberReports **********************************************');
+    var jobs = [
+        UserService.computeUserReports(req,res),
+        SubscriberService.computeSubscriberReports(req,res)
+    ];
+
+    jobs.reduce((p, job) => p.then(job), Promise.resolve())
 
     // compute Subscriptions report Data
     // await SubscriptionService.computeSubscriptionReports(req,res);
