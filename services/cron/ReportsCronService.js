@@ -1,17 +1,17 @@
-const UserService = require('compute/UserService');
-const SubscriberService = require('compute/SubscriberService');
-const SubscriptionService = require('compute/SubscriptionService');
-const BillingHistoryService = require('compute/BillingHistoryService');
-const CallbackSendService = require('compute/CallbackSendService');
-const RevenueNetAdditionService = require('compute/RevenueNetAdditionService');
-const SubscriptionBillingHistoryService = require('compute/SubscriptionBillingHistoryService');
-const TransactionsBillingHistoryService = require('compute/TransactionsBillingHistoryService');
-const SubscriberSubscriptionsReports = require('compute/SubscriberSubscriptionsReports');
-const SubscriberTransactionsReports = require('compute/SubscriberTransactionsReports');
-const AffiliateSubscriptionsService = require('compute/AffiliateDataFromSubscriptionsService');
+const UserService = require('./compute/UserService');
+const SubscriberService = require('./compute/SubscriberService');
+const SubscriptionService = require('./compute/SubscriptionService');
+const BillingHistoryService = require('./compute/BillingHistoryService');
+const CallbackSendService = require('./compute/CallbackSendService');
+const RevenueNetAdditionService = require('./compute/RevenueNetAdditionService');
+const SubscriptionBillingHistoryService = require('./compute/SubscriptionBillingHistoryService');
+const TransactionsBillingHistoryService = require('./compute/TransactionsBillingHistoryService');
+const SubscriberSubscriptionsReports = require('./compute/SubscriberSubscriptionsReports');
+const SubscriberTransactionsReports = require('./compute/SubscriberTransactionsReports');
+const AffiliateSubscriptionsService = require('./compute/AffiliateDataFromSubscriptionsService');
 
-const HelogsService = require('compute/HelogsService');
-const LogsService = require('compute/LogsService');
+const HelogsService = require('./compute/HelogsService');
+const LogsService = require('./compute/LogsService');
 const helper = require('../../helper/helper');
 
 
