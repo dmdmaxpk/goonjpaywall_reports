@@ -53,8 +53,6 @@ computeUserReports = async(req, res) => {
         if (req.month <= helper.getTodayMonthNo())
             computeUserReports(req, res);
     }
-
-    return true;
 };
 
 function computeUserData(users) {

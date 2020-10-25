@@ -53,8 +53,6 @@ computeSubscriberReports = async(req, res) => {
         if (req.month <= helper.getTodayMonthNo())
             computeSubscriberReports(req, res);
     }
-
-    return true;
 };
 
 function computeSubscriberData(subscribers) {
