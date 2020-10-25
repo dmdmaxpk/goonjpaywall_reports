@@ -8,8 +8,6 @@ let fromDate, toDate, day, month, finalList = [];
 
 computeUserReports = async(req, res) => {
     console.log('computeUserReports: ');
-    await helper.sleep(3000);
-    return;
 
     /*
     * Compute date and time for data fetching from db

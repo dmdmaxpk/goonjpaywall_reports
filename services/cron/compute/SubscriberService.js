@@ -7,8 +7,6 @@ let fromDate, toDate, day, month, finalList = [];
 
 computeSubscriberReports = async(req, res) => {
     console.log('computeSubscriberReports');
-    await helper.sleep(3000);
-    return;
 
     /*
     * Compute date and time for data fetching from db
@@ -34,26 +32,29 @@ computeSubscriberReports = async(req, res) => {
             if (finalList.total.length > 0)
                 await insertNewRecord(finalList, fromDate);
         }
-
-        // Get compute data for next time slot
-        req.day = Number(req.day) + 1;
-        console.log('computeSubscriberReports -> day : ', day, req.day, helper.getDaysInMonth(month));
-
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
-                computeSubscriberReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeSubscriberReports(req, res);
-        }
-        else{
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('computeSubscriberReports -> month : ', month, req.month, new Date().getMonth());
-
-            if (req.month <= helper.getTodayMonthNo())
-                computeSubscriberReports(req, res);
-        }
     });
+
+
+    // Get compute data for next time slot
+    req.day = Number(req.day) + 1;
+    console.log('computeSubscriberReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+
+    if (req.day <= helper.getDaysInMonth(month)){
+        if (month < helper.getTodayMonthNo())
+            computeSubscriberReports(req, res);
+        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+            computeSubscriberReports(req, res);
+    }
+    else{
+        req.day = 1;
+        req.month = Number(req.month) + 1;
+        console.log('computeSubscriberReports -> month : ', month, req.month, new Date().getMonth());
+
+        if (req.month <= helper.getTodayMonthNo())
+            computeSubscriberReports(req, res);
+    }
+
+    return true;
 };
 
 function computeSubscriberData(subscribers) {

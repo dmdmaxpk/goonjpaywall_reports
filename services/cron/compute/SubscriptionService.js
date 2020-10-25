@@ -9,8 +9,6 @@ let fromDate, toDate, day, month, finalData, finalList = [], subscribersFinalLis
 let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeSubscriptionReports = async(req, res) => {
     console.log('computeSubscriptionReports');
-    // await helper.sleep(3000);
-    // return;
 
     /*
     * Compute date and time for data fetching from db

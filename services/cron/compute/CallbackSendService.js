@@ -9,8 +9,6 @@ let fromDate, toDate, day, month, finalList = [];
 let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeCallbackSendReports = async(req, res) => {
     console.log('computeCallbackSendReports');
-    await helper.sleep(3000);
-    return;
 
     /*
     * Compute date and time for data fetching from db
@@ -67,27 +65,30 @@ computeCallbackSendReports = async(req, res) => {
             }
         }
 
-        // Get compute data for next time slot
-        req.day = Number(req.day) + 1;
-        console.log('computeCallbackSendReports -> day : ', day, req.day, helper.getDaysInMonth(month));
-
-        if (req.day <= helper.getDaysInMonth(month)){
-            console.log('IF');
-            if (month < helper.getTodayMonthNo())
-                computeCallbackSendReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeCallbackSendReports(req, res);
-        }
-        else{
-            console.log('ELSE');
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('computeCallbackSendReports -> month : ', month, req.month, new Date().getMonth());
-
-            if (req.month <= helper.getTodayMonthNo())
-                computeCallbackSendReports(req, res);
-        }
     });
+
+    // Get compute data for next time slot
+    req.day = Number(req.day) + 1;
+    console.log('computeCallbackSendReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+
+    if (req.day <= helper.getDaysInMonth(month)){
+        console.log('IF');
+        if (month < helper.getTodayMonthNo())
+            computeCallbackSendReports(req, res);
+        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+            computeCallbackSendReports(req, res);
+    }
+    else{
+        console.log('ELSE');
+        req.day = 1;
+        req.month = Number(req.month) + 1;
+        console.log('computeCallbackSendReports -> month : ', month, req.month, new Date().getMonth());
+
+        if (req.month <= helper.getTodayMonthNo())
+            computeCallbackSendReports(req, res);
+    }
+
+    return true;
 };
 
 function computeUserData(subscriptions) {

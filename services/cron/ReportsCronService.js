@@ -19,52 +19,39 @@ cronComputeReports = async(req, res) => {
     console.log('cronComputeReports');
 
     // compute Users report data
-    // await helper.sleep(3000);
     await UserService.computeUserReports(req,res);
 
 // compute Subscribers report Data
-//     await helper.sleep(3000);
     await SubscriberService.computeSubscriberReports(req,res);
 
     // compute Subscriptions report Data
-    // await helper.sleep(3000);
-    await SubscriptionService.computeSubscriptionReports(req,res);
+    // await SubscriptionService.computeSubscriptionReports(req,res);
 
     // compute Callback report Data
-    // await helper.sleep(3000);
-    await CallbackSendService.computeCallbackSendReports(req,res);
+    // await CallbackSendService.computeCallbackSendReports(req,res);
 
     // // compute Charge Details report Data
-    // await helper.sleep(180*1000);
     // await SubscriptionBillingHistoryService.computeChargeDetailsReports(req,res);
     //
     // // compute Net Addition report Data
-    // await helper.sleep(180*1000);
     // await RevenueNetAdditionService.computeRevenueNetAdditionReports(req,res);
     //
     // // compute Affiliate - Helogs report Data
-    // await helper.sleep(180*1000);
     // await HelogsService.computeHelogsReports(req,res);
     //
     // // compute Affiliate - Helogs Unique Access report Data
-    // await helper.sleep(180*1000);
     // await HelogsService.computeHelogsUniqueSuccessReports(req,res);
     //
     // // compute Affiliate - Page View Data
-    // await helper.sleep(180*1000);
     // await LogsService.computeLogsPageViewReports(req,res);
     //
     // // compute Affiliate - Subscribe Clicks Data
-    // await helper.sleep(180*1000);
     // await LogsService.computeLogsSubscribeClicksReports(req,res);
     //
     // // compute Affiliate - Affiliate Mids report Data
-    // await helper.sleep(180*1000);
     // await AffiliateSubscriptionsService.computeAffiliateMidsFromSubscriptionsReports(req,res);
     //
-    //
     // // compute Affiliate - Affiliate report Data
-    // await helper.sleep(180*1000);
     // await AffiliateSubscriptionsService.computeAffiliateReports(req,res);
 
 };
