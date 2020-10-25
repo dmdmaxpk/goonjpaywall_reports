@@ -1,14 +1,14 @@
-const container = require("../../configurations/container");
-const reportsRepo = require('../../repos/apis/ReportsRepo');
+const container = require("../../../configurations/container");
+const reportsRepo = require('../../../repos/apis/ReportsRepo');
 const subscriptionRepo = container.resolve('subscriptionRepository');
-const helper = require('../../helper/helper');
-const config = require('../../config');
+const helper = require('../../../helper/helper');
+const config = require('../../../config');
 const  _ = require('lodash');
 
 let fromDate, toDate, day, month, finalData, finalList = [], subscribersFinalList = [];
 let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeSubscriptionReports = async(req, res) => {
-    console.log('computeSubscriptionReports');
+    console.log('computeSubscriptionReports'); return;
 
     /*
     * Compute date and time for data fetching from db

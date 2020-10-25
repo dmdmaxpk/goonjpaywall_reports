@@ -1,9 +1,9 @@
-const container = require("../../configurations/container");
-const subscriberReportsRepo = require('../../repos/apis/SubscriberReportsRepo');
-const reportsRepo = require('../../repos/apis/ReportsRepo');
+const container = require("../../../configurations/container");
+const subscriberReportsRepo = require('../../../repos/apis/SubscriberReportsRepo');
+const reportsRepo = require('../../../repos/apis/ReportsRepo');
 
 const subscriptionRepository = container.resolve('subscriptionRepository');
-const helper = require('../../helper/helper');
+const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
 let fromHours, toHours, fromDate, toDate, day, month, finalList = [];

@@ -1,17 +1,19 @@
-const UserService = require('../services/cron/UserService');
-const SubscriberService = require('../services/cron/SubscriberService');
-const SubscriptionService = require('../services/cron/SubscriptionService');
-const BillingHistoryService = require('../services/cron/BillingHistoryService');
-const CallbackSendService = require('../services/cron/CallbackSendService');
-const RevenueNetAdditionService = require('../services/cron/RevenueNetAdditionService');
-const SubscriptionBillingHistoryService = require('../services/cron/SubscriptionBillingHistoryService');
-const TransactionsBillingHistoryService = require('../services/cron/TransactionsBillingHistoryService');
-const SubscriberSubscriptionsReports = require('../services/cron/SubscriberSubscriptionsReports');
-const SubscriberTransactionsReports = require('../services/cron/SubscriberTransactionsReports');
-const AffiliateSubscriptionsService = require('../services/cron/AffiliateDataFromSubscriptionsService');
+const UserService = require('../services/cron/compute/UserService');
+const SubscriberService = require('../services/cron/compute/SubscriberService');
+const SubscriptionService = require('../services/cron/compute/SubscriptionService');
+const BillingHistoryService = require('../services/cron/compute/BillingHistoryService');
+const CallbackSendService = require('../services/cron/compute/CallbackSendService');
+const RevenueNetAdditionService = require('../services/cron/compute/RevenueNetAdditionService');
+const SubscriptionBillingHistoryService = require('../services/cron/compute/SubscriptionBillingHistoryService');
+const TransactionsBillingHistoryService = require('../services/cron/compute/TransactionsBillingHistoryService');
+const SubscriberSubscriptionsReports = require('../services/cron/compute/SubscriberSubscriptionsReports');
+const SubscriberTransactionsReports = require('../services/cron/compute/SubscriberTransactionsReports');
+const AffiliateSubscriptionsService = require('../services/cron/compute/AffiliateDataFromSubscriptionsService');
 
-const HelogsService = require('../services/cron/HelogsService');
-const LogsService = require('../services/cron/LogsService');
+const HelogsService = require('../services/cron/compute/HelogsService');
+const LogsService = require('../services/cron/compute/LogsService');
+
+const ReportsCronService = require('../services/cron/ReportsCronService');
 
 exports.computeUserReports = async (req,res) =>  {
     await UserService.computeUserReports(req,res);
@@ -91,4 +93,9 @@ exports.computeAffiliateReports = async (req,res) =>  {
 exports.computeAffiliateMidsFromSubscriptionsReports = async (req,res) =>  {
     AffiliateSubscriptionsService.computeAffiliateMidsFromSubscriptionsReports(req,res);
     res.send("computeAffiliateMidsFromSubscriptionsReports - Executed\n");
+};
+
+exports.cronComputeReports = async (req,res) =>  {
+    ReportsCronService.cronComputeReports(req,res);
+    res.send("cronComputeReports - in progress\n");
 };

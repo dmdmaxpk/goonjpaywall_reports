@@ -1,7 +1,7 @@
-const container = require("../../configurations/container");
-const subscriberReportsRepo = require('../../repos/apis/SubscriberReportsRepo');
+const container = require("../../../configurations/container");
+const subscriberReportsRepo = require('../../../repos/apis/SubscriberReportsRepo');
 const billingHistoryRepo = container.resolve('billingHistoryRepository');
-const helper = require('../../helper/helper');
+const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
 let fromHours, toHours, fromDate, toDate, day, month, finalList = [];

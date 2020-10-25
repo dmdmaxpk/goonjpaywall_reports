@@ -1,11 +1,11 @@
-const container = require("../../configurations/container");
-const reportsRepo = require('../../repos/apis/ReportsRepo');
+const container = require("../../../configurations/container");
+const reportsRepo = require('../../../repos/apis/ReportsRepo');
 const userRepo = container.resolve('userRepository');
-const helper = require('../../helper/helper');
+const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
 computeUserReports = async(req, res) => {
-    console.log('computeUserReports: ');
+    console.log('computeUserReports: '); return;
     let fromDate, toDate, day, month, finalList = [];
 
     /*

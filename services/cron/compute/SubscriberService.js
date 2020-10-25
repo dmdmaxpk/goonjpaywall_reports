@@ -1,10 +1,10 @@
-const container = require("../../configurations/container");
-const reportsRepo = require('../../repos/apis/ReportsRepo');
+const container = require("../../../configurations/container");
+const reportsRepo = require('../../../repos/apis/ReportsRepo');
 const subscriberRepo = container.resolve('subscriberRepository');
-const helper = require('../../helper/helper');
+const helper = require('../../../helper/helper');
 
 computeSubscriberReports = async(req, res) => {
-    console.log('computeSubscriberReports');
+    console.log('computeSubscriberReports'); return;
     let fromDate, toDate, day, month, finalList = [];
 
     /*

@@ -1,7 +1,7 @@
-const container = require("../../configurations/container");
-const reportsRepo = require('../../repos/apis/ReportsRepo');
+const container = require("../../../configurations/container");
+const reportsRepo = require('../../../repos/apis/ReportsRepo');
 const transactionsRepo = container.resolve('transactionsRepo');
-const helper = require('../../helper/helper');
+const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
 computeTransactionsAvgReports = async(req, res) => {

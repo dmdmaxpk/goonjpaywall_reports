@@ -1,7 +1,7 @@
-const container = require("../../configurations/container");
-const affiliateRepo = require('../../repos/apis/AffiliateRepo');
+const container = require("../../../configurations/container");
+const affiliateRepo = require('../../../repos/apis/AffiliateRepo');
 const logsRepo = container.resolve('logsRepo');
-const helper = require('../../helper/helper');
+const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
 computeHelogsReports = async(req, res) => {

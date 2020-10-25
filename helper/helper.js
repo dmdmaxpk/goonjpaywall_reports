@@ -17,6 +17,10 @@ class Helper {
         this.db = db;
     }
 
+    static sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     static setDate(date, h=null, m, s, mi){
         date = new Date(date);
         if (h !== null)
