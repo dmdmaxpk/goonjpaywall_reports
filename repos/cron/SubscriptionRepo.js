@@ -93,7 +93,7 @@ class SubscriptionRepository {
                                 mid: "$mid",
                                 isValidUser: "$isValidUser",
                                 added_dtm:  {$cond: {if: "$isValidUser", then: "$added_dm" , else: "" } },
-                                subscription_dtm: "$added_dtm",
+                                subscription_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } },
                                 isCallbAckSent: {$cond: { if: { $and: [{$gte: ["$callbackhistorySize",1]},{$eq: [ "$isValidUser",true ]} ] } ,then:"yes",else:"no" }} ,
                                 callBackSentTime: {$cond: {if: "$isValidUser", then: "$billing_dm" , else: "" } }
                             }
