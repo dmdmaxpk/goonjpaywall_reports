@@ -51,7 +51,7 @@ router.route('/compute-page-views-logger-reports')
 router.route('/compute-subscribe-clicks-logger-reports')
     .get(connecton.connect, controller.computeLogsSubscribeClicksReports); //
 
-router.route('/cron-compute-reports')
+router.route('/cron-compute-all-reports')
     .get(connecton.connect, controller.cronComputeReports); //
 
 module.exports = router;

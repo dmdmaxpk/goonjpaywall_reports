@@ -24,7 +24,7 @@ computeUserReports = async(req, res) => {
 
     console.log('computeUserReports: ', fromDate, toDate);
     await userRepo.getUsersByDateRange(req, fromDate, toDate).then(async function (users) {
-        console.log('users.length: ', users);
+        console.log('users.length: ', users.length);
 
         if (users.length > 0){
             finalList = computeUserData(users);
@@ -95,20 +95,21 @@ function computeUserData(users) {
     return finalList;
 }
 
-function insertNewRecord(data, dateString) {
+async function insertNewRecord(data, dateString) {
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
 
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
-    reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
+
+    await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0) {
             result = result[0];
             result.users = data;
 
-            reportsRepo.updateReport(result, result._id);
+            await reportsRepo.updateReport(result, result._id);
         }
         else
-            reportsRepo.createReport({users: data, date: dateString});
+            await reportsRepo.createReport({users: data, date: dateString});
     });
 }
 
