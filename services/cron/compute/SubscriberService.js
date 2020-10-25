@@ -3,12 +3,12 @@ const reportsRepo = require('../../../repos/apis/ReportsRepo');
 const subscriberRepo = container.resolve('subscriberRepository');
 const helper = require('../../../helper/helper');
 
+let fromDate, toDate, day, month, finalList = [];
+
 computeSubscriberReports = async(req, res) => {
     console.log('computeSubscriberReports');
     await helper.sleep(3000);
     return;
-
-    let fromDate, toDate, day, month, finalList = [];
 
     /*
     * Compute date and time for data fetching from db
@@ -24,7 +24,7 @@ computeSubscriberReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('computeSubscriberReports: ', fromDate, toDate);
-    subscriberRepo.getSubscribersByDateRange(req, fromDate, toDate).then(function (subscribers) {
+    await subscriberRepo.getSubscribersByDateRange(req, fromDate, toDate).then(async function (subscribers) {
         console.log('subscribers: ', subscribers.length);
 
         if (subscribers.length > 0){
@@ -32,7 +32,7 @@ computeSubscriberReports = async(req, res) => {
 
             console.log('finalList.length : ', finalList.total.length, finalList);
             if (finalList.total.length > 0)
-                insertNewRecord(finalList, fromDate);
+                await insertNewRecord(finalList, fromDate);
         }
 
         // Get compute data for next time slot

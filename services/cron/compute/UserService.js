@@ -4,12 +4,12 @@ const userRepo = container.resolve('userRepository');
 const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
+let fromDate, toDate, day, month, finalList = [];
+
 computeUserReports = async(req, res) => {
     console.log('computeUserReports: ');
     await helper.sleep(3000);
     return;
-
-    let fromDate, toDate, day, month, finalList = [];
 
     /*
     * Compute date and time for data fetching from db
@@ -25,7 +25,7 @@ computeUserReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('computeUserReports: ', fromDate, toDate);
-    userRepo.getUsersByDateRange(req, fromDate, toDate).then(function (users) {
+    await userRepo.getUsersByDateRange(req, fromDate, toDate).then(async function (users) {
         console.log('users.length: ', users);
 
         if (users.length > 0){
@@ -33,28 +33,30 @@ computeUserReports = async(req, res) => {
 
             console.log('finalList.length : ', finalList.length);
             if (finalList.length > 0)
-                insertNewRecord(finalList, fromDate);
-        }
-
-        // Get compute data for next time slot
-        req.day = Number(req.day) + 1;
-        console.log('getUsersByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
-
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
-                computeUserReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeUserReports(req, res);
-        }
-        else{
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('getUsersByDateRange -> month : ', month, req.month, new Date().getMonth());
-
-            if (req.month <= helper.getTodayMonthNo())
-                computeUserReports(req, res);
+                await insertNewRecord(finalList, fromDate);
         }
     });
+
+    // Get compute data for next time slot
+    req.day = Number(req.day) + 1;
+    console.log('getUsersByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
+
+    if (req.day <= helper.getDaysInMonth(month)){
+        if (month < helper.getTodayMonthNo())
+            computeUserReports(req, res);
+        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+            computeUserReports(req, res);
+    }
+    else{
+        req.day = 1;
+        req.month = Number(req.month) + 1;
+        console.log('getUsersByDateRange -> month : ', month, req.month, new Date().getMonth());
+
+        if (req.month <= helper.getTodayMonthNo())
+            computeUserReports(req, res);
+    }
+
+    return true;
 };
 
 function computeUserData(users) {

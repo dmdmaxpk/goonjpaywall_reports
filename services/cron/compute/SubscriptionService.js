@@ -9,8 +9,8 @@ let fromDate, toDate, day, month, finalData, finalList = [], subscribersFinalLis
 let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeSubscriptionReports = async(req, res) => {
     console.log('computeSubscriptionReports');
-    await helper.sleep(3000);
-    return;
+    // await helper.sleep(3000);
+    // return;
 
     /*
     * Compute date and time for data fetching from db
@@ -74,28 +74,30 @@ computeSubscriptionReports = async(req, res) => {
                 });
             }
         }
-
-        // Get compute data for next time slot
-        req.day = Number(req.day) + 1;
-        console.log('computeSubscriptionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
-
-        if (req.day <= helper.getDaysInMonth(month)){
-            console.log('IF');
-            if (month < helper.getTodayMonthNo())
-                computeSubscriptionReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeSubscriptionReports(req, res);
-        }
-        else{
-            console.log('ELSE');
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('computeSubscriptionReports -> month : ', month, req.month, new Date().getMonth());
-
-            if (req.month <= helper.getTodayMonthNo())
-                computeSubscriptionReports(req, res);
-        }
     });
+
+    // Get compute data for next time slot
+    req.day = Number(req.day) + 1;
+    console.log('computeSubscriptionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+
+    if (req.day <= helper.getDaysInMonth(month)){
+        console.log('IF');
+        if (month < helper.getTodayMonthNo())
+            computeSubscriptionReports(req, res);
+        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+            computeSubscriptionReports(req, res);
+    }
+    else{
+        console.log('ELSE');
+        req.day = 1;
+        req.month = Number(req.month) + 1;
+        console.log('computeSubscriptionReports -> month : ', month, req.month, new Date().getMonth());
+
+        if (req.month <= helper.getTodayMonthNo())
+            computeSubscriptionReports(req, res);
+    }
+
+    return true;
 };
 
 function computeSubscriptionsData(subscriptions) {
