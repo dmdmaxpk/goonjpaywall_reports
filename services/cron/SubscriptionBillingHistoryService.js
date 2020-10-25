@@ -5,7 +5,7 @@ const helper = require('../../helper/helper');
 const config = require('../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, hoursFromISODate, chargeDetailList = [], transactingSubsList = [];
+let fromDate, toDate, day, month, chargeDetailList = [], transactingSubsList = [];
 let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeChargeDetailsReports = async(req, res) => {
     console.log('computeChargeDetailsReports');
@@ -16,7 +16,7 @@ computeChargeDetailsReports = async(req, res) => {
     * */
 
     // dateData = helper.computeTodayDate(req);
-    dateData = helper.computeNextDate(req, 1, 2);
+    dateData = helper.computeNextDate(req, 20, 9);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -28,6 +28,8 @@ computeChargeDetailsReports = async(req, res) => {
     * */
     query = countQuery(fromDate, toDate);
     await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
+        console.log('totalCount: ', totalCount);
+
         if (totalCount > 0){
             computeChunks = helper.getChunks(totalCount);
             totalChunks = computeChunks.chunks;
@@ -50,7 +52,7 @@ computeChargeDetailsReports = async(req, res) => {
 
                         console.log('chargeDetailList.length : ', chargeDetailList.length, chargeDetailList);
                         console.log('transactingSubsList.length : ', transactingSubsList.length, transactingSubsList);
-                        await insertNewRecord(transactingSubsList, chargeDetailList, fromDate);
+                        await insertNewRecord(transactingSubsList, chargeDetailList, fromDate, i);
                     }
                 });
             }
@@ -68,7 +70,7 @@ computeChargeDetailsReports = async(req, res) => {
 
                         console.log('chargeDetailList.length : ', chargeDetailList.length, chargeDetailList);
                         console.log('transactingSubsList.length : ', transactingSubsList.length, transactingSubsList);
-                        await insertNewRecord(transactingSubsList, chargeDetailList, fromDate);
+                        await insertNewRecord(transactingSubsList, chargeDetailList, fromDate, 1);
                     }
                 });
             }
@@ -391,20 +393,21 @@ function computeChargeDetailData(chargeDetails) {
     return {transactingSubsList: transactingSubsList, chargeDetailList: chargeDetailList};
 }
 
-async function insertNewRecord(transactingSubsList, chargeDetailList, dateString) {
-    hoursFromISODate = _.clone(dateString);
+async function insertNewRecord(transactingSubsList, chargeDetailList, dateString, mode) {
+    console.log('insertNewRecord - dateString', dateString);
+    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
+    console.log('insertNewRecord - dateString', dateString);
 
-    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0) {
             result = result[0];
-            if (helper.splitHoursFromISODate(hoursFromISODate)) {
+            if (mode === 0) {
                 result.chargeDetails = chargeDetailList;
                 result.transactions = transactingSubsList;
             }else{
-                result.chargeDetails.concat(chargeDetailList);
-                result.transactions.concat(transactingSubsList);
+                result.chargeDetails = result.chargeDetails.concat(chargeDetailList);
+                result.transactions = result.transactions.concat(transactingSubsList);
             }
 
             await reportsRepo.updateReport(result, result._id);

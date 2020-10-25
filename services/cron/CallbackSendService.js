@@ -5,7 +5,7 @@ const helper = require('../../helper/helper');
 const config = require('../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, hoursFromISODate, finalList = [];
+let fromDate, toDate, day, month, finalList = [];
 let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeCallbackSendReports = async(req, res) => {
     console.log('computeCallbackSendReports');
@@ -16,7 +16,7 @@ computeCallbackSendReports = async(req, res) => {
     * */
 
     // dateData = helper.computeTodayDate(req);
-    dateData = helper.computeNextDate(req, 20, 9);
+    dateData = helper.computeNextDate(req, 20, 10);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;

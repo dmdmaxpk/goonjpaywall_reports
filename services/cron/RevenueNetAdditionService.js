@@ -5,7 +5,7 @@ const helper = require('../../helper/helper');
 const config = require('../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, finalData, hoursFromISODate, finalList = [];
+let fromDate, toDate, day, month, finalData, finalList = [];
 let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeRevenueNetAdditionReports = async(req, res) => {
     console.log('computeRevenueNetAdditionReports');
@@ -16,7 +16,7 @@ computeRevenueNetAdditionReports = async(req, res) => {
     * */
 
     // dateData = helper.computeTodayDate(req);
-    dateData = helper.computeNextDate(req, 1, 2);
+    dateData = helper.computeNextDate(req, 20, 9);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -49,7 +49,7 @@ computeRevenueNetAdditionReports = async(req, res) => {
                         finalList = finalData.finalList;
                         console.log('finalList.length : ', finalList.length);
                         if (finalList.length > 0)
-                            insertNewRecord(finalList, fromDate);
+                            await insertNewRecord(finalList, fromDate, i);
                     }
                 });
             }
@@ -65,7 +65,7 @@ computeRevenueNetAdditionReports = async(req, res) => {
                         finalList = finalData.finalList;
                         console.log('finalList.length : ', finalList.length);
                         if (finalList.length > 0)
-                            insertNewRecord(finalList, fromDate);
+                            await insertNewRecord(finalList, fromDate, 1);
                     }
                 });
             }
@@ -279,25 +279,26 @@ function computeNetAdditionRevenueData(netAdditions) {
     return {finalList: finalList};
 }
 
-function insertNewRecord(finalList, dateString) {
-    hoursFromISODate = _.clone(dateString);
+async function insertNewRecord(finalList, dateString, mode) {
+    console.log('insertNewRecord - dateString', dateString);
+    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
+    console.log('insertNewRecord - dateString', dateString);
 
-    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length);
-    reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
+    await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         console.log('result: ', result);
         if (result.length > 0){
             result = result[0];
-            if (helper.splitHoursFromISODate(hoursFromISODate))
+            if (mode === 0)
                 result.netAdditions = finalList;
             else
-                result.netAdditions.concat(finalList);
+                result.netAdditions = result.netAdditions.concat(finalList);
 
             console.log('result: ', result);
-            reportsRepo.updateReport(result, result._id);
+            await reportsRepo.updateReport(result, result._id);
         }
         else
-            reportsRepo.createReport({netAdditions: finalList, date: dateString});
+            await reportsRepo.createReport({netAdditions: finalList, date: dateString});
     });
 }
 
