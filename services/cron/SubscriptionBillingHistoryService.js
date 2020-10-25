@@ -49,9 +49,6 @@ computeChargeDetailsReports = async(req, res) => {
                         finalData = computeChargeDetailData(chargeDetails);
                         transactingSubsList = finalData.transactingSubsList;
                         chargeDetailList = finalData.chargeDetailList;
-
-                        console.log('chargeDetailList.length : ', chargeDetailList.length, chargeDetailList);
-                        console.log('transactingSubsList.length : ', transactingSubsList.length, transactingSubsList);
                         await insertNewRecord(transactingSubsList, chargeDetailList, fromDate, i);
                     }
                 });
@@ -67,9 +64,6 @@ computeChargeDetailsReports = async(req, res) => {
                         finalData = computeChargeDetailData(chargeDetails);
                         transactingSubsList = finalData.transactingSubsList;
                         chargeDetailList = finalData.chargeDetailList;
-
-                        console.log('chargeDetailList.length : ', chargeDetailList.length, chargeDetailList);
-                        console.log('transactingSubsList.length : ', transactingSubsList.length, transactingSubsList);
                         await insertNewRecord(transactingSubsList, chargeDetailList, fromDate, 1);
                     }
                 });
