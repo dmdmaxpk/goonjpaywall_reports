@@ -4,7 +4,10 @@ const subscriberRepo = container.resolve('subscriberRepository');
 const helper = require('../../../helper/helper');
 
 computeSubscriberReports = async(req, res) => {
-    console.log('computeSubscriberReports'); return;
+    console.log('computeSubscriberReports');
+    await helper.sleep(3000);
+    return;
+
     let fromDate, toDate, day, month, finalList = [];
 
     /*

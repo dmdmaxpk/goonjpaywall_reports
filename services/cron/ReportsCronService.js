@@ -19,19 +19,19 @@ cronComputeReports = async(req, res) => {
     console.log('cronComputeReports');
 
     // compute Users report data
-    await helper.sleep(3000);
+    // await helper.sleep(3000);
     await UserService.computeUserReports(req,res);
 
 // compute Subscribers report Data
-    await helper.sleep(3000);
+//     await helper.sleep(3000);
     await SubscriberService.computeSubscriberReports(req,res);
 
     // compute Subscriptions report Data
-    await helper.sleep(3000);
+    // await helper.sleep(3000);
     await SubscriptionService.computeSubscriptionReports(req,res);
 
     // compute Callback report Data
-    await helper.sleep(3000);
+    // await helper.sleep(3000);
     await CallbackSendService.computeCallbackSendReports(req,res);
 
     // // compute Charge Details report Data

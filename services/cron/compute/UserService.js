@@ -5,7 +5,10 @@ const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
 computeUserReports = async(req, res) => {
-    console.log('computeUserReports: '); return;
+    console.log('computeUserReports: ');
+    await helper.sleep(3000);
+    return;
+
     let fromDate, toDate, day, month, finalList = [];
 
     /*
