@@ -105,7 +105,7 @@ function computeUserData(subscriptions) {
 
                 if (outer_added_dtm === inner_added_dtm){
                     dateInMili = inner_added_dtm;
-                    if (innerObj.isCallbAckSent !== 'no')
+                    if (innerObj.isCallbAckSent === 'ye')
                         newObj.callbackSent = newObj.callbackSent + 1;
 
                     newObj.added_dtm = outerObj.subscription_dtm;

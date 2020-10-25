@@ -48,6 +48,21 @@ exports.computeCallbackSendReports = async (req,res) =>  {
     res.send("computeCallbackSendReports - Executed\n");
 };
 
+exports.computeChargeDetailsReports = async (req,res) =>  {
+    SubscriptionBillingHistoryService.computeChargeDetailsReports(req,res);
+    res.send("computeChargeDetailsReports - Executed\n");
+};
+
+exports.computeRevenueNetAdditionReports = async (req,res) =>  {
+    RevenueNetAdditionService.computeRevenueNetAdditionReports(req,res);
+    res.send("computeRevenueNetAdditionReports - Executed\n");
+};
+
+exports.computeTransactionsAvgReports = async (req,res) =>  {
+    TransactionsBillingHistoryService.computeTransactionsAvgReports(req,res);
+    res.send("computeTransactionsReports - Executed\n");
+};
+
 exports.computeHelogsReports = async (req,res) =>  {
     HelogsService.computeHelogsReports(req,res);
     res.send("computeHelogsReports - Executed\n");
@@ -66,21 +81,6 @@ exports.computeLogsPageViewReports = async (req,res) =>  {
 exports.computeLogsSubscribeClicksReports = async (req,res) =>  {
     LogsService.computeLogsSubscribeClicksReports(req,res);
     res.send("computeLogsSubscribeClicksReports - Executed\n");
-};
-
-exports.computeTransactionsAvgReports = async (req,res) =>  {
-    TransactionsBillingHistoryService.computeTransactionsAvgReports(req,res);
-    res.send("computeTransactionsReports - Executed\n");
-};
-
-exports.computeChargeDetailsReports = async (req,res) =>  {
-    SubscriptionBillingHistoryService.computeChargeDetailsReports(req,res);
-    res.send("computeChargeDetailsReports - Executed\n");
-};
-
-exports.computeRevenueNetAdditionReports = async (req,res) =>  {
-    RevenueNetAdditionService.computeRevenueNetAdditionReports(req,res);
-    res.send("computeRevenueNetAdditionReports - Executed\n");
 };
 
 exports.computeAffiliateReports = async (req,res) =>  {

@@ -156,7 +156,6 @@ class SubscriptionRepository {
                         {$match: { numOfSucc: {$gte: 1}  }},
                         {$project: {
                                 _id: 0,
-                                added_dtm:"$added_dtm",
                                 source:"$source",
                                 subscription_status:"$subscription_status",
                                 billing_status:"$billing_status",
@@ -167,6 +166,7 @@ class SubscriptionRepository {
                                 operator: "$operator",
                                 micro_charge: "$micro_charge",
                                 billing_dtm: "$billing_dtm",
+                                added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } }
                             }
                         },
                     ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {

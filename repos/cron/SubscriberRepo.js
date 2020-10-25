@@ -11,7 +11,7 @@ class SubscriberRepository {
                         }},
                         {$project: {
                             user_id: "$user_id",
-                            added_dtm: "$added_dtm",
+                            added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } },
                         }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
