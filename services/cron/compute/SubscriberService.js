@@ -28,7 +28,7 @@ computeSubscriberReports = async(req, res) => {
         if (subscribers.length > 0){
             finalList = computeSubscriberData(subscribers);
 
-            console.log('finalList.length : ', finalList.total.length, finalList);
+            console.log('finalList.length : ', finalList.total.length);
             if (finalList.total.length > 0)
                 await insertNewRecord(finalList, fromDate);
         }
@@ -93,8 +93,6 @@ async function insertNewRecord(data, dateString) {
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
-        console.log('result subscribers: ', result);
-        console.log('data subscribers: ', data);
         if (result.length > 0){
             result = result[0];
             result.subscribers = data;
