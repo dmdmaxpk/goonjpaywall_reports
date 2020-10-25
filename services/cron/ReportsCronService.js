@@ -20,9 +20,11 @@ cronComputeReports = async(req, res) => {
 
     // compute Users report data
     await UserService.computeUserReports(req,res);
+    console.log('UserService - computeUserReports **********************************************');
 
 // compute Subscribers report Data
     await SubscriberService.computeSubscriberReports(req,res);
+    console.log('SubscriberService - computeSubscriberReports **********************************************');
 
     // compute Subscriptions report Data
     // await SubscriptionService.computeSubscriptionReports(req,res);

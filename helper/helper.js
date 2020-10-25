@@ -21,6 +21,14 @@ class Helper {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    static isToday(someDate) {
+        someDate = this.setDateWithTimezone(someDate, 'in');
+        var today = new Date();
+        return someDate.getDate() == today.getDate() &&
+            someDate.getMonth() == today.getMonth() &&
+            someDate.getFullYear() == today.getFullYear()
+    }
+
     static setDate(date, h=null, m, s, mi){
         date = new Date(date);
         if (h !== null)
