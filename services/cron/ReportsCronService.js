@@ -26,12 +26,18 @@ cronComputeReports = async(req, res) => {
 //     await SubscriberService.computeSubscriberReports(req,res);
 //     console.log('SubscriberService - computeSubscriberReports **********************************************');
 
-    var jobs = [
-        UserService.computeUserReports(req,res),
-        SubscriberService.computeSubscriberReports(req,res)
+    const jobs = [
+        function(){
+            UserService.computeUserReports(req,res);
+        },
+        function(){
+            SubscriberService.computeSubscriberReports(req,res);
+        }
     ];
 
-    jobs.reduce((p, job) => p.then(job), Promise.resolve())
+    return jobs.reduce(function(a,b){
+        return a.then(b);
+    }, Promise.resolve(null));
 
     // compute Subscriptions report Data
     // await SubscriptionService.computeSubscriptionReports(req,res);
