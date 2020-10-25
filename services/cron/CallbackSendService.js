@@ -16,7 +16,7 @@ computeCallbackSendReports = async(req, res) => {
     * */
 
     // dateData = helper.computeTodayDate(req);
-    dateData = helper.computeNextDate(req, 1, 2);
+    dateData = helper.computeNextDate(req, 20, 9);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -35,7 +35,6 @@ computeCallbackSendReports = async(req, res) => {
             lastLimit = computeChunks.lastChunkCount;
             let skip = 0;
 
-
             //Loop over no.of chunks
             for (i = 0 ; i < totalChunks; i++){
                 await subscriptionRepo.getCallbackSendByDateRange(req, fromDate, toDate, skip, limit).then(async function (subscriptions) {
@@ -47,7 +46,7 @@ computeCallbackSendReports = async(req, res) => {
                     // Now compute and store data in DB
                     if (subscriptions.length > 0){
                         finalList = computeUserData(subscriptions);
-                        insertNewRecord(finalList, fromDate);
+                        await insertNewRecord(finalList, fromDate, i);
                     }
                 });
             }
@@ -60,7 +59,7 @@ computeCallbackSendReports = async(req, res) => {
                     // Now compute and store data in DB
                     if (subscriptions.length > 0){
                         finalList = computeUserData(subscriptions);
-                        insertNewRecord(finalList, fromDate);
+                        await insertNewRecord(finalList, fromDate, 1);
                     }
                 });
             }
@@ -120,22 +119,24 @@ function computeUserData(subscriptions) {
     return finalList;
 }
 
-function insertNewRecord(data, dateString) {
-    hoursFromISODate = _.clone(dateString);
+async function insertNewRecord(data, dateString, mode) {
+    console.log('insertNewRecord - dateString', dateString);
+    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
+    console.log('insertNewRecord - dateString', dateString);
 
-    reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
+    await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0){
             result = result[0];
-            if (helper.splitHoursFromISODate(hoursFromISODate))
+            if (mode === 0)
                 result.callbackSend = data;
             else
-                result.callbackSend.concat(data);
+                result.callbackSend = result.callbackSend.concat(data);
 
-            reportsRepo.updateReport(result, result._id);
+            await reportsRepo.updateReport(result, result._id);
         }
         else
-            reportsRepo.createReport({callbackSend: data, date: dateString});
+            await reportsRepo.createReport({callbackSend: data, date: dateString});
     });
 }
 

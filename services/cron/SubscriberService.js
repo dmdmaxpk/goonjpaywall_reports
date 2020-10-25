@@ -2,7 +2,6 @@ const container = require("../../configurations/container");
 const reportsRepo = require('../../repos/apis/ReportsRepo');
 const subscriberRepo = container.resolve('subscriberRepository');
 const helper = require('../../helper/helper');
-const  _ = require('lodash');
 
 computeSubscriberReports = async(req, res) => {
     console.log('computeSubscriberReports');
