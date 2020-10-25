@@ -6,58 +6,58 @@ const  _ = require('lodash');
 
 let fromDate, toDate, day, month, finalList = [];
 computeUserReports = async(req, res) => {
-        console.log('computeUserReports: ');
+    console.log('computeUserReports: ');
 
-            /*
-            * Compute date and time for data fetching from db
-            * Script will execute to fetch data as per day
-            * */
+    /*
+    * Compute date and time for data fetching from db
+    * Script will execute to fetch data as per day
+    * */
 
-            // dateData = helper.computeTodayDate(req);
-            dateData = helper.computeNextDate(req, 1, 2);
-            req = dateData.req;
-            day = dateData.day;
-            month = dateData.month;
-            fromDate = dateData.fromDate;
-            toDate = dateData.toDate;
+    // dateData = helper.computeTodayDate(req);
+    dateData = helper.computeNextDate(req, 1, 2);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
 
-            console.log('computeUserReports: ', fromDate, toDate);
-            await userRepo.getUsersByDateRange(req, fromDate, toDate).then(async function (users) {
-                console.log('users.length: ', users.length);
+    console.log('computeUserReports: ', fromDate, toDate);
+    await userRepo.getUsersByDateRange(req, fromDate, toDate).then(async function (users) {
+        console.log('users.length: ', users.length);
 
-                if (users.length > 0){
-                    finalList = computeUserData(users);
+        if (users.length > 0){
+            finalList = computeUserData(users);
 
-                    console.log('finalList.length : ', finalList.length);
-                    if (finalList.length > 0)
-                        await insertNewRecord(finalList, fromDate);
-                }
-            });
+            console.log('finalList.length : ', finalList.length);
+            if (finalList.length > 0)
+                await insertNewRecord(finalList, fromDate);
+        }
+    });
 
-            // Get compute data for next time slot
-            req.day = Number(req.day) + 1;
-            console.log('getUsersByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
+    // Get compute data for next time slot
+    req.day = Number(req.day) + 1;
+    console.log('getUsersByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-            if (req.day <= helper.getDaysInMonth(month)){
-                if (month < helper.getTodayMonthNo())
-                    computeUserReports(req, res);
-                else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                    computeUserReports(req, res);
-            }
-            else{
-                req.day = 1;
-                req.month = Number(req.month) + 1;
-                console.log('getUsersByDateRange -> month : ', month, req.month, new Date().getMonth());
+    if (req.day <= helper.getDaysInMonth(month)){
+        if (month < helper.getTodayMonthNo())
+            computeUserReports(req, res);
+        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+            computeUserReports(req, res);
+    }
+    else{
+        req.day = 1;
+        req.month = Number(req.month) + 1;
+        console.log('getUsersByDateRange -> month : ', month, req.month, new Date().getMonth());
 
-                if (req.month <= helper.getTodayMonthNo())
-                    computeUserReports(req, res);
-            }
+        if (req.month <= helper.getTodayMonthNo())
+            computeUserReports(req, res);
+    }
 
-            if (helper.isToday(fromDate)){
-                console.log('computeUserReports - promise - resolved');
-                resolve(1);
-            }
-    };
+    if (helper.isToday(fromDate)){
+        console.log('computeUserReports - promise - resolved');
+        resolve(1);
+    }
+};
 
 function computeUserData(users) {
 
