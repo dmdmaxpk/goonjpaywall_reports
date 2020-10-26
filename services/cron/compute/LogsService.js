@@ -58,7 +58,6 @@ computeLogsPageViewReports = async(req, res) => {
         }
     });
 };
-
 computeLogsSubscribeClicksReports = async(req, res) => {
     console.log('computeLogsSubscribeClicksReports');
     let dateData, fromDate, toDate, day, month, finalList = [];
@@ -109,6 +108,77 @@ computeLogsSubscribeClicksReports = async(req, res) => {
             delete req.day;
             delete req.month;
         }
+    });
+};
+
+promiseBasedComputeLogsPageViewReports = async(req, res) => {
+    console.log('promiseBasedComputeLogsPageViewReports');
+    return new Promise(async (resolve, reject) => {
+
+        let dateData, fromDate, toDate, finalList = [];
+
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data as per day
+        * */
+
+        // dateData = helper.computeTodayDate(req);
+        dateData = helper.computeNextDate(req, 22, 5);
+        req = dateData.req;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        console.log('computeLogsPageViewReports: ', fromDate, toDate);
+        await logsRepo.getLogsPageViewByDateRange(req, fromDate, toDate).then( async function(logsPageViewData) {
+            console.log('logsPageViewData: ', logsPageViewData.length);
+
+            if (logsPageViewData.length > 0){
+                finalList = computeLogsPageViewData(logsPageViewData);
+
+                console.log('finalList.length : ', finalList.length);
+                await insertNewRecord(finalList, 'pageView', fromDate);
+            }
+
+            if (helper.isToday(fromDate)){
+                console.log('computeLogsPageViewReports - data compute - done');
+                delete req.day;
+                delete req.month;
+            }
+        });
+    });
+};
+promiseBasedComputeLogsSubscribeClicksReports = async(req, res) => {
+    console.log('promiseBasedComputeLogsSubscribeClicksReports');
+    return new Promise(async (resolve, reject) => {
+
+        let dateData, fromDate, toDate, finalList = [];
+
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data as per day
+        * */
+        dateData = helper.computeNextDate(req, 24, 3);
+        req = dateData.req;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        console.log('computeLogsSubscribeClicksReports: ', fromDate, toDate);
+        await logsRepo.getLogsSubscribeClicksByDateRange(req, fromDate, toDate).then( async function(logsSubscribeClicks) {
+            console.log('logsSubscribeClicks: ', logsSubscribeClicks.length);
+
+            if (logsSubscribeClicks.length > 0){
+                finalList = computeLogsSubscribeClicks(logsSubscribeClicks);
+
+                console.log('finalList.length : ', finalList.length);
+                await insertNewRecord(finalList, 'subsClicks', fromDate);
+            }
+
+            if (helper.isToday(fromDate)){
+                console.log('promiseBasedComputeLogsSubscribeClicksReports - data compute - done');
+                delete req.day;
+                delete req.month;
+            }
+        });
     });
 };
 
@@ -222,4 +292,7 @@ function clonelogsObj() {
 module.exports = {
     computeLogsPageViewReports: computeLogsPageViewReports,
     computeLogsSubscribeClicksReports: computeLogsSubscribeClicksReports,
+
+    promiseBasedComputeLogsPageViewReports: promiseBasedComputeLogsPageViewReports,
+    promiseBasedComputeLogsSubscribeClicksReports: promiseBasedComputeLogsSubscribeClicksReports
 };

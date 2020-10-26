@@ -100,6 +100,80 @@ computeRevenueNetAdditionReports = async(req, res) => {
     });
 };
 
+promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
+    console.log('promiseBasedComputeRevenueNetAdditionReports');
+    return new Promise(async (resolve, reject) => {
+
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data as per day
+        * */
+
+        // dateData = helper.computeTodayDate(req);
+        dateData = helper.computeNextDate(req, 20, 9);
+        req = dateData.req;
+        day = dateData.day;
+        month = dateData.month;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        console.log('fromDate: ', fromDate, toDate);
+        query = countQuery(fromDate, toDate);
+
+        await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
+            console.log('totalCount: ', totalCount);
+
+            if (totalCount > 0){
+                computeChunks = helper.getChunks(totalCount);
+                totalChunks = computeChunks.chunks;
+                lastLimit = computeChunks.lastChunkCount;
+                let skip = 0;
+
+                //Loop over no.of chunks
+                for (i = 0 ; i < totalChunks; i++){
+                    await  billingHistoryRepo.getnetAdditionByDateRange(req, fromDate, toDate, skip, limit).then(async function (netAdditions) {
+                        console.log('netAdditions : ', netAdditions.length);
+
+                        //set skip variable to limit data
+                        skip = skip + limit;
+
+                        // Now compute and store data in DB
+                        if (netAdditions.length > 0){
+                            finalData = computeNetAdditionRevenueData(netAdditions);
+                            finalList = finalData.finalList;
+                            console.log('finalList.length : ', finalList.length);
+                            if (finalList.length > 0)
+                                await insertNewRecord(finalList, fromDate, i);
+                        }
+                    });
+                }
+
+                // fetch last chunk Data from DB
+                if (lastLimit > 0){
+                    await  billingHistoryRepo.getnetAdditionByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (netAdditions) {
+                        console.log('netAdditions: ', netAdditions.length);
+
+                        // Now compute and store data in DB
+                        if (netAdditions.length > 0){
+                            finalData = computeNetAdditionRevenueData(netAdditions);
+                            finalList = finalData.finalList;
+                            console.log('finalList.length : ', finalList.length);
+                            if (finalList.length > 0)
+                                await insertNewRecord(finalList, fromDate, 1);
+                        }
+                    });
+                }
+            }
+        });
+
+        if (helper.isToday(fromDate)){
+            console.log('promiseBasedComputeRevenueNetAdditionReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+    });
+};
+
 function computeNetAdditionRevenueData(netAdditions) {
 
     let dateInMili, outer_added_dtm, inner_added_dtm, expire_type, newObj, outerObj, innerObj, finalList = [];
@@ -399,4 +473,5 @@ function countQuery(from, to){
 
 module.exports = {
     computeRevenueNetAdditionReports: computeRevenueNetAdditionReports,
+    promiseBasedComputeRevenueNetAdditionReports: promiseBasedComputeRevenueNetAdditionReports
 };

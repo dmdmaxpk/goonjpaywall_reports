@@ -58,7 +58,6 @@ computeHelogsReports = async(req, res) => {
         }
     });
 };
-
 computeHelogsUniqueSuccessReports = async(req, res) => {
     console.log('computeHelogsUniqueSuccessReports');
 
@@ -111,6 +110,77 @@ computeHelogsUniqueSuccessReports = async(req, res) => {
             delete req.day;
             delete req.month;
         }
+    });
+};
+
+promiseBasedComputeHelogsUniqueSuccessReports = async(req, res) => {
+    console.log('promiseBasedComputeHelogsUniqueSuccessReports');
+    return new Promise(async (resolve, reject) => {
+
+        let dateData, fromDate, toDate, finalList = [];
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data as per day
+        * */
+
+        // dateData = helper.computeTodayDate(req);
+        dateData = helper.computeNextDate(req, 2, 7);
+        req = dateData.req;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        console.log('computeHelogsUniqueSuccessReports: ', fromDate, toDate);
+        await logsRepo.getHelogsUniqueSuccessByDateRange(req, fromDate, toDate).then( async function(helogsData) {
+            console.log('helogsData: ', helogsData.length);
+
+            if (helogsData.length > 0){
+                finalList = computeHelogsUniqueSuccess(helogsData);
+
+                console.log('finalList.length : ', finalList.length);
+                await insertNewRecord(finalList, 'unique', fromDate);
+            }
+
+            if (helper.isToday(fromDate)){
+                console.log('promiseBasedComputeHelogsUniqueSuccessReports - data compute - done');
+                delete req.day;
+                delete req.month;
+            }
+        });
+    });
+};
+promiseBasedComputeHelogsReports = async(req, res) => {
+    console.log('promiseBasedComputeHelogsReports');
+    return new Promise(async (resolve, reject) => {
+
+        let dateData, fromDate, toDate, finalList = [];
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data as per day
+        * */
+
+        // dateData = helper.computeTodayDate(req);
+        dateData = helper.computeNextDate(req, 30, 6);
+        req = dateData.req;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        console.log('computeHelogsReports: ', fromDate, toDate);
+        await logsRepo.getHelogsByDateRange(req, fromDate, toDate).then( async function(helogsData) {
+            console.log('helogsData: ', helogsData.length);
+
+            if (helogsData.length > 0){
+                finalList = computeHelogsData(helogsData);
+
+                console.log('finalList.length : ', finalList.length);
+                await insertNewRecord(finalList, 'helogs', fromDate);
+            }
+
+            if (helper.isToday(fromDate)){
+                console.log('promiseBasedComputeHelogsReports - data compute - done');
+                delete req.day;
+                delete req.month;
+            }
+        });
     });
 };
 
@@ -222,4 +292,7 @@ function cloneHelogsObj() {
 module.exports = {
     computeHelogsReports: computeHelogsReports,
     computeHelogsUniqueSuccessReports: computeHelogsUniqueSuccessReports,
+
+    promiseBasedComputeHelogsReports: promiseBasedComputeHelogsReports,
+    promiseBasedComputeHelogsUniqueSuccessReports: promiseBasedComputeHelogsUniqueSuccessReports
 };

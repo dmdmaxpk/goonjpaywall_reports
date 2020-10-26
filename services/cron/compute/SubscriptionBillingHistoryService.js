@@ -98,6 +98,80 @@ computeChargeDetailsReports = async(req, res) => {
     });
 };
 
+promiseBasedComputeChargeDetailsReports = async(req, res) => {
+    console.log('promiseBasedComputeChargeDetailsReports');
+
+    return new Promise(async (resolve, reject) => {
+
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data as per day
+        * */
+
+        // dateData = helper.computeTodayDate(req);
+        dateData = helper.computeNextDate(req, 1, 2);
+        req = dateData.req;
+        day = dateData.day;
+        month = dateData.month;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        /*
+        * Get total count from db
+        * */
+        query = countQuery(fromDate, toDate);
+        await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
+            console.log('totalCount: ', totalCount);
+
+            if (totalCount > 0){
+                computeChunks = helper.getChunks(totalCount);
+                totalChunks = computeChunks.chunks;
+                lastLimit = computeChunks.lastChunkCount;
+                let skip = 0;
+
+                //Loop over no.of chunks
+                for (i = 0 ; i < totalChunks; i++){
+                    await subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, limit).then(async function (chargeDetails) {
+                        console.log('chargeDetails: ', chargeDetails.length);
+
+                        //set skip variable to limit data
+                        skip = skip + limit;
+
+                        // Now compute and store data in DB
+                        if (chargeDetails.length > 0){
+                            finalData = computeChargeDetailData(chargeDetails);
+                            transactingSubsList = finalData.transactingSubsList;
+                            chargeDetailList = finalData.chargeDetailList;
+                            await insertNewRecord(transactingSubsList, chargeDetailList, fromDate, i);
+                        }
+                    });
+                }
+
+
+                // fetch last chunk Data from DB
+                if (lastLimit > 0){
+                    await subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (chargeDetails) {
+                        console.log('chargeDetails: ', chargeDetails.length);
+
+                        if (chargeDetails.length > 0){
+                            finalData = computeChargeDetailData(chargeDetails);
+                            transactingSubsList = finalData.transactingSubsList;
+                            chargeDetailList = finalData.chargeDetailList;
+                            await insertNewRecord(transactingSubsList, chargeDetailList, fromDate, 1);
+                        }
+                    });
+                }
+            }
+        });
+
+        if (helper.isToday(fromDate)){
+            console.log('promiseBasedComputeChargeDetailsReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+    });
+};
+
 function computeChargeDetailData(chargeDetails) {
 
     let dateInMili, outer_added_dtm, inner_added_dtm, chargeDetailObj, outerObj, innerObj, price,
@@ -597,4 +671,5 @@ function countQuery(from, to){
 
 module.exports = {
     computeChargeDetailsReports: computeChargeDetailsReports,
+    promiseBasedComputeChargeDetailsReports: promiseBasedComputeChargeDetailsReports
 };

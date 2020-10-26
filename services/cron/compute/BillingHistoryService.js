@@ -11,6 +11,8 @@ let fromDate, toDate, day, month, computedData;
 let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 
 computeBillingHistoryReports = async(req, res) => {
+    console.log('computeBillingHistoryReports: ');
+
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
@@ -89,6 +91,71 @@ computeBillingHistoryReports = async(req, res) => {
             delete req.day;
             delete req.month;
         }
+    });
+};
+promiseBasedComputeBillingHistoryReports = async(req, res) => {
+    console.log('promiseBasedComputeBillingHistoryReports: ');
+    return new Promise(async (resolve, reject) => {
+
+        let fromDate, toDate, day, month, computedData;
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data as per day
+        * */
+
+        // dateData = helper.computeTodayDate(req);
+        dateData = helper.computeNextDate(req, 1, 2);
+        req = dateData.req;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        await helper.getTotalCount(req, fromDate, toDate, 'billinghistories').then(async function (totalCount) {
+            console.log('totalCount: ', totalCount);
+
+            if (totalCount > 0){
+                computeChunks = helper.getChunks(totalCount);
+                totalChunks = computeChunks.chunks;
+                lastLimit = computeChunks.lastChunkCount;
+                let skip = 0;
+
+                //Loop over no.of chunks
+                for (i = 0 ; i < totalChunks; i++){
+                    await billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, skip, limit).then(async function (result) {
+                        console.log('result 1: ', result.length);
+
+                        //set skip variable to limit data
+                        skip = skip + limit;
+
+                        // Now compute and store data in DB
+                        if (result.length > 0){
+                            computedData = computeBillingHistoryData(result);
+                            pushDataInArray(computedData);
+                            await insertNewRecord(fromDate, i);
+                        }
+                    });
+                }
+
+                // fetch last chunk Data from DB
+                if (lastLimit > 0){
+                    await billingHistoryRepo.getBillingHistoryByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (result) {
+                        console.log('result 2: ', result.length);
+
+                        // Now compute and store data in DB
+                        if (result.length > 0){
+                            computedData = computeBillingHistoryData(result);
+                            pushDataInArray(computedData);
+                            await insertNewRecord(fromDate, 1);
+                        }
+                    });
+                }
+            }
+
+            if (helper.isToday(fromDate)){
+                console.log('promiseBasedComputeBillingHistoryReports - data compute - done');
+                delete req.day;
+                delete req.month;
+            }
+        });
     });
 };
 
@@ -602,4 +669,5 @@ function cloneBillingStatusObj() {
 
 module.exports = {
     computeBillingHistoryReports: computeBillingHistoryReports,
+    promiseBasedComputeBillingHistoryReports: promiseBasedComputeBillingHistoryReports
 };

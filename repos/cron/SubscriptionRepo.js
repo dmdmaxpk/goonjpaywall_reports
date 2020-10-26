@@ -84,7 +84,7 @@ class SubscriptionRepository {
                                 callbackhistorySize: "$callbackhistorySize",
                                 added_dtm: "$added_dtm",
                                 added_dm: "$added_dtm",
-                                billing_dm: { '$dateToString' : { date: "$callbackObj.billing_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                                billing_dm: { '$dateToString' : { date: "$callbackObj.billing_dtm", 'timezone' : "Asia/Karachi" } }
                             }
                         },
                         {
@@ -200,7 +200,7 @@ class SubscriptionRepository {
                                         payment_source: "$payment_source",
                                         subscribed_package_id: "$subscribed_package_id",
                                         subscription_status: "$subscription_status",
-                                        added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                                        added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } }
                                 }}
                             }},
                         { $project: {
@@ -258,7 +258,7 @@ class SubscriptionRepository {
                             affiliate_mid: "$affiliate_mid",
                             status: "$history.billing_status",
                             package_id: "$history.package_id",
-                            billing_dtm: { '$dateToString' : { date: "$history.billing_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                            billing_dtm: { '$dateToString' : { date: "$history.billing_dtm", 'timezone' : "Asia/Karachi" } }
                         }},
                         { $project:{
                             affiliate: "$source",
@@ -315,7 +315,7 @@ class SubscriptionRepository {
                         },
                         { $project:{
                                 affiliate_mid: "$affiliate_mid",
-                                added_dtm: { '$dateToString' : { date: "$added_dtm",'format':'%Y-%m-%d-%H:%M:%S','timezone' : "Asia/Karachi" } }
+                                added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } }
                             }},
                         { $project:{
                                 affiliate_mid: "$affiliate_mid",
