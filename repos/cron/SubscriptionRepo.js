@@ -258,7 +258,7 @@ class SubscriptionRepository {
                             affiliate_mid: "$affiliate_mid",
                             status: "$history.billing_status",
                             package_id: "$history.package_id",
-                            billing_dtm: { '$dateToString' : { date: "$history.billing_dtm", 'timezone' : "Asia/Karachi" } }
+                            billing_dtm: "$history.billing_dtm"
                         }},
                         { $project:{
                             affiliate: "$source",
@@ -286,7 +286,7 @@ class SubscriptionRepository {
                         }},
                         { $project: {
                             _id: 0,
-                            billing_dtm: "$_id.billing_dtm",
+                            billing_dtm: { '$dateToString' : { date: "$_id.billing_dtm", 'timezone' : "Asia/Karachi" } },
                             history: "$history"
                         }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {

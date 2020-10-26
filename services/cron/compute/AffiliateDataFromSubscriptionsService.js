@@ -191,14 +191,14 @@ function computeAffiliateData(subscriptionsRawData) {
 
     let rawData, statusWiseObj, packageWiseObj, sourceWiseObj, affiliateObj, history,
         affiliateWise = [], statusWise = [], packageWise = [], sourceWise = [];
+
+    affiliateObj = _.clone(cloneAffiliateWiseObj());
+    statusWiseObj = _.clone(cloneStatusWiseObj());
+    packageWiseObj = _.clone(clonePackageWiseObj());
+    sourceWiseObj = _.clone(cloneSourceWiseObj());
     for (let i=0; i < subscriptionsRawData.length; i++) {
 
         rawData = subscriptionsRawData[i];
-        affiliateObj = _.clone(cloneAffiliateWiseObj());
-        statusWiseObj = _.clone(cloneStatusWiseObj());
-        packageWiseObj = _.clone(clonePackageWiseObj());
-        sourceWiseObj = _.clone(cloneSourceWiseObj());
-
         for (let j = 0; j < rawData.history.length; j++) {
             history = rawData.history[j];
 
@@ -247,14 +247,14 @@ function computeAffiliateData(subscriptionsRawData) {
         statusWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
         packageWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
         sourceWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
-
-        affiliateWise.push(affiliateObj);
-        statusWise.push(statusWiseObj);
-        packageWise.push(packageWiseObj);
-        sourceWise.push(sourceWiseObj);
     }
 
     //affiliateWise, statusWise, packageWise, sourceWise
+    affiliateWise.push(affiliateObj);
+    statusWise.push(statusWiseObj);
+    packageWise.push(packageWiseObj);
+    sourceWise.push(sourceWiseObj);
+
     return {affiliateWise: affiliateWise, statusWise: statusWise, packageWise: packageWise, sourceWise: sourceWise};
 }
 function computeAffiliateMidsData(affiliateMidsData) {
