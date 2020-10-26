@@ -115,11 +115,11 @@ computeLogsSubscribeClicksReports = async(req, res) => {
 function computeLogsPageViewData(logsPageViewData) {
 
     let rawData, pageView, logsPageViewObj, logsWise = [];
+    logsPageViewObj = _.clone(clonelogsObj());
+
     for (let i=0; i < logsPageViewData.length; i++) {
 
         rawData = logsPageViewData[i];
-        logsPageViewObj = _.clone(clonelogsObj());
-
         for (let j = 0; j < rawData.pageView.length; j++) {
             pageView = rawData.pageView[j];
 
@@ -140,22 +140,19 @@ function computeLogsPageViewData(logsPageViewData) {
             else if (pageView.mid === 'gdn2')
                 logsPageViewObj['gdn2'] = logsPageViewObj['gdn2'] + pageView.count;
         }
-
-        logsWise.push(logsPageViewObj);
     }
 
-    //sourceWise, statusWise, packageWise, sourceWise
+    logsWise.push(logsPageViewObj);
     return logsWise;
 }
 
 function computeLogsSubscribeClicks(logsSubscribeClicks) {
 
     let rawData, subsClicks, logsSubscibeObj, subscribeClick = [];
+    logsSubscibeObj = _.clone(clonelogsObj());
+
     for (let i=0; i < logsSubscribeClicks.length; i++) {
-
         rawData = logsSubscribeClicks[i];
-        logsSubscibeObj = _.clone(clonelogsObj());
-
         for (let j = 0; j < rawData.subsClicks.length; j++) {
             subsClicks = rawData.subsClicks[j];
 
@@ -175,13 +172,10 @@ function computeLogsSubscribeClicks(logsSubscribeClicks) {
                 logsSubscibeObj['gdn'] = logsSubscibeObj['gdn'] + subsClicks.count;
             else if (subsClicks.mid === 'gdn2')
                 logsSubscibeObj['gdn2'] = logsSubscibeObj['gdn2'] + subsClicks.count;
-
         }
-
-        subscribeClick.push(logsSubscibeObj);
     }
 
-    //sourceWise, statusWise, packageWise, sourceWise
+    subscribeClick.push(logsSubscibeObj);
     return subscribeClick;
 }
 

@@ -118,7 +118,6 @@ function computeHelogsData(helogsRawData) {
 
     let rawData, helog, helogsObj, helogsWise = [];
     helogsObj = _.clone(cloneHelogsObj());
-
     for (let i=0; i < helogsRawData.length; i++) {
         rawData = helogsRawData[i];
         for (let j = 0; j < rawData.helogs.length; j++) {

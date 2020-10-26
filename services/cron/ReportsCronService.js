@@ -55,10 +55,10 @@ cronComputeFullDataReports = async(req, res) => {
     // compute Affiliate - Helogs report Data
     // await helper.sleep(1000 * 60 * 25);
     console.log('HelogsService - computeHelogsReports **********************************************');
-    await HelogsService.computeHelogsReports(req,res);
+    // await HelogsService.computeHelogsReports(req,res);
 
     // compute Affiliate - Helogs Unique Access report Data
-    await helper.sleep(1000 * 60 * 20);
+    // await helper.sleep(1000 * 60 * 20);
     console.log('HelogsService - computeHelogsUniqueSuccessReports **********************************************');
     await HelogsService.computeHelogsUniqueSuccessReports(req,res);
 
@@ -90,7 +90,6 @@ cronComputeFullDataReports = async(req, res) => {
     await helper.sleep(1000 * 60 * 20);
     console.log('BillingHistoryService - computeBillingHistoryReports **********************************************');
     await BillingHistoryService.computeBillingHistoryReports(req,res);
-
 };
 
 cronComputeDailyDataReports = async (req, res) => {
