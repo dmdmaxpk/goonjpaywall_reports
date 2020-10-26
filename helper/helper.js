@@ -27,6 +27,11 @@ class Helper {
         someDate = new Date(someDate);
 
         var today = new Date();
+        console.log('someDate: ', someDate);
+        console.log('today: ', today);
+        console.log('getDate(): ', someDate.getDate(), today.getDate());
+        console.log('getMonth(): ', someDate.getMonth(), today.getMonth());
+        console.log('getFullYear(): ', someDate.getFullYear(), today.getFullYear());
         return someDate.getDate() == today.getDate() &&
             someDate.getMonth() == today.getMonth() &&
             someDate.getFullYear() == today.getFullYear()
