@@ -49,7 +49,6 @@ cronComputeFullDataReports = async(req, res) => {
 
     // compute Affiliate - Helogs report Data
     await helper.sleep(1000 * 60 * 25);
-
     // First - create/update connections with logger database
     console.log('connection - updateConnection - logger **********************************************');
     await connection.updateConnection(req, res, null, 'logger');
@@ -96,6 +95,16 @@ cronComputeFullDataReports = async(req, res) => {
 cronComputeDailyDataReports = async (req, res) => {
     console.log('cronComputeDailyDataReports');
 
+    // First - create/update connections with logger database
+    console.log('connection - updateConnection - logger **********************************************');
+    await connection.updateConnection(req, res, null, 'logger');
+
+    // compute Affiliate - Affiliate report Data
+    console.log('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports **********************************************');
+    await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res);
+
+    return;
+    
     // compute Users report data
     console.log('UserService - promiseBasedComputeUserReports **********************************************');
     await UserService.promiseBasedComputeUserReports(req,res);
@@ -121,6 +130,10 @@ cronComputeDailyDataReports = async (req, res) => {
     await RevenueNetAdditionService.promiseBasedComputeRevenueNetAdditionReports(req,res);
 
     // compute Affiliate - Helogs report Data
+    // First - create/update connections with logger database
+    console.log('connection - updateConnection - logger **********************************************');
+    await connection.updateConnection(req, res, null, 'logger');
+
     console.log('HelogsService - promiseBasedComputeHelogsReports **********************************************');
     await HelogsService.promiseBasedComputeHelogsReports(req,res);
 
@@ -145,6 +158,10 @@ cronComputeDailyDataReports = async (req, res) => {
     await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res);
 
     // compute Affiliate - Affiliate report Data
+    // First - create/update connections with goonjpaywall database
+    console.log('connection - updateConnection - goonjpaywall **********************************************');
+    await connection.updateConnection(req, res, null, 'goonjpaywall');
+
     console.log('BillingHistoryService - promiseBasedComputeBillingHistoryReports **********************************************');
     await BillingHistoryService.promiseBasedComputeBillingHistoryReports(req,res);
 };
