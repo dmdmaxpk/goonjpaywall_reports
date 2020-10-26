@@ -117,11 +117,10 @@ computeHelogsUniqueSuccessReports = async(req, res) => {
 function computeHelogsData(helogsRawData) {
 
     let rawData, helog, helogsObj, helogsWise = [];
+    helogsObj = _.clone(cloneHelogsObj());
+
     for (let i=0; i < helogsRawData.length; i++) {
-
         rawData = helogsRawData[i];
-        helogsObj = _.clone(cloneHelogsObj());
-
         for (let j = 0; j < rawData.helogs.length; j++) {
             helog = rawData.helogs[j];
 
@@ -142,22 +141,19 @@ function computeHelogsData(helogsRawData) {
             else if (helog.mid === 'gdn2')
                 helogsObj['gdn2'] = helogsObj['gdn2'] + helog.count;
         }
-
-        helogsWise.push(helogsObj);
     }
 
-    //sourceWise, statusWise, packageWise, sourceWise
+    helogsWise.push(helogsObj);
     return helogsWise;
 }
 
 function computeHelogsUniqueSuccess(helogsRawData) {
 
     let rawData, helog, helogsObj, helogsWise = [];
+    helogsObj = _.clone(cloneHelogsObj());
     for (let i=0; i < helogsRawData.length; i++) {
 
         rawData = helogsRawData[i];
-        helogsObj = _.clone(cloneHelogsObj());
-
         for (let j = 0; j < rawData.helogs.length; j++) {
             helog = rawData.helogs[j];
 
@@ -177,13 +173,10 @@ function computeHelogsUniqueSuccess(helogsRawData) {
                 helogsObj['gdn'] = helogsObj['gdn'] + helog.count;
             else if (helog.mid === 'gdn2')
                 helogsObj['gdn2'] = helogsObj['gdn2'] + helog.count;
-
         }
-
-        helogsWise.push(helogsObj);
     }
 
-    //sourceWise, statusWise, packageWise, sourceWise
+    helogsWise.push(helogsObj);
     return {helogsWise: helogsWise};
 }
 
