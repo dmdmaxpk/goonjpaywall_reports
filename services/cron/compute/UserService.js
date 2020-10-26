@@ -59,6 +59,8 @@ computeUserReports = async(req, res) => {
 
         delete req.day;
         delete req.month;
+
+        return true;
     }
 };
 
