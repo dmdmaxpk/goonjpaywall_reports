@@ -27,7 +27,7 @@ computeAffiliateReports = async(req, res) => {
 
         if (subscriptions.length > 0){
             computedData = computeAffiliateData(subscriptions);
-            console.log('computedData : ', computedData.length);
+            console.log('computedData : ', computedData);
 
             //affiliateWise, statusWise, packageWise, sourceWise
             await insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, fromDate);
