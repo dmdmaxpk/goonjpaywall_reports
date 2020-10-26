@@ -53,6 +53,7 @@ computeUserReports = async(req, res) => {
             computeUserReports(req, res);
     }
 
+    console.log('helper.isToday(fromDate) ', helper.isToday(fromDate));
     if (helper.isToday(fromDate)){
         console.log('computeUserReports - promise - resolved');
 

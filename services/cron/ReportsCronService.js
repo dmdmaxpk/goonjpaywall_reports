@@ -23,14 +23,14 @@ cronComputeReports = async(req, res) => {
     console.log('UserService - computeUserReports **********************************************');
 
     // compute Subscribers report Data
-    await helper.sleep(1000 * 60 * 3);
+    await helper.sleep(1000 * 60 * 6);
     console.log('SubscriberService - computeSubscriberReports **********************************************');
     await SubscriberService.computeSubscriberReports(req,res);
 
     // compute Subscriptions report Data
-    await helper.sleep(1000 * 60 * 3);
+    await helper.sleep(1000 * 60 * 6);
     console.log('SubscriptionService - computeSubscriptionReports **********************************************');
-    await SubscriptionService.computeSubscriptionReports(req,res);
+    // await SubscriptionService.computeSubscriptionReports(req,res);
 
     // compute Callback report Data
     await helper.sleep(1000 * 60 * 6);
