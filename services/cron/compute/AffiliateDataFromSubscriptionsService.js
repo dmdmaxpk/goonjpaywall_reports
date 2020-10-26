@@ -284,14 +284,13 @@ function computeAffiliateMidsData(affiliateMidsData) {
                 affiliateMidsObj['1'] = affiliateMidsObj['1'] + innerObj.count;
             else if(innerObj.affiliate_mid === 'null')
                 affiliateMidsObj['null'] = affiliateMidsObj['null'] + innerObj.count;
-
         }
-
-        affiliateMidsObj.billing_dtm = rawData.billing_dtm;
-        affiliateMidsObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
-
-        affiliateMids.push(affiliateMidsObj);
     }
+
+    affiliateMidsObj.billing_dtm = rawData.billing_dtm;
+    affiliateMidsObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
+
+    affiliateMids.push(affiliateMidsObj);
 
     return affiliateMids;
 }
