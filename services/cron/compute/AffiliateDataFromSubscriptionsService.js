@@ -135,13 +135,14 @@ promiseBasedComputeAffiliateReports = async(req, res) => {
                 //affiliateWise, statusWise, packageWise, sourceWise
                 await insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, fromDate);
             }
-
-            if (helper.isToday(fromDate)){
-                console.log('promiseBasedComputeAffiliateReports - data compute - done');
-                delete req.day;
-                delete req.month;
-            }
         });
+
+        if (helper.isToday(fromDate)){
+            console.log('promiseBasedComputeAffiliateReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+        resolve(0);
     });
 };
 promiseBasedComputeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
@@ -168,13 +169,14 @@ promiseBasedComputeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
 
                 await insertAffiliateMidsNewRecord(affiliateMidsData, fromDate);
             }
-
-            if (helper.isToday(fromDate)){
-                console.log('promiseBasedComputeAffiliateMidsFromSubscriptionsReports - data compute - done');
-                delete req.day;
-                delete req.month;
-            }
         });
+
+        if (helper.isToday(fromDate)){
+            console.log('promiseBasedComputeAffiliateMidsFromSubscriptionsReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+        resolve(0);
     });
 };
 

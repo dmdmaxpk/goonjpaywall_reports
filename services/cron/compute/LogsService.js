@@ -133,13 +133,14 @@ promiseBasedComputeLogsPageViewReports = async(req, res) => {
                 console.log('finalList.length : ', finalList.length);
                 await insertNewRecord(finalList, 'pageView', fromDate);
             }
-
-            if (helper.isToday(fromDate)){
-                console.log('computeLogsPageViewReports - data compute - done');
-                delete req.day;
-                delete req.month;
-            }
         });
+
+        if (helper.isToday(fromDate)){
+            console.log('promiseBasedComputeLogsPageViewReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+        resolve(0);
     });
 };
 promiseBasedComputeLogsSubscribeClicksReports = async(req, res) => {
@@ -167,12 +168,14 @@ promiseBasedComputeLogsSubscribeClicksReports = async(req, res) => {
                 await insertNewRecord(finalList, 'subsClicks', fromDate);
             }
 
-            if (helper.isToday(fromDate)){
-                console.log('promiseBasedComputeLogsSubscribeClicksReports - data compute - done');
-                delete req.day;
-                delete req.month;
-            }
         });
+
+        if (helper.isToday(fromDate)){
+            console.log('promiseBasedComputeLogsSubscribeClicksReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+        resolve(0);
     });
 };
 

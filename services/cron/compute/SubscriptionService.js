@@ -167,10 +167,11 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
         });
 
         if (helper.isToday(fromDate)){
-            console.log('computeSubscriptionReports - data compute - done');
+            console.log('promiseBasedComputeSubscriptionReports - data compute - done');
             delete req.day;
             delete req.month;
         }
+        resolve(0);
     });
 };
 

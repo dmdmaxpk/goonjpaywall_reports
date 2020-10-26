@@ -151,6 +151,7 @@ promiseBasedComputeBillingHistoryReports = async(req, res) => {
                 delete req.day;
                 delete req.month;
             }
+            resolve(0);
         });
     });
 };

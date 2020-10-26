@@ -88,7 +88,7 @@ promiseBasedComputeSubscriberReports = async(req, res) => {
         });
 
         if (helper.isToday(fromDate)){
-            console.log('computeSubscriberReports - data compute - done');
+            console.log('promiseBasedComputeSubscriberReports - data compute - done');
             delete req.day;
             delete req.month;
         }

@@ -84,12 +84,12 @@ promiseBasedComputeUserReports = async(req, res) => {
                     await insertNewRecord(finalList, fromDate);
             }
         });
+
         if (helper.isToday(fromDate)){
-            console.log('computeUserReports - data compute - done');
+            console.log('promiseBasedComputeUserReports - data compute - done');
             delete req.day;
             delete req.month;
         }
-
         resolve(0);
     });
 };

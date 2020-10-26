@@ -153,10 +153,11 @@ promiseBasedComputeCallbackSendReports = async(req, res) => {
         });
 
         if (helper.isToday(fromDate)){
-            console.log('computeCallbackSendReports - data compute - done');
+            console.log('promiseBasedComputeCallbackSendReports - data compute - done');
             delete req.day;
             delete req.month;
         }
+        resolve(0);
     });
 };
 

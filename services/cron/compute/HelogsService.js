@@ -133,13 +133,14 @@ promiseBasedComputeHelogsUniqueSuccessReports = async(req, res) => {
                 console.log('finalList.length : ', finalList.length);
                 await insertNewRecord(finalList, 'unique', fromDate);
             }
-
-            if (helper.isToday(fromDate)){
-                console.log('promiseBasedComputeHelogsUniqueSuccessReports - data compute - done');
-                delete req.day;
-                delete req.month;
-            }
         });
+
+        if (helper.isToday(fromDate)){
+            console.log('promiseBasedComputeHelogsUniqueSuccessReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+        resolve(0);
     });
 };
 promiseBasedComputeHelogsReports = async(req, res) => {
@@ -166,13 +167,14 @@ promiseBasedComputeHelogsReports = async(req, res) => {
                 console.log('finalList.length : ', finalList.length);
                 await insertNewRecord(finalList, 'helogs', fromDate);
             }
-
-            if (helper.isToday(fromDate)){
-                console.log('promiseBasedComputeHelogsReports - data compute - done');
-                delete req.day;
-                delete req.month;
-            }
         });
+
+        if (helper.isToday(fromDate)){
+            console.log('promiseBasedComputeHelogsReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+        resolve(0);
     });
 };
 
