@@ -23,32 +23,32 @@ cronComputeFullDataReports = async(req, res) => {
     console.log('UserService - computeUserReports **********************************************');
 
     // compute Subscribers report Data
-    await helper.sleep(1000 * 60 * 3);
+    // await helper.sleep(1000 * 60 * 3);
     console.log('SubscriberService - computeSubscriberReports **********************************************');
     // await SubscriberService.computeSubscriberReports(req,res);
 
     // compute Subscriptions report Data
-    await helper.sleep(1000 * 60 * 3);
+    // await helper.sleep(1000 * 60 * 3);
     console.log('SubscriptionService - computeSubscriptionReports **********************************************');
     // await SubscriptionService.computeSubscriptionReports(req,res);
 
     // compute Callback report Data
-    await helper.sleep(1000 * 60 * 4);
+    // await helper.sleep(1000 * 60 * 4);
     console.log('CallbackSendService - computeCallbackSendReports **********************************************');
     // await CallbackSendService.computeCallbackSendReports(req,res);
 
     // compute Charge Details report Data
-    await helper.sleep(1000 * 60 * 20);
+    // await helper.sleep(1000 * 60 * 20);
     console.log('SubscriptionBillingHistoryService - computeChargeDetailsReports **********************************************');
     // await SubscriptionBillingHistoryService.computeChargeDetailsReports(req,res);
 
     // compute Net Addition report Data
-    await helper.sleep(1000 * 60 * 20);
+    // await helper.sleep(1000 * 60 * 20);
     console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
     // await RevenueNetAdditionService.computeRevenueNetAdditionReports(req,res);
 
     // compute Affiliate - Helogs report Data
-    await helper.sleep(1000 * 60 * 25);
+    // await helper.sleep(1000 * 60 * 25);
     console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
     await HelogsService.computeHelogsReports(req,res);
 
