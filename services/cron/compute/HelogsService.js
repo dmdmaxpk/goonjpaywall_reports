@@ -22,14 +22,14 @@ computeHelogsReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('computeHelogsReports: ', fromDate, toDate);
-    logsRepo.getHelogsByDateRange(req, fromDate, toDate).then( async function(helogsData) {
-        console.log('helogsData: ', helogsData);
+    await logsRepo.getHelogsByDateRange(req, fromDate, toDate).then( async function(helogsData) {
+        console.log('helogsData: ', helogsData.length);
 
         if (helogsData.length > 0){
             finalList = computeHelogsData(helogsData);
 
-            console.log('finalList.length : ', finalList);
-            insertNewRecord(finalList, 'helogs', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+            console.log('finalList.length : ', finalList.length);
+            await insertNewRecord(finalList, 'helogs', fromDate);
         }
 
         // Get compute data for next time slot
@@ -49,6 +49,12 @@ computeHelogsReports = async(req, res) => {
 
             if (req.month <= helper.getTodayMonthNo())
                 computeHelogsReports(req, res);
+        }
+
+        if (helper.isToday(fromDate)){
+            console.log('computeHelogsReports - data compute - done');
+            delete req.day;
+            delete req.month;
         }
     });
 };
@@ -71,14 +77,14 @@ computeHelogsUniqueSuccessReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('computeHelogsUniqueSuccessReports: ', fromDate, toDate);
-    logsRepo.getHelogsUniqueSuccessByDateRange(req, fromDate, toDate).then( async function(helogsData) {
-        console.log('helogsData: ', helogsData);
+    await logsRepo.getHelogsUniqueSuccessByDateRange(req, fromDate, toDate).then( async function(helogsData) {
+        console.log('helogsData: ', helogsData.length);
 
         if (helogsData.length > 0){
             finalList = computeHelogsUniqueSuccess(helogsData);
 
-            console.log('finalList.length : ', finalList);
-            insertNewRecord(finalList, 'unique', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+            console.log('finalList.length : ', finalList.length);
+            await insertNewRecord(finalList, 'unique', fromDate);
         }
 
         // Get compute data for next time slot
@@ -98,6 +104,12 @@ computeHelogsUniqueSuccessReports = async(req, res) => {
 
             if (req.month <= helper.getTodayMonthNo())
                 computeHelogsUniqueSuccessReports(req, res);
+        }
+
+        if (helper.isToday(fromDate)){
+            console.log('computeHelogsUniqueSuccessReports - data compute - done');
+            delete req.day;
+            delete req.month;
         }
     });
 };
@@ -176,9 +188,11 @@ function computeHelogsUniqueSuccess(helogsRawData) {
 }
 
 function insertNewRecord(data, type, dateString) {
+    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
+
     affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
-        console.log('data helogs: ', data);
         if (result.length > 0){
             result = result[0];
             if (type === 'helogs')

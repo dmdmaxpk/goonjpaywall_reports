@@ -22,14 +22,14 @@ computeLogsPageViewReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('computeLogsPageViewReports: ', fromDate, toDate);
-    logsRepo.getLogsPageViewByDateRange(req, fromDate, toDate).then( async function(logsPageViewData) {
-        console.log('logsPageViewData: ', logsPageViewData);
+    await logsRepo.getLogsPageViewByDateRange(req, fromDate, toDate).then( async function(logsPageViewData) {
+        console.log('logsPageViewData: ', logsPageViewData.length);
 
         if (logsPageViewData.length > 0){
             finalList = computeLogsPageViewData(logsPageViewData);
 
-            console.log('finalList.length : ', finalList);
-            insertNewRecord(finalList, 'pageView', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+            console.log('finalList.length : ', finalList.length);
+            await insertNewRecord(finalList, 'pageView', fromDate);
         }
 
         // Get compute data for next time slot
@@ -50,6 +50,12 @@ computeLogsPageViewReports = async(req, res) => {
             if (req.month <= helper.getTodayMonthNo())
                 computeLogsPageViewReports(req, res);
         }
+
+        if (helper.isToday(fromDate)){
+            console.log('computeLogsPageViewReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
     });
 };
 
@@ -69,14 +75,14 @@ computeLogsSubscribeClicksReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('computeLogsSubscribeClicksReports: ', fromDate, toDate);
-    logsRepo.getLogsSubscribeClicksByDateRange(req, fromDate, toDate).then( async function(logsSubscribeClicks) {
-        console.log('logsSubscribeClicks: ', logsSubscribeClicks);
+    await logsRepo.getLogsSubscribeClicksByDateRange(req, fromDate, toDate).then( async function(logsSubscribeClicks) {
+        console.log('logsSubscribeClicks: ', logsSubscribeClicks.length);
 
         if (logsSubscribeClicks.length > 0){
             finalList = computeLogsSubscribeClicks(logsSubscribeClicks);
 
-            console.log('finalList.length : ', finalList);
-            insertNewRecord(finalList, 'subsClicks', new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+            console.log('finalList.length : ', finalList.length);
+            await insertNewRecord(finalList, 'subsClicks', fromDate);
         }
 
         // Get compute data for next time slot
@@ -96,6 +102,12 @@ computeLogsSubscribeClicksReports = async(req, res) => {
 
             if (req.month <= helper.getTodayMonthNo())
                 computeLogsSubscribeClicksReports(req, res);
+        }
+
+        if (helper.isToday(fromDate)){
+            console.log('computeLogsSubscribeClicksReports - data compute - done');
+            delete req.day;
+            delete req.month;
         }
     });
 };
@@ -174,9 +186,11 @@ function computeLogsSubscribeClicks(logsSubscribeClicks) {
 }
 
 function insertNewRecord(data, type, dateString) {
+    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
+
     affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
-        console.log('data pageView: ', data);
         if (result.length > 0){
             result = result[0];
             if (type === 'pageView')

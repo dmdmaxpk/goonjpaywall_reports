@@ -61,6 +61,45 @@ computeSubscriberReports = async(req, res) => {
     }
 };
 
+promiseBasedComputeSubscriberReports = async(req, res) => {
+    console.log('promiseBasedComputeSubscriberReports');
+
+    return new Promise(async (resolve, reject) => {
+
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data for today
+        * */
+
+        // dateData = helper.computeTodayDate(req);
+        dateData = helper.computeNextDate(req, 1, 2);
+        req = dateData.req;
+        day = dateData.day;
+        month = dateData.month;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        console.log('computeSubscriberReports: ', fromDate, toDate);
+        await subscriberRepo.getSubscribersByDateRange(req, fromDate, toDate).then(async function (subscribers) {
+            console.log('subscribers: ', subscribers.length);
+
+            if (subscribers.length > 0){
+                finalList = computeSubscriberData(subscribers);
+
+                console.log('finalList.length : ', finalList.total.length);
+                if (finalList.total.length > 0)
+                    await insertNewRecord(finalList, fromDate);
+            }
+        });
+
+        if (helper.isToday(fromDate)){
+            console.log('computeSubscriberReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+    });
+};
+
 function computeSubscriberData(subscribers) {
 
     let dateInMili, outer_added_dtm, inner_added_dtm, newObj, outerObj, innerObj, finalList = {total: []};
@@ -92,10 +131,10 @@ function computeSubscriberData(subscribers) {
 }
 
 async function insertNewRecord(data, dateString) {
-    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
-
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
+    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
+
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0){
             result = result[0];
@@ -109,4 +148,5 @@ async function insertNewRecord(data, dateString) {
 
 module.exports = {
     computeSubscriberReports: computeSubscriberReports,
+    promiseBasedComputeSubscriberReports: promiseBasedComputeSubscriberReports,
 };

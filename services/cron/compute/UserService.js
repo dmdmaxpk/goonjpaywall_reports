@@ -59,6 +59,42 @@ computeUserReports = async(req, res) => {
         delete req.month;
     }
 };
+promiseBasedComputeUserReports = async(req, res) => {
+    console.log('promiseBasedComputeUserReports: ');
+
+    return new Promise(async (resolve, reject) => {
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data for today
+        * */
+
+        // dateData = helper.computeTodayDate(req);
+        dateData = helper.computeNextDate(req, 1, 2);
+        req = dateData.req;
+        day = dateData.day;
+        month = dateData.month;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        console.log('computeUserReports: ', fromDate, toDate);
+        await userRepo.getUsersByDateRange(req, fromDate, toDate).then(async function (users) {
+            console.log('users.length: ', users.length);
+
+            if (users.length > 0){
+                finalList = computeUserData(users);
+
+                console.log('finalList.length : ', finalList.length);
+                if (finalList.length > 0)
+                    await insertNewRecord(finalList, fromDate);
+            }
+        });
+        if (helper.isToday(fromDate)){
+            console.log('computeUserReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+    });
+};
 
 function computeUserData(users) {
 
@@ -119,4 +155,5 @@ async function insertNewRecord(data, dateString) {
 
 module.exports = {
     computeUserReports: computeUserReports,
+    promiseBasedComputeUserReports: promiseBasedComputeUserReports,
 };

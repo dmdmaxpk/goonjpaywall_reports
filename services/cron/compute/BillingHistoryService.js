@@ -83,6 +83,12 @@ computeBillingHistoryReports = async(req, res) => {
             if (req.month <= helper.getTodayMonthNo())
                 computeBillingHistoryReports(req, res);
         }
+
+        if (helper.isToday(fromDate)){
+            console.log('computeBillingHistoryReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
     });
 };
 
@@ -373,10 +379,10 @@ function computeBillingHistoryData(data) {
 }
 
 async function insertNewRecord(dateString, mode) {
-    console.log('insertNewRecord- dateString', dateString);
 
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
+    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
 
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0){

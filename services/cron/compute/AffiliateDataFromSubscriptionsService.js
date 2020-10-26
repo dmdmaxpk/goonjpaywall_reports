@@ -22,20 +22,20 @@ computeAffiliateReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('computeAffiliateReports: ', fromDate, toDate);
-    subscriptionRepo.getAffiliateDataByDateRange(req, fromDate, toDate).then(function (subscriptions) {
-        console.log('subscription: ', subscriptions);
+    await subscriptionRepo.getAffiliateDataByDateRange(req, fromDate, toDate).then(async function (subscriptions) {
+        console.log('subscription: ', subscriptions.length);
 
         if (subscriptions.length > 0){
             computedData = computeAffiliateData(subscriptions);
-            console.log('computedData : ', computedData);
+            console.log('computedData : ', computedData.length);
 
             //affiliateWise, statusWise, packageWise, sourceWise
-            insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+            await insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, fromDate);
         }
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('getUsersByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
+        console.log('computeAffiliateReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
         if (req.day <= helper.getDaysInMonth(month)){
             if (month < helper.getTodayMonthNo())
@@ -46,10 +46,16 @@ computeAffiliateReports = async(req, res) => {
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('getUsersByDateRange -> month : ', month, req.month, new Date().getMonth());
+            console.log('computeAffiliateReports -> month : ', month, req.month, new Date().getMonth());
 
             if (req.month <= helper.getTodayMonthNo())
                 computeAffiliateReports(req, res);
+        }
+
+        if (helper.isToday(fromDate)){
+            console.log('computeAffiliateReports - data compute - done');
+            delete req.day;
+            delete req.month;
         }
     });
 };
@@ -71,19 +77,19 @@ computeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('computeAffiliateMidsFromSubscriptionsReports: ', fromDate, toDate);
-    subscriptionRepo.getAffiliateMidFromSubscriptionsByDateRange(req, fromDate, toDate).then(function (affiliateMids) {
-        console.log('affiliateMids: ', affiliateMids);
+    await subscriptionRepo.getAffiliateMidFromSubscriptionsByDateRange(req, fromDate, toDate).then(async function (affiliateMids) {
+        console.log('affiliateMids: ', affiliateMids.length);
 
         if (affiliateMids.length > 0){
             affiliateMidsData = computeAffiliateMidsData(affiliateMids);
-            console.log('affiliateMidsData : ', affiliateMidsData);
+            console.log('affiliateMidsData : ', affiliateMidsData.length);
 
-            insertAffiliateMidsNewRecord(affiliateMidsData, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+            await insertAffiliateMidsNewRecord(affiliateMidsData, fromDate);
         }
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('getUsersByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
+        console.log('computeAffiliateMidsFromSubscriptionsReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
         if (req.day <= helper.getDaysInMonth(month)){
             if (month < helper.getTodayMonthNo())
@@ -94,10 +100,16 @@ computeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('getUsersByDateRange -> month : ', month, req.month, new Date().getMonth());
+            console.log('computeAffiliateMidsFromSubscriptionsReports -> month : ', month, req.month, new Date().getMonth());
 
             if (req.month <= helper.getTodayMonthNo())
                 computeAffiliateMidsFromSubscriptionsReports(req, res);
+        }
+
+        if (helper.isToday(fromDate)){
+            console.log('computeAffiliateMidsFromSubscriptionsReports - data compute - done');
+            delete req.day;
+            delete req.month;
         }
     });
 };
@@ -213,7 +225,10 @@ function computeAffiliateMidsData(affiliateMidsData) {
 
 function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, dateString) {
     //affiliateWise, statusWise, packageWise, sourceWise
+    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
+
     affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0) {
             result = result[0];
@@ -235,7 +250,10 @@ function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, dat
     });
 }
 function insertAffiliateMidsNewRecord(affiliateMidsData, dateString) {
+    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
+
     affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0) {
             result = result[0];

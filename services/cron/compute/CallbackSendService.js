@@ -95,6 +95,74 @@ computeCallbackSendReports = async(req, res) => {
     }
 };
 
+promiseBasedComputeCallbackSendReports = async(req, res) => {
+    console.log('promiseBasedComputeCallbackSendReports');
+    return new Promise(async (resolve, reject) => {
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data for today
+        * */
+
+        // dateData = helper.computeTodayDate(req);
+        dateData = helper.computeNextDate(req, 1, 2);
+        req = dateData.req;
+        day = dateData.day;
+        month = dateData.month;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        console.log('fromDate: ', fromDate, toDate);
+        query = countQuery(fromDate, toDate);
+
+        await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
+            console.log('totalCount: ', totalCount);
+
+            if (totalCount > 0){
+                computeChunks = helper.getChunks(totalCount);
+                totalChunks = computeChunks.chunks;
+                lastLimit = computeChunks.lastChunkCount;
+                let skip = 0;
+
+                //Loop over no.of chunks
+                for (i = 0 ; i < totalChunks; i++){
+                    await subscriptionRepo.getCallbackSendByDateRange(req, fromDate, toDate, skip, limit).then(async function (subscriptions) {
+                        console.log('subscriptions 1: ', subscriptions.length);
+
+                        //set skip variable to limit data
+                        skip = skip + limit;
+
+                        // Now compute and store data in DB
+                        if (subscriptions.length > 0){
+                            finalList = computeUserData(subscriptions);
+                            await insertNewRecord(finalList, fromDate, i);
+                        }
+                    });
+                }
+
+                // fetch last chunk Data from DB
+                if (lastLimit > 0){
+                    await subscriptionRepo.getCallbackSendByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (subscriptions) {
+                        console.log('subscriptions 2: ', subscriptions.length);
+
+                        // Now compute and store data in DB
+                        if (subscriptions.length > 0){
+                            finalList = computeUserData(subscriptions);
+                            await insertNewRecord(finalList, fromDate, 1);
+                        }
+                    });
+                }
+            }
+
+        });
+
+        if (helper.isToday(fromDate)){
+            console.log('computeCallbackSendReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+    });
+};
+
 function computeUserData(subscriptions) {
 
     let dateInMili, outer_added_dtm, inner_added_dtm, newObj, outerObj, innerObj, finalList = [];
@@ -218,4 +286,5 @@ function countQuery(from, to){
 
 module.exports = {
     computeCallbackSendReports: computeCallbackSendReports,
+    promiseBasedComputeCallbackSendReports: promiseBasedComputeCallbackSendReports,
 };

@@ -102,6 +102,81 @@ computeSubscriptionReports = async(req, res) => {
     }
 };
 
+promiseBasedComputeSubscriptionReports = async(req, res) => {
+    console.log('promiseBasedComputeSubscriptionReports');
+    return new Promise(async (resolve, reject) => {
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data for today
+        * */
+
+        // dateData = helper.computeTodayDate(req);
+        dateData = helper.computeNextDate(req, 1, 2);
+        req = dateData.req;
+        day = dateData.day;
+        month = dateData.month;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        await helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
+            console.log('totalCount: ', totalCount);
+
+            if (totalCount > 0){
+                computeChunks = helper.getChunks(totalCount);
+                totalChunks = computeChunks.chunks;
+                lastLimit = computeChunks.lastChunkCount;
+                let skip = 0;
+
+                //Loop over no.of chunks
+                for (i = 0 ; i < totalChunks; i++){
+                    await subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, limit).then(async function (subscriptions) {
+                        console.log('subscriptions 1: ', subscriptions.length);
+
+                        //set skip variable to limit data
+                        skip = skip + limit;
+
+                        // Now compute and store data in DB
+                        if (subscriptions.length > 0){
+                            finalData = computeSubscriptionsData(subscriptions);
+                            finalList = finalData.finalList;
+                            subscribersFinalList = finalData.subscribersFinalList;
+                            if (finalList.length > 0 || subscribersFinalList.length > 0){
+                                console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
+                                if (totalChunks > 1 || lastLimit > 0)
+                                    await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
+                                else
+                                    await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
+                            }
+                        }
+                    });
+                }
+
+                // fetch last chunk Data from DB
+                if (lastLimit > 0){
+                    await subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (subscriptions) {
+                        console.log('subscriptions 2: ', subscriptions.length);
+
+                        // Now compute and store data in DB
+                        if (subscriptions.length > 0){
+                            finalData = computeSubscriptionsData(subscriptions);
+                            finalList = finalData.finalList;
+                            subscribersFinalList = finalData.subscribersFinalList;
+                            if (finalList.length > 0 || subscribersFinalList.length > 0)
+                                insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
+                        }
+                    });
+                }
+            }
+        });
+
+        if (helper.isToday(fromDate)){
+            console.log('computeSubscriptionReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+    });
+};
+
 function computeSubscriptionsData(subscriptions) {
 
     let dateInMili, outer_added_dtm, inner_added_dtm, newObj, outerObj, innerObj, subscriberObj, finalList = [], subscribersFinalList = [];
@@ -294,4 +369,5 @@ function cloneInfoObj() {
 
 module.exports = {
     computeSubscriptionReports: computeSubscriptionReports,
+    promiseBasedComputeSubscriptionReports: promiseBasedComputeSubscriptionReports,
 };
