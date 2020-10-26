@@ -176,7 +176,7 @@ function computeHelogsUniqueSuccess(helogsRawData) {
     }
 
     helogsWise.push(helogsObj);
-    return {helogsWise: helogsWise};
+    return helogsWise;
 }
 
 function insertNewRecord(data, type, dateString) {
