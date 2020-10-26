@@ -88,7 +88,11 @@ computeCallbackSendReports = async(req, res) => {
             computeCallbackSendReports(req, res);
     }
 
-    return true;
+    if (helper.isToday(fromDate)){
+        console.log('computeCallbackSendReports - data compute - done');
+        delete req.day;
+        delete req.month;
+    }
 };
 
 function computeUserData(subscriptions) {

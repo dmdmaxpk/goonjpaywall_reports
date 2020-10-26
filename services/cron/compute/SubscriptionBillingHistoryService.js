@@ -89,6 +89,12 @@ computeChargeDetailsReports = async(req, res) => {
             if (req.month <= helper.getTodayMonthNo())
                 computeChargeDetailsReports(req, res);
         }
+
+        if (helper.isToday(fromDate)){
+            console.log('getChargeDetailsByDateRange - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
     });
 };
 

@@ -95,7 +95,11 @@ computeSubscriptionReports = async(req, res) => {
             computeSubscriptionReports(req, res);
     }
 
-    return true;
+    if (helper.isToday(fromDate)){
+        console.log('computeSubscriptionReports - data compute - done');
+        delete req.day;
+        delete req.month;
+    }
 };
 
 function computeSubscriptionsData(subscriptions) {

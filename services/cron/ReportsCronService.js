@@ -30,19 +30,22 @@ cronComputeReports = async(req, res) => {
     // compute Subscriptions report Data
     await helper.sleep(1000 * 60 * 3);
     console.log('SubscriptionService - computeSubscriptionReports **********************************************');
-    // await SubscriptionService.computeSubscriptionReports(req,res);
+    await SubscriptionService.computeSubscriptionReports(req,res);
 
     // compute Callback report Data
     await helper.sleep(1000 * 60 * 4);
-    // await CallbackSendService.computeCallbackSendReports(req,res);
+    console.log('CallbackSendService - computeCallbackSendReports **********************************************');
+    await CallbackSendService.computeCallbackSendReports(req,res);
 
     // compute Charge Details report Data
     await helper.sleep(1000 * 60 * 10);
-    // await SubscriptionBillingHistoryService.computeChargeDetailsReports(req,res);
+    console.log('SubscriptionBillingHistoryService - computeChargeDetailsReports **********************************************');
+    await SubscriptionBillingHistoryService.computeChargeDetailsReports(req,res);
 
     // compute Net Addition report Data
     await helper.sleep(1000 * 60 * 10);
-    // await RevenueNetAdditionService.computeRevenueNetAdditionReports(req,res);
+    console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
+    await RevenueNetAdditionService.computeRevenueNetAdditionReports(req,res);
 
     // compute Affiliate - Helogs report Data
     await helper.sleep(1000 * 60 * 10);

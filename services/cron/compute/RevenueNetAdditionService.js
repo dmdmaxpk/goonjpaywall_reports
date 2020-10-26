@@ -91,6 +91,12 @@ computeRevenueNetAdditionReports = async(req, res) => {
             if (req.month <= helper.getTodayMonthNo())
                 computeRevenueNetAdditionReports(req, res);
         }
+
+        if (helper.isToday(fromDate)){
+            console.log('computeRevenueNetAdditionReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
     });
 };
 
