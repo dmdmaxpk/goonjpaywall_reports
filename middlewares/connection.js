@@ -15,6 +15,7 @@ let connect = async (req, res, next) => {
     }
 };
 
+
 let updateConnection = async (req, res, next, connectType) => {
     await MongoClient.connect(config.mongoDB[connectType], async function(err, client) {
         if(err){
@@ -23,11 +24,15 @@ let updateConnection = async (req, res, next, connectType) => {
         }else{
             req.db = client.db(connectType);
             helper.setDBInstance(req.db);
-            next();
+            if (next !== null)
+                next();
+            else
+                return true;
         }
     });
 };
 
 module.exports = {
-    connect: connect
+    connect: connect,
+    updateConnection: updateConnection
 };

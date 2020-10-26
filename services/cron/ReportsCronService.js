@@ -13,6 +13,7 @@ const AffiliateSubscriptionsService = require('./compute/AffiliateDataFromSubscr
 const HelogsService = require('./compute/HelogsService');
 const LogsService = require('./compute/LogsService');
 const helper = require('../../helper/helper');
+const connection = require('../middlewares/connection');
 
 
 cronComputeFullDataReports = async(req, res) => {
@@ -47,38 +48,46 @@ cronComputeFullDataReports = async(req, res) => {
     console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
     // await RevenueNetAdditionService.computeRevenueNetAdditionReports(req,res);
 
+    // First - create/update connections with logger database
+    console.log('connection - updateConnection - logger **********************************************');
+    await connection.updateConnection(req, res, null, 'logger');
+
     // compute Affiliate - Helogs report Data
     // await helper.sleep(1000 * 60 * 25);
     console.log('HelogsService - computeHelogsReports **********************************************');
     await HelogsService.computeHelogsReports(req,res);
 
     // compute Affiliate - Helogs Unique Access report Data
-    await helper.sleep(1000 * 60 * 7);
+    await helper.sleep(1000 * 60 * 20);
     console.log('HelogsService - computeHelogsUniqueSuccessReports **********************************************');
     await HelogsService.computeHelogsUniqueSuccessReports(req,res);
 
     // compute Affiliate - Page View Data
-    await helper.sleep(1000 * 60 * 7);
+    await helper.sleep(1000 * 60 * 20);
     console.log('LogsService - computeLogsPageViewReports **********************************************');
     await LogsService.computeLogsPageViewReports(req,res);
 
     // compute Affiliate - Subscribe Clicks Data
-    await helper.sleep(1000 * 60 * 7);
+    await helper.sleep(1000 * 60 * 20);
     console.log('LogsService - computeLogsSubscribeClicksReports **********************************************');
     await LogsService.computeLogsSubscribeClicksReports(req,res);
 
     // compute Affiliate - Affiliate Mids report Data
-    await helper.sleep(1000 * 60 * 7);
+    await helper.sleep(1000 * 60 * 20);
     console.log('AffiliateSubscriptionsService - computeAffiliateMidsFromSubscriptionsReports **********************************************');
     await AffiliateSubscriptionsService.computeAffiliateMidsFromSubscriptionsReports(req,res);
 
     // compute Affiliate - Affiliate report Data
-    await helper.sleep(1000 * 60 * 7);
+    await helper.sleep(1000 * 60 * 30);
     console.log('AffiliateSubscriptionsService - computeAffiliateReports **********************************************');
     await AffiliateSubscriptionsService.computeAffiliateReports(req,res);
 
-    // compute Affiliate - Affiliate report Data
-    await helper.sleep(1000 * 60 * 10);
+    // First - create/update connections with goonjpaywall database
+    console.log('connection - updateConnection - goonjpaywall **********************************************');
+    await connection.updateConnection(req, res, null, 'goonjpaywall');
+
+    // compute Billing Histories - report Data
+    await helper.sleep(1000 * 60 * 20);
     console.log('BillingHistoryService - computeBillingHistoryReports **********************************************');
     await BillingHistoryService.computeBillingHistoryReports(req,res);
 

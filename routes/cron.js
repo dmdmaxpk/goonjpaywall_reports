@@ -1,60 +1,60 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/cron');
-const connecton = require('../middlewares/connecton');
+const connection = require('../middlewares/connection');
 
 router.route('/compute-user-reports')
-    .get(connecton.connect, controller.computeUserReports); //
+    .get(connection.connect, controller.computeUserReports); //
 
 router.route('/compute-subscriber-reports')
-    .get(connecton.connect, controller.computeSubscriberReports); //
+    .get(connection.connect, controller.computeSubscriberReports); //
 
 router.route('/compute-subscriber-subscriptions-reports')
-    .get(connecton.connect, controller.computeSubscriberSubscriptionsReports);
+    .get(connection.connect, controller.computeSubscriberSubscriptionsReports);
 
 router.route('/compute-subscriber-transaction-reports')
-    .get(connecton.connect, controller.computeSubscriberTransactionsReports);
+    .get(connection.connect, controller.computeSubscriberTransactionsReports);
 
 router.route('/compute-transactions-avg-reports')
-    .get(connecton.connect, controller.computeTransactionsAvgReports);
+    .get(connection.connect, controller.computeTransactionsAvgReports);
 
 router.route('/compute-subscription-reports')
-    .get(connecton.connect, controller.computeSubscriptionReports); //**
+    .get(connection.connect, controller.computeSubscriptionReports); //**
 
 router.route('/compute-billing-history-reports')
-    .get(connecton.connect, controller.computeBillingHistoryReports); //**
+    .get(connection.connect, controller.computeBillingHistoryReports); //**
 
 router.route('/compute-callback-send-reports')
-    .get(connecton.connect, controller.computeCallbackSendReports); //
+    .get(connection.connect, controller.computeCallbackSendReports); //
 
 router.route('/compute-charge-detail-reports')
-    .get(connecton.connect, controller.computeChargeDetailsReports); //
+    .get(connection.connect, controller.computeChargeDetailsReports); //
 
 router.route('/compute-revenue-net-addition-reports')
-    .get(connecton.connect, controller.computeRevenueNetAdditionReports); //
+    .get(connection.connect, controller.computeRevenueNetAdditionReports); //
 
 router.route('/compute-affiliate-reports')
-    .get(connecton.connect, controller.computeAffiliateReports); //
+    .get(connection.connect, controller.computeAffiliateReports); //
 
 router.route('/compute-affiliate-mids-from-subscriptions-reports')
-    .get(connecton.connect, controller.computeAffiliateMidsFromSubscriptionsReports); //
+    .get(connection.connect, controller.computeAffiliateMidsFromSubscriptionsReports); //
 
 router.route('/compute-helogs-logger-reports')
-    .get(connecton.connect, controller.computeHelogsReports); //
+    .get(connection.connect, controller.computeHelogsReports); //
 
 router.route('/compute-helogs-unique-success-logger-reports')
-    .get(connecton.connect, controller.computeHelogsUniqueSuccessReports); //
+    .get(connection.connect, controller.computeHelogsUniqueSuccessReports); //
 
 router.route('/compute-page-views-logger-reports')
-    .get(connecton.connect, controller.computeLogsPageViewReports); //
+    .get(connection.connect, controller.computeLogsPageViewReports); //
 
 router.route('/compute-subscribe-clicks-logger-reports')
-    .get(connecton.connect, controller.computeLogsSubscribeClicksReports); //
+    .get(connection.connect, controller.computeLogsSubscribeClicksReports); //
 
 router.route('/cron-compute-full-data-reports')
-    .get(connecton.connect, controller.cronComputeFullDataReports); //
+    .get(connection.connect, controller.cronComputeFullDataReports); //
 
 router.route('/cron-compute-daily-data-reports')
-    .get(connecton.connect, controller.cronComputeDailyDataReports); //
+    .get(connection.connect, controller.cronComputeDailyDataReports); //
 
 module.exports = router;
