@@ -104,7 +104,7 @@ cronComputeDailyDataReports = async (req, res) => {
     await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res);
 
     return;
-    
+
     // compute Users report data
     console.log('UserService - promiseBasedComputeUserReports **********************************************');
     await UserService.promiseBasedComputeUserReports(req,res);

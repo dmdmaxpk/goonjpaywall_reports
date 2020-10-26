@@ -261,9 +261,9 @@ class SubscriptionRepository {
                             billing_dtm: "$history.billing_dtm"
                         }},
                         { $project:{
-                            affiliate: "$source",
+                            affiliate: "$affiliate",
                             affiliate_mid: "$affiliate_mid",
-                            status: "$billing_status",
+                            status: "$status",
                             package_id: "$package_id",
                             day: { "$dayOfMonth" : "$billing_dtm"},
                             month: { "$month" : "$billing_dtm" },
