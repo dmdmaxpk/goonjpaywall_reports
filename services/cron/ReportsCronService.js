@@ -13,7 +13,7 @@ const AffiliateSubscriptionsService = require('./compute/AffiliateDataFromSubscr
 const HelogsService = require('./compute/HelogsService');
 const LogsService = require('./compute/LogsService');
 const helper = require('../../helper/helper');
-const connection = require('../middlewares/connection');
+const connection = require('../../middlewares/connection');
 
 
 cronComputeFullDataReports = async(req, res) => {
