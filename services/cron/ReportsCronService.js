@@ -105,6 +105,10 @@ cronComputeDailyDataReports = async (req, res) => {
 
     return;
 
+    // First - create/update connections with goonjpaywall database
+    console.log('connection - updateConnection - goonjpaywall **********************************************');
+    await connection.updateConnection(req, res, null, 'goonjpaywall');
+
     // compute Users report data
     console.log('UserService - promiseBasedComputeUserReports **********************************************');
     await UserService.promiseBasedComputeUserReports(req,res);
@@ -129,6 +133,14 @@ cronComputeDailyDataReports = async (req, res) => {
     console.log('RevenueNetAdditionService - promiseBasedComputeRevenueNetAdditionReports **********************************************');
     await RevenueNetAdditionService.promiseBasedComputeRevenueNetAdditionReports(req,res);
 
+    // compute Affiliate - Affiliate Mids report Data
+    console.log('AffiliateSubscriptionsService - promiseBasedComputeAffiliateMidsFromSubscriptionsReports **********************************************');
+    await AffiliateSubscriptionsService.promiseBasedComputeAffiliateMidsFromSubscriptionsReports(req,res);
+
+    // compute Affiliate - Affiliate report Data
+    console.log('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports **********************************************');
+    await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res);
+
     // compute Affiliate - Helogs report Data
     // First - create/update connections with logger database
     console.log('connection - updateConnection - logger **********************************************');
@@ -148,14 +160,6 @@ cronComputeDailyDataReports = async (req, res) => {
     // compute Affiliate - Subscribe Clicks Data
     console.log('LogsService - promiseBasedComputeLogsSubscribeClicksReports **********************************************');
     await LogsService.promiseBasedComputeLogsSubscribeClicksReports(req,res);
-
-    // compute Affiliate - Affiliate Mids report Data
-    console.log('AffiliateSubscriptionsService - promiseBasedComputeAffiliateMidsFromSubscriptionsReports **********************************************');
-    await AffiliateSubscriptionsService.promiseBasedComputeAffiliateMidsFromSubscriptionsReports(req,res);
-
-    // compute Affiliate - Affiliate report Data
-    console.log('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports **********************************************');
-    await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res);
 
     // compute Affiliate - Affiliate report Data
     // First - create/update connections with goonjpaywall database
