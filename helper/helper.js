@@ -23,6 +23,7 @@ class Helper {
 
     static isToday(someDate) {
         someDate = new Date(someDate);
+        someDate = someDate.setDate(someDate.getDate() + 1);
         someDate = this.setDateWithTimezone(someDate, 'in');
         someDate = new Date(someDate);
 
