@@ -53,32 +53,32 @@ cronComputeFullDataReports = async(req, res) => {
     await HelogsService.computeHelogsReports(req,res);
 
     // compute Affiliate - Helogs Unique Access report Data
-    await helper.sleep(1000 * 60 * 20);
+    await helper.sleep(1000 * 60 * 7);
     console.log('HelogsService - computeHelogsUniqueSuccessReports **********************************************');
     await HelogsService.computeHelogsUniqueSuccessReports(req,res);
 
     // compute Affiliate - Page View Data
-    await helper.sleep(1000 * 60 * 20);
+    await helper.sleep(1000 * 60 * 7);
     console.log('LogsService - computeLogsPageViewReports **********************************************');
     await LogsService.computeLogsPageViewReports(req,res);
 
     // compute Affiliate - Subscribe Clicks Data
-    await helper.sleep(1000 * 60 * 20);
+    await helper.sleep(1000 * 60 * 7);
     console.log('LogsService - computeLogsSubscribeClicksReports **********************************************');
     await LogsService.computeLogsSubscribeClicksReports(req,res);
 
     // compute Affiliate - Affiliate Mids report Data
-    await helper.sleep(1000 * 60 * 20);
+    await helper.sleep(1000 * 60 * 7);
     console.log('AffiliateSubscriptionsService - computeAffiliateMidsFromSubscriptionsReports **********************************************');
     await AffiliateSubscriptionsService.computeAffiliateMidsFromSubscriptionsReports(req,res);
 
     // compute Affiliate - Affiliate report Data
-    await helper.sleep(1000 * 60 * 30);
+    await helper.sleep(1000 * 60 * 7);
     console.log('AffiliateSubscriptionsService - computeAffiliateReports **********************************************');
     await AffiliateSubscriptionsService.computeAffiliateReports(req,res);
 
     // compute Affiliate - Affiliate report Data
-    await helper.sleep(1000 * 60 * 20);
+    await helper.sleep(1000 * 60 * 10);
     console.log('BillingHistoryService - computeBillingHistoryReports **********************************************');
     await BillingHistoryService.computeBillingHistoryReports(req,res);
 
