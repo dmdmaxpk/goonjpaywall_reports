@@ -14,7 +14,7 @@ computeAffiliateReports = async(req, res) => {
     * */
 
     // dateData = helper.computeTodayDate(req);
-    dateData = helper.computeNextDate(req, 2, 7);
+    dateData = helper.computeNextDate(req,  1, 2);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -69,7 +69,7 @@ computeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
     * */
 
     // dateData = helper.computeTodayDate(req);
-    dateData = helper.computeNextDate(req, 2, 7);
+    dateData = helper.computeNextDate(req, 1, 2);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
