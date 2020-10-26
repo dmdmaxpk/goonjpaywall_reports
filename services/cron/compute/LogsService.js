@@ -12,8 +12,6 @@ computeLogsPageViewReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-
-    // dateData = helper.computeTodayDate(req);
     dateData = helper.computeNextDate(req, 22, 5);
     req = dateData.req;
     day = dateData.day;
@@ -114,16 +112,13 @@ computeLogsSubscribeClicksReports = async(req, res) => {
 promiseBasedComputeLogsPageViewReports = async(req, res) => {
     console.log('promiseBasedComputeLogsPageViewReports');
     return new Promise(async (resolve, reject) => {
-
         let dateData, fromDate, toDate, finalList = [];
 
         /*
         * Compute date and time for data fetching from db
         * Script will execute to fetch data as per day
         * */
-
-        // dateData = helper.computeTodayDate(req);
-        dateData = helper.computeNextDate(req, 22, 5);
+        dateData = helper.computeTodayDate(req);
         req = dateData.req;
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
@@ -150,14 +145,13 @@ promiseBasedComputeLogsPageViewReports = async(req, res) => {
 promiseBasedComputeLogsSubscribeClicksReports = async(req, res) => {
     console.log('promiseBasedComputeLogsSubscribeClicksReports');
     return new Promise(async (resolve, reject) => {
-
         let dateData, fromDate, toDate, finalList = [];
 
         /*
         * Compute date and time for data fetching from db
         * Script will execute to fetch data as per day
         * */
-        dateData = helper.computeNextDate(req, 24, 3);
+        dateData = helper.computeTodayDate(req);
         req = dateData.req;
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;

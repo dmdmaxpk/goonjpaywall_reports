@@ -15,7 +15,6 @@ const LogsService = require('./compute/LogsService');
 const helper = require('../../helper/helper');
 const connection = require('../../middlewares/connection');
 
-
 cronComputeFullDataReports = async(req, res) => {
     console.log('cronComputeFullDataReports');
 
@@ -48,12 +47,13 @@ cronComputeFullDataReports = async(req, res) => {
     console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
     await RevenueNetAdditionService.computeRevenueNetAdditionReports(req,res);
 
+    // compute Affiliate - Helogs report Data
+    await helper.sleep(1000 * 60 * 25);
+
     // First - create/update connections with logger database
     console.log('connection - updateConnection - logger **********************************************');
     await connection.updateConnection(req, res, null, 'logger');
 
-    // compute Affiliate - Helogs report Data
-    await helper.sleep(1000 * 60 * 25);
     console.log('HelogsService - computeHelogsReports **********************************************');
     await HelogsService.computeHelogsReports(req,res);
 
@@ -82,12 +82,13 @@ cronComputeFullDataReports = async(req, res) => {
     console.log('AffiliateSubscriptionsService - computeAffiliateReports **********************************************');
     await AffiliateSubscriptionsService.computeAffiliateReports(req,res);
 
+    // compute Billing Histories - report Data
+    await helper.sleep(1000 * 60 * 30);
+
     // First - create/update connections with goonjpaywall database
     console.log('connection - updateConnection - goonjpaywall **********************************************');
     await connection.updateConnection(req, res, null, 'goonjpaywall');
 
-    // compute Billing Histories - report Data
-    await helper.sleep(1000 * 60 * 20);
     console.log('BillingHistoryService - computeBillingHistoryReports **********************************************');
     await BillingHistoryService.computeBillingHistoryReports(req,res);
 };
@@ -96,55 +97,55 @@ cronComputeDailyDataReports = async (req, res) => {
     console.log('cronComputeDailyDataReports');
 
     // compute Users report data
+    console.log('UserService - promiseBasedComputeUserReports **********************************************');
     await UserService.promiseBasedComputeUserReports(req,res);
-    console.log('UserService - computeUserReports **********************************************');
 
     // compute Subscribers report Data
-    console.log('SubscriberService - computeSubscriberReports **********************************************');
+    console.log('SubscriberService - promiseBasedComputeSubscriberReports **********************************************');
     await SubscriberService.promiseBasedComputeSubscriberReports(req,res);
 
     // compute Subscriptions report Data
-    console.log('SubscriptionService - computeSubscriptionReports **********************************************');
+    console.log('SubscriptionService - promiseBasedComputeSubscriptionReports **********************************************');
     await SubscriptionService.promiseBasedComputeSubscriptionReports(req,res);
 
     // compute Callback report Data
-    console.log('CallbackSendService - computeCallbackSendReports **********************************************');
+    console.log('CallbackSendService - promiseBasedComputeCallbackSendReports **********************************************');
     await CallbackSendService.promiseBasedComputeCallbackSendReports(req,res);
 
     // compute Charge Details report Data
-    console.log('SubscriptionBillingHistoryService - computeChargeDetailsReports **********************************************');
+    console.log('SubscriptionBillingHistoryService - promiseBasedComputeChargeDetailsReports **********************************************');
     await SubscriptionBillingHistoryService.promiseBasedComputeChargeDetailsReports(req,res);
 
     // compute Net Addition report Data
-    console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
+    console.log('RevenueNetAdditionService - promiseBasedComputeRevenueNetAdditionReports **********************************************');
     await RevenueNetAdditionService.promiseBasedComputeRevenueNetAdditionReports(req,res);
 
     // compute Affiliate - Helogs report Data
-    console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
+    console.log('HelogsService - promiseBasedComputeHelogsReports **********************************************');
     await HelogsService.promiseBasedComputeHelogsReports(req,res);
 
     // compute Affiliate - Helogs Unique Access report Data
-    console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
+    console.log('HelogsService - promiseBasedComputeHelogsUniqueSuccessReports **********************************************');
     await HelogsService.promiseBasedComputeHelogsUniqueSuccessReports(req,res);
 
     // compute Affiliate - Page View Data
-    console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
+    console.log('LogsService - promiseBasedComputeLogsPageViewReports **********************************************');
     await LogsService.promiseBasedComputeLogsPageViewReports(req,res);
 
     // compute Affiliate - Subscribe Clicks Data
-    console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
+    console.log('LogsService - promiseBasedComputeLogsSubscribeClicksReports **********************************************');
     await LogsService.promiseBasedComputeLogsSubscribeClicksReports(req,res);
 
     // compute Affiliate - Affiliate Mids report Data
-    console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
+    console.log('AffiliateSubscriptionsService - promiseBasedComputeAffiliateMidsFromSubscriptionsReports **********************************************');
     await AffiliateSubscriptionsService.promiseBasedComputeAffiliateMidsFromSubscriptionsReports(req,res);
 
     // compute Affiliate - Affiliate report Data
-    console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
+    console.log('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports **********************************************');
     await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res);
 
     // compute Affiliate - Affiliate report Data
-    console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
+    console.log('BillingHistoryService - promiseBasedComputeBillingHistoryReports **********************************************');
     await BillingHistoryService.promiseBasedComputeBillingHistoryReports(req,res);
 };
 

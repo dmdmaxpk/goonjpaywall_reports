@@ -86,6 +86,7 @@ class Helper {
         fromDate  = new Date();
         fromDate.setHours(0, 0, 0);
         fromDate = this.setDateWithTimezone(fromDate, 'in');
+        console.log('computeTodayDate - fromDate : ', fromDate);
 
         day = req.day ? req.day : fromDate.getDate();
         day = day > 9 ? day : '0'+Number(day);

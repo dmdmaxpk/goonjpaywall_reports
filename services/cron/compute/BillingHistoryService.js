@@ -17,8 +17,6 @@ computeBillingHistoryReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-
-    // dateData = helper.computeTodayDate(req);
     dateData = helper.computeNextDate(req, 1, 2);
     req = dateData.req;
     day = dateData.day;
@@ -96,15 +94,13 @@ computeBillingHistoryReports = async(req, res) => {
 promiseBasedComputeBillingHistoryReports = async(req, res) => {
     console.log('promiseBasedComputeBillingHistoryReports: ');
     return new Promise(async (resolve, reject) => {
-
         let fromDate, toDate, day, month, computedData;
+
         /*
         * Compute date and time for data fetching from db
         * Script will execute to fetch data as per day
         * */
-
-        // dateData = helper.computeTodayDate(req);
-        dateData = helper.computeNextDate(req, 1, 2);
+        dateData = helper.computeTodayDate(req);
         req = dateData.req;
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;

@@ -6,14 +6,12 @@ const  _ = require('lodash');
 
 computeHelogsReports = async(req, res) => {
     console.log('computeHelogsReports');
-
     let dateData, fromDate, toDate, day, month, finalList = [];
+
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-
-    // dateData = helper.computeTodayDate(req);
     dateData = helper.computeNextDate(req, 30, 6);
     req = dateData.req;
     day = dateData.day;
@@ -60,14 +58,12 @@ computeHelogsReports = async(req, res) => {
 };
 computeHelogsUniqueSuccessReports = async(req, res) => {
     console.log('computeHelogsUniqueSuccessReports');
-
     let dateData, fromDate, toDate, day, month, finalList = [];
+
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-
-    // dateData = helper.computeTodayDate(req);
     dateData = helper.computeNextDate(req, 2, 7);
     req = dateData.req;
     day = dateData.day;
@@ -116,15 +112,13 @@ computeHelogsUniqueSuccessReports = async(req, res) => {
 promiseBasedComputeHelogsUniqueSuccessReports = async(req, res) => {
     console.log('promiseBasedComputeHelogsUniqueSuccessReports');
     return new Promise(async (resolve, reject) => {
-
         let dateData, fromDate, toDate, finalList = [];
+
         /*
         * Compute date and time for data fetching from db
         * Script will execute to fetch data as per day
         * */
-
-        // dateData = helper.computeTodayDate(req);
-        dateData = helper.computeNextDate(req, 2, 7);
+        dateData = helper.computeTodayDate(req);
         req = dateData.req;
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
@@ -151,15 +145,13 @@ promiseBasedComputeHelogsUniqueSuccessReports = async(req, res) => {
 promiseBasedComputeHelogsReports = async(req, res) => {
     console.log('promiseBasedComputeHelogsReports');
     return new Promise(async (resolve, reject) => {
-
         let dateData, fromDate, toDate, finalList = [];
+
         /*
         * Compute date and time for data fetching from db
         * Script will execute to fetch data as per day
         * */
-
-        // dateData = helper.computeTodayDate(req);
-        dateData = helper.computeNextDate(req, 30, 6);
+        dateData = helper.computeTodayDate(req);
         req = dateData.req;
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;

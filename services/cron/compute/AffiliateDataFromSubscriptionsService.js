@@ -12,8 +12,6 @@ computeAffiliateReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-
-    // dateData = helper.computeTodayDate(req);
     dateData = helper.computeNextDate(req,  1, 2);
     req = dateData.req;
     day = dateData.day;
@@ -67,8 +65,6 @@ computeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-
-    // dateData = helper.computeTodayDate(req);
     dateData = helper.computeNextDate(req, 1, 2);
     req = dateData.req;
     day = dateData.day;
@@ -117,16 +113,13 @@ computeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
 promiseBasedComputeAffiliateReports = async(req, res) => {
     console.log('promiseBasedComputeAffiliateReports: ');
     return new Promise(async (resolve, reject) => {
-
         let fromDate, toDate, computedData = [];
 
         /*
         * Compute date and time for data fetching from db
         * Script will execute to fetch data as per day
         * */
-
-        // dateData = helper.computeTodayDate(req);
-        dateData = helper.computeNextDate(req,  1, 2);
+        dateData = helper.computeTodayDate(req);
         req = dateData.req;
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
@@ -160,9 +153,7 @@ promiseBasedComputeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
         * Compute date and time for data fetching from db
         * Script will execute to fetch data as per day
         * */
-
-        // dateData = helper.computeTodayDate(req);
-        dateData = helper.computeNextDate(req, 1, 2);
+        dateData = helper.computeTodayDate(req);
         req = dateData.req;
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
