@@ -22,10 +22,9 @@ class Helper {
     }
 
     static isToday(someDate) {
-        someDate = new Date(someDate);
-        someDate = someDate.setDate(someDate.getDate() + 1);
-        someDate = this.setDateWithTimezone(someDate, 'in');
-        someDate = new Date(someDate);
+        someDate = new Date( someDate );
+        someDate = new Date( someDate.setDate(someDate.getDate() + 1));
+        someDate = new Date( this.setDateWithTimezone(someDate, 'in'));
 
         var today = new Date();
         console.log('someDate: ', someDate);
