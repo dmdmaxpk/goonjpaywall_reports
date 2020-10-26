@@ -315,7 +315,7 @@ class SubscriptionRepository {
                         },
                         { $project:{
                                 affiliate_mid: "$affiliate_mid",
-                                added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } }
+                                added_dtm: "$added_dtm"
                             }},
                         { $project:{
                                 affiliate_mid: "$affiliate_mid",
@@ -337,7 +337,7 @@ class SubscriptionRepository {
                         }},
                         { $project: {
                             _id: 0,
-                            added_dtm: "$_id.added_dtm",
+                            added_dtm: { '$dateToString' : { date: "$_id.added_dtm", 'timezone' : "Asia/Karachi" } },
                             affiliate_mids: "$affiliate_mids"
                         }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
