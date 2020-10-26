@@ -192,44 +192,48 @@ function computeAffiliateData(subscriptionsRawData) {
     for (let i=0; i < subscriptionsRawData.length; i++) {
 
         rawData = subscriptionsRawData[i];
-        for (let j = 0; j < rawData.history.length; j++) {
-            history = rawData.history[j];
+        console.log('rawData.history.length: ', rawData.history.length);
+        if (rawData.history.length > 0){
+            for (let j = 0; j < rawData.history.length; j++) {
+                history = rawData.history[j];
 
-            //collect data => billing_status to package - then package to affiliate_type, then get mids count
-            if (history.package_id === 'QDfC') {
-                if (history.affiliate === "HE")
-                    affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
-                else if (history.affiliate === "affiliate_web")
-                    affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
+                console.log('history: ', history);
+                //collect data => billing_status to package - then package to affiliate_type, then get mids count
+                if (history.package_id === 'QDfC') {
+                    if (history.affiliate === "HE")
+                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
+                    else if (history.affiliate === "affiliate_web")
+                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
+                }
+                else if (history.package_id === 'QDfG') {
+                    if (history.affiliate === "HE")
+                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
+                    else if (history.affiliate === "affiliate_web")
+                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
+                }
+
+                //collect data => billing_status wise, get Mids count
+                //Success, trial, Affiliate callback sent
+                if (history.status === 'Success')
+                    statusWiseObj = wiseMidsCount(history, 'success', statusWiseObj);
+                else if (history.status === 'trial')
+                    statusWiseObj = wiseMidsCount(history, 'trial', statusWiseObj);
+                else if (history.status === 'Affiliate callback sent')
+                    statusWiseObj = wiseMidsCount(history, 'callback_sent', statusWiseObj);
+
+                //collect data => package wise, get Mids count
+                if (history.package_id === 'QDfC')
+                    packageWiseObj = packageWiseMidsCount(history, 'QDfC', packageWiseObj);
+                else if (history.package_id === 'QDfG')
+                    packageWiseObj = packageWiseMidsCount(history, 'QDfG', packageWiseObj);
+
+                //collect data => source wise, get Mids count
+                if (history.affiliate === 'HE')
+                    sourceWiseObj = wiseMidsCount(history, 'HE', sourceWiseObj);
+                else if (history.affiliate === 'affiliate_web')
+                    sourceWiseObj = wiseMidsCount(history, 'affiliate_web', sourceWiseObj);
+
             }
-            else if (history.package_id === 'QDfG') {
-                if (history.affiliate === "HE")
-                    affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
-                else if (history.affiliate === "affiliate_web")
-                    affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
-            }
-
-            //collect data => billing_status wise, get Mids count
-            //Success, trial, Affiliate callback sent
-            if (history.status === 'Success')
-                statusWiseObj = wiseMidsCount(history, 'success', statusWiseObj);
-            else if (history.status === 'trial')
-                statusWiseObj = wiseMidsCount(history, 'trial', statusWiseObj);
-            else if (history.status === 'Affiliate callback sent')
-                statusWiseObj = wiseMidsCount(history, 'callback_sent', statusWiseObj);
-
-            //collect data => package wise, get Mids count
-            if (history.package_id === 'QDfC')
-                packageWiseObj = packageWiseMidsCount(history, 'QDfC', packageWiseObj);
-            else if (history.package_id === 'QDfG')
-                packageWiseObj = packageWiseMidsCount(history, 'QDfG', packageWiseObj);
-
-            //collect data => source wise, get Mids count
-            if (history.affiliate === 'HE')
-                sourceWiseObj = wiseMidsCount(history, 'HE', sourceWiseObj);
-            else if (history.affiliate === 'affiliate_web')
-                sourceWiseObj = wiseMidsCount(history, 'affiliate_web', sourceWiseObj);
-
         }
 
         affiliateObj.billing_dtm = rawData.billing_dtm;

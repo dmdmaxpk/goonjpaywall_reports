@@ -364,7 +364,6 @@ async function insertNewRecord(finalList, dateString, mode) {
     console.log('insertNewRecord - dateString', dateString);
 
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
-        console.log('result: ', result);
         if (result.length > 0){
             result = result[0];
             if (mode === 0)
