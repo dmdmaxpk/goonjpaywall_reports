@@ -111,14 +111,13 @@ class Helper {
     static computeTodayDate(req){
         let date, fromDate, toDate, day, month;
         date = new Date();
-        date = date.setDate(date.getMonth() + 1);
-        date = date.setDate(date.getDate() - 1);
+        date.setDate(date.getDate() - 1);
 
         day =  date.getDate();
         day = day > 9 ? day : '0'+Number(day);
         req.day = day;
 
-        month =  date.getMonth();
+        month =  date.getMonth() + 1;
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
