@@ -13,7 +13,7 @@ class Helper {
         return this.db;
     }
 
-    static setDBInstance(db){
+    static async setDBInstance(db){
         this.db = db;
     }
 
