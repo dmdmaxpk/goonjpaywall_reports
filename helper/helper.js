@@ -21,28 +21,36 @@ class Helper {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    static fiveLineConsoleLog(message){
+    static sixLinesConsoleLog(message){
         return console.log('' +
+            '                                                           ' + '\n' +
             '***********************************************************' + '\n' +
             '*******                                           *********' + '\n' +
             '*******     '+message+ '\n' +
             '*******                                           *********' + '\n' +
             '***********************************************************' + '\n' +
-            '                       **************                      ' + '\n'
+            '                       **************                      ' + '\n' +
+            '                                                           ' + '\n'
 
         ) ;
     }
 
-    static threeLineConsoleLog(message){
+    static threeLinesConsoleLog(message){
         return console.log('' +
+            '                                                           ' + '\n' +
             '***********************************************************' + '\n' +
             '*******     '+message + '\n' +
-            '***********************************************************' +  '\n' ) ;
+            '***********************************************************' + '\n' +
+            '                                                           ' + '\n'
+        ) ;
     }
 
     static oneLineConsoleLog(message){
         return console.log('' +
-            '*******     '+message+'     *********' +  '\n' ) ;
+            '                                      ' + '\n' +
+            '*******     '+message+'     **********' + '\n'  +
+            '                                      ' + '\n'
+    ) ;
     }
 
     static isToday(someDate) {
