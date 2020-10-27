@@ -96,7 +96,7 @@ cronComputeDailyDataReports = async (req, res) => {
     console.log('cronComputeDailyDataReports');
 
     // First - create/update connections with goonjpaywall database
-    helper.fiveLineConsoleLog('Database - Connection ( goonjpaywall )');
+    helper.sixLinesConsoleLog('Database - Connection ( goonjpaywall )');
     await connection.updateConnection(req, res, null, 'goonjpaywall');
 
     // compute Users report data
