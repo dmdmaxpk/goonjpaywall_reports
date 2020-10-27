@@ -96,67 +96,68 @@ cronComputeDailyDataReports = async (req, res) => {
     console.log('cronComputeDailyDataReports');
 
     // First - create/update connections with goonjpaywall database
-    console.log('connection - updateConnection - goonjpaywall **********************************************');
+    helper.fiveLineConsoleLog('Database - Connection ( goonjpaywall )');
     await connection.updateConnection(req, res, null, 'goonjpaywall');
 
     // compute Users report data
-    console.log('UserService - promiseBasedComputeUserReports **********************************************');
+    helper.threeLineConsoleLog('UserService - promiseBasedComputeUserReports');
     await UserService.promiseBasedComputeUserReports(req,res);
 
     // compute Subscribers report Data
+    helper.threeLineConsoleLog('SubscriberService - promiseBasedComputeSubscriberReports');
     console.log('SubscriberService - promiseBasedComputeSubscriberReports **********************************************');
     await SubscriberService.promiseBasedComputeSubscriberReports(req,res);
 
     // compute Subscriptions report Data
-    console.log('SubscriptionService - promiseBasedComputeSubscriptionReports **********************************************');
+    helper.threeLineConsoleLog('SubscriptionService - promiseBasedComputeSubscriptionReports');
     await SubscriptionService.promiseBasedComputeSubscriptionReports(req,res);
 
     // compute Callback report Data
-    console.log('CallbackSendService - promiseBasedComputeCallbackSendReports **********************************************');
+    helper.threeLineConsoleLog('CallbackSendService - promiseBasedComputeCallbackSendReports');
     await CallbackSendService.promiseBasedComputeCallbackSendReports(req,res);
 
     // compute Charge Details report Data
-    console.log('SubscriptionBillingHistoryService - promiseBasedComputeChargeDetailsReports **********************************************');
+    helper.threeLineConsoleLog('SubscriptionBillingHistoryService - promiseBasedComputeChargeDetailsReports');
     await SubscriptionBillingHistoryService.promiseBasedComputeChargeDetailsReports(req,res);
 
     // compute Net Addition report Data
-    console.log('RevenueNetAdditionService - promiseBasedComputeRevenueNetAdditionReports **********************************************');
+    helper.threeLineConsoleLog('RevenueNetAdditionService - promiseBasedComputeRevenueNetAdditionReports');
     await RevenueNetAdditionService.promiseBasedComputeRevenueNetAdditionReports(req,res);
 
     // compute Affiliate - Affiliate Mids report Data
-    console.log('AffiliateSubscriptionsService - promiseBasedComputeAffiliateMidsFromSubscriptionsReports **********************************************');
+    helper.threeLineConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateMidsFromSubscriptionsReports');
     await AffiliateSubscriptionsService.promiseBasedComputeAffiliateMidsFromSubscriptionsReports(req,res);
 
     // compute Affiliate - Affiliate report Data
-    console.log('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports **********************************************');
+    helper.threeLineConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports');
     await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res);
 
     // compute Affiliate - Helogs report Data
     // First - create/update connections with logger database
-    console.log('connection - updateConnection - logger **********************************************');
+    helper.fiveLineConsoleLog('Database - Connection ( logger )');
     await connection.updateConnection(req, res, null, 'logger');
 
-    console.log('HelogsService - promiseBasedComputeHelogsReports **********************************************');
+    helper.threeLineConsoleLog('HelogsService - promiseBasedComputeHelogsReports');
     await HelogsService.promiseBasedComputeHelogsReports(req,res);
 
     // compute Affiliate - Helogs Unique Access report Data
-    console.log('HelogsService - promiseBasedComputeHelogsUniqueSuccessReports **********************************************');
+    helper.threeLineConsoleLog('HelogsService - promiseBasedComputeHelogsUniqueSuccessReports');
     await HelogsService.promiseBasedComputeHelogsUniqueSuccessReports(req,res);
 
     // compute Affiliate - Page View Data
-    console.log('LogsService - promiseBasedComputeLogsPageViewReports **********************************************');
+    helper.threeLineConsoleLog('LogsService - promiseBasedComputeLogsPageViewReports');
     await LogsService.promiseBasedComputeLogsPageViewReports(req,res);
 
     // compute Affiliate - Subscribe Clicks Data
-    console.log('LogsService - promiseBasedComputeLogsSubscribeClicksReports **********************************************');
+    helper.threeLineConsoleLog('LogsService - promiseBasedComputeLogsSubscribeClicksReports');
     await LogsService.promiseBasedComputeLogsSubscribeClicksReports(req,res);
 
     // compute Affiliate - Affiliate report Data
     // First - create/update connections with goonjpaywall database
-    console.log('connection - updateConnection - goonjpaywall **********************************************');
+    helper.fiveLineConsoleLog('Database - Connection ( goonjpaywall )');
     await connection.updateConnection(req, res, null, 'goonjpaywall');
 
-    console.log('BillingHistoryService - promiseBasedComputeBillingHistoryReports **********************************************');
+    helper.threeLineConsoleLog('BillingHistoryService - promiseBasedComputeBillingHistoryReports');
     await BillingHistoryService.promiseBasedComputeBillingHistoryReports(req,res);
 };
 

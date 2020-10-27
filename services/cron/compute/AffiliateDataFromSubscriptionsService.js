@@ -130,8 +130,6 @@ promiseBasedComputeAffiliateReports = async(req, res) => {
 
             if (subscriptions.length > 0){
                 computedData = computeAffiliateData(subscriptions);
-                console.log('computedData : ', computedData);
-
                 //affiliateWise, statusWise, packageWise, sourceWise
                 await insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, fromDate);
             }
@@ -380,8 +378,6 @@ function packageWiseMidsCount(history, wise, dataObj) {
     else if (history.affiliate_mid === '1' && history.status === 'Success')
         dataObj[wise]['1'] = dataObj[wise]['1'] + history.count;
 
-
-    console.log('dataObj: ', dataObj);
     return dataObj;
 }
 function wiseMidsCount(history, wise, dataObj) {
@@ -401,8 +397,6 @@ function wiseMidsCount(history, wise, dataObj) {
         dataObj[wise]['gdn2'] = dataObj[wise]['gdn2'] + history.count;
     else if (history.affiliate_mid === 'goonj')
         dataObj[wise]['goonj'] = dataObj[wise]['goonj'] + history.count;
-
-    console.log('dataObj: ', dataObj);
 
     return dataObj;
 }

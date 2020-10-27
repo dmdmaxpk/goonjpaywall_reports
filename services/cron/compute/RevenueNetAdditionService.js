@@ -371,7 +371,6 @@ async function insertNewRecord(finalList, dateString, mode) {
             else
                 result.netAdditions = result.netAdditions.concat(finalList);
 
-            console.log('result: ', result);
             await reportsRepo.updateReport(result, result._id);
         }
         else

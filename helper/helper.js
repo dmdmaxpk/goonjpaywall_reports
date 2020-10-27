@@ -21,6 +21,27 @@ class Helper {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    static fiveLineConsoleLog(message){
+        return '' +
+            '***********************************************************' +
+            '*******                                           *********' +
+            '*******     '+message+'                 *********' +
+            '*******                                           *********' +
+            '***********************************************************' ;
+    }
+
+    static threeLineConsoleLog(message){
+        return '' +
+            '***********************************************************' +
+            '*******     '+message+'                 *********' +
+            '***********************************************************' ;
+    }
+
+    static oneLineConsoleLog(message){
+        return '' +
+            '*******  '+message+'                 *********' ;
+    }
+
     static isToday(someDate) {
         someDate = new Date( someDate );
         someDate = new Date( someDate.setDate(someDate.getDate() + 1));
