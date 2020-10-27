@@ -95,16 +95,6 @@ cronComputeFullDataReports = async(req, res) => {
 cronComputeDailyDataReports = async (req, res) => {
     console.log('cronComputeDailyDataReports');
 
-    // First - create/update connections with logger database
-    console.log('connection - updateConnection - logger **********************************************');
-    await connection.updateConnection(req, res, null, 'logger');
-
-    // compute Affiliate - Affiliate report Data
-    console.log('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports **********************************************');
-    await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res);
-
-    return;
-
     // First - create/update connections with goonjpaywall database
     console.log('connection - updateConnection - goonjpaywall **********************************************');
     await connection.updateConnection(req, res, null, 'goonjpaywall');

@@ -165,8 +165,6 @@ promiseBasedComputeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
 
             if (affiliateMids.length > 0){
                 affiliateMidsData = computeAffiliateMidsData(affiliateMids);
-                console.log('affiliateMidsData : ', affiliateMidsData.length);
-
                 await insertAffiliateMidsNewRecord(affiliateMidsData, fromDate);
             }
         });
@@ -192,12 +190,10 @@ function computeAffiliateData(subscriptionsRawData) {
     for (let i=0; i < subscriptionsRawData.length; i++) {
 
         rawData = subscriptionsRawData[i];
-        console.log('rawData.history.length: ', rawData.history.length);
         if (rawData.history.length > 0){
             for (let j = 0; j < rawData.history.length; j++) {
                 history = rawData.history[j];
 
-                console.log('history: ', history);
                 //collect data => billing_status to package - then package to affiliate_type, then get mids count
                 if (history.package_id === 'QDfC') {
                     if (history.affiliate === "HE")
