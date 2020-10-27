@@ -22,7 +22,7 @@ class Helper {
     }
 
     static sixLinesConsoleLog(message){
-        return console.log('\x1b[32m%s\x1b[0m', '' +
+        return console.log('' +
             '                                                           ' + '\n' +
             '***********************************************************' + '\n' +
             '*******                                           *********' + '\n' +
@@ -34,7 +34,7 @@ class Helper {
     }
 
     static threeLinesConsoleLog(message){
-        return console.log('\x1b[32m%s\x1b[0m', '' +
+        return console.log('' +
             '                                                           ' + '\n' +
             '***********************************************************' + '\n' +
             '*******     '+message + '\n' +
