@@ -62,7 +62,6 @@ class LogsRepo {
                 if (!err) {
                     collection.aggregate([
                         { $match:{
-                            mid: {$in: ["1", "1569", "aff3", "aff3a", "goonj", "gdn", "gdn2"]},
                             "req_body.response_msisdn":{$ne:null},
                             $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                         }},
@@ -73,7 +72,7 @@ class LogsRepo {
                         }},
                         { $project:{
                             mid: "$mid",
-                            msisdn: "$req_body.response_msisdn",
+                            msisdn: "$msisdn",
                             day: { "$dayOfMonth" : "$added_dtm"},
                             month: { "$month" : "$added_dtm" },
                             year:{ "$year": "$added_dtm" }
@@ -119,7 +118,6 @@ class LogsRepo {
                     collection.aggregate([
                         { $match:{
                             "method": "pageview",
-                            "req_body.mid": {$in: ["1", "1569", "aff3", "aff3a", "goonj", "gdn", "gdn2"]},
                             $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                         }},
                         { $project:{
@@ -128,8 +126,8 @@ class LogsRepo {
                             added_dtm: "$added_dtm"
                         }},
                         { $project:{
-                            mid: "$req_body.mid",
-                            msisdn: "$req_body.msisdn",
+                            mid: "$mid",
+                            msisdn: "$msisdn",
                             day: { "$dayOfMonth" : "$added_dtm"},
                             month: { "$month" : "$added_dtm" },
                             year:{ "$year": "$added_dtm" }
@@ -175,7 +173,6 @@ class LogsRepo {
                     collection.aggregate([
                         { $match:{
                             "method": "subscribe",
-                            "req_body.affiliate_mid": {$in: ["1", "1569", "aff3", "aff3a", "goonj", "gdn", "gdn2"]},
                             $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                         }},
                         { $project:{
@@ -183,7 +180,7 @@ class LogsRepo {
                             added_dtm: "$added_dtm"
                         }},
                         { $project:{
-                            mid: "$req_body.affiliate_mid",
+                            mid: "$mid",
                             day: { "$dayOfMonth" : "$added_dtm"},
                             month: { "$month" : "$added_dtm" },
                             year:{ "$year": "$added_dtm" }

@@ -108,6 +108,8 @@ function computeSubscriptionsData(subscriptionsRawData) {
                     newObj.affiliate_mid.goonj = newObj.affiliate_mid.goonj + 1;
                 else if(innerObj.affiliate_mid === '1565')
                     newObj.affiliate_mid['1565'] = newObj.affiliate_mid['1565'] + 1;
+                else if(innerObj.affiliate_mid === '1569')
+                    newObj.affiliate_mid['1569'] = newObj.affiliate_mid['1569'] + 1;
                 else if(innerObj.affiliate_mid === '1')
                     newObj.affiliate_mid['1'] = newObj.affiliate_mid['1'] + 1;
                 else if(innerObj.affiliate_mid === 'null')
@@ -227,6 +229,7 @@ function cloneInfoObj() {
             gdn2: 0,
             goonj: 0,
             '1565': 0,
+            '1569': 0,
             '1': 0,
             'null': 0,
         },

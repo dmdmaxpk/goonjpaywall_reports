@@ -250,7 +250,7 @@ function computeAffiliateData(subscriptionsRawData) {
 }
 function computeAffiliateMidsData(affiliateMidsData) {
 
-    let rawData, innerObj, affiliateMidsObj = { aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0, '1565': 0, '1': 0, 'null': 0 },
+    let rawData, innerObj, affiliateMidsObj = { aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0, '1569': 0, '1': 0, 'null': 0 },
         affiliateMids = [];
     for (let i=0; i < affiliateMidsData.length; i++) {
         rawData = affiliateMidsData[i];
@@ -269,8 +269,8 @@ function computeAffiliateMidsData(affiliateMidsData) {
                 affiliateMidsObj.gdn2 = affiliateMidsObj.gdn2 + innerObj.count;
             else if(innerObj.affiliate_mid === 'goonj')
                 affiliateMidsObj.goonj = affiliateMidsObj.goonj + innerObj.count;
-            else if(innerObj.affiliate_mid === '1565')
-                affiliateMidsObj['1565'] = affiliateMidsObj['1565'] + innerObj.count;
+            else if(innerObj.affiliate_mid === '1569')
+                affiliateMidsObj['1569'] = affiliateMidsObj['1569'] + innerObj.count;
             else if(innerObj.affiliate_mid === '1')
                 affiliateMidsObj['1'] = affiliateMidsObj['1'] + innerObj.count;
             else if(innerObj.affiliate_mid === 'null')
