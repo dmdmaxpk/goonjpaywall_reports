@@ -21,30 +21,22 @@ computeAffiliateReport = async (rawDataSet, params) =>{
 
             //get Affiliate mids total count HE wise
             if (outerObj.helogs) {
-                partKey = outerObj.helogs;
-                if (partKey.helogsWise) {
-                    if (partKey.helogsWise[0]) {
-                        innerObj = partKey.helogsWise[0];
-                        computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                        dataObj = computedData.dataObj;
-                        dayDataObj = computedData.dayDataObj;
-                        weeklyDataObj = computedData.weeklyDataObj;
-                        monthlyDataObj = computedData.monthlyDataObj;
-                    }
-                }
+                innerObj = outerObj.helogs[0];
+                computedData = computeAffiliateHeData('HE', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                dataObj = computedData.dataObj;
+                dayDataObj = computedData.dayDataObj;
+                weeklyDataObj = computedData.weeklyDataObj;
+                monthlyDataObj = computedData.monthlyDataObj;
             }
 
             //get Affiliate mids total count Unique Success wise
             if (outerObj.uniqueSuccessHe) {
-                partKey = outerObj.uniqueSuccessHe;
-                if (partKey.helogsWise) {
-                    innerObj = partKey.helogsWise[0];
-                    computedData = computeAffiliateHeData('uniqueSuccessHe', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                    dataObj = computedData.dataObj;
-                    dayDataObj = computedData.dayDataObj;
-                    weeklyDataObj = computedData.weeklyDataObj;
-                    monthlyDataObj = computedData.monthlyDataObj;
-                }
+                innerObj = outerObj.uniqueSuccessHe[0];
+                computedData = computeAffiliateHeData('uniqueSuccessHe', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                dataObj = computedData.dataObj;
+                dayDataObj = computedData.dayDataObj;
+                weeklyDataObj = computedData.weeklyDataObj;
+                monthlyDataObj = computedData.monthlyDataObj;
             }
 
             //get Affiliate mids total count Page view wise
