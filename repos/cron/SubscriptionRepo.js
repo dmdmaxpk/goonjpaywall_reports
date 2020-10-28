@@ -47,13 +47,11 @@ class SubscriptionRepository {
                         { $project: {
                                 source:"$source",
                                 added_dtm:"$added_dtm",
-                                subscription_status:"$subscription_status",
                                 succeses: { $filter: {
                                         input: "$histories",
                                         as: "history",
                                         cond: { $or: [
                                                 { $eq: ['$$history.billing_status',"Success"] },
-                                                { $eq: ['$$history.billing_status',"graced"] },
                                             ]}
                                     }} }
                         },
@@ -61,7 +59,6 @@ class SubscriptionRepository {
                                 source:"$source",
                                 added_dtm:"$added_dtm",
                                 numOfSucc: { $size:"$succeses" },
-                                subscription_status:"$subscription_status",
                                 billing_status: {"$arrayElemAt": ["$succeses.billing_status",0]},
                                 price: {"$arrayElemAt": ["$succeses.price",0]},
                                 discount: {"$arrayElemAt": ["$succeses.discount",0]},
@@ -76,7 +73,6 @@ class SubscriptionRepository {
                         {$project: {
                                 _id: 0,
                                 source:"$source",
-                                subscription_status:"$subscription_status",
                                 billing_status:"$billing_status",
                                 price: "$price",
                                 discount: "$discount",

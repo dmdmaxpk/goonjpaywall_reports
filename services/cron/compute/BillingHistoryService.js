@@ -69,36 +69,8 @@ computeBillingHistoryReports = async(req, res) => {
         req.day = Number(req.day) + 1;
         console.log('computeBillingHistoryReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.month === 10) {
+        if (req.month <= 8 || req.month <= '08' || req.month <= 08) {
             console.log('if ______________________________');
-            if (req.day <= 15){
-                if (req.day <= helper.getDaysInMonth(month)){
-                    if (month < helper.getTodayMonthNo())
-                        computeBillingHistoryReports(req, res);
-                    else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                        computeBillingHistoryReports(req, res);
-                }
-                else{
-                    req.day = 1;
-                    req.month = Number(req.month) + 1;
-                    console.log('computeBillingHistoryReports -> month : ', month, req.month, new Date().getMonth());
-
-                    if (req.month <= helper.getTodayMonthNo())
-                        computeBillingHistoryReports(req, res);
-                }
-            } else{
-                console.log('req.day <= 15 +++++++++++++++++++++++++: ', helper.getTodayMonthNo());
-
-                // if (helper.isToday(fromDate)){
-                    console.log('computeBillingHistoryReports - data compute - done');
-                    delete req.day;
-                    delete req.month;
-                // }
-            }
-        }
-        else{
-            console.log('else ______________________________');
-
             if (req.day <= helper.getDaysInMonth(month)){
                 if (month < helper.getTodayMonthNo())
                     computeBillingHistoryReports(req, res);
@@ -113,6 +85,15 @@ computeBillingHistoryReports = async(req, res) => {
                 if (req.month <= helper.getTodayMonthNo())
                     computeBillingHistoryReports(req, res);
             }
+        }
+        else {
+            console.log('req.month > 8 +++++++++++++++++++++++++: ', req.month);
+
+            // if (helper.isToday(fromDate)){
+            console.log('computeBillingHistoryReports - data compute - done');
+            delete req.day;
+            delete req.month;
+            // }
         }
     });
 };
