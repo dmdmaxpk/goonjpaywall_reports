@@ -140,12 +140,10 @@ generateReportsData = async (req,res) => {
             if (params.sub_type === 'affiliate')
                 return affiliateService.computeAffiliateReport(rawDataSet, params);
             else if (params.sub_type === 'helogs'){
-                if (params.helogs === 'helogs_wise')
-                    return affiliateService.computeHelogsDataReport(rawDataSet, params);
+                return affiliateService.computeHelogsDataReport(rawDataSet, params);
             }
             else if (params.sub_type === 'unique_success_he'){
-                if (params.unique_success_he === 'helogs_wise')
-                    return affiliateService.computeUniqueSuccessHeWiseReport(rawDataSet, params);
+                return affiliateService.computeUniqueSuccessHeWiseReport(rawDataSet, params);
             }
             else if (params.sub_type === 'subscriptions') {
                 if (params.subscriptions === 'subscriptions_mid')
