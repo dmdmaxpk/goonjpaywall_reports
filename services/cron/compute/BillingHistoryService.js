@@ -188,33 +188,35 @@ function computeBillingHistoryData(data) {
 
                     //Billing status wise billingHistory
                     if(innerObj.billing_status === 'trial')
-                        billingStatusNewObj.billingStatus.trial = billingStatusNewObj.billingStatus.trial + innerObj.price;
+                        billingStatusNewObj.billingStatus.trial = billingStatusNewObj.billingStatus.trial + 1;
                     else if(innerObj.billing_status === 'graced')
-                        billingStatusNewObj.billingStatus.graced = billingStatusNewObj.billingStatus.graced + innerObj.price;
+                        billingStatusNewObj.billingStatus.graced = billingStatusNewObj.billingStatus.graced + 1;
                     else if(innerObj.billing_status === 'expired')
-                        billingStatusNewObj.billingStatus.expired = billingStatusNewObj.billingStatus.expired + innerObj.price;
+                        billingStatusNewObj.billingStatus.expired = billingStatusNewObj.billingStatus.expired + 1;
                     else if(innerObj.billing_status === 'Success')
-                        billingStatusNewObj.billingStatus.success = billingStatusNewObj.billingStatus.success + innerObj.price;
+                        billingStatusNewObj.billingStatus.expired = billingStatusNewObj.billingStatus.expired + 1;
+                    else if(innerObj.billing_status === 'billed')
+                        billingStatusNewObj.billingStatus.billed = billingStatusNewObj.billingStatus.billed + 1;
                     else if(innerObj.billing_status === 'Affiliate callback sent')
-                        billingStatusNewObj.billingStatus.affiliate_callback_sent = billingStatusNewObj.billingStatus.affiliate_callback_sent + innerObj.price;
+                        billingStatusNewObj.billingStatus.affiliate_callback_sent = billingStatusNewObj.billingStatus.affiliate_callback_sent + 1;
                     else if(innerObj.billing_status === 'graced_and_stream_stopped')
-                        billingStatusNewObj.billingStatus.graced_and_stream_stopped = billingStatusNewObj.billingStatus.graced_and_stream_stopped + innerObj.price;
+                        billingStatusNewObj.billingStatus.graced_and_stream_stopped = billingStatusNewObj.billingStatus.graced_and_stream_stopped + 1;
                     else if(innerObj.billing_status === 'micro-charging-exceeded')
-                        billingStatusNewObj.billingStatus.micro_charging_exceeded = billingStatusNewObj.billingStatus.micro_charging_exceeded + innerObj.price;
+                        billingStatusNewObj.billingStatus.micro_charging_exceeded = billingStatusNewObj.billingStatus.micro_charging_exceeded + 1;
                     else if(innerObj.billing_status === 'direct-billing-tried-but-failed')
-                        billingStatusNewObj.billingStatus.direct_billing_tried_but_failed = billingStatusNewObj.billingStatus.direct_billing_tried_but_failed + innerObj.price;
+                        billingStatusNewObj.billingStatus.direct_billing_tried_but_failed = billingStatusNewObj.billingStatus.direct_billing_tried_but_failed + 1;
                     else if(innerObj.billing_status === 'package_change_upon_user_request')
-                        billingStatusNewObj.billingStatus.package_change_upon_user_request = billingStatusNewObj.billingStatus.package_change_upon_user_request + innerObj.price;
+                        billingStatusNewObj.billingStatus.package_change_upon_user_request = billingStatusNewObj.billingStatus.package_change_upon_user_request + 1;
                     else if(innerObj.billing_status === 'switch-package-request-tried-but-failed')
-                        billingStatusNewObj.billingStatus.switch_package_request_tried_but_failed = billingStatusNewObj.billingStatus.switch_package_request_tried_but_failed + innerObj.price;
+                        billingStatusNewObj.billingStatus.switch_package_request_tried_but_failed = billingStatusNewObj.billingStatus.switch_package_request_tried_but_failed + 1;
                     else if(innerObj.billing_status === 'unsubscribe-request-received-and-expired')
-                        billingStatusNewObj.billingStatus.unsubscribe_request_received_and_expired = billingStatusNewObj.billingStatus.unsubscribe_request_received_and_expired + innerObj.price;
+                        billingStatusNewObj.billingStatus.unsubscribe_request_received_and_expired = billingStatusNewObj.billingStatus.unsubscribe_request_received_and_expired + 1;
                     else if(innerObj.billing_status === 'subscription-request-received-for-the-same-package')
-                        billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package = billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package + innerObj.price;
+                        billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package = billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package + 1;
                     else if(innerObj.billing_status === 'subscription-request-received-for-the-same-package-after-unsub')
-                        billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package_after_unsub = billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package_after_unsub + innerObj.price;
+                        billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package_after_unsub = billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package_after_unsub + 1;
                     else
-                        billingStatusNewObj.billingStatus.other_subscriptions_status_wise = billingStatusNewObj.billingStatus.other_subscriptions_status_wise + innerObj.price;
+                        billingStatusNewObj.billingStatus.other_subscriptions_status_wise = billingStatusNewObj.billingStatus.other_subscriptions_status_wise + 1;
 
                     //Package wise revenue and Billed Users
                     if (innerObj.billing_status === "Success" || innerObj.billing_status === "billed") {
@@ -650,6 +652,7 @@ function cloneBillingStatusObj() {
             graced: 0,
             expired: 0,
             success: 0,
+            billed: 0,
             affiliate_callback_sent: 0,
             micro_charging_exceeded: 0,
             graced_and_stream_stopped: 0,

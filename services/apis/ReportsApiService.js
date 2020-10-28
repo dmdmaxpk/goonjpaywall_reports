@@ -71,8 +71,6 @@ generateReportsData = async (req,res) => {
                 return revenueService.computeRevenuePaywallWiseReport(rawDataSet, params);
             else if (params.sub_type === 'operator_wise')
                 return revenueService.computeRevenueOperatorWiseReport(rawDataSet, params);
-            else if (params.sub_type === 'billing_status_wise')
-                return revenueService.computeRevenueBillingStatusWiseReport(rawDataSet, params);
         }
         else if (params.type === 'trial') {
             if (params.sub_type === 'source_wise')
@@ -120,6 +118,8 @@ generateReportsData = async (req,res) => {
                     return transactionService.computeTransactionsPaywallWiseReport(rawDataSet, params);
                 else if(params.transactions === 'operator_wise')
                     return transactionService.computeTransactionsOperatorWiseReport(rawDataSet, params);
+                else if (params.transactions === 'billing_status_wise')
+                    return transactionService.computeRevenueBillingStatusWiseReport(rawDataSet, params);
                 else if(params.transactions === 'price_wise')
                     return transactionService.computeTransactionsPriceWiseWiseReport(rawDataSet, params);
             }
