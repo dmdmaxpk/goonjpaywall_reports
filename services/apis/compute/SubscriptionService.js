@@ -334,10 +334,10 @@ paywallWiseSubscriptionReport = async (rawDataSet, params) =>{
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {comedy: 0, web: 0, gdn2: 0, HE: 0};
-    let dayDataObj = {comedy: 0, web: 0, gdn2: 0, HE: 0};
-    let weeklyDataObj = {comedy: 0, web: 0, gdn2: 0, HE: 0};
-    let monthlyDataObj = {comedy: 0, web: 0, gdn2: 0, HE: 0};
+    let dataObj = {comedy: 0, live: 0};
+    let dayDataObj = {comedy: 0, live: 0};
+    let weeklyDataObj = {comedy: 0, live: 0};
+    let monthlyDataObj = {comedy: 0, live: 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -382,7 +382,7 @@ paywallWiseSubscriptionReport = async (rawDataSet, params) =>{
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({comedy: 0, web: 0, gdn2: 0, HE: 0});
+                    monthlyDataObj = _.clone({comedy: 0, live: 0});
                     month_from_date = null;
                 }
 
@@ -391,14 +391,14 @@ paywallWiseSubscriptionReport = async (rawDataSet, params) =>{
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({comedy: 0, web: 0, gdn2: 0, HE: 0});
+                    weeklyDataObj = _.clone({comedy: 0, live: 0});
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({comedy: 0, web: 0, gdn2: 0, HE: 0});
+                dayDataObj = _.clone({comedy: 0, live: 0});
             }
         }
 

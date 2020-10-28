@@ -33,6 +33,32 @@ class BillingHistoryRepository {
         });
     }
 
+    async getCallbackSendByDateRange(req, from, to, skip, limit) {
+        return new Promise((resolve, reject) => {
+            console.log('getCallbackSendByDateRange: ', from, to);
+            req.db.collection('billinghistories', function (err, collection) {
+                if (!err) {
+                    collection.aggregate([
+                        {
+                            $match:{
+                                billing_status: "Affiliate callback sent",
+                                $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+                            }},
+                        { $project:{
+                                billing_dtm: { '$dateToString' : { date: "billing_dtm", 'timezone' : "Asia/Karachi" } }
+                            }}
+                    ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
+                        if(err){
+                            console.log('getCallbackSendByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            });
+        });
+    }
+
     async getnetAdditionByDateRange(req, from, to, skip, limit){
         return new Promise((resolve, reject) => {
             console.log('getnetAdditionByDateRange: ', from, to);

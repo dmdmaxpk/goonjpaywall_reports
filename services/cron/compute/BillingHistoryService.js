@@ -312,8 +312,10 @@ function computeBillingHistoryData(data) {
                     }
 
                     // Success Rate data variables
-                    if(innerObj.billing_status === "Success" || innerObj.billing_status === "billed")
+                    if(innerObj.billing_status === "Success" || innerObj.billing_status === "billed"){
                         successfulSubs = successfulSubs + 1;
+                        totalSubs = totalSubs + 1;
+                    }
                     else
                         totalSubs = totalSubs + 1;
 

@@ -1,6 +1,6 @@
 const container = require("../../../configurations/container");
 const reportsRepo = require('../../../repos/apis/ReportsRepo');
-const subscriptionRepo = container.resolve('subscriptionRepository');
+const billingHistoryRepo = container.resolve('billingHistoryRepository');
 const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
@@ -24,7 +24,7 @@ computeCallbackSendReports = async(req, res) => {
     console.log('fromDate: ', fromDate, toDate);
     query = countQuery(fromDate, toDate);
 
-    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
+    await helper.getTotalCount(req, fromDate, toDate, 'billinghistories', query).then(async function (totalCount) {
         console.log('totalCount: ', totalCount);
 
         if (totalCount > 0){
@@ -35,15 +35,15 @@ computeCallbackSendReports = async(req, res) => {
 
             //Loop over no.of chunks
             for (i = 0 ; i < totalChunks; i++){
-                await subscriptionRepo.getCallbackSendByDateRange(req, fromDate, toDate, skip, limit).then(async function (subscriptions) {
-                    console.log('subscriptions 1: ', subscriptions.length);
+                await billingHistoryRepo.getCallbackSendByDateRange(req, fromDate, toDate, skip, limit).then(async function (histories) {
+                    console.log('histories 1: ', histories.length);
 
                     //set skip variable to limit data
                     skip = skip + limit;
 
                     // Now compute and store data in DB
-                    if (subscriptions.length > 0){
-                        finalList = computeUserData(subscriptions);
+                    if (histories.length > 0){
+                        finalList = computeUserData(histories);
                         await insertNewRecord(finalList, fromDate, i);
                     }
                 });
@@ -51,12 +51,12 @@ computeCallbackSendReports = async(req, res) => {
 
             // fetch last chunk Data from DB
             if (lastLimit > 0){
-                await subscriptionRepo.getCallbackSendByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (subscriptions) {
-                    console.log('subscriptions 2: ', subscriptions.length);
+                await billingHistoryRepo.getCallbackSendByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (histories) {
+                    console.log('histories 2: ', histories.length);
 
                     // Now compute and store data in DB
-                    if (subscriptions.length > 0){
-                        finalList = computeUserData(subscriptions);
+                    if (histories.length > 0){
+                        finalList = computeUserData(histories);
                         await insertNewRecord(finalList, fromDate, 1);
                     }
                 });
@@ -111,7 +111,7 @@ promiseBasedComputeCallbackSendReports = async(req, res) => {
         console.log('fromDate: ', fromDate, toDate);
         query = countQuery(fromDate, toDate);
 
-        await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
+        await helper.getTotalCount(req, fromDate, toDate, 'billinghistories', query).then(async function (totalCount) {
             console.log('totalCount: ', totalCount);
 
             if (totalCount > 0){
@@ -122,15 +122,15 @@ promiseBasedComputeCallbackSendReports = async(req, res) => {
 
                 //Loop over no.of chunks
                 for (i = 0 ; i < totalChunks; i++){
-                    await subscriptionRepo.getCallbackSendByDateRange(req, fromDate, toDate, skip, limit).then(async function (subscriptions) {
-                        console.log('subscriptions 1: ', subscriptions.length);
+                    await billingHistoryRepo.getCallbackSendByDateRange(req, fromDate, toDate, skip, limit).then(async function (histories) {
+                        console.log('histories 1: ', histories.length);
 
                         //set skip variable to limit data
                         skip = skip + limit;
 
                         // Now compute and store data in DB
-                        if (subscriptions.length > 0){
-                            finalList = computeUserData(subscriptions);
+                        if (histories.length > 0){
+                            finalList = computeUserData(histories);
                             await insertNewRecord(finalList, fromDate, i);
                         }
                     });
@@ -138,12 +138,12 @@ promiseBasedComputeCallbackSendReports = async(req, res) => {
 
                 // fetch last chunk Data from DB
                 if (lastLimit > 0){
-                    await subscriptionRepo.getCallbackSendByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (subscriptions) {
-                        console.log('subscriptions 2: ', subscriptions.length);
+                    await billingHistoryRepo.getCallbackSendByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (histories) {
+                        console.log('histories 2: ', histories.length);
 
                         // Now compute and store data in DB
-                        if (subscriptions.length > 0){
-                            finalList = computeUserData(subscriptions);
+                        if (histories.length > 0){
+                            finalList = computeUserData(histories);
                             await insertNewRecord(finalList, fromDate, 1);
                         }
                     });
@@ -161,28 +161,28 @@ promiseBasedComputeCallbackSendReports = async(req, res) => {
     });
 };
 
-function computeUserData(subscriptions) {
+function computeUserData(histories) {
 
     let dateInMili, outer_added_dtm, inner_added_dtm, newObj, outerObj, innerObj, finalList = [];
-    for (let j=0; j < subscriptions.length; j++) {
+    for (let j=0; j < histories.length; j++) {
 
-        outerObj = subscriptions[j];
-        newObj = {callbackSent : 0, added_dtm: '', added_dtm_hours: ''};
-        outer_added_dtm = helper.setDate(new Date(outerObj.subscription_dtm), null, 0, 0, 0).getTime();
+        outerObj = histories[j];
+        newObj = {callbackSent : 0, billing_dtm: '', added_dtm_hours: ''};
+        outer_added_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
 
         if (dateInMili !== outer_added_dtm){
-            for (let k=0; k < subscriptions.length; k++) {
+            for (let k=0; k < histories.length; k++) {
 
-                innerObj = subscriptions[k];
-                inner_added_dtm = helper.setDate(new Date(innerObj.subscription_dtm), null, 0, 0, 0).getTime();
+                innerObj = histories[k];
+                inner_added_dtm = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
 
                 if (outer_added_dtm === inner_added_dtm){
                     dateInMili = inner_added_dtm;
-                    if (innerObj.isCallbAckSent === 'yes')
-                        newObj.callbackSent = newObj.callbackSent + 1;
 
-                    newObj.added_dtm = outerObj.subscription_dtm;
-                    newObj.added_dtm_hours = helper.setDate(new Date(innerObj.subscription_dtm), null, 0, 0, 0);
+                    newObj.callbackSent = newObj.callbackSent + 1;
+
+                    newObj.billing_dtm = outerObj.billing_dtm;
+                    newObj.billing_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
                 }
             }
             finalList.push(newObj);
@@ -216,66 +216,14 @@ async function insertNewRecord(data, dateString, mode) {
 function countQuery(from, to){
     return [
         {
-            $match: {
-                $or:[{source: "HE"},{source: "affiliate_web"}],
+            $match:{
+                billing_status: "Affiliate callback sent",
                 $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
-            }
-        },
-        {
-            $lookup:
-                {
-                    from: "billinghistories",
-                    localField: "_id",
-                    foreignField: "subscription_id",
-                    as: "histories"
-                }
-        },
-        {
-            $project: {
-                tid: "$affiliate_unique_transaction_id",
-                mid: "$affiliate_mid",
-                added_dtm: "$added_dtm",
-                active: "$active",
-                callbackhistory: {
-                    $filter: {
-                        input: "$histories",
-                        as: "histor",
-                        cond: {$eq: ["$$histor.billing_status", "Affiliate callback sent" ] }
-                    }
-                }
-            }
-        },
-        {
-            $project: {
-                tid: "$tid",
-                mid: "$mid",
-                isValidUser: {$cond: {if: {$eq:["$active",true]}, then: true, else: false } },
-                added_dtm: "$added_dtm",
-                callbackhistorySize: {"$size": "$callbackhistory" },
-                callbackObj: {$arrayElemAt: ["$callbackhistory",0]},
-            }
-        },
-        {
-            $project: {
-                tid: "$tid",
-                mid: "$mid",
-                isValidUser: "$isValidUser",
-                callbackhistorySize: "$callbackhistorySize",
-                added_dtm: "$added_dtm",
-                billing_dm: "$callbackObj.billing_dtm"
-            }
-        },
-        {
-            $project: {
-                tid: "$tid",
-                mid: "$mid",
-                isValidUser: "$isValidUser",
-                added_dtm:  {$cond: {if: "$isValidUser", then: "$added_dm" , else: "" } },
-                subscription_dtm: "$added_dtm",
-                isCallbAckSent: {$cond: { if: { $and: [{$gte: ["$callbackhistorySize",1]},{$eq: [ "$isValidUser",true ]} ] } ,then:"yes",else:"no" }} ,
-                callBackSentTime: {$cond: {if: "$isValidUser", then: "$billing_dm" , else: "" } }
-            }
-        },
+            }},
+        { $project:{
+                billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } },
+
+            }},
         {
             $count: "count"
         }
