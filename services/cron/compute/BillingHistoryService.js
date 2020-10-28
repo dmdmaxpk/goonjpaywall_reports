@@ -92,6 +92,12 @@ computeBillingHistoryReports = async(req, res) => {
                     delete req.month;
                 // }
             }
+        }else{
+            // if (helper.isToday(fromDate)){
+            console.log('computeBillingHistoryReports - data compute - done');
+            delete req.day;
+            delete req.month;
+            // }
         }
     });
 };
