@@ -69,7 +69,8 @@ computeBillingHistoryReports = async(req, res) => {
         req.day = Number(req.day) + 1;
         console.log('computeBillingHistoryReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.month === helper.getTodayMonthNo()) {
+        if (req.month === 10) {
+            console.log('if ______________________________');
             if (req.day <= 15){
                 if (req.day <= helper.getDaysInMonth(month)){
                     if (month < helper.getTodayMonthNo())
@@ -93,6 +94,24 @@ computeBillingHistoryReports = async(req, res) => {
                     delete req.day;
                     delete req.month;
                 // }
+            }
+        }
+        else{
+            console.log('else ______________________________');
+
+            if (req.day <= helper.getDaysInMonth(month)){
+                if (month < helper.getTodayMonthNo())
+                    computeBillingHistoryReports(req, res);
+                else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+                    computeBillingHistoryReports(req, res);
+            }
+            else{
+                req.day = 1;
+                req.month = Number(req.month) + 1;
+                console.log('computeBillingHistoryReports -> month : ', month, req.month, new Date().getMonth());
+
+                if (req.month <= helper.getTodayMonthNo())
+                    computeBillingHistoryReports(req, res);
             }
         }
     });
