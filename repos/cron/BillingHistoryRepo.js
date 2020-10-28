@@ -59,6 +59,39 @@ class BillingHistoryRepository {
         });
     }
 
+    async getChargeDetailsByDateRange (req, from, to, skip, limit){
+        return new Promise((resolve, reject) => {
+            console.log('getChargeDetailsByDateRange: ', from, to, skip, limit);
+            req.db.collection('billinghistories', function (err, collection) {
+                if (!err) {
+                    collection.aggregate( [
+                        {$match : {
+                                $or:[{"billing_status": "Success"}, {"billing_status": "graced"}],
+                                $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+                            }},
+                        {$project: {
+                                _id: 0,
+                                price: "$price",
+                                discount: "$discount",
+                                package: "$package_id",
+                                paywall: "$paywall_id",
+                                operator: "$operator",
+                                micro_charge: "$micro_charge",
+                                billing_dtm: { '$dateToString' : { date: "billing_dtm", 'timezone' : "Asia/Karachi" } }
+                            }
+                        },
+                    ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
+                        if(err){
+                            console.log('getChargeDetailsByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            })
+        });
+    }
+
     async getnetAdditionByDateRange(req, from, to, skip, limit){
         return new Promise((resolve, reject) => {
             console.log('getnetAdditionByDateRange: ', from, to);

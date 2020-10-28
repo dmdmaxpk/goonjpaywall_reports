@@ -1,11 +1,12 @@
 const container = require("../../../configurations/container");
 const reportsRepo = require('../../../repos/apis/ReportsRepo');
-const subscriptionRepo = container.resolve('subscriptionRepository');
+const billingHistoryRepo = container.resolve('billingHistoryRepository');
 const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, chargeDetailList = [], transactingSubsList = [];
+let fromDate, toDate, day, month, finalData;
+let chargeDetailList = [], billingHistoryArr = [], returningUserListArr = [], fullAndPartialChargeListArr = [], uniquePayingUsers = [];
 let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeChargeDetailsReports = async(req, res) => {
     console.log('computeChargeDetailsReports');
@@ -25,7 +26,7 @@ computeChargeDetailsReports = async(req, res) => {
     * Get total count from db
     * */
     query = countQuery(fromDate, toDate);
-    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
+    await helper.getTotalCount(req, fromDate, toDate, 'billinghistories', query).then(async function (totalCount) {
         console.log('totalCount: ', totalCount);
 
         if (totalCount > 0){
@@ -36,7 +37,7 @@ computeChargeDetailsReports = async(req, res) => {
 
             //Loop over no.of chunks
             for (i = 0 ; i < totalChunks; i++){
-                await subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, limit).then(async function (chargeDetails) {
+                await billingHistoryRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, limit).then(async function (chargeDetails) {
                     console.log('chargeDetails: ', chargeDetails.length);
 
                     //set skip variable to limit data
@@ -45,9 +46,13 @@ computeChargeDetailsReports = async(req, res) => {
                     // Now compute and store data in DB
                     if (chargeDetails.length > 0){
                         finalData = computeChargeDetailData(chargeDetails);
-                        transactingSubsList = finalData.transactingSubsList;
                         chargeDetailList = finalData.chargeDetailList;
-                        await insertNewRecord(transactingSubsList, chargeDetailList, fromDate, i);
+                        uniquePayingUsers = finalData.uniquePayingUsers;
+                        billingHistoryArr = finalData.billingHistory;
+                        returningUserListArr = finalData.returningUserList;
+                        fullAndPartialChargeListArr = finalData.fullAndPartialChargeList;
+
+                        await insertNewRecord(chargeDetailList, uniquePayingUsers, billingHistoryArr, returningUserListArr, fullAndPartialChargeListArr, fromDate, i);
                     }
                 });
             }
@@ -55,14 +60,18 @@ computeChargeDetailsReports = async(req, res) => {
 
             // fetch last chunk Data from DB
             if (lastLimit > 0){
-                await subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (chargeDetails) {
+                await billingHistoryRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (chargeDetails) {
                     console.log('chargeDetails: ', chargeDetails.length);
 
                     if (chargeDetails.length > 0){
                         finalData = computeChargeDetailData(chargeDetails);
-                        transactingSubsList = finalData.transactingSubsList;
                         chargeDetailList = finalData.chargeDetailList;
-                        await insertNewRecord(transactingSubsList, chargeDetailList, fromDate, 1);
+                        uniquePayingUsers = finalData.uniquePayingUsers;
+                        billingHistoryArr = finalData.billingHistory;
+                        returningUserListArr = finalData.returningUserList;
+                        fullAndPartialChargeListArr = finalData.fullAndPartialChargeList;
+
+                        await insertNewRecord(chargeDetailList, uniquePayingUsers, billingHistoryArr, returningUserListArr, fullAndPartialChargeListArr, fromDate, 1);
                     }
                 });
             }
@@ -115,7 +124,7 @@ promiseBasedComputeChargeDetailsReports = async(req, res) => {
         * Get total count from db
         * */
         query = countQuery(fromDate, toDate);
-        await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
+        await helper.getTotalCount(req, fromDate, toDate, 'billinghistories', query).then(async function (totalCount) {
             console.log('totalCount: ', totalCount);
 
             if (totalCount > 0){
@@ -126,7 +135,7 @@ promiseBasedComputeChargeDetailsReports = async(req, res) => {
 
                 //Loop over no.of chunks
                 for (i = 0 ; i < totalChunks; i++){
-                    await subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, limit).then(async function (chargeDetails) {
+                    await billingHistoryRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, limit).then(async function (chargeDetails) {
                         console.log('chargeDetails: ', chargeDetails.length);
 
                         //set skip variable to limit data
@@ -135,9 +144,13 @@ promiseBasedComputeChargeDetailsReports = async(req, res) => {
                         // Now compute and store data in DB
                         if (chargeDetails.length > 0){
                             finalData = computeChargeDetailData(chargeDetails);
-                            transactingSubsList = finalData.transactingSubsList;
                             chargeDetailList = finalData.chargeDetailList;
-                            await insertNewRecord(transactingSubsList, chargeDetailList, fromDate, i);
+                            uniquePayingUsers = finalData.uniquePayingUsers;
+                            billingHistoryArr = finalData.billingHistory;
+                            returningUserListArr = finalData.returningUserList;
+                            fullAndPartialChargeListArr = finalData.fullAndPartialChargeList;
+
+                            await insertNewRecord(chargeDetailList, uniquePayingUsers, billingHistoryArr, returningUserListArr, fullAndPartialChargeListArr, fromDate, i);
                         }
                     });
                 }
@@ -145,14 +158,18 @@ promiseBasedComputeChargeDetailsReports = async(req, res) => {
 
                 // fetch last chunk Data from DB
                 if (lastLimit > 0){
-                    await subscriptionRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (chargeDetails) {
+                    await billingHistoryRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (chargeDetails) {
                         console.log('chargeDetails: ', chargeDetails.length);
 
                         if (chargeDetails.length > 0){
                             finalData = computeChargeDetailData(chargeDetails);
-                            transactingSubsList = finalData.transactingSubsList;
                             chargeDetailList = finalData.chargeDetailList;
-                            await insertNewRecord(transactingSubsList, chargeDetailList, fromDate, 1);
+                            uniquePayingUsers = finalData.uniquePayingUsers;
+                            billingHistoryArr = finalData.billingHistory;
+                            returningUserListArr = finalData.returningUserList;
+                            fullAndPartialChargeListArr = finalData.fullAndPartialChargeList;
+
+                            await insertNewRecord(chargeDetailList, uniquePayingUsers, billingHistoryArr, returningUserListArr, fullAndPartialChargeListArr, fromDate, 1);
                         }
                     });
                 }
@@ -170,133 +187,38 @@ promiseBasedComputeChargeDetailsReports = async(req, res) => {
 
 function computeChargeDetailData(chargeDetails) {
 
-    let dateInMili, outer_added_dtm, inner_added_dtm, chargeDetailObj, outerObj, innerObj, price,
-        micro_charge, transactingSubsList = [], chargeDetailList = [];
+    let dateInMili, outer_billing_dtm, inner_billing_dtm, outerObj, innerObj, price;
+    let chargeDetailObj, newObjReturningUsers, uniquePayingUserObj, billingStatusNewObj, fullAndPartialCharging, micro_charge;
+    let chargeDetailList = [], billingHistoryArr = [], returningUserListArr = [], fullAndPartialChargeListArr = [],
+        uniquePayingUsers = [];
+
     for (let j=0; j < chargeDetails.length; j++) {
 
         outerObj = chargeDetails[j];
 
-        //app, web, HE, sms, gdn2, CP, null, affiliate_web, system_after_grace_end
         chargeDetailObj = _.clone(cloneChargeDetailObj());
-        transactionObj = _.clone(cloneTransactionObj());
-        outer_added_dtm = helper.setDate(new Date(outerObj.added_dtm), null, 0, 0, 0).getTime();
+        newObjReturningUsers = _.clone(cloneReturningUsersObj());
+        billingStatusNewObj = _.clone(cloneBillingStatusObj());
+        fullAndPartialCharging = _.clone(cloneFullAndPartialChargeObj());
+        uniquePayingUserObj = _.clone(cloneUniquePayingUsersObj());
 
-        if (dateInMili !== outer_added_dtm){
+        outer_billing_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
+
+        if (dateInMili !== outer_billing_dtm){
             for (let k=0; k < chargeDetails.length; k++) {
 
                 innerObj = chargeDetails[k];
-                inner_added_dtm = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0).getTime();
+                inner_billing_dtm = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
 
-                if (outer_added_dtm === inner_added_dtm){
+                if (outer_billing_dtm === inner_billing_dtm){
                     price = innerObj.price - (innerObj.discount ? innerObj.discount : 0);
                     micro_charge = innerObj.micro_charge === false ? false : true;
-                    dateInMili = inner_added_dtm;
-
-                    //Source wise Charge Details
-                    if (innerObj.source === 'app'){
-                        transactionObj.transactions.source.app = transactionObj.transactions.source.app + 1;
-                        transactionObj.subscribers.source.app = transactionObj.subscribers.source.app + 1;
-
-                        if(!micro_charge)
-                            chargeDetailObj.source.app.full = chargeDetailObj.source.app.full + price;
-                        else
-                            chargeDetailObj.source.app.micro = chargeDetailObj.source.app.micro + price;
-
-                        chargeDetailObj.source.app.total = chargeDetailObj.source.app.total + price;
-                    }
-                    else if (innerObj.source === 'web'){
-                        transactionObj.transactions.source.web = transactionObj.transactions.source.web + 1;
-                        transactionObj.subscribers.source.web = transactionObj.subscribers.source.web + 1;
-
-                        if(!micro_charge)
-                            chargeDetailObj.source.web.full = chargeDetailObj.source.web.full + price;
-                        else
-                            chargeDetailObj.source.web.micro = chargeDetailObj.source.web.micro + price;
-
-                        chargeDetailObj.source.web.total = chargeDetailObj.source.web.total + price;
-                    }
-                    else if (innerObj.source === 'HE'){
-                        transactionObj.transactions.source.HE = transactionObj.transactions.source.HE + 1;
-                        transactionObj.subscribers.source.HE = transactionObj.subscribers.source.HE + 1;
-
-                        if(!micro_charge)
-                            chargeDetailObj.source.HE.full = chargeDetailObj.source.HE.full + price;
-                        else
-                            chargeDetailObj.source.HE.micro = chargeDetailObj.source.HE.micro + price;
-
-                        chargeDetailObj.source.HE.total = chargeDetailObj.source.HE.total + price;
-                    }
-                    else if (innerObj.source === 'sms'){
-                        transactionObj.transactions.source.sms = transactionObj.transactions.source.sms + 1;
-                        transactionObj.subscribers.source.sms = transactionObj.subscribers.source.sms + 1;
-
-                        if(!micro_charge)
-                            chargeDetailObj.source.sms.full = chargeDetailObj.source.sms.full + price;
-                        else
-                            chargeDetailObj.source.sms.micro = chargeDetailObj.source.sms.micro + price;
-
-                        chargeDetailObj.source.sms.total = chargeDetailObj.source.sms.total + price;
-                    }
-                    else if (innerObj.source === 'gdn2'){
-                        transactionObj.transactions.source.gdn2 = transactionObj.transactions.source.gdn2 + 1;
-                        transactionObj.subscribers.source.gdn2 = transactionObj.subscribers.source.gdn2 + 1;
-
-                        if(!micro_charge)
-                            chargeDetailObj.source.gdn2.full = chargeDetailObj.source.gdn2.full + price;
-                        else
-                            chargeDetailObj.source.gdn2.micro = chargeDetailObj.source.gdn2.micro + price;
-
-                        chargeDetailObj.source.gdn2.total = chargeDetailObj.source.gdn2.total + price;
-                    }
-                    else if (innerObj.source === 'CP'){
-                        transactionObj.transactions.source.CP = transactionObj.transactions.source.CP + 1;
-                        transactionObj.subscribers.source.CP = transactionObj.subscribers.source.CP + 1;
-
-                        if(!micro_charge)
-                            chargeDetailObj.source.CP.full = chargeDetailObj.source.CP.full + price;
-                        else
-                            chargeDetailObj.source.CP.micro = chargeDetailObj.source.CP.micro + price;
-
-                        chargeDetailObj.source.CP.total = chargeDetailObj.source.CP.total + price;
-                    }
-                    else if (innerObj.source === 'null'){
-                        transactionObj.transactions.source.null = transactionObj.transactions.source.null + 1;
-                        transactionObj.subscribers.source.null = transactionObj.subscribers.source.null + 1;
-
-                        if(!micro_charge)
-                            chargeDetailObj.source.null.full = chargeDetailObj.source.null.full + price;
-                        else
-                            chargeDetailObj.source.null.micro = chargeDetailObj.source.null.micro + price;
-
-                        chargeDetailObj.source.null.total = chargeDetailObj.source.null.total + price;
-                    }
-                    else if (innerObj.source === 'affiliate_web'){
-                        transactionObj.transactions.source.affiliate_web = transactionObj.transactions.source.affiliate_web + 1;
-                        transactionObj.subscribers.source.affiliate_web = transactionObj.subscribers.source.affiliate_web + 1;
-
-                        if(!micro_charge)
-                            chargeDetailObj.source.affiliate_web.full = chargeDetailObj.source.affiliate_web.full + price;
-                        else
-                            chargeDetailObj.source.affiliate_web.micro = chargeDetailObj.source.affiliate_web.micro + price;
-
-                        chargeDetailObj.source.affiliate_web.total = chargeDetailObj.source.affiliate_web.total + price;
-                    }
-                    else if (innerObj.source === 'system_after_grace_end'){
-                        transactionObj.transactions.source.system_after_grace_end = transactionObj.transactions.source.system_after_grace_end + 1;
-                        transactionObj.subscribers.source.system_after_grace_end = transactionObj.subscribers.source.system_after_grace_end + 1;
-
-                        if(!micro_charge)
-                            chargeDetailObj.source.system_after_grace_end.full = chargeDetailObj.source.system_after_grace_end.full + price;
-                        else
-                            chargeDetailObj.source.system_after_grace_end.micro = chargeDetailObj.source.system_after_grace_end.micro + price;
-
-                        chargeDetailObj.source.system_after_grace_end.total = chargeDetailObj.source.system_after_grace_end.total + price;
-                    }
+                    dateInMili = inner_billing_dtm;
 
                     //Package wise Charge Details
                     if(innerObj.package === 'QDfC'){
-                        transactionObj.transactions.package.dailyLive = transactionObj.transactions.package.dailyLive + 1;
-                        transactionObj.subscribers.package.dailyLive = transactionObj.subscribers.package.dailyLive + 1;
+                        billingStatusNewObj.revenue.package.liveDaily = billingStatusNewObj.revenue.package.liveDaily + innerObj.price;
+                        billingStatusNewObj.userBilled.package.liveDaily = billingStatusNewObj.userBilled.package.liveDaily + 1;
 
                         if(!micro_charge)
                             chargeDetailObj.package.dailyLive.full = chargeDetailObj.package.dailyLive.full + price;
@@ -306,8 +228,8 @@ function computeChargeDetailData(chargeDetails) {
                         chargeDetailObj.package.dailyLive.total = chargeDetailObj.package.dailyLive.total + price;
                     }
                     else if(innerObj.package === 'QDfG'){
-                        transactionObj.transactions.package.weeklyLive = transactionObj.transactions.package.weeklyLive + 1;
-                        transactionObj.subscribers.package.weeklyLive = transactionObj.subscribers.package.weeklyLive + 1;
+                        billingStatusNewObj.revenue.package.liveWeekly = billingStatusNewObj.revenue.package.liveWeekly + innerObj.price;
+                        billingStatusNewObj.userBilled.package.liveWeekly = billingStatusNewObj.userBilled.package.liveWeekly + 1;
 
                         if(!micro_charge)
                             chargeDetailObj.package.weeklyLive.full = chargeDetailObj.package.weeklyLive.full + price;
@@ -317,8 +239,8 @@ function computeChargeDetailData(chargeDetails) {
                         chargeDetailObj.package.weeklyLive.total = chargeDetailObj.package.weeklyLive.total + price;
                     }
                     else if(innerObj.package === 'QDfH'){
-                        transactionObj.transactions.package.dailyComedy = transactionObj.transactions.package.dailyComedy + 1;
-                        transactionObj.subscribers.package.dailyComedy = transactionObj.subscribers.package.dailyComedy + 1;
+                        billingStatusNewObj.revenue.package.comedyDaily = billingStatusNewObj.revenue.package.comedyDaily + innerObj.price;
+                        billingStatusNewObj.userBilled.package.comedyDaily = billingStatusNewObj.userBilled.package.comedyDaily + 1;
 
                         if(!micro_charge)
                             chargeDetailObj.package.dailyComedy.full = chargeDetailObj.package.dailyComedy.full + price;
@@ -328,8 +250,8 @@ function computeChargeDetailData(chargeDetails) {
                         chargeDetailObj.package.dailyComedy.total = chargeDetailObj.package.dailyComedy.total + price;
                     }
                     else if(innerObj.package === 'QDfI'){
-                        transactionObj.transactions.package.weeklyComedy = transactionObj.transactions.package.weeklyComedy + 1;
-                        transactionObj.subscribers.package.weeklyComedy = transactionObj.subscribers.package.weeklyComedy + 1;
+                        billingStatusNewObj.revenue.package.comedyWeekly = billingStatusNewObj.revenue.package.comedyWeekly + innerObj.price;
+                        billingStatusNewObj.userBilled.package.comedyWeekly = billingStatusNewObj.userBilled.package.comedyWeekly + 1;
 
                         if(!micro_charge)
                             chargeDetailObj.package.weeklyComedy.full = chargeDetailObj.package.weeklyComedy.full + price;
@@ -341,8 +263,8 @@ function computeChargeDetailData(chargeDetails) {
 
                     //Paywall wise Charge Details
                     if(innerObj.paywall === 'Dt6Gp70c'){
-                        transactionObj.transactions.paywall.comedy = transactionObj.transactions.paywall.comedy + 1;
-                        transactionObj.subscribers.paywall.comedy = transactionObj.subscribers.paywall.comedy + 1;
+                        billingStatusNewObj.revenue.paywall.comedy = billingStatusNewObj.revenue.paywall.comedy + innerObj.price;
+                        billingStatusNewObj.userBilled.paywall.comedy = billingStatusNewObj.userBilled.paywall.comedy + 1;
 
                         if(!micro_charge)
                             chargeDetailObj.paywall.comedy.full = chargeDetailObj.paywall.comedy.full + price;
@@ -352,8 +274,8 @@ function computeChargeDetailData(chargeDetails) {
                         chargeDetailObj.paywall.comedy.total = chargeDetailObj.paywall.comedy.total + price;
                     }
                     else if(innerObj.paywall === 'ghRtjhT7'){
-                        transactionObj.transactions.paywall.live = transactionObj.transactions.paywall.live + 1;
-                        transactionObj.subscribers.paywall.live = transactionObj.subscribers.paywall.live + 1;
+                        billingStatusNewObj.revenue.paywall.live = billingStatusNewObj.revenue.paywall.live + innerObj.price;
+                        billingStatusNewObj.userBilled.paywall.live = billingStatusNewObj.userBilled.paywall.live + 1;
 
                         if(!micro_charge)
                             chargeDetailObj.paywall.live.full = chargeDetailObj.paywall.live.full + price;
@@ -365,8 +287,8 @@ function computeChargeDetailData(chargeDetails) {
 
                     //Operator wise Charge Details
                     if(innerObj.operator === 'telenor' || !innerObj.hasOwnProperty('operator')){
-                        transactionObj.transactions.operator.telenor = transactionObj.transactions.operator.telenor + 1;
-                        transactionObj.subscribers.operator.telenor = transactionObj.subscribers.operator.telenor + 1;
+                        billingStatusNewObj.revenue.operator.telenor = billingStatusNewObj.revenue.operator.telenor + innerObj.price;
+                        billingStatusNewObj.userBilled.operator.telenor = billingStatusNewObj.userBilled.operator.telenor + 1;
 
                         if(!micro_charge)
                             chargeDetailObj.operator.telenor.full = chargeDetailObj.operator.telenor.full + price;
@@ -376,8 +298,8 @@ function computeChargeDetailData(chargeDetails) {
                         chargeDetailObj.operator.telenor.total = chargeDetailObj.operator.telenor.total + price;
                     }
                     else if(innerObj.operator === 'easypaisa'){
-                        transactionObj.transactions.operator.easypaisa = transactionObj.transactions.operator.easypaisa + 1;
-                        transactionObj.subscribers.operator.easypaisa = transactionObj.subscribers.operator.easypaisa + 1;
+                        billingStatusNewObj.revenue.operator.easypaisa = billingStatusNewObj.revenue.operator.easypaisa + innerObj.price;
+                        billingStatusNewObj.userBilled.operator.easypaisa = billingStatusNewObj.userBilled.operator.easypaisa + 1;
 
                         if(!micro_charge)
                             chargeDetailObj.operator.easypaisa.full = chargeDetailObj.operator.easypaisa.full + price;
@@ -387,83 +309,75 @@ function computeChargeDetailData(chargeDetails) {
                         chargeDetailObj.operator.easypaisa.total = chargeDetailObj.operator.easypaisa.total + price;
                     }
 
-
-                    //Price wise charge & transaction details
-                    if (innerObj.price === 15){
-                        transactionObj.transactions.price['15'] = transactionObj.transactions.price['15'] + 1;
-                        transactionObj.subscribers.price['15'] = transactionObj.subscribers.price['15'] + 1;
-                    }
-                    else if (innerObj.price === 11){
-                        transactionObj.transactions.price['11'] = transactionObj.transactions.price['11'] + 1;
-                        transactionObj.subscribers.price['11'] = transactionObj.subscribers.price['11'] + 1;
-                    }
-                    else if (innerObj.price === 10){
-                        transactionObj.transactions.price['10'] = transactionObj.transactions.price['10'] + 1;
-                        transactionObj.subscribers.price['10'] = transactionObj.subscribers.price['10'] + 1;
-                    }
-                    else if (innerObj.price === 7){
-                        transactionObj.transactions.price['7'] = transactionObj.transactions.price['7'] + 1;
-                        transactionObj.subscribers.price['7'] = transactionObj.subscribers.price['7'] + 1;
-                    }
-                    else if (innerObj.price === 5){
-                        transactionObj.transactions.price['5'] = transactionObj.transactions.price['5'] + 1;
-                        transactionObj.subscribers.price['5'] = transactionObj.subscribers.price['5'] + 1;
-                    }
-                    else if(innerObj.price === 4){
-                        transactionObj.transactions.price['4'] = transactionObj.transactions.price['4'] + 1;
-                        transactionObj.subscribers.price['4'] = transactionObj.subscribers.price['4'] + 1;
-                    }
-                    else if (innerObj.price === 2){
-                        transactionObj.transactions.price['2'] = transactionObj.transactions.price['2'] + 1;
-                        transactionObj.subscribers.price['2'] = transactionObj.subscribers.price['2'] + 1;
-                    }
-
+                    // Full & Micro charge details
                     if(!micro_charge)
                         chargeDetailObj.chargeType.full = chargeDetailObj.chargeType.full + price;
                     else
                         chargeDetailObj.chargeType.micro = chargeDetailObj.chargeType.micro + price;
 
+                    //Returning User
+                    if(!innerObj.micro_charge)
+                        newObjReturningUsers.total =  newObjReturningUsers.total + 1;
 
 
-                    //Transactions success/failure rate and net total
-                    if (innerObj.billing_status === 'Success' || innerObj.billing_status === 'billed'){
-                        //Success rate
-                        transactionObj.transactions.successRate = transactionObj.transactions.successRate + 1;
-                        transactionObj.transactions.netTotal = transactionObj.transactions.netTotal + 1;
+                    // Full & Partial charged users
+                    if (innerObj.micro_charge){
+                        fullAndPartialCharging.partialCharge = fullAndPartialCharging.partialCharge + 1;
+                        fullAndPartialCharging.total = fullAndPartialCharging.total + 1;
                     }
                     else{
-                        //Failure Rate
-                        transactionObj.transactions.netTotal = transactionObj.transactions.netTotal + 1;
-                        transactionObj.transactions.failureRate = transactionObj.transactions.failureRate + 1;
+                        fullAndPartialCharging.fullCharge = fullAndPartialCharging.fullCharge + 1;
+                        fullAndPartialCharging.total = fullAndPartialCharging.total + 1;
                     }
 
-                    // Add Timestemps
-                    chargeDetailObj.added_dtm = outerObj.added_dtm;
-                    chargeDetailObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+                    // Unique paying users
+                    if (!_.includes(uniquePayingUserObj.users, innerObj.user_id)){
+                        uniquePayingUserObj.users.push(innerObj.user_id);
+                        uniquePayingUserObj.total = uniquePayingUserObj.total + 1;
+                    }
 
-                    transactionObj.added_dtm = outerObj.added_dtm;
-                    transactionObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+
+                    // Add Timestemps
+                    //Returning User - timestemps
+                    newObjReturningUsers.added_dtm = outerObj.billing_dtm;
+                    newObjReturningUsers.added_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+
+                    //Full & Partial charged users - timestemps
+                    fullAndPartialCharging.added_dtm = outerObj.billing_dtm;
+                    fullAndPartialCharging.added_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+
+                    // Charge details - timestemp
+                    chargeDetailObj.billing_dtm = outerObj.billing_dtm;
+                    chargeDetailObj.billing_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+
+                    // Billing Status wise - timestemps
+                    billingStatusNewObj.added_dtm = outerObj.billing_dtm;
+                    billingStatusNewObj.added_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+
+                    // Unique paying users - timestemps
+                    uniquePayingUserObj.added_dtm = outerObj.billing_dtm;
+                    uniquePayingUserObj.added_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
                 }
             }
 
-            if (transactionObj.transactions.netTotal > 0){
-                transactionObj.transactions.successRate = (transactionObj.transactions.successRate / transactionObj.transactions.netTotal) * 100;
-                transactionObj.transactions.failureRate = (transactionObj.transactions.failureRate / transactionObj.transactions.netTotal) * 100;
-            }
-            else{
-                transactionObj.transactions.failureRate = 0;
-                transactionObj.transactions.successRate = 0;
-            }
-
-            transactingSubsList.push(transactionObj);
             chargeDetailList.push(chargeDetailObj);
+            billingHistoryArr.push(billingStatusNewObj);
+            returningUserListArr.push(newObjReturningUsers);
+            fullAndPartialChargeListArr.push(fullAndPartialCharging);
+            uniquePayingUsers.push(uniquePayingUserObj);
         }
     }
 
-    return {transactingSubsList: transactingSubsList, chargeDetailList: chargeDetailList};
+    return {
+        chargeDetailList: chargeDetailList,
+        billingHistory: billingHistoryArr,
+        returningUserList: returningUserListArr,
+        fullAndPartialChargeList: fullAndPartialChargeListArr,
+        uniquePayingUsers: uniquePayingUsers
+    };
 }
 
-async function insertNewRecord(transactingSubsList, chargeDetailList, dateString, mode) {
+async function insertNewRecord(chargeDetailList, uniquePayingUsers, billingHistory, returningUserList, fullAndPartialChargeList, dateString, mode) {
     console.log('insertNewRecord - dateString', dateString);
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
@@ -474,16 +388,48 @@ async function insertNewRecord(transactingSubsList, chargeDetailList, dateString
             result = result[0];
             if (mode === 0) {
                 result.chargeDetails = chargeDetailList;
-                result.transactions = transactingSubsList;
+                result.billingHistory = billingHistory;
+                result.returningUsers = returningUserList;
+                result.fullAndPartialChargeUser = fullAndPartialChargeList;
+                result.uniquePayingUsers = uniquePayingUsers;
             }else{
-                result.chargeDetails = result.chargeDetails.concat(chargeDetailList);
-                result.transactions = result.transactions.concat(transactingSubsList);
+                if (result.chargeDetails)
+                    result.chargeDetails = result.chargeDetails.concat(chargeDetailList);
+                else
+                    result.chargeDetails = chargeDetailList;
+
+                if (result.billingHistory)
+                    result.billingHistory = result.billingHistory.concat(billingHistory);
+                else
+                    result.billingHistory = billingHistory;
+
+                if (result.returningUsers)
+                    result.returningUsers = result.returningUsers.concat(returningUserList);
+                else
+                    result.returningUsers = returningUserList;
+
+                if (result.fullAndPartialChargeUser)
+                    result.fullAndPartialChargeUser = result.fullAndPartialChargeUser.concat(fullAndPartialChargeList);
+                else
+                    result.fullAndPartialChargeUser = fullAndPartialChargeList;
+
+                if (result.uniquePayingUsers)
+                    result.uniquePayingUsers = result.uniquePayingUsers.concat(uniquePayingUsers);
+                else
+                    result.uniquePayingUsers = uniquePayingUsers;
             }
 
             await reportsRepo.updateReport(result, result._id);
         }
         else
-            await reportsRepo.createReport({transactions: transactingSubsList, chargeDetails: chargeDetailList, date: dateString});
+            await reportsRepo.createReport({
+                chargeDetails: chargeDetailList,
+                billingHistory: billingHistory,
+                returningUsers: returningUserList,
+                fullAndPartialChargeUser: fullAndPartialChargeList,
+                uniquePayingUsers: uniquePayingUsers,
+                date: dateString
+            });
     });
 }
 
@@ -518,144 +464,91 @@ function cloneChargeDetailObj() {
             full: 0,
             micro: 0
         },
+        billing_dtm: '',
+        billing_dtm_hours: ''
+    }
+}
+function cloneUniquePayingUsersObj() {
+    return {
+        users: [],
+        total: 0,
         added_dtm: '',
         added_dtm_hours: ''
     }
 }
-function cloneTransactionObj() {
+function cloneFullAndPartialChargeObj() {
     return {
-        transactions: {
-            source: {
-                app: 0,
-                web: 0,
-                HE: 0,
-                sms: 0,
-                gdn2: 0,
-                CP: 0,
-                null: 0,
-                affiliate_web: 0,
-                system_after_grace_end: 0
-            },
+        fullCharge: 0,
+        partialCharge: 0,
+        total: 0,
+        added_dtm: '',
+        added_dtm_hours: ''
+    }
+}
+function cloneReturningUsersObj() {
+    return {
+        total: 0,
+        added_dtm: '',
+        added_dtm_hours: ''
+    }
+}
+function cloneBillingStatusObj() {
+    return {
+        revenue: {
             package: {
-                dailyLive: 0,
-                weeklyLive: 0,
-                dailyComedy: 0,
-                weeklyComedy: 0
+                liveDaily: 0,
+                liveWeekly: 0,
+                comedyDaily: 0,
+                comedyWeekly: 0,
+                total: 0
+            },
+            paywall: {
+                live: 0,
+                comedy: 0
             },
             operator: {
                 telenor: 0,
                 easypaisa: 0
-            },
-            paywall: {
-                comedy: 0,
-                live: 0
-            },
-            price: {
-                '15': 0,
-                '11': 0,
-                '10': 0,
-                '7': 0,
-                '5': 0,
-                '4': 0,
-                '3': 0,
-            },
-            netTotal: 0,
-            failureRate: 0,
-            successRate: 0
+            }
         },
-        subscribers: {
-            source: {
-                app: 0,
-                web: 0,
-                HE: 0,
-                sms: 0,
-                gdn2: 0,
-                CP: 0,
-                null: 0,
-                affiliate_web: 0,
-                system_after_grace_end: 0
-            },
+        userBilled: {
             package: {
-                dailyLive: 0,
-                weeklyLive: 0,
-                dailyComedy: 0,
-                weeklyComedy: 0
+                liveDaily: 0,
+                liveWeekly: 0,
+                comedyDaily: 0,
+                comedyWeekly: 0,
+                total: 0
+            },
+            paywall: {
+                live: 0,
+                comedy: 0
             },
             operator: {
                 telenor: 0,
                 easypaisa: 0
-            },
-            paywall: {
-                comedy: 0,
-                live: 0
-            },
-            price: {
-                '15': 0,
-                '11': 0,
-                '10': 0,
-                '7': 0,
-                '5': 0,
-                '4': 0,
-                '3': 0,
             }
         },
         added_dtm: '',
         added_dtm_hours: ''
-    }
+    };
 }
 
 function countQuery(from, to){
     return [
         {$match : {
-                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
-            }},
-        {$lookup:{
-                from: "billinghistories",
-                localField: "subscriber_id",
-                foreignField: "subscriber_id",
-                as: "histories"}
-        },
-        { $project: {
-                source:"$source",
-                added_dtm:"$added_dtm",
-                succeses: { $filter: {
-                        input: "$histories",
-                        as: "history",
-                        cond: { $or: [
-                                { $eq: ['$$history.billing_status',"Success"] },
-                                { $eq: ['$$history.billing_status',"graced"] },
-                            ]}
-                    }} }
-        },
+            $or:[{"billing_status": "Success"}, {"billing_status": "graced"}],
+            $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+        }},
         {$project: {
-                source:"$source",
-                added_dtm:"$added_dtm",
-                numOfSucc: { $size:"$succeses" },
-                billing_status: {"$arrayElemAt": ["$succeses.billing_status",0]},
-                price: {"$arrayElemAt": ["$succeses.price",0]},
-                discount: {"$arrayElemAt": ["$succeses.discount",0]},
-                package: {"$arrayElemAt": ["$succeses.package_id",0]},
-                paywall: {"$arrayElemAt": ["$succeses.paywall_id",0]},
-                operator: {"$arrayElemAt": ["$succeses.operator",0]},
-                micro_charge: {"$arrayElemAt": ["$succeses.micro_charge",0]},
-                billing_dtm: {"$arrayElemAt": ["$succeses.billing_dtm",0]}
-            }
-        },
-        {$match: { numOfSucc: {$gte: 1}  }},
-        {$project: {
-                _id: 0,
-                added_dtm:"$added_dtm",
-                source:"$source",
-                billing_status:"$billing_status",
-                price: "$price",
-                discount: "$discount",
-                package: "$package",
-                paywall: "$paywall",
-                operator: "$operator",
-                micro_charge: "$micro_charge",
-                billing_dtm: "$billing_dtm",
-            }
-        },
+            _id: 0,
+            price: "$price",
+            discount: "$discount",
+            package: "$package_id",
+            paywall: "$paywall_id",
+            operator: "$operator",
+            micro_charge: "$micro_charge",
+            billing_dtm: { '$dateToString' : { date: "billing_dtm", 'timezone' : "Asia/Karachi" } }
+        }},
         {
             $count: "count"
         }
