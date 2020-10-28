@@ -193,10 +193,8 @@ function computeBillingHistoryData(data) {
                         billingStatusNewObj.billingStatus.graced = billingStatusNewObj.billingStatus.graced + 1;
                     else if(innerObj.billing_status === 'expired')
                         billingStatusNewObj.billingStatus.expired = billingStatusNewObj.billingStatus.expired + 1;
-                    else if(innerObj.billing_status === 'Success')
+                    else if(innerObj.billing_status === 'Success' || innerObj.billing_status === 'billed')
                         billingStatusNewObj.billingStatus.expired = billingStatusNewObj.billingStatus.expired + 1;
-                    else if(innerObj.billing_status === 'billed')
-                        billingStatusNewObj.billingStatus.billed = billingStatusNewObj.billingStatus.billed + 1;
                     else if(innerObj.billing_status === 'Affiliate callback sent')
                         billingStatusNewObj.billingStatus.affiliate_callback_sent = billingStatusNewObj.billingStatus.affiliate_callback_sent + 1;
                     else if(innerObj.billing_status === 'graced_and_stream_stopped')
@@ -652,7 +650,6 @@ function cloneBillingStatusObj() {
             graced: 0,
             expired: 0,
             success: 0,
-            billed: 0,
             affiliate_callback_sent: 0,
             micro_charging_exceeded: 0,
             graced_and_stream_stopped: 0,

@@ -1498,19 +1498,6 @@ computeRevenueBillingStatusWiseReport = async (rawDataSet, params) =>{
                             monthlyDataObj.success = monthlyDataObj.success + innerObj.success;
                             monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.success;
                         }
-                        if (innerObj.billed){
-                            dataObj.billed = dataObj.billed + innerObj.billed;
-                            dataObj.netTotal = dataObj.netTotal + innerObj.billed;
-
-                            dayDataObj.billed = dayDataObj.billed + innerObj.billed;
-                            dayDataObj.netTotal = dayDataObj.netTotal + innerObj.billed;
-
-                            weeklyDataObj.billed = weeklyDataObj.billed + innerObj.billed;
-                            weeklyDataObj.netTotal = weeklyDataObj.netTotal + innerObj.billed;
-
-                            monthlyDataObj.billed = monthlyDataObj.billed + innerObj.billed;
-                            monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.billed;
-                        }
                         if (innerObj.affiliate_callback_sent){
                             dataObj.affiliateCallbackSent = dataObj.affiliateCallbackSent + innerObj.affiliate_callback_sent;
                             dataObj.netTotal = dataObj.netTotal + innerObj.affiliate_callback_sent;
@@ -1648,7 +1635,6 @@ computeRevenueBillingStatusWiseReport = async (rawDataSet, params) =>{
                             graced: innerObj.graced,
                             expired: innerObj.expired,
                             success: innerObj.success,
-                            billed: innerObj.billed,
                             affiliateCallbackSent: innerObj.affiliate_callback_sent,
                             microChargingExceeded: innerObj.micro_charging_exceeded,
                             gracedAndStreamStopped: innerObj.graced_and_stream_stopped,
@@ -1660,7 +1646,7 @@ computeRevenueBillingStatusWiseReport = async (rawDataSet, params) =>{
                             subscriptionRequestReceivedForTheSamePackageAfterUnsub: innerObj.subscription_request_received_for_the_same_package_after_unsub,
                             otherSubscriptionsStatusWise: innerObj.other_subscriptions_status_wise,
 
-                            netTotal: innerObj.trial + innerObj.graced + innerObj.expired + innerObj.billed + innerObj.success + innerObj.affiliate_callback_sent +
+                            netTotal: innerObj.trial + innerObj.graced + innerObj.expired + innerObj.success + innerObj.affiliate_callback_sent +
                                 innerObj.micro_charging_exceeded + innerObj.graced_and_stream_stopped + innerObj.direct_billing_tried_but_failed +
                                 innerObj.package_change_upon_user_request + innerObj.switch_package_request_tried_but_failed + innerObj.unsubscribe_request_received_and_expired +
                                 innerObj.subscription_request_received_for_the_same_package + innerObj.subscription_request_received_for_the_same_package_after_unsub +
@@ -1732,7 +1718,7 @@ computeRevenueBillingStatusWiseReport = async (rawDataSet, params) =>{
 };
 
 function cloneRevenueBillingStatusWiseObj(){
-    return {trial: 0, graced: 0, expired: 0, success: 0,  billed: 0, affiliateCallbackSent: 0, micro_charging_exceeded: 0,
+    return {trial: 0, graced: 0, expired: 0, success: 0, affiliateCallbackSent: 0, micro_charging_exceeded: 0,
         gracedAndStreamStopped: 0, directBillingTriedButFailed: 0, packageChangeUponUserRequest: 0,
         switchPackageRequestTriedButFailed: 0, unsubscribeRequestReceivedAndExpired: 0,
         subscriptionRequestReceivedForTheSamePackage: 0, subscriptionRequestReceivedForTheSamePackageAfterUnsub: 0,
