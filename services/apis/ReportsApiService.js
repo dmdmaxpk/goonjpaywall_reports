@@ -73,8 +73,6 @@ generateReportsData = async (req,res) => {
                 return revenueService.computeRevenueOperatorWiseReport(rawDataSet, params);
             else if (params.sub_type === 'billing_status_wise')
                 return revenueService.computeRevenueBillingStatusWiseReport(rawDataSet, params);
-            else if (params.sub_type === 'net_revenue')
-                return revenueService.computeRevenueNetReport(rawDataSet, params);
         }
         else if (params.type === 'trial') {
             if (params.sub_type === 'source_wise')

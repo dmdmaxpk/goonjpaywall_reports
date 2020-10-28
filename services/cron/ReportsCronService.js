@@ -15,83 +15,6 @@ const LogsService = require('./compute/LogsService');
 const helper = require('../../helper/helper');
 const connection = require('../../middlewares/connection');
 
-cronComputeFullDataReports = async(req, res) => {
-    console.log('cronComputeFullDataReports');
-
-    // compute Users report data
-    await UserService.computeUserReports(req,res);
-    console.log('UserService - computeUserReports **********************************************');
-
-    // compute Subscribers report Data
-    await helper.sleep(1000 * 60 * 3);
-    console.log('SubscriberService - computeSubscriberReports **********************************************');
-    await SubscriberService.computeSubscriberReports(req,res);
-
-    // compute Subscriptions report Data
-    await helper.sleep(1000 * 60 * 3);
-    console.log('SubscriptionService - computeSubscriptionReports **********************************************');
-    await SubscriptionService.computeSubscriptionReports(req,res);
-
-    // compute Callback report Data
-    await helper.sleep(1000 * 60 * 4);
-    console.log('CallbackSendService - computeCallbackSendReports **********************************************');
-    await CallbackSendService.computeCallbackSendReports(req,res);
-
-    // compute Charge Details report Data
-    await helper.sleep(1000 * 60 * 20);
-    console.log('SubscriptionBillingHistoryService - computeChargeDetailsReports **********************************************');
-    await SubscriptionBillingHistoryService.computeChargeDetailsReports(req,res);
-
-    // compute Net Addition report Data
-    await helper.sleep(1000 * 60 * 20);
-    console.log('RevenueNetAdditionService - computeRevenueNetAdditionReports **********************************************');
-    await RevenueNetAdditionService.computeRevenueNetAdditionReports(req,res);
-
-    // compute Affiliate - Helogs report Data
-    await helper.sleep(1000 * 60 * 25);
-    // First - create/update connections with logger database
-    console.log('connection - updateConnection - logger **********************************************');
-    await connection.updateConnection(req, res, null, 'logger');
-
-    console.log('HelogsService - computeHelogsReports **********************************************');
-    await HelogsService.computeHelogsReports(req,res);
-
-    // compute Affiliate - Helogs Unique Access report Data
-    await helper.sleep(1000 * 60 * 20);
-    console.log('HelogsService - computeHelogsUniqueSuccessReports **********************************************');
-    await HelogsService.computeHelogsUniqueSuccessReports(req,res);
-
-    // compute Affiliate - Page View Data
-    await helper.sleep(1000 * 60 * 20);
-    console.log('LogsService - computeLogsPageViewReports **********************************************');
-    await LogsService.computeLogsPageViewReports(req,res);
-
-    // compute Affiliate - Subscribe Clicks Data
-    await helper.sleep(1000 * 60 * 20);
-    console.log('LogsService - computeLogsSubscribeClicksReports **********************************************');
-    await LogsService.computeLogsSubscribeClicksReports(req,res);
-
-    // compute Affiliate - Affiliate Mids report Data
-    await helper.sleep(1000 * 60 * 20);
-    console.log('AffiliateSubscriptionsService - computeAffiliateMidsFromSubscriptionsReports **********************************************');
-    await AffiliateSubscriptionsService.computeAffiliateMidsFromSubscriptionsReports(req,res);
-
-    // compute Affiliate - Affiliate report Data
-    await helper.sleep(1000 * 60 * 30);
-    console.log('AffiliateSubscriptionsService - computeAffiliateReports **********************************************');
-    await AffiliateSubscriptionsService.computeAffiliateReports(req,res);
-
-    // compute Billing Histories - report Data
-    await helper.sleep(1000 * 60 * 30);
-
-    // First - create/update connections with goonjpaywall database
-    console.log('connection - updateConnection - goonjpaywall **********************************************');
-    await connection.updateConnection(req, res, null, 'goonjpaywall');
-
-    console.log('BillingHistoryService - computeBillingHistoryReports **********************************************');
-    await BillingHistoryService.computeBillingHistoryReports(req,res);
-};
-
 cronComputeDailyDataReports = async (req, res) => {
     console.log('cronComputeDailyDataReports');
 
@@ -158,6 +81,5 @@ cronComputeDailyDataReports = async (req, res) => {
 };
 
 module.exports = {
-    cronComputeFullDataReports: cronComputeFullDataReports,
     cronComputeDailyDataReports: cronComputeDailyDataReports,
 };

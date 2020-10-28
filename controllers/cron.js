@@ -95,11 +95,6 @@ exports.computeAffiliateMidsFromSubscriptionsReports = async (req,res) =>  {
     res.send("computeAffiliateMidsFromSubscriptionsReports - Executed\n");
 };
 
-exports.cronComputeFullDataReports = async (req,res) =>  {
-    ReportsCronService.cronComputeFullDataReports(req,res);
-    res.send("cronComputeFullDataReports - in progress\n");
-};
-
 exports.cronComputeDailyDataReports = async (req,res) =>  {
     ReportsCronService.cronComputeDailyDataReports(req,res);
     res.send("cronComputeDailyDataReports - in progress\n");

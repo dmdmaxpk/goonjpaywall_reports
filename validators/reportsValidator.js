@@ -34,7 +34,7 @@ class ReportsValidator{
                 break;
             case 'revenue':
                 this.checkDateIsNull(params, "Revenue");
-                this.checkSubTypeIsNull(params.sub_type, "Revenue", ['package_wise', 'paywall_wise', 'operator_wise', 'billing_status_wise', 'net_revenue', 'deactivated']);
+                this.checkSubTypeIsNull(params.sub_type, "Revenue", ['package_wise', 'paywall_wise', 'operator_wise', 'billing_status_wise', 'deactivated']);
 
                 break;
             case 'charge_details':

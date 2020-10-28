@@ -215,7 +215,7 @@ function computeBillingHistoryData(data) {
                         billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package_after_unsub = billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package_after_unsub + 1;
 
                     //Package wise revenue and Billed Users
-                    if (innerObj.billing_status === "Success") {
+                    if (innerObj.billing_status === "Success" || innerObj.billing_status === "billed") {
                         if(innerObj.package_id === 'QDfC'){
                             billingStatusNewObj.revenue.package.liveDaily = billingStatusNewObj.revenue.package.liveDaily + innerObj.price;
                             billingStatusNewObj.userBilled.package.liveDaily = billingStatusNewObj.userBilled.package.liveDaily + 1;
@@ -235,7 +235,7 @@ function computeBillingHistoryData(data) {
                     }
 
                     //Paywall wise revenue and Billed Users
-                    if (innerObj.billing_status === "Success"){
+                    if (innerObj.billing_status === "Success" || innerObj.billing_status === "billed"){
                         if(innerObj.paywall_id === 'Dt6Gp70c'){
                             billingStatusNewObj.revenue.paywall.comedy = billingStatusNewObj.revenue.paywall.comedy + innerObj.price;
                             billingStatusNewObj.userBilled.paywall.comedy = billingStatusNewObj.userBilled.paywall.comedy + 1;
@@ -247,23 +247,22 @@ function computeBillingHistoryData(data) {
                     }
 
                     //Operator wise revenue and Billed Users
-                    if (innerObj.billing_status === "Success"){
-                        if(innerObj.operator === 'easypaisa'){
-                            billingStatusNewObj.revenue.operator.easypaisa = billingStatusNewObj.revenue.operator.easypaisa + innerObj.price;
-                            billingStatusNewObj.userBilled.operator.easypaisa = billingStatusNewObj.userBilled.operator.easypaisa + 1;
-                        }
-                        else if(innerObj.operator === 'telenor' || !innerObj.hasOwnProperty('operator')){
+                    if (innerObj.billing_status === "Success" || innerObj.billing_status === "billed"){
+                        if(innerObj.operator === 'telenor' || !innerObj.hasOwnProperty('operator')){
                             billingStatusNewObj.revenue.operator.telenor = billingStatusNewObj.revenue.operator.telenor + innerObj.price;
                             billingStatusNewObj.userBilled.operator.telenor = billingStatusNewObj.userBilled.operator.telenor + 1;
+                        } else if(innerObj.operator === 'easypaisa'){
+                            billingStatusNewObj.revenue.operator.easypaisa = billingStatusNewObj.revenue.operator.easypaisa + innerObj.price;
+                            billingStatusNewObj.userBilled.operator.easypaisa = billingStatusNewObj.userBilled.operator.easypaisa + 1;
                         }
                     }
 
                     //Returning User
-                    if(!innerObj.micro_charge && innerObj.billing_status === "Success")
+                    if(!innerObj.micro_charge && (innerObj.billing_status === "Success" || innerObj.billing_status === "billed"))
                         newObjReturningUsers.total =  newObjReturningUsers.total + 1;
 
                     // Full & Partial charged users
-                    if(innerObj.billing_status === "Success") {
+                    if(innerObj.billing_status === "Success" || innerObj.billing_status === "billed") {
                         if (innerObj.micro_charge){
                             fullAndPartialCharging.partialCharge = fullAndPartialCharging.partialCharge + 1;
                             fullAndPartialCharging.total = fullAndPartialCharging.total + 1;
@@ -275,7 +274,7 @@ function computeBillingHistoryData(data) {
                     }
 
                     // Unique paying users
-                    if(innerObj.billing_status === "Success") {
+                    if(innerObj.billing_status === "Success" || innerObj.billing_status === "billed") {
                         if (!_.includes(uniquePayingUserObj.users, innerObj.user_id)){
                             uniquePayingUserObj.users.push(innerObj.user_id);
                             uniquePayingUserObj.total = uniquePayingUserObj.total + 1;
@@ -286,7 +285,7 @@ function computeBillingHistoryData(data) {
                     }
 
                     // Success Rate data variables
-                    if(innerObj.billing_status === "Success")
+                    if(innerObj.billing_status === "Success" || innerObj.billing_status === "billed")
                         successfulSubs = successfulSubs + 1;
                     else
                         totalSubs = totalSubs + 1;
