@@ -17,7 +17,7 @@ computeBillingHistoryReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 15, 10);
+    dateData = helper.computeNextDate(req, 1, 9);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -69,25 +69,29 @@ computeBillingHistoryReports = async(req, res) => {
         req.day = Number(req.day) + 1;
         console.log('computeBillingHistoryReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
-                computeBillingHistoryReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeBillingHistoryReports(req, res);
-        }
-        else{
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('computeBillingHistoryReports -> month : ', month, req.month, new Date().getMonth());
+        if (req.month === helper.getTodayMonthNo()) {
+            if (req.day <= 15){
+                if (req.day <= helper.getDaysInMonth(month)){
+                    if (month < helper.getTodayMonthNo())
+                        computeBillingHistoryReports(req, res);
+                    else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+                        computeBillingHistoryReports(req, res);
+                }
+                else{
+                    req.day = 1;
+                    req.month = Number(req.month) + 1;
+                    console.log('computeBillingHistoryReports -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= helper.getTodayMonthNo())
-                computeBillingHistoryReports(req, res);
-        }
-
-        if (helper.isToday(fromDate)){
-            console.log('computeBillingHistoryReports - data compute - done');
-            delete req.day;
-            delete req.month;
+                    if (req.month <= helper.getTodayMonthNo())
+                        computeBillingHistoryReports(req, res);
+                }
+            } else{
+                // if (helper.isToday(fromDate)){
+                    console.log('computeBillingHistoryReports - data compute - done');
+                    delete req.day;
+                    delete req.month;
+                // }
+            }
         }
     });
 };
