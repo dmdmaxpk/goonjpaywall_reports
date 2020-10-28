@@ -213,6 +213,8 @@ function computeBillingHistoryData(data) {
                         billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package = billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package + 1;
                     else if(innerObj.billing_status === 'subscription-request-received-for-the-same-package-after-unsub')
                         billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package_after_unsub = billingStatusNewObj.billingStatus.subscription_request_received_for_the_same_package_after_unsub + 1;
+                    else
+                        billingStatusNewObj.billingStatus.other_subscriptions_status_wise = billingStatusNewObj.billingStatus.other_subscriptions_status_wise + 1;
 
                     //Package wise revenue and Billed Users
                     if (innerObj.billing_status === "Success" || innerObj.billing_status === "billed") {
@@ -656,7 +658,8 @@ function cloneBillingStatusObj() {
             switch_package_request_tried_but_failed: 0,
             unsubscribe_request_received_and_expired: 0,
             subscription_request_received_for_the_same_package: 0,
-            subscription_request_received_for_the_same_package_after_unsub: 0
+            subscription_request_received_for_the_same_package_after_unsub: 0,
+            other_subscriptions_status_wise: 0
         },
         added_dtm: '',
         added_dtm_hours: ''

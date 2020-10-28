@@ -570,6 +570,19 @@ computeRevenueBillingStatusWiseReport = async (rawDataSet, params) =>{
                             monthlyDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub = monthlyDataObj.subscriptionRequestReceivedForTheSamePackageAfterUnsub + innerObj.subscription_request_received_for_the_same_package_after_unsub;
                             monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.subscription_request_received_for_the_same_package_after_unsub;
                         }
+                        if (innerObj.other_subscriptions_status_wise){
+                            dataObj.otherSubscriptionsStatusWise = dataObj.otherSubscriptionsStatusWise + innerObj.other_subscriptions_status_wise;
+                            dataObj.netTotal = dataObj.netTotal + innerObj.other_subscriptions_status_wise;
+
+                            dayDataObj.otherSubscriptionsStatusWise = dayDataObj.otherSubscriptionsStatusWise + innerObj.other_subscriptions_status_wise;
+                            dayDataObj.netTotal = dayDataObj.netTotal + innerObj.other_subscriptions_status_wise;
+
+                            weeklyDataObj.otherSubscriptionsStatusWise = weeklyDataObj.otherSubscriptionsStatusWise + innerObj.other_subscriptions_status_wise;
+                            weeklyDataObj.netTotal = weeklyDataObj.netTotal + innerObj.other_subscriptions_status_wise;
+
+                            monthlyDataObj.otherSubscriptionsStatusWise = monthlyDataObj.otherSubscriptionsStatusWise + innerObj.other_subscriptions_status_wise;
+                            monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.other_subscriptions_status_wise;
+                        }
 
                         // Hourly Bases Data
                         hourlyBasisTotalCount.push({
@@ -586,11 +599,13 @@ computeRevenueBillingStatusWiseReport = async (rawDataSet, params) =>{
                             unsubscribeRequestReceivedAndExpired: innerObj.unsubscribe_request_received_and_expired,
                             subscriptionRequestReceivedForTheSamePackage: innerObj.subscription_request_received_for_the_same_package,
                             subscriptionRequestReceivedForTheSamePackageAfterUnsub: innerObj.subscription_request_received_for_the_same_package_after_unsub,
+                            otherSubscriptionsStatusWise: innerObj.other_subscriptions_status_wise,
 
                             netTotal: innerObj.trial + innerObj.graced + innerObj.expired + innerObj.success + innerObj.affiliate_callback_sent +
                                 innerObj.micro_charging_exceeded + innerObj.graced_and_stream_stopped + innerObj.direct_billing_tried_but_failed +
                                 innerObj.package_change_upon_user_request + innerObj.switch_package_request_tried_but_failed + innerObj.unsubscribe_request_received_and_expired +
-                                innerObj.subscription_request_received_for_the_same_package + innerObj.subscription_request_received_for_the_same_package_after_unsub,
+                                innerObj.subscription_request_received_for_the_same_package + innerObj.subscription_request_received_for_the_same_package_after_unsub +
+                                innerObj.other_subscriptions_status_wise,
 
                             date: billingHistory.added_dtm_hours
                         });
@@ -662,7 +677,8 @@ function cloneRevenueBillingStatusWiseObj(){
     return {trial: 0, graced: 0, expired: 0, success: 0, affiliateCallbackSent: 0, micro_charging_exceeded: 0,
         gracedAndStreamStopped: 0, directBillingTriedButFailed: 0, packageChangeUponUserRequest: 0,
         switchPackageRequestTriedButFailed: 0, unsubscribeRequestReceivedAndExpired: 0,
-        subscriptionRequestReceivedForTheSamePackage: 0, subscriptionRequestReceivedForTheSamePackageAfterUnsub: 0, netTotal: 0};
+        subscriptionRequestReceivedForTheSamePackage: 0, subscriptionRequestReceivedForTheSamePackageAfterUnsub: 0,
+        otherSubscriptionsStatusWise: 0, netTotal: 0};
 }
 
 module.exports = {
