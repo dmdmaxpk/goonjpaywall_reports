@@ -86,6 +86,8 @@ computeBillingHistoryReports = async(req, res) => {
                         computeBillingHistoryReports(req, res);
                 }
             } else{
+                console.log('req.day <= 15 +++++++++++++++++++++++++: ', helper.getTodayMonthNo());
+
                 // if (helper.isToday(fromDate)){
                     console.log('computeBillingHistoryReports - data compute - done');
                     delete req.day;
@@ -93,6 +95,8 @@ computeBillingHistoryReports = async(req, res) => {
                 // }
             }
         }else{
+
+            console.log('helper.getTodayMonthNo()+++++++++++++++++++++++++++: ', helper.getTodayMonthNo());
             // if (helper.isToday(fromDate)){
             console.log('computeBillingHistoryReports - data compute - done');
             delete req.day;
