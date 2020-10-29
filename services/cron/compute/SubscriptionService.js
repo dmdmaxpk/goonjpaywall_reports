@@ -65,7 +65,7 @@ computeSubscriptionReports = async(req, res) => {
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
                         if (finalList.length > 0 || subscribersFinalList.length > 0)
-                            insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
+                            await insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
                     }
                 });
             }
@@ -159,7 +159,7 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
                             finalList = finalData.finalList;
                             subscribersFinalList = finalData.subscribersFinalList;
                             if (finalList.length > 0 || subscribersFinalList.length > 0)
-                                insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
+                                await insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
                         }
                     });
                 }
