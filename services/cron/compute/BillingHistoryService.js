@@ -188,6 +188,8 @@ function computeBillingHistoryData(data) {
                 if (outer_added_dtm === inner_added_dtm){
                     dateInMili = inner_added_dtm;
 
+                    console.log('transactionObj: ', transactionObj);
+                    console.log('transactionObj.billingStatus: ', transactionObj.billingStatus);
                     //Billing status wise billingHistory
                     if(innerObj.billing_status === 'trial')
                         transactionObj.billingStatus.trial = transactionObj.billingStatus.trial + 1;
