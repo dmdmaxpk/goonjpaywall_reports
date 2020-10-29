@@ -261,10 +261,13 @@ class Helper {
                             await collection.aggregate(query).toArray(async function(err, count) {
                                 if(err){
                                     console.error(collectionName, ' count query - err: ', err.message);
+                                    console.error(' query: ', query);
                                     await resolve(0);
                                 }
-                                console.log('count: ',count);
-                                (count.length > 0) ? await resolve(count[0].count) : await resolve(0);
+                                else{
+                                    console.log('count: ',count);
+                                    (count.length > 0) ? await resolve(count[0].count) : await resolve(0);
+                                }
                             });
                         }catch (e) {
                             await resolve(0);
