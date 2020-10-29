@@ -47,7 +47,7 @@ class BillingHistoryRepository {
                                 $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
                             }},
                         { $project:{
-                                billing_dtm: { '$dateToString' : { date: "billing_dtm", 'timezone' : "Asia/Karachi" } }
+                                billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } }
                             }},
                         { $skip: skip },
                         { $limit: limit }
