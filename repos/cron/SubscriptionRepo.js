@@ -16,8 +16,10 @@ class SubscriptionRepository {
                             affiliate_mid: "$affiliate_mid",
                             subscription_status: "$subscription_status",
                             added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } },
-                        }}
-                    ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
+                        }},
+                        { $skip: skip },
+                        { $limit: limit }
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getSubscriptionsByDateRange - err: ', err.message);
                             resolve([]);
@@ -34,7 +36,7 @@ class SubscriptionRepository {
             console.log('getChargeDetailsSourceWiseByDateRange: ', from, to, skip, limit);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
-                    collection.req.db.collection('subscriptions', function (err, collection) {
+                    collection.collection('subscriptions', function (err, collection) {
                         if (!err) {
                             collection.aggregate([
                                 {
@@ -94,7 +96,9 @@ class SubscriptionRepository {
                                         billing_dtm: "$billing_dtm",
                                     }
                                 },
-                            ], {allowDiskUse: true}).skip(skip).limit(limit).toArray(function (err, items) {
+                                { $skip: skip },
+                                { $limit: limit }
+                            ], {allowDiskUse: true}).toArray(function (err, items) {
                                 if (err) {
                                     console.log('getChargeDetailsSourceWiseByDateRange - err: ', err.message);
                                     resolve([]);

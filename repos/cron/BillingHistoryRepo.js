@@ -48,8 +48,10 @@ class BillingHistoryRepository {
                             }},
                         { $project:{
                                 billing_dtm: { '$dateToString' : { date: "billing_dtm", 'timezone' : "Asia/Karachi" } }
-                            }}
-                    ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
+                            }},
+                        { $skip: skip },
+                        { $limit: limit }
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getCallbackSendByDateRange - err: ', err.message);
                             resolve([]);
@@ -82,7 +84,9 @@ class BillingHistoryRepository {
                                 billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } }
                             }
                         },
-                    ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
+                        { $skip: skip },
+                        { $limit: limit }
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getChargeDetailsByDateRange - err: ', err.message);
                             resolve([]);
@@ -148,8 +152,10 @@ class BillingHistoryRepository {
                                 billing_dtm: "$billing_dtm",
                                 added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } }
                             }
-                        }
-                    ], { allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
+                        },
+                        { $skip: skip },
+                        { $limit: limit }
+                    ], { allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getnetAdditionByDateRange - err: ', err.message);
                             resolve([]);
