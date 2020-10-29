@@ -435,17 +435,6 @@ async function insertNewRecord(chargeDetailList, uniquePayingUsers, billingHisto
 
 function cloneChargeDetailObj() {
     return {
-        source: {
-            app: { full: 0, micro: 0, total: 0 },
-            web: { full: 0, micro: 0, total: 0 },
-            HE: { full: 0, micro: 0, total: 0 },
-            sms: { full: 0, micro: 0, total: 0 },
-            gdn2: { full: 0, micro: 0, total: 0 },
-            CP: { full: 0, micro: 0, total: 0 },
-            null: { full: 0, micro: 0, total: 0 },
-            affiliate_web: { full: 0, micro: 0, total: 0 },
-            system_after_grace_end: { full: 0, micro: 0, total: 0 }
-        },
         package: {
             dailyLive: { full: 0, micro: 0, total: 0 },
             weeklyLive: { full: 0, micro: 0, total: 0 },

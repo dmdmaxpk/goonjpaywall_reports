@@ -4,7 +4,8 @@ const SubscriptionService = require('../services/cron/compute/SubscriptionServic
 const BillingHistoryService = require('../services/cron/compute/BillingHistoryService');
 const CallbackSendService = require('../services/cron/compute/CallbackSendService');
 const RevenueNetAdditionService = require('../services/cron/compute/RevenueNetAdditionService');
-const SubscriptionBillingHistoryService = require('../services/cron/compute/SubscriptionBillingHistoryService');
+const ChargeDetailsRevenueServices = require('../services/cron/compute/ChargeDetailsRevenueServices');
+const ChargeDetailsSourceWiseServices = require('../services/cron/compute/ChargeDetailsSourceWiseServices');
 const TransactionsBillingHistoryService = require('../services/cron/compute/TransactionsBillingHistoryService');
 const SubscriberSubscriptionsReports = require('../services/cron/compute/SubscriberSubscriptionsReports');
 const SubscriberTransactionsReports = require('../services/cron/compute/SubscriberTransactionsReports');
@@ -51,8 +52,12 @@ exports.computeCallbackSendReports = async (req,res) =>  {
 };
 
 exports.computeChargeDetailsReports = async (req,res) =>  {
-    SubscriptionBillingHistoryService.computeChargeDetailsReports(req,res);
+    ChargeDetailsRevenueServices.computeChargeDetailsReports(req,res);
     res.send("computeChargeDetailsReports - Executed\n");
+};
+exports.computeChargeDetailsSourceWiseReports = async (req,res) =>  {
+    ChargeDetailsSourceWiseServices.computeChargeDetailsSourceWiseReports(req,res);
+    res.send("computeChargeDetailsSourceWiseReports - Executed\n");
 };
 
 exports.computeRevenueNetAdditionReports = async (req,res) =>  {

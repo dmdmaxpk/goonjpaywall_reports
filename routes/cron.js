@@ -24,6 +24,9 @@ router.route('/compute-billing-history-reports')
 router.route('/compute-charge-detail-reports')
     .get(connection.connect, controller.computeChargeDetailsReports); //**
 
+router.route('/compute-charge-detail-source-wise-reports')
+    .get(connection.connect, controller.computeChargeDetailsSourceWiseReports); //**
+
 router.route('/compute-affiliate-reports')
     .get(connection.connect, controller.computeAffiliateReports); //**
 

@@ -4,7 +4,8 @@ const SubscriptionService = require('./compute/SubscriptionService');
 const BillingHistoryService = require('./compute/BillingHistoryService');
 const CallbackSendService = require('./compute/CallbackSendService');
 const RevenueNetAdditionService = require('./compute/RevenueNetAdditionService');
-const SubscriptionBillingHistoryService = require('./compute/SubscriptionBillingHistoryService');
+const ChargeDetailsRevenueServices = require('./compute/ChargeDetailsRevenueServices');
+const ChargeDetailsSourceWiseServices = require('./compute/ChargeDetailsSourceWiseServices');
 const TransactionsBillingHistoryService = require('./compute/TransactionsBillingHistoryService');
 const SubscriberSubscriptionsReports = require('./compute/SubscriberSubscriptionsReports');
 const SubscriberTransactionsReports = require('./compute/SubscriberTransactionsReports');
@@ -35,8 +36,12 @@ cronComputeDailyDataReports = async (req, res) => {
     await CallbackSendService.promiseBasedComputeCallbackSendReports(req,res);
 
     // compute Charge Details report Data
-    helper.threeLinesConsoleLog('SubscriptionBillingHistoryService - promiseBasedComputeChargeDetailsReports');
-    await SubscriptionBillingHistoryService.promiseBasedComputeChargeDetailsReports(req,res);
+    helper.threeLinesConsoleLog('ChargeDetailsRevenueServices - promiseBasedComputeChargeDetailsReports');
+    await ChargeDetailsRevenueServices.promiseBasedComputeChargeDetailsReports(req,res);
+
+    // compute Charge Details Source Wise report Data
+    helper.threeLinesConsoleLog('ChargeDetailsSourceWiseServices - promiseBasedComputeChargeDetailsReports');
+    await ChargeDetailsSourceWiseServices.promiseBasedComputeChargeDetailsReports(req,res);
 
     // compute Net Addition report Data
     helper.threeLinesConsoleLog('RevenueNetAdditionService - promiseBasedComputeRevenueNetAdditionReports');

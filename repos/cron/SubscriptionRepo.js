@@ -29,6 +29,85 @@ class SubscriptionRepository {
         });
     }
 
+    async getChargeDetailsSourceWiseByDateRange (req, from, to, skip, limit) {
+        return new Promise((resolve, reject) => {
+            console.log('getChargeDetailsSourceWiseByDateRange: ', from, to, skip, limit);
+            req.db.collection('subscriptions', function (err, collection) {
+                if (!err) {
+                    collection.req.db.collection('subscriptions', function (err, collection) {
+                        if (!err) {
+                            collection.aggregate([
+                                {
+                                    $match: {
+                                        $or:[{"subscription_status": "billed"}, {"subscription_status": "graced"}],
+                                        $and: [{added_dtm: {$gte: new Date(from)}}, {added_dtm: {$lte: new Date(to)}}]
+                                    }
+                                },
+                                {
+                                    $lookup: {
+                                        from: "billinghistories",
+                                        localField: "subscriber_id",
+                                        foreignField: "subscriber_id",
+                                        as: "histories"
+                                    }
+                                },
+                                {
+                                    $project: {
+                                        source: "$source",
+                                        added_dtm: "$added_dtm",
+                                        subscription_status: "$subscription_status",
+                                        succeses: {
+                                            $filter: {
+                                                input: "$histories",
+                                                as: "history",
+                                                cond: {
+                                                    $or: [
+                                                        {$eq: ['$$history.billing_status', "Success"]},
+                                                        {$eq: ['$$history.billing_status', "billed"]},
+                                                        {$eq: ['$$history.billing_status', "graced"]},
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    $project: {
+                                        source: "$source",
+                                        added_dtm: "$added_dtm",
+                                        numOfSucc: {$size: "$succeses"},
+                                        micro_charge: {"$arrayElemAt": ["$succeses.micro_charge", 0]},
+                                        price: {"$arrayElemAt": ["$succeses.price", 0]},
+                                        discount: {"$arrayElemAt": ["$succeses.discount", 0]},
+                                        billing_dtm: {"$arrayElemAt": ["$succeses.billing_dtm", 0]}
+                                    }
+                                },
+                                {$match: {numOfSucc: {$gte: 1}}},
+                                {
+                                    $project: {
+                                        _id: 0,
+                                        added_dtm: "$added_dtm",
+                                        source: "$source",
+                                        price: "$price",
+                                        discount: "$discount",
+                                        micro_charge: "$micro_charge",
+                                        billing_dtm: "$billing_dtm",
+                                    }
+                                },
+                            ], {allowDiskUse: true}).skip(skip).limit(limit).toArray(function (err, items) {
+                                if (err) {
+                                    console.log('getChargeDetailsSourceWiseByDateRange - err: ', err.message);
+                                    resolve([]);
+                                }
+                                resolve(items);
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    }
+
     async getSubscriberSubscriptionsByDateRange (req, from, to){
         return new Promise((resolve, reject) => {
             console.log('getSubscriberSubscriptionsByDateRange: ', from, to);
