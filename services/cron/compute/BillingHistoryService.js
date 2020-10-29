@@ -168,7 +168,7 @@ promiseBasedComputeBillingHistoryReports = async(req, res) => {
 
 function computeBillingHistoryData(data) {
 
-    let dateInMili, outer_added_dtm, inner_added_dtm;
+    let dateInMili, outer_billing_dtm, inner_billing_dtm;
     let outerObj, innerObj, transactionObj, unSubSourceWise, trialSourceWise;
     let sourceWiseTrailArr = [], sourceWiseUnSubArr = [], transactingSubsList = [];
 
@@ -179,46 +179,44 @@ function computeBillingHistoryData(data) {
         transactionObj = _.clone(cloneTransactionObj());
 
         outerObj = data[j];
-        outer_added_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
-        if (dateInMili !== outer_added_dtm){
+        outer_billing_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
+        if (dateInMili !== outer_billing_dtm){
             for (let k=0; k < data.length; k++) {
 
                 innerObj = data[k];
-                inner_added_dtm = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
-                if (outer_added_dtm === inner_added_dtm){
-                    dateInMili = inner_added_dtm;
+                inner_billing_dtm = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
+                if (outer_billing_dtm === inner_billing_dtm){
+                    dateInMili = inner_billing_dtm;
 
-                    console.log('transactionObj: ', transactionObj);
-                    console.log('transactionObj.billingStatus: ', transactionObj.billingStatus);
                     //Billing status wise billingHistory
                     if(innerObj.billing_status === 'trial')
-                        transactionObj.billingStatus.trial = transactionObj.billingStatus.trial + 1;
+                        transactionObj.transactions.billingStatus.trial = transactionObj.transactions.billingStatus.trial + 1;
                     else if(innerObj.billing_status === 'graced')
-                        transactionObj.billingStatus.graced = transactionObj.billingStatus.graced + 1;
+                        transactionObj.transactions.billingStatus.graced = transactionObj.transactions.billingStatus.graced + 1;
                     else if(innerObj.billing_status === 'expired')
-                        transactionObj.billingStatus.expired = transactionObj.billingStatus.expired + 1;
+                        transactionObj.transactions.billingStatus.expired = transactionObj.transactions.billingStatus.expired + 1;
                     else if(innerObj.billing_status === 'Success' || innerObj.billing_status === 'billed')
-                        transactionObj.billingStatus.success = transactionObj.billingStatus.success + 1;
+                        transactionObj.transactions.billingStatus.success = transactionObj.transactions.billingStatus.success + 1;
                     else if(innerObj.billing_status === 'Affiliate callback sent')
-                        transactionObj.billingStatus.affiliate_callback_sent = transactionObj.billingStatus.affiliate_callback_sent + 1;
+                        transactionObj.transactions.billingStatus.affiliate_callback_sent = transactionObj.transactions.billingStatus.affiliate_callback_sent + 1;
                     else if(innerObj.billing_status === 'graced_and_stream_stopped')
-                        transactionObj.billingStatus.graced_and_stream_stopped = transactionObj.billingStatus.graced_and_stream_stopped + 1;
+                        transactionObj.transactions.billingStatus.graced_and_stream_stopped = transactionObj.transactions.billingStatus.graced_and_stream_stopped + 1;
                     else if(innerObj.billing_status === 'micro-charging-exceeded')
-                        transactionObj.billingStatus.micro_charging_exceeded = transactionObj.billingStatus.micro_charging_exceeded + 1;
+                        transactionObj.transactions.billingStatus.micro_charging_exceeded = transactionObj.transactions.billingStatus.micro_charging_exceeded + 1;
                     else if(innerObj.billing_status === 'direct-billing-tried-but-failed')
-                        transactionObj.billingStatus.direct_billing_tried_but_failed = transactionObj.billingStatus.direct_billing_tried_but_failed + 1;
+                        transactionObj.transactions.billingStatus.direct_billing_tried_but_failed = transactionObj.transactions.billingStatus.direct_billing_tried_but_failed + 1;
                     else if(innerObj.billing_status === 'package_change_upon_user_request')
-                        transactionObj.billingStatus.package_change_upon_user_request = transactionObj.billingStatus.package_change_upon_user_request + 1;
+                        transactionObj.transactions.billingStatus.package_change_upon_user_request = transactionObj.transactions.billingStatus.package_change_upon_user_request + 1;
                     else if(innerObj.billing_status === 'switch-package-request-tried-but-failed')
-                        transactionObj.billingStatus.switch_package_request_tried_but_failed = transactionObj.billingStatus.switch_package_request_tried_but_failed + 1;
+                        transactionObj.transactions.billingStatus.switch_package_request_tried_but_failed = transactionObj.transactions.billingStatus.switch_package_request_tried_but_failed + 1;
                     else if(innerObj.billing_status === 'unsubscribe-request-received-and-expired')
-                        transactionObj.billingStatus.unsubscribe_request_received_and_expired = transactionObj.billingStatus.unsubscribe_request_received_and_expired + 1;
+                        transactionObj.transactions.billingStatus.unsubscribe_request_received_and_expired = transactionObj.transactions.billingStatus.unsubscribe_request_received_and_expired + 1;
                     else if(innerObj.billing_status === 'subscription-request-received-for-the-same-package')
-                        transactionObj.billingStatus.subscription_request_received_for_the_same_package = transactionObj.billingStatus.subscription_request_received_for_the_same_package + 1;
+                        transactionObj.transactions.billingStatus.subscription_request_received_for_the_same_package = transactionObj.transactions.billingStatus.subscription_request_received_for_the_same_package + 1;
                     else if(innerObj.billing_status === 'subscription-request-received-for-the-same-package-after-unsub')
-                        transactionObj.billingStatus.subscription_request_received_for_the_same_package_after_unsub = transactionObj.billingStatus.subscription_request_received_for_the_same_package_after_unsub + 1;
+                        transactionObj.transactions.billingStatus.subscription_request_received_for_the_same_package_after_unsub = transactionObj.transactions.billingStatus.subscription_request_received_for_the_same_package_after_unsub + 1;
                     else
-                        transactionObj.billingStatus.other_subscriptions_status_wise = transactionObj.billingStatus.other_subscriptions_status_wise + 1;
+                        transactionObj.transactions.billingStatus.other_subscriptions_status_wise = transactionObj.transactions.billingStatus.other_subscriptions_status_wise + 1;
 
                     //Package wise revenue and Billed Users
 
@@ -405,12 +403,12 @@ function computeBillingHistoryData(data) {
                     transactionObj.billing_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
 
                     // Un-subscribe Source wise - timestemps
-                    unSubSourceWise.added_dtm = outerObj.billing_dtm;
-                    unSubSourceWise.added_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+                    unSubSourceWise.billing_dtm = outerObj.billing_dtm;
+                    unSubSourceWise.billing_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
 
                     // Trail Activated Source wise - timestemps
-                    trialSourceWise.added_dtm = outerObj.billing_dtm;
-                    trialSourceWise.added_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+                    trialSourceWise.billing_dtm = outerObj.billing_dtm;
+                    trialSourceWise.billing_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
                 }
             }
 
@@ -574,8 +572,8 @@ function cloneTransactionObj() {
                 '3': 0,
             }
         },
-        added_dtm: '',
-        added_dtm_hours: ''
+        billing_dtm: '',
+        billing_dtm_hours: ''
     }
 }
 function cloneTrialSourceWiseObj() {
@@ -584,8 +582,8 @@ function cloneTrialSourceWiseObj() {
         web: 0,
         he: 0,
         total: 0,
-        added_dtm: '',
-        added_dtm_hours: ''
+        billing_dtm: '',
+        billing_dtm_hours: ''
     }
 }
 function cloneUnSubSourceWiseChargeObj() {
@@ -596,7 +594,7 @@ function cloneUnSubSourceWiseChargeObj() {
         CP_null: 0, emptyString: 0, systemExpire: 0,
         CP_telenorccd: 0, affiliate_web: 0, CP_productccd: 0,
         CP_whatsappccd: 0, CP_ideationccd1: 0, CP_ideationccd2: 0,
-        system_after_grace_end: 0, added_dtm: 0, added_dtm_hours: 0
+        system_after_grace_end: 0, billing_dtm: 0, billing_dtm_hours: 0
     }
 }
 
