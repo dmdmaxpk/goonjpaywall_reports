@@ -196,7 +196,7 @@ function computeBillingHistoryData(data) {
                     else if(innerObj.billing_status === 'expired')
                         transactionObj.billingStatus.expired = transactionObj.billingStatus.expired + 1;
                     else if(innerObj.billing_status === 'Success' || innerObj.billing_status === 'billed')
-                        transactionObj.billingStatus.expired = transactionObj.billingStatus.expired + 1;
+                        transactionObj.billingStatus.success = transactionObj.billingStatus.success + 1;
                     else if(innerObj.billing_status === 'Affiliate callback sent')
                         transactionObj.billingStatus.affiliate_callback_sent = transactionObj.billingStatus.affiliate_callback_sent + 1;
                     else if(innerObj.billing_status === 'graced_and_stream_stopped')
