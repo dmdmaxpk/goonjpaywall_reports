@@ -20,8 +20,10 @@ class BillingHistoryRepository {
                             price: "$price",
                             operator_response: "$operator_response",
                             billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } }
-                        }}
-                    ], { allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
+                        }},
+                        { $skip: skip },
+                        { $limit: limit }
+                    ], { allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getBillingHistoryByDateRange - err: ', err.message);
                             resolve([]);
