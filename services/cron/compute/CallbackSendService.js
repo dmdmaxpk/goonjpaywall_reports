@@ -215,15 +215,10 @@ async function insertNewRecord(data, dateString, mode) {
 
 function countQuery(from, to){
     return [
-        {
-            $match:{
-                billing_status: "Affiliate callback sent",
-                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
-            }},
-        { $project:{
-                billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } },
-
-            }},
+        { $match:{
+            billing_status: "Affiliate callback sent",
+            $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+        }},
         {
             $count: "count"
         }
