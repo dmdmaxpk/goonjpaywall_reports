@@ -169,7 +169,7 @@ promiseBasedComputeBillingHistoryReports = async(req, res) => {
 function computeBillingHistoryData(data) {
 
     let dateInMili, outer_added_dtm, inner_added_dtm;
-    let outerObj, innerObj, unSubSourceWise, trialSourceWise;
+    let outerObj, innerObj, transactionObj, unSubSourceWise, trialSourceWise;
     let sourceWiseTrailArr = [], sourceWiseUnSubArr = [], transactingSubsList = [];
 
     for (let j=0; j < data.length; j++) {
