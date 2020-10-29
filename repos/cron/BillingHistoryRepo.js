@@ -68,7 +68,7 @@ class BillingHistoryRepository {
                 if (!err) {
                     collection.aggregate( [
                         {$match : {
-                                $or:[{"billing_status": "Success"}, {"billing_status": "billed"}, {"billing_status": "graced"}],
+                                $or:[{"billing_status": "Success"}, {"billing_status": "billed"}],
                                 $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
                             }},
                         {$project: {
