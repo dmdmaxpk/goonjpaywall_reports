@@ -77,7 +77,7 @@ class BillingHistoryRepository {
                                 paywall: "$paywall_id",
                                 operator: "$operator",
                                 micro_charge: "$micro_charge",
-                                billing_dtm: { '$dateToString' : { date: "billing_dtm", 'timezone' : "Asia/Karachi" } }
+                                billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } }
                             }
                         },
                     ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
