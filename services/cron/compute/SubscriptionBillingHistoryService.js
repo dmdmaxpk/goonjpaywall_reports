@@ -227,7 +227,7 @@ function computeChargeDetailData(chargeDetails) {
 
                         chargeDetailObj.package.dailyLive.total = chargeDetailObj.package.dailyLive.total + price;
                     }
-                    else if(innerObj.package === 'QDfG'){
+                    if(innerObj.package === 'QDfG'){
                         billingStatusNewObj.revenue.package.liveWeekly = billingStatusNewObj.revenue.package.liveWeekly + innerObj.price;
                         billingStatusNewObj.userBilled.package.liveWeekly = billingStatusNewObj.userBilled.package.liveWeekly + 1;
 
@@ -238,7 +238,7 @@ function computeChargeDetailData(chargeDetails) {
 
                         chargeDetailObj.package.weeklyLive.total = chargeDetailObj.package.weeklyLive.total + price;
                     }
-                    else if(innerObj.package === 'QDfH'){
+                    if(innerObj.package === 'QDfH'){
                         billingStatusNewObj.revenue.package.comedyDaily = billingStatusNewObj.revenue.package.comedyDaily + innerObj.price;
                         billingStatusNewObj.userBilled.package.comedyDaily = billingStatusNewObj.userBilled.package.comedyDaily + 1;
 
@@ -249,7 +249,7 @@ function computeChargeDetailData(chargeDetails) {
 
                         chargeDetailObj.package.dailyComedy.total = chargeDetailObj.package.dailyComedy.total + price;
                     }
-                    else if(innerObj.package === 'QDfI'){
+                    if(innerObj.package === 'QDfI'){
                         billingStatusNewObj.revenue.package.comedyWeekly = billingStatusNewObj.revenue.package.comedyWeekly + innerObj.price;
                         billingStatusNewObj.userBilled.package.comedyWeekly = billingStatusNewObj.userBilled.package.comedyWeekly + 1;
 
