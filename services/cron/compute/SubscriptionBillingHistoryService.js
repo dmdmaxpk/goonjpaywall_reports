@@ -536,7 +536,7 @@ function cloneBillingStatusObj() {
 function countQuery(from, to){
     return [
         {$match : {
-            $or:[{"billing_status": "Success"}, {"billing_status": "graced"}],
+            $or:[{"billing_status": "Success"}, {"billing_status": "billed"}, {"billing_status": "graced"}],
             $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
         }},
         {$project: {
