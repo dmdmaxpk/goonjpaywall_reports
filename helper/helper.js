@@ -111,7 +111,7 @@ class Helper {
     static computeTodayDate(req){
         let date, fromDate, toDate, day, month;
         date = new Date();
-        date.setDate(date.getDate() - 2);
+        date.setDate(date.getDate() - 1);
 
         day =  date.getDate();
         day = day > 9 ? day : '0'+Number(day);
