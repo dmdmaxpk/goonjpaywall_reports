@@ -69,24 +69,24 @@ computeChargeDetailsSourceWiseReports = async(req, res) => {
         }
 
 
-        // // Recurring - get and compute data for next day - time slot
-        // req.day = Number(req.day) + 1;
-        // console.log('getChargeDetailsSourceWiseByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
-        //
-        // if (req.day <= helper.getDaysInMonth(month)){
-        //     if (month < helper.getTodayMonthNo())
-        //         computeChargeDetailsSourceWiseReports(req, res);
-        //     else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-        //         computeChargeDetailsSourceWiseReports(req, res);
-        // }
-        // else{
-        //     req.day = 1;
-        //     req.month = Number(req.month) + 1;
-        //     console.log('getChargeDetailsSourceWiseByDateRange -> month : ', month, req.month, new Date().getMonth());
-        //
-        //     if (req.month <= helper.getTodayMonthNo())
-        //         computeChargeDetailsSourceWiseReports(req, res);
-        // }
+        // Recurring - get and compute data for next day - time slot
+        req.day = Number(req.day) + 1;
+        console.log('getChargeDetailsSourceWiseByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
+
+        if (req.day <= helper.getDaysInMonth(month)){
+            if (month < helper.getTodayMonthNo())
+                computeChargeDetailsSourceWiseReports(req, res);
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+                computeChargeDetailsSourceWiseReports(req, res);
+        }
+        else{
+            req.day = 1;
+            req.month = Number(req.month) + 1;
+            console.log('getChargeDetailsSourceWiseByDateRange -> month : ', month, req.month, new Date().getMonth());
+
+            if (req.month <= helper.getTodayMonthNo())
+                computeChargeDetailsSourceWiseReports(req, res);
+        }
 
         if (helper.isToday(fromDate)){
             console.log('getChargeDetailsSourceWiseByDateRange - data compute - done');
@@ -318,6 +318,8 @@ async function insertNewRecord(chargeDetailSourceWiseList, transactionsSourceWis
         if (result.length > 0) {
             result = result[0];
             if (mode === 0) {
+                console.log('mode = 0');
+
                 //charge details
                 if (result.chargeDetails)
                     result.chargeDetails.sourceWise = chargeDetailSourceWiseList;
@@ -334,6 +336,8 @@ async function insertNewRecord(chargeDetailSourceWiseList, transactionsSourceWis
                     result.transactions.sourceWise = transactionsSourceWiseList;
                 }
             }else{
+                console.log('mode > 0');
+
                 //charge details
                 if (result.chargeDetails)
                     if (result.chargeDetails.sourceWise)
@@ -357,6 +361,8 @@ async function insertNewRecord(chargeDetailSourceWiseList, transactionsSourceWis
                 }
             }
 
+            console.log('IF - result.chargeDetails: ', result.chargeDetails) ;
+            console.log('IF - result.transactions: ', result.transactions) ;
             await reportsRepo.updateReport(result, result._id);
         }
         else{
@@ -367,6 +373,9 @@ async function insertNewRecord(chargeDetailSourceWiseList, transactionsSourceWis
             //transactions
             let transactions = {sourceWise: ''};
             transactions.sourceWise = transactionsSourceWiseList;
+
+            console.log('ELSE - result.chargeDetails: ', result.chargeDetails) ;
+            console.log('ELSE - result.transactions: ', result.transactions) ;
 
             await reportsRepo.createReport({chargeDetails: chargeDetails, transactions: transactions, date: dateString});
         }
