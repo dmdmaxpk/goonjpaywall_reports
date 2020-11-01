@@ -62,7 +62,8 @@ generateReportsData = async (req,res) => {
             else if (params.sub_type === 'callback_send')
                 return subscriptionService.callbackSendSubscriptionReport(rawDataSet, params);
             else if (params.sub_type === 'success_rate')
-                return subscriptionService.successRateSubscriptionReport(rawDataSet, params);
+                return subscriptionService.successRateSubscriptionFromActiveInactiveReport(rawDataSet, params);
+                // return subscriptionService.successRateSubscriptionReport(rawDataSet, params);
         }
         else if (params.type === 'revenue'){
             if (params.sub_type === 'package_wise')

@@ -982,6 +982,104 @@ successRateSubscriptionReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
+successRateSubscriptionFromActiveInactiveReport = async (rawDataSet, params) =>{
+    console.log('successRateSubscriptionFromActiveInactiveReport');
+
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, innerObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = {rate: 0, total: 0, successful: 0};
+    let dayDataObj = {rate: 0, total: 0, successful: 0};
+    let weeklyDataObj = {rate: 0, total: 0, successful: 0};
+    let monthlyDataObj = {rate: 0, total: 0, successful: 0};
+
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+            if (outerObj.subscriptions){
+                for (let j=0; j<outerObj.subscriptions.length; j++) {
+                    innerObj = outerObj.subscriptions[j];
+                    if (innerObj.active && innerObj.nonActive){
+                        dataObj.total = dataObj.total + (innerObj.active + innerObj.nonActive);
+                        dayDataObj.total = dayDataObj.total + (innerObj.active + innerObj.nonActive);
+                        weeklyDataObj.total = weeklyDataObj.total + (innerObj.active + innerObj.nonActive);
+                        monthlyDataObj.total = monthlyDataObj.total + (innerObj.active + innerObj.nonActive);
+                    }
+                    if (innerObj.active){
+                        dataObj.successful = dataObj.successful + innerObj.active;
+                        dayDataObj.successful = dayDataObj.successful + innerObj.active;
+                        weeklyDataObj.successful = weeklyDataObj.successful + innerObj.active;
+                        monthlyDataObj.successful = monthlyDataObj.successful + innerObj.active;
+                    }
+
+                    // Hourly Bases Data
+                    hourlyBasisTotalCount.push({
+                        rate: innerObj.active / (innerObj.active + innerObj.nonActive) * 100,
+                        date: innerObj.added_dtm_hours
+                    });
+
+                    // reset start_date for both month & week so can update with latest one
+                    if (week_from_date === null)
+                        week_from_date = innerObj.added_dtm;
+
+                    if (month_from_date === null)
+                        month_from_date = innerObj.added_dtm;
+                }
+
+                monthNo = new Date(outerObj.date).getMonth() + 1;
+                dayNo = new Date(outerObj.date).getDate();
+
+                // Monthly Data Count
+                if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
+                    monthlyDataObj.rate = monthlyDataObj.successful / monthlyDataObj.total * 100;
+                    monthlyDataObj.from_date = month_from_date;
+                    monthlyDataObj.to_date = outerObj.date;
+                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                    monthlyDataObj = _.clone({rate: 0, total: 0, successful: 0});
+                    month_from_date = null;
+                }
+
+                // Weekly Data Count
+                if (Number(dayNo) % 7 === 0){
+                    weeklyDataObj.rate = weeklyDataObj.successful / weeklyDataObj.total * 100;
+                    weeklyDataObj.from_date = week_from_date;
+                    weeklyDataObj.to_date = outerObj.date;
+                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                    weeklyDataObj = _.clone({rate: 0, total: 0, successful: 0});
+                    week_from_date = null;
+                }
+
+                // Day Wise Date Count
+                dayDataObj.rate = dayDataObj.successful / dayDataObj.total * 100;
+                dayDataObj.date = outerObj.date;
+                dayWiseTotalCount.push(_.clone(dayDataObj));
+                dayDataObj = _.clone({rate: 0, total: 0, successful: 0});
+            }
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // Total Count Data
+        // date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
+    }
+};
 
 // Clone Objects to initialise the properties - Unsubscribe
 function cloneUnsubscribeObjectSourceWiseObj() {
@@ -1001,4 +1099,5 @@ module.exports = {
     computeUnSubscriptionsSourceWiseReport: computeUnSubscriptionsSourceWiseReport,
     callbackSendSubscriptionReport: callbackSendSubscriptionReport,
     successRateSubscriptionReport: successRateSubscriptionReport,
+    successRateSubscriptionFromActiveInactiveReport: successRateSubscriptionFromActiveInactiveReport
 };

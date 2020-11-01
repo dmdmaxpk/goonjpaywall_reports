@@ -89,7 +89,6 @@ function computeTransactionsData(transactionRawData, fromDate) {
 
             transactionsBySubscriber.push(transactionsBySubscriberObj);
         }
-        //Calculate total transaction per subscribers.
     }
 
     transactionObj.totalTransactions = totalTransactions;
