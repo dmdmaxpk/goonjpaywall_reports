@@ -1013,6 +1013,8 @@ successRateSubscriptionFromActiveInactiveReport = async (rawDataSet, params) =>{
 
                     // Hourly Bases Data
                     hourlyBasisTotalCount.push({
+                        total: innerObj.active + innerObj.nonActive,
+                        successful: innerObj.active,
                         rate: innerObj.active / (innerObj.active + innerObj.nonActive) * 100,
                         date: innerObj.added_dtm_hours
                     });
