@@ -1074,6 +1074,7 @@ successRateSubscriptionFromActiveInactiveReport = async (rawDataSet, params) =>{
 
         // Total Count Data
         // date range (start-date, end-date)
+        dataObj.rate = dataObj.successful / dataObj.total * 100;
         dataObj = _.clone(dataObj);
         dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
         return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
