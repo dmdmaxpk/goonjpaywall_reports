@@ -48,6 +48,8 @@ computeChargeDetailsSourceWiseReports = async(req, res) => {
                         chargeDetailSourceWiseList = finalData.chargeDetailSourceWiseList;
                         transactionsSourceWiseList = finalData.transactionsSourceWiseList;
                         await insertNewRecord(chargeDetailSourceWiseList, transactionsSourceWiseList, fromDate, i);
+
+                        return;
                     }
                 });
             }
