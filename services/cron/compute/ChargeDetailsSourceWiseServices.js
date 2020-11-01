@@ -318,12 +318,9 @@ async function insertNewRecord(chargeDetailSourceWiseList, transactionsSourceWis
         if (result.length > 0) {
             result = result[0];
             if (mode === 0) {
-                console.log('mode = 0');
                 result.chargeDetailsSourceWise = chargeDetailSourceWiseList;
                 result.transactionsSourceWise = transactionsSourceWiseList;
             }else{
-                console.log('mode > 0');
-
                 //charge details
                 if (result.chargeDetailsSourceWise)
                         result.chargeDetailsSourceWise = result.chargeDetailsSourceWise.concat(chargeDetailSourceWiseList);
@@ -337,16 +334,10 @@ async function insertNewRecord(chargeDetailSourceWiseList, transactionsSourceWis
                     result.transactionsSourceWise = transactionsSourceWiseList;
             }
 
-            console.log('IF - result.chargeDetailSourceWiseList: ', result.chargeDetailSourceWiseList);
-            console.log('IF - result.transactionsSourceWise: ', result.transactionsSourceWise);
             await reportsRepo.updateReport(result, result._id);
         }
-        else{
-            console.log('ELSE - result.chargeDetailSourceWiseList: ', result.chargeDetailSourceWiseList);
-            console.log('ELSE - result.transactionsSourceWise: ', result.transactionsSourceWise);
-
+        else
             await reportsRepo.createReport({chargeDetailsSourceWise: chargeDetailSourceWiseList, transactionsSourceWise: transactionsSourceWiseList, date: dateString});
-        }
     });
 }
 
