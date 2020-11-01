@@ -361,8 +361,8 @@ async function insertNewRecord(chargeDetailSourceWiseList, transactionsSourceWis
                 }
             }
 
-            console.log('IF - result.chargeDetails: ', result.chargeDetails) ;
-            console.log('IF - result.transactions: ', result.transactions) ;
+            console.log('IF - result.chargeDetails.sourceWise: ', result.chargeDetails.sourceWise);
+            console.log('IF - result.transactions.sourceWise: ', result.transactions.sourceWise);
             await reportsRepo.updateReport(result, result._id);
         }
         else{
@@ -374,8 +374,8 @@ async function insertNewRecord(chargeDetailSourceWiseList, transactionsSourceWis
             let transactions = {sourceWise: ''};
             transactions.sourceWise = transactionsSourceWiseList;
 
-            console.log('ELSE - result.chargeDetails: ', result.chargeDetails) ;
-            console.log('ELSE - result.transactions: ', result.transactions) ;
+            console.log('ELSE - result.chargeDetails.sourceWise: ', result.chargeDetails.sourceWise) ;
+            console.log('ELSE - result.transactions.sourceWise: ', result.transactions.sourceWise) ;
 
             await reportsRepo.createReport({chargeDetails: chargeDetails, transactions: transactions, date: dateString});
         }
