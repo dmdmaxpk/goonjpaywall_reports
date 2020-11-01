@@ -48,8 +48,6 @@ computeChargeDetailsSourceWiseReports = async(req, res) => {
                         chargeDetailSourceWiseList = finalData.chargeDetailSourceWiseList;
                         transactionsSourceWiseList = finalData.transactionsSourceWiseList;
                         await insertNewRecord(chargeDetailSourceWiseList, transactionsSourceWiseList, fromDate, i);
-
-                        return;
                     }
                 });
             }
@@ -71,24 +69,24 @@ computeChargeDetailsSourceWiseReports = async(req, res) => {
         }
 
 
-        // Recurring - get and compute data for next day - time slot
-        req.day = Number(req.day) + 1;
-        console.log('getChargeDetailsSourceWiseByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
-
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
-                computeChargeDetailsSourceWiseReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeChargeDetailsSourceWiseReports(req, res);
-        }
-        else{
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('getChargeDetailsSourceWiseByDateRange -> month : ', month, req.month, new Date().getMonth());
-
-            if (req.month <= helper.getTodayMonthNo())
-                computeChargeDetailsSourceWiseReports(req, res);
-        }
+        // // Recurring - get and compute data for next day - time slot
+        // req.day = Number(req.day) + 1;
+        // console.log('getChargeDetailsSourceWiseByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
+        //
+        // if (req.day <= helper.getDaysInMonth(month)){
+        //     if (month < helper.getTodayMonthNo())
+        //         computeChargeDetailsSourceWiseReports(req, res);
+        //     else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+        //         computeChargeDetailsSourceWiseReports(req, res);
+        // }
+        // else{
+        //     req.day = 1;
+        //     req.month = Number(req.month) + 1;
+        //     console.log('getChargeDetailsSourceWiseByDateRange -> month : ', month, req.month, new Date().getMonth());
+        //
+        //     if (req.month <= helper.getTodayMonthNo())
+        //         computeChargeDetailsSourceWiseReports(req, res);
+        // }
 
         if (helper.isToday(fromDate)){
             console.log('getChargeDetailsSourceWiseByDateRange - data compute - done');
