@@ -137,13 +137,10 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
                             finalData = computeSubscriptionsData(subscriptions);
                             finalList = finalData.finalList;
                             subscribersFinalList = finalData.subscribersFinalList;
-                            if (finalList.length > 0 || subscribersFinalList.length > 0){
-                                console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
-                                if (totalChunks > 1 || lastLimit > 0)
-                                    await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
-                                else
-                                    await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
-                            }
+
+                            console.log('finalList - subscribersFinalList: ', finalList.length, subscribersFinalList.length);
+                            if (finalList.length > 0 || subscribersFinalList.length > 0)
+                                await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
                         }
                     });
                 }
@@ -286,8 +283,6 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
             result = result[0];
 
             if (mode === 0){
-                console.log('IF');
-
                 result.subscriptions = finalList;
 
                 if (result.subscribers)
@@ -297,8 +292,6 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
                     result.subscribers.activeInActive = subscribersFinalList;
                 }
             }else{
-                console.log('ELSE');
-
                 if (result.subscriptions)
                     result.subscriptions.concat(finalList);
                 else
@@ -312,7 +305,6 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
                 }
             }
 
-            console.log('result: ', result.subscribers.activeInActive);
             await reportsRepo.updateReport(result, result._id);
         }
         else{
