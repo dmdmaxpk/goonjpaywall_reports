@@ -8,7 +8,7 @@ computeChargeDetailsSourceWiseReport = async (rawDataSet, params) =>{
     console.log('computeChargeDetailsSourceWiseReport');
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null, returnData;
-    let outerObj, innerObj, chargeDetails, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let outerObj, innerObj, chargeDetailsSourceWise, sourceObj,  hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
     let dataObj = _.clone(cloneObjectSourceWiseObj());
     let dayDataObj = _.clone(cloneObjectSourceWiseObj());
     let weeklyDataObj = _.clone(cloneObjectSourceWiseObj());
@@ -17,123 +17,122 @@ computeChargeDetailsSourceWiseReport = async (rawDataSet, params) =>{
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
-            if (outerObj.chargeDetails) {
-                chargeDetails = outerObj.chargeDetails;
-                if (chargeDetails.sourceWise) {
-                    for (let j = 0; j < chargeDetails.sourceWise.length; j++) {
-                        innerObj = chargeDetails.sourceWise[j];
-                        if (innerObj.app) {
-                            returnData = updateDataArrs(innerObj, 'app', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                            dataObj = returnData.dataObj;
-                            dayDataObj = returnData.dayDataObj;
-                            weeklyDataObj = returnData.weeklyDataObj;
-                            monthlyDataObj = returnData.monthlyDataObj;
-                        }
-                        if (innerObj.web) {
-                            returnData = updateDataArrs(innerObj, 'web', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                            dataObj = returnData.dataObj;
-                            dayDataObj = returnData.dayDataObj;
-                            weeklyDataObj = returnData.weeklyDataObj;
-                            monthlyDataObj = returnData.monthlyDataObj;
-                        }
-                        if (innerObj.HE) {
-                            returnData = updateDataArrs(innerObj, 'HE', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                            dataObj = returnData.dataObj;
-                            dayDataObj = returnData.dayDataObj;
-                            weeklyDataObj = returnData.weeklyDataObj;
-                            monthlyDataObj = returnData.monthlyDataObj;
-                        }
-                        if (innerObj.sms) {
-                            returnData = updateDataArrs(innerObj, 'sms', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                            dataObj = returnData.dataObj;
-                            dayDataObj = returnData.dayDataObj;
-                            weeklyDataObj = returnData.weeklyDataObj;
-                            monthlyDataObj = returnData.monthlyDataObj;
-                        }
-                        if (innerObj.gdn2) {
-                            returnData = updateDataArrs(innerObj, 'gdn2', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                            dataObj = returnData.dataObj;
-                            dayDataObj = returnData.dayDataObj;
-                            weeklyDataObj = returnData.weeklyDataObj;
-                            monthlyDataObj = returnData.monthlyDataObj;
-                        }
-                        if (innerObj.CP) {
-                            returnData = updateDataArrs(innerObj, 'CP', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                            dataObj = returnData.dataObj;
-                            dayDataObj = returnData.dayDataObj;
-                            weeklyDataObj = returnData.weeklyDataObj;
-                            monthlyDataObj = returnData.monthlyDataObj;
-                        }
-                        if (innerObj.null) {
-                            returnData = updateDataArrs(innerObj, 'null', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                            dataObj = returnData.dataObj;
-                            dayDataObj = returnData.dayDataObj;
-                            weeklyDataObj = returnData.weeklyDataObj;
-                            monthlyDataObj = returnData.monthlyDataObj;
-                        }
-                        if (innerObj.affiliate_web) {
-                            returnData = updateDataArrs(innerObj, 'affiliate_web', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                            dataObj = returnData.dataObj;
-                            dayDataObj = returnData.dayDataObj;
-                            weeklyDataObj = returnData.weeklyDataObj;
-                            monthlyDataObj = returnData.monthlyDataObj;
-                        }
-                        if (innerObj.system_after_grace_end) {
-                            returnData = updateDataArrs(innerObj, 'system_after_grace_end', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                            dataObj = returnData.dataObj;
-                            dayDataObj = returnData.dayDataObj;
-                            weeklyDataObj = returnData.weeklyDataObj;
-                            monthlyDataObj = returnData.monthlyDataObj;
-                        }
-
-                        // Hourly Bases Data
-                        hourlyBasisTotalCount.push({
-                            app: innerObj.app,
-                            web: innerObj.web,
-                            HE: innerObj.HE,
-                            sms: innerObj.sms,
-                            gdn2: innerObj.gdn2,
-                            CP: innerObj.CP,
-                            null: innerObj.null,
-                            affiliate_web: innerObj.affiliate_web,
-                            system_after_grace_end: innerObj.system_after_grace_end,
-                            date: innerObj.added_dtm_hours
-                        });
-
-                        // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
-
-                        if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+            if (outerObj.chargeDetailsSourceWise) {
+                chargeDetailsSourceWise = outerObj.chargeDetailsSourceWise;
+                for (let j = 0; j < chargeDetailsSourceWise.length; j++) {
+                    sourceObj = chargeDetailsSourceWise[j];
+                    innerObj = sourceObj.source;
+                    if (innerObj.app) {
+                        returnData = updateDataArrs(innerObj, 'app', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        dataObj = returnData.dataObj;
+                        dayDataObj = returnData.dayDataObj;
+                        weeklyDataObj = returnData.weeklyDataObj;
+                        monthlyDataObj = returnData.monthlyDataObj;
+                    }
+                    if (innerObj.web) {
+                        returnData = updateDataArrs(innerObj, 'web', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        dataObj = returnData.dataObj;
+                        dayDataObj = returnData.dayDataObj;
+                        weeklyDataObj = returnData.weeklyDataObj;
+                        monthlyDataObj = returnData.monthlyDataObj;
+                    }
+                    if (innerObj.HE) {
+                        returnData = updateDataArrs(innerObj, 'HE', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        dataObj = returnData.dataObj;
+                        dayDataObj = returnData.dayDataObj;
+                        weeklyDataObj = returnData.weeklyDataObj;
+                        monthlyDataObj = returnData.monthlyDataObj;
+                    }
+                    if (innerObj.sms) {
+                        returnData = updateDataArrs(innerObj, 'sms', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        dataObj = returnData.dataObj;
+                        dayDataObj = returnData.dayDataObj;
+                        weeklyDataObj = returnData.weeklyDataObj;
+                        monthlyDataObj = returnData.monthlyDataObj;
+                    }
+                    if (innerObj.gdn2) {
+                        returnData = updateDataArrs(innerObj, 'gdn2', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        dataObj = returnData.dataObj;
+                        dayDataObj = returnData.dayDataObj;
+                        weeklyDataObj = returnData.weeklyDataObj;
+                        monthlyDataObj = returnData.monthlyDataObj;
+                    }
+                    if (innerObj.CP) {
+                        returnData = updateDataArrs(innerObj, 'CP', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        dataObj = returnData.dataObj;
+                        dayDataObj = returnData.dayDataObj;
+                        weeklyDataObj = returnData.weeklyDataObj;
+                        monthlyDataObj = returnData.monthlyDataObj;
+                    }
+                    if (innerObj.null) {
+                        returnData = updateDataArrs(innerObj, 'null', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        dataObj = returnData.dataObj;
+                        dayDataObj = returnData.dayDataObj;
+                        weeklyDataObj = returnData.weeklyDataObj;
+                        monthlyDataObj = returnData.monthlyDataObj;
+                    }
+                    if (innerObj.affiliate_web) {
+                        returnData = updateDataArrs(innerObj, 'affiliate_web', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        dataObj = returnData.dataObj;
+                        dayDataObj = returnData.dayDataObj;
+                        weeklyDataObj = returnData.weeklyDataObj;
+                        monthlyDataObj = returnData.monthlyDataObj;
+                    }
+                    if (innerObj.system_after_grace_end) {
+                        returnData = updateDataArrs(innerObj, 'system_after_grace_end', 'charge_details', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        dataObj = returnData.dataObj;
+                        dayDataObj = returnData.dayDataObj;
+                        weeklyDataObj = returnData.weeklyDataObj;
+                        monthlyDataObj = returnData.monthlyDataObj;
                     }
 
-                    monthNo = new Date(outerObj.date).getMonth() + 1;
-                    dayNo = new Date(outerObj.date).getDate();
+                    // Hourly Bases Data
+                    hourlyBasisTotalCount.push({
+                        app: innerObj.app,
+                        web: innerObj.web,
+                        HE: innerObj.HE,
+                        sms: innerObj.sms,
+                        gdn2: innerObj.gdn2,
+                        CP: innerObj.CP,
+                        null: innerObj.null,
+                        affiliate_web: innerObj.affiliate_web,
+                        system_after_grace_end: innerObj.system_after_grace_end,
+                        date: sourceObj.added_dtm_hours
+                    });
 
-                    // Monthly Data Count
-                    if (Number(dayNo) === Number(helper.getDaysInMonth(monthNo))) {
-                        monthlyDataObj.from_date = month_from_date;
-                        monthlyDataObj.to_date = outerObj.date;
-                        monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                        monthlyDataObj = _.clone(cloneObjectSourceWiseObj());
-                        month_from_date = null;
-                    }
+                    // reset start_date for both month & week so can update with latest one
+                    if (week_from_date === null)
+                        week_from_date = sourceObj.added_dtm;
 
-                    // Weekly Data Count
-                    if (Number(dayNo) % 7 === 0) {
-                        weeklyDataObj.from_date = week_from_date;
-                        weeklyDataObj.to_date = outerObj.date;
-                        weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                        weeklyDataObj = _.clone(cloneObjectSourceWiseObj());
-                        week_from_date = null;
-                    }
-
-                    // Day Wise Date Count
-                    dayDataObj.date = outerObj.date;
-                    dayWiseTotalCount.push(_.clone(dayDataObj));
-                    dayDataObj = _.clone(cloneObjectSourceWiseObj());
+                    if (month_from_date === null)
+                        month_from_date = sourceObj.added_dtm;
                 }
+
+                monthNo = new Date(outerObj.date).getMonth() + 1;
+                dayNo = new Date(outerObj.date).getDate();
+
+                // Monthly Data Count
+                if (Number(dayNo) === Number(helper.getDaysInMonth(monthNo))) {
+                    monthlyDataObj.from_date = month_from_date;
+                    monthlyDataObj.to_date = outerObj.date;
+                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                    monthlyDataObj = _.clone(cloneObjectSourceWiseObj());
+                    month_from_date = null;
+                }
+
+                // Weekly Data Count
+                if (Number(dayNo) % 7 === 0) {
+                    weeklyDataObj.from_date = week_from_date;
+                    weeklyDataObj.to_date = outerObj.date;
+                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                    weeklyDataObj = _.clone(cloneObjectSourceWiseObj());
+                    week_from_date = null;
+                }
+
+                // Day Wise Date Count
+                dayDataObj.date = outerObj.date;
+                dayWiseTotalCount.push(_.clone(dayDataObj));
+                dayDataObj = _.clone(cloneObjectSourceWiseObj());
             }
         }
 

@@ -292,8 +292,8 @@ function computeChargeDetailSourceWiseData(chargeDetails) {
                     chargeDetailSourceWiseObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
 
                     // Transactions Source Wise - timestemp
-                    chargeDetailSourceWiseObj.added_dtm = outerObj.added_dtm;
-                    chargeDetailSourceWiseObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+                    transactionsSourceWiseObj.added_dtm = outerObj.added_dtm;
+                    transactionsSourceWiseObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
                 }
             }
 
