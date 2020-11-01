@@ -245,7 +245,7 @@ function computeSubscriptionsData(subscriptions) {
                             newObj.affiliate_mid['null'] = newObj.affiliate_mid['null'] + 1;
                     }
 
-                    // Active Subscribers - Subscription wise
+                    // Active Subscribers & Subscription
                     if (innerObj.subscription_status){
                         if (innerObj.subscription_status === "trial" || innerObj.subscription_status === "graced" || innerObj.subscription_status === "billed"){
                             //Active subscriptions
@@ -312,7 +312,7 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
                 }
             }
 
-            console.log('result: ');
+            console.log('result: ', result.subscribers.activeInActive);
             await reportsRepo.updateReport(result, result._id);
         }
         else{
