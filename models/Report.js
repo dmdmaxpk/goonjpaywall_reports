@@ -14,10 +14,11 @@ const report = new Schema({
     sourceWiseUnSub: {type: Object, default: undefined},
     sourceWiseTrail: {type: Object, default: undefined},
     chargeDetails: {type: Object, default: undefined},
+    chargeDetailsSourceWise: {type: Object, default: undefined},
     uniquePayingUsers: {type: Object, default: undefined},
     successRate: {type: Object, default: undefined},
     netAdditions: {type: Object, default: undefined},
-    transactions: {type: Object, default: undefined},
+    transactionsSourceWise: {type: Object, default: undefined},
     avgTransactions: {type: Object, default: undefined},
     pageViews: {type: Object, default: undefined},
     date: { type: Date, default: Date.now }

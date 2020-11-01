@@ -319,65 +319,33 @@ async function insertNewRecord(chargeDetailSourceWiseList, transactionsSourceWis
             result = result[0];
             if (mode === 0) {
                 console.log('mode = 0');
-
-                //charge details
-                if (result.chargeDetails)
-                    result.chargeDetails.sourceWise = chargeDetailSourceWiseList;
-                else{
-                    result.chargeDetails = {sourceWise: ''};
-                    result.chargeDetails.sourceWise = chargeDetailSourceWiseList;
-                }
-
-                //transactions
-                if (result.transactions)
-                    result.transactions.sourceWise = transactionsSourceWiseList;
-                else{
-                    result.transactions = {sourceWise: ''};
-                    result.transactions.sourceWise = transactionsSourceWiseList;
-                }
+                result.chargeDetailsSourceWise = chargeDetailSourceWiseList;
+                result.transactionsSourceWise = transactionsSourceWiseList;
             }else{
                 console.log('mode > 0');
 
                 //charge details
-                if (result.chargeDetails)
-                    if (result.chargeDetails.sourceWise)
-                        result.chargeDetails.sourceWise = result.chargeDetails.sourceWise.concat(chargeDetailSourceWiseList);
-                    else
-                        result.chargeDetails.sourceWise = chargeDetailSourceWiseList;
-                else{
-                    result.chargeDetails = {sourceWise: ''};
-                    result.chargeDetails.sourceWise = chargeDetailSourceWiseList;
-                }
+                if (result.chargeDetailsSourceWise)
+                        result.chargeDetailsSourceWise = result.chargeDetailsSourceWise.concat(chargeDetailSourceWiseList);
+                else
+                    result.chargeDetailsSourceWise = chargeDetailSourceWiseList;
 
                 //transactions
-                if (result.transactions)
-                    if (result.transactions.sourceWise)
-                        result.transactions.sourceWise = result.transactions.sourceWise.concat(transactionsSourceWiseList);
-                    else
-                        result.transactions.sourceWise = transactionsSourceWiseList;
-                else{
-                    result.transactions = {sourceWise: ''};
-                    result.transactions.sourceWise = transactionsSourceWiseList;
-                }
+                if (result.transactionsSourceWise)
+                        result.transactionsSourceWise = result.transactionsSourceWise.concat(transactionsSourceWiseList);
+                else
+                    result.transactionsSourceWise = transactionsSourceWiseList;
             }
 
-            console.log('IF - result.chargeDetails.sourceWise: ', result.chargeDetails.sourceWise);
-            console.log('IF - result.transactions.sourceWise: ', result.transactions.sourceWise);
+            console.log('IF - result.chargeDetailSourceWiseList: ', result.chargeDetailSourceWiseList);
+            console.log('IF - result.transactionsSourceWise: ', result.transactionsSourceWise);
             await reportsRepo.updateReport(result, result._id);
         }
         else{
-            //charge details
-            let chargeDetails = {sourceWise: ''};
-            chargeDetails.sourceWise = chargeDetailSourceWiseList;
+            console.log('ELSE - result.chargeDetailSourceWiseList: ', result.chargeDetailSourceWiseList);
+            console.log('ELSE - result.transactionsSourceWise: ', result.transactionsSourceWise);
 
-            //transactions
-            let transactions = {sourceWise: ''};
-            transactions.sourceWise = transactionsSourceWiseList;
-
-            console.log('ELSE - result.chargeDetails.sourceWise: ', result.chargeDetails.sourceWise) ;
-            console.log('ELSE - result.transactions.sourceWise: ', result.transactions.sourceWise) ;
-
-            await reportsRepo.createReport({chargeDetails: chargeDetails, transactions: transactions, date: dateString});
+            await reportsRepo.createReport({chargeDetailsSourceWise: chargeDetailSourceWiseList, transactionsSourceWise: transactionsSourceWiseList, date: dateString});
         }
     });
 }
