@@ -171,12 +171,13 @@ computeNetAdditionsPackageWiseReport = async (rawDataSet, params) =>{
     let weeklyDataObj = _.clone(cloneObjectPackageWiseObj());
     let monthlyDataObj = _.clone(cloneObjectPackageWiseObj());
 
+    console.log('rawDataSet.length: ',rawDataSet.length);
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
             if (outerObj.netAdditions){
                 console.log('netAdditions - block: ');
-                
+
                 for (let j=0; j<outerObj.netAdditions.length; j++) {
                     console.log('netAdditions - loop: ');
 
