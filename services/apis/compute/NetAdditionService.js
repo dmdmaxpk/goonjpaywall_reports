@@ -23,63 +23,63 @@ computeNetAdditionsSourceWiseReport = async (rawDataSet, params) =>{
                     if (netAddition.source) {
                         innerObj = netAddition.source;
                         if (innerObj.app){
-                            returnData = updateDataArrs(innerObj, 'app', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'app', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
                         if (innerObj.web){
-                            returnData = updateDataArrs(innerObj, 'web', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'web', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
                         if (innerObj.HE){
-                            returnData = updateDataArrs(innerObj, 'HE', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'HE', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
                         if (innerObj.sms){
-                            returnData = updateDataArrs(innerObj, 'sms', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'sms', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
                         if (innerObj.gdn2){
-                            returnData = updateDataArrs(innerObj, 'gdn2', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'gdn2', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
                         if (innerObj.CP){
-                            returnData = updateDataArrs(innerObj, 'CP', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'CP', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
                         if (innerObj.null){
-                            returnData = updateDataArrs(innerObj, 'null', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'null', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
                         if (innerObj.affiliate_web){
-                            returnData = updateDataArrs(innerObj, 'affiliate_web', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'affiliate_web', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
                         if (innerObj.system_after_grace_end){
-                            returnData = updateDataArrs(innerObj, 'system_after_grace_end', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'system_after_grace_end', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
@@ -175,33 +175,41 @@ computeNetAdditionsPackageWiseReport = async (rawDataSet, params) =>{
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
             if (outerObj.netAdditions){
+                console.log('netAdditions - block: ');
+                
                 for (let j=0; j<outerObj.netAdditions.length; j++) {
+                    console.log('netAdditions - loop: ');
+
                     netAddition = outerObj.netAdditions[j];
                     if (netAddition.package) {
+                        console.log('netAddition - package: ', netAddition.package);
+
                         innerObj = netAddition.package;
                         if (innerObj.dailyLive){
-                            returnData = updateDataArrs(innerObj, 'dailyLive', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            console.log('innerObj - dailyLive: ', innerObj.dailyLive);
+
+                            returnData = updateDataArrs(innerObj, 'dailyLive', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
                         if (innerObj.weeklyLive){
-                            returnData = updateDataArrs(innerObj, 'weeklyLive', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'weeklyLive', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
                         if (innerObj.dailyComedy){
-                            returnData = updateDataArrs(innerObj, 'dailyComedy', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'dailyComedy', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
                         if (innerObj.weeklyComedy){
-                            returnData = updateDataArrs(innerObj, 'weeklyComedy', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'weeklyComedy', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
@@ -297,14 +305,14 @@ computeNetAdditionsPaywallWiseReport = async (rawDataSet, params) =>{
                     if (netAddition.paywall) {
                         innerObj = netAddition.paywall;
                         if (innerObj.comedy){
-                            returnData = updateDataArrs(innerObj, 'comedy', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'comedy', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
                         if (innerObj.live){
-                            returnData = updateDataArrs(innerObj, 'live', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'live', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
@@ -398,14 +406,14 @@ computeNetAdditionsOperatorWiseReport = async (rawDataSet, params) =>{
                     if (netAddition.operator) {
                         innerObj = netAddition.operator;
                         if (innerObj.telenor){
-                            returnData = updateDataArrs(innerObj, 'telenor', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'telenor', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
                         if (innerObj.easypaisa){
-                            returnData = updateDataArrs(innerObj, 'easypaisa', 'net_addition', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            returnData = updateDataArrs(innerObj, 'easypaisa', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
@@ -600,7 +608,8 @@ function cloneObjectPaywallWiseObj() {
 }
 
 // Populate object's properties with data - Net Addition or Charge Details
-function updateDataArrs(innerObj, type, mode, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj) {
+// updateDataArrs(innerObj, 'dailyLive', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+function updateDataArrs(innerObj, type, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj) {
     if (innerObj[type]['expire']){
         dataObj[type]['expire'] = dataObj[type]['expire'] + innerObj[type]['expire'];
         dayDataObj[type]['expire'] = dayDataObj[type]['expire'] + innerObj[type]['expire'];
@@ -621,6 +630,7 @@ function updateDataArrs(innerObj, type, mode, dataObj, dayDataObj, weeklyDataObj
         monthlyDataObj[type].total = monthlyDataObj[type].total + innerObj[type].total;
     }
 
+    console.log('updateDataArrs - functions: ');
     return {dataObj: dataObj, dayDataObj: dayDataObj, weeklyDataObj: weeklyDataObj, monthlyDataObj: monthlyDataObj}
 }
 

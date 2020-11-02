@@ -987,10 +987,10 @@ successRateSubscriptionFromActiveInactiveReport = async (rawDataSet, params) =>{
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {rate: 0, total: 0, successful: 0};
-    let dayDataObj = {rate: 0, total: 0, successful: 0};
-    let weeklyDataObj = {rate: 0, total: 0, successful: 0};
-    let monthlyDataObj = {rate: 0, total: 0, successful: 0};
+    let dataObj = {successful: 0, total: 0, rate: 0};
+    let dayDataObj = {successful: 0, total: 0, rate: 0};
+    let weeklyDataObj = {successful: 0, total: 0, rate: 0};
+    let monthlyDataObj = {successful: 0, total: 0, rate: 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -1013,8 +1013,8 @@ successRateSubscriptionFromActiveInactiveReport = async (rawDataSet, params) =>{
 
                     // Hourly Bases Data
                     hourlyBasisTotalCount.push({
-                        total: innerObj.active + innerObj.nonActive,
                         successful: innerObj.active,
+                        total: innerObj.active + innerObj.nonActive,
                         rate: innerObj.active / (innerObj.active + innerObj.nonActive) * 100,
                         date: innerObj.added_dtm_hours
                     });
