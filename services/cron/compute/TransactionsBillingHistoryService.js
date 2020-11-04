@@ -26,7 +26,7 @@ computeTransactionsAvgReports = async(req, res) => {
         if (transactionRawData.length > 0){
 
             computedData = computeTransactionsData(transactionRawData, fromDate);
-            insertNewRecord(computedData.transactionList, computedData.transactionsBySubscriber, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
+            insertNewRecord(computedData.transactionList, computedData.transactionsCount, new Date(helper.setDate(fromDate, 0, 0, 0, 0)));
         }
 
         // Get compute data for next time slot
@@ -53,10 +53,10 @@ computeTransactionsAvgReports = async(req, res) => {
 function computeTransactionsData(transactionRawData, fromDate) {
 
     let rawData, outerObj, innerObj, outer_added_dtm, dateInMili, uniqueSubscribers = 0, totalTransactions = 0, totalPrice = 0;
-    let transactionList = [], transactionsBySubscriber = [];
+    let transactionList = [], transactionsCount = [];
 
     let transactionObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
-    let transactionsBySubscriberObj = {total: 0};
+    let transactionsCountObj = {total: 0};
     for (let i=0; i < transactionRawData.length; i++) {
         rawData = transactionRawData[i];
 
@@ -71,7 +71,7 @@ function computeTransactionsData(transactionRawData, fromDate) {
                 //get totalPrice to compute avg price
                 totalPrice = totalPrice + outerObj['price'];
 
-                //script to get transaction's count per subscriber with in given datetime range
+                //script to get transaction's count per subscriber with in given datetime stemp
                 outer_added_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
                 if (dateInMili !== outer_added_dtm) {
                     for (let k = 0; k < rawData.transactions.length; k++) {
@@ -81,13 +81,13 @@ function computeTransactionsData(transactionRawData, fromDate) {
                         if (outer_added_dtm === inner_added_dtm) {
                             dateInMili = inner_added_dtm;
 
-                            transactionsBySubscriberObj.total = transactionsBySubscriberObj.total + 1;
+                            transactionsCountObj.total = transactionsCountObj.total + 1;
                         }
                     }
                 }
             }
 
-            transactionsBySubscriber.push(transactionsBySubscriberObj);
+            transactionsCount.push(transactionsCountObj);
         }
     }
 
@@ -100,24 +100,24 @@ function computeTransactionsData(transactionRawData, fromDate) {
     transactionObj.added_dtm_hours = helper.setDate(new Date(fromDate), null, 0, 0, 0);
     transactionList.push(transactionObj);
 
-    return {transactionList: transactionList, transactionsBySubscriber: transactionsBySubscriber};
+    return {transactionList: transactionList, transactionsCount: transactionsCount};
 }
 
-function insertNewRecord(transactionAvg, transactionsBySubscriber, dateString) {
+function insertNewRecord(transactionAvg, transactionsCount, dateString) {
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         console.log('getReportByDateString - result : ', result);
         console.log('transactionAvg : ', transactionAvg);
-        console.log('transactionsBySubscriber : ', transactionsBySubscriber);
+        console.log('transactionsCount : ', transactionsCount);
         if (result.length > 0) {
             result = result[0];
             result.avgTransactions = transactionAvg;
 
             if(result.hasOwnProperty('subscribers'))
-                result.subscribers.transactions = transactionsBySubscriber;
+                result.subscribers.transactionsCount = transactionsCount;
             else{
                 let subscribers = {};
-                subscribers.transactions = transactionsBySubscriber;
+                subscribers.transactionsCount = transactionsCount;
                 result.subscribers = subscribers;
             }
 
@@ -125,7 +125,7 @@ function insertNewRecord(transactionAvg, transactionsBySubscriber, dateString) {
         }
         else{
             let subscribers = {};
-            subscribers.transactions = transactionsBySubscriber;
+            subscribers.transactionsCount = transactionsCount;
             reportsRepo.createReport({avgTransactions: transactionAvg, subscribers: subscribers, date: dateString});
         }
     });
