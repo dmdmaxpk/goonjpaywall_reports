@@ -35,7 +35,7 @@ computeRevenueNetAdditionReports = async(req, res) => {
 
             //Loop over no.of chunks
             for (i = 0 ; i < totalChunks; i++){
-                await  billingHistoryRepo.getnetAdditionByDateRange(req, fromDate, toDate, skip, limit).then(async function (netAdditions) {
+                await  billingHistoryRepo.getNetAdditionByDateRange(req, fromDate, toDate, skip, limit).then(async function (netAdditions) {
                     console.log('netAdditions : ', netAdditions.length);
 
                     //set skip variable to limit data
@@ -54,7 +54,7 @@ computeRevenueNetAdditionReports = async(req, res) => {
 
             // fetch last chunk Data from DB
             if (lastLimit > 0){
-                await  billingHistoryRepo.getnetAdditionByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (netAdditions) {
+                await  billingHistoryRepo.getNetAdditionByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (netAdditions) {
                     console.log('netAdditions: ', netAdditions.length);
 
                     // Now compute and store data in DB
@@ -127,7 +127,7 @@ promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
 
                 //Loop over no.of chunks
                 for (i = 0 ; i < totalChunks; i++){
-                    await  billingHistoryRepo.getnetAdditionByDateRange(req, fromDate, toDate, skip, limit).then(async function (netAdditions) {
+                    await  billingHistoryRepo.getNetAdditionByDateRange(req, fromDate, toDate, skip, limit).then(async function (netAdditions) {
                         console.log('netAdditions : ', netAdditions.length);
 
                         //set skip variable to limit data
@@ -146,7 +146,7 @@ promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
 
                 // fetch last chunk Data from DB
                 if (lastLimit > 0){
-                    await  billingHistoryRepo.getnetAdditionByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (netAdditions) {
+                    await  billingHistoryRepo.getNetAdditionByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (netAdditions) {
                         console.log('netAdditions: ', netAdditions.length);
 
                         // Now compute and store data in DB

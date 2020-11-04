@@ -171,24 +171,15 @@ computeNetAdditionsPackageWiseReport = async (rawDataSet, params) =>{
     let weeklyDataObj = _.clone(cloneObjectPackageWiseObj());
     let monthlyDataObj = _.clone(cloneObjectPackageWiseObj());
 
-    console.log('rawDataSet.length: ',rawDataSet.length);
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
             if (outerObj.netAdditions){
-                console.log('netAdditions - block: ');
-
                 for (let j=0; j<outerObj.netAdditions.length; j++) {
-                    console.log('netAdditions - loop: ');
-
                     netAddition = outerObj.netAdditions[j];
                     if (netAddition.package) {
-                        console.log('netAddition - package: ', netAddition.package);
-
                         innerObj = netAddition.package;
                         if (innerObj.dailyLive){
-                            console.log('innerObj - dailyLive: ', innerObj.dailyLive);
-
                             returnData = updateDataArrs(innerObj, 'dailyLive', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
@@ -631,7 +622,6 @@ function updateDataArrs(innerObj, type, dataObj, dayDataObj, weeklyDataObj, mont
         monthlyDataObj[type].total = monthlyDataObj[type].total + innerObj[type].total;
     }
 
-    console.log('updateDataArrs - functions: ');
     return {dataObj: dataObj, dayDataObj: dayDataObj, weeklyDataObj: weeklyDataObj, monthlyDataObj: monthlyDataObj}
 }
 

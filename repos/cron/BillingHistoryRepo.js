@@ -98,9 +98,9 @@ class BillingHistoryRepository {
         });
     }
 
-    async getnetAdditionByDateRange(req, from, to, skip, limit){
+    async getNetAdditionByDateRange(req, from, to, skip, limit){
         return new Promise((resolve, reject) => {
-            console.log('getnetAdditionByDateRange: ', from, to);
+            console.log('getNetAdditionByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {
 
                 if (!err) {
@@ -123,6 +123,7 @@ class BillingHistoryRepository {
                                         as: "history",
                                         cond: { $or: [
                                                 { $eq: ['$$history.billing_status',"expired"] },
+                                                { $eq: ['$$history.billing_status',"system-after-grace-end"] },
                                                 { $eq: ['$$history.billing_status',"unsubscribe-request-recieved"] },
                                                 { $eq: ['$$history.billing_status',"unsubscribe-request-received-and-expired"] }
                                             ]}
@@ -157,7 +158,7 @@ class BillingHistoryRepository {
                         { $limit: limit }
                     ], { allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
-                            console.log('getnetAdditionByDateRange - err: ', err.message);
+                            console.log('getNetAdditionByDateRange - err: ', err.message);
                             resolve([]);
                         }
                         resolve(items);
