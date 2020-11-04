@@ -5,7 +5,6 @@ class TransactionsRepo {
             console.log('getTransactionsAvgByDateRange: ', from, to);
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
-                    console.log('getTransactionsAvgByDateRange - !err: ', collection);
                     collection.aggregate([
                         { $match: {
                             $and: [
@@ -15,9 +14,9 @@ class TransactionsRepo {
                             ]
                         }},
                         { $project: {
-                            $subscriber_id: "$subscriber_id",
+                            subscriber_id: "$subscriber_id",
                             price: "$price",
-                            $billing_dtm: "$billing_dtm"
+                            billing_dtm: "$billing_dtm"
                         }},
                         { $group: {
                             _id: "$subscriber_id",
@@ -40,7 +39,6 @@ class TransactionsRepo {
                             console.log('getTransactionsAvgByDateRange - err 2: ', err.message);
                             resolve([]);
                         }
-                        console.log('getTransactionsAvgByDateRange - items: ', items, req.db);
 
                         resolve(items);
                     });
