@@ -40,7 +40,7 @@ router.route('/compute-helogs-unique-success-logger-reports')
     .get(connection.connect, controller.computeHelogsUniqueSuccessReports); //**
 
 router.route('/compute-page-views-logger-reports')
-    .get(connection.connect, controller.computeLogsPage-+ViewReports); //**
+    .get(connection.connect, controller.computeLogsPageViewReports); //**
 
 router.route('/compute-subscribe-clicks-logger-reports')
     .get(connection.connect, controller.computeLogsSubscribeClicksReports); //**
