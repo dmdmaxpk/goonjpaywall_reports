@@ -341,7 +341,7 @@ function computeNetAdditionRevenueData(netAdditions) {
                     }
 
                     // Expire by unsubscribe or by system - total count by date range
-                    if(!expire_type)
+                    if(expire_type === 'expire')
                         newObj.netAdditionType.expire = newObj.netAdditionType.expire + 1;
                     else
                         newObj.netAdditionType.system = newObj.netAdditionType.system + 1;
