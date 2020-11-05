@@ -190,10 +190,14 @@ function computeNetAdditionRevenueData(netAdditions) {
 
                 if (outer_added_dtm === inner_added_dtm){
                     dateInMili = inner_added_dtm;
-                    if (innerObj.billing_source === 'system-after-grace-end')
+                    if (innerObj.billing_source === 'system-after-grace-end'){
                         expire_type = 'system';
-                    else
+                        newObj.netAdditionType.system = newObj.netAdditionType.system + 1;
+                    }
+                    else{
                         expire_type = 'expire';
+                        newObj.netAdditionType.expire = newObj.netAdditionType.expire + 1;
+                    }
 
                     //Source wise Net Addition
                     if (innerObj.source === 'app'){
@@ -340,13 +344,7 @@ function computeNetAdditionRevenueData(netAdditions) {
                         newObj.operator.telenor.total = newObj.operator.telenor.total + 1;
                     }
 
-                    // Expire by unsubscribe or by system - total count by date range
-                    if(expire_type === 'expire')
-                        newObj.netAdditionType.expire = newObj.netAdditionType.expire + 1;
-                    else
-                        newObj.netAdditionType.system = newObj.netAdditionType.system + 1;
-
-                    newObj.added_dtm = outerObj.added_dtm;
+                    newObj.added_dtm = innerObj.added_dtm;
                     newObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
                 }
             }
