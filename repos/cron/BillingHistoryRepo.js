@@ -123,7 +123,6 @@ class BillingHistoryRepository {
                                         as: "history",
                                         cond: { $or: [
                                                 { $eq: ['$$history.billing_status',"expired"] },
-                                                { $eq: ['$$history.billing_status',"system-after-grace-end"] },
                                                 { $eq: ['$$history.billing_status',"unsubscribe-request-recieved"] },
                                                 { $eq: ['$$history.billing_status',"unsubscribe-request-received-and-expired"] }
                                             ]}
