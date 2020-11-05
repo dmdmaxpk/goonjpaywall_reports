@@ -190,7 +190,7 @@ function computeNetAdditionRevenueData(netAdditions) {
 
                 if (outer_added_dtm === inner_added_dtm){
                     dateInMili = inner_added_dtm;
-                    if (innerObj.billing_source === 'system-after-grace-end' || innerObj.billing_source === 'system'){
+                    if (innerObj.billing_source === 'system-after-grace-end' || innerObj.billing_source === 'system' || innerObj.billing_source === 'dmdmax'){
                         expire_type = 'system';
                         newObj.netAdditionType.system = newObj.netAdditionType.system + 1;
                     }
