@@ -5,18 +5,45 @@ class SubscriptionRepository {
             console.log('getSubscriptionsByDateRange: ', from, to, skip, limit);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
-                    collection.aggregate( [
-                        {$match : {
-                                $and: [{added_dtm: {$gte: new Date(from)}}, {added_dtm: {$lte: new Date(to)}}]
-                            }},
-                        {$project: {
-                                subscribed_package_id: "$subscribed_package_id",
-                                paywall_id: "$paywall_id",
-                                source: "$source",
-                                affiliate_mid: "$affiliate_mid",
-                                subscription_status: "$subscription_status",
-                                added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } },
-                            }},
+                    collection.aggregate([
+                        {
+                            $match:{ $and: [{added_dtm: {$gte: new Date(from)}}, {added_dtm: {$lte: new Date(to)}}]
+                        }},
+                        {
+                            $lookup: {
+                                from: "billinghistories",
+                                let: {subscription_id: "$_id"},
+                                pipeline:[
+                                    { $match:
+                                        { $expr:
+                                            { $and:[
+                                                {$eq: ["$subscription_id", "$$subscription_id" ]},
+                                                {$gt: ["$billing_dtm", new Date(from)]},
+                                                {$lt: ["$billing_dtm", new Date(to)]}
+                                            ]}
+                                        }
+                                    },
+                                    { $project: {
+                                        subscription_id: "$subscription_id",
+                                        billing_status: "$billing_status",
+                                        billing_dtm: "$billing_dtm"
+                                    }},
+                                    {$sort: {
+                                        billing_dtm: 1
+                                    }}
+                                ],
+                                as: "history"
+                            }
+                        },
+                        { $project: {
+                            subscribed_package_id: "$subscribed_package_id",
+                            paywall_id: "$paywall_id",
+                            source: "$source",
+                            affiliate_mid: "$affiliate_mid",
+                            subscription_status: "$subscription_status",
+                            added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } },
+                            history: { $arrayElemAt: [ "$history", -1 ] }
+                        }},
                         { $skip: skip },
                         { $limit: limit }
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
