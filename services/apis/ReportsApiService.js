@@ -151,10 +151,6 @@ generateReportsData = async (req,res) => {
             else if (params.sub_type === 'subscriptions') {
                 if (params.subscriptions === 'subscriptions_mid')
                     return affiliateService.computeSubscriptionsMidDataReport(rawDataSet, params);
-                else if (params.subscriptions === 'page_view')
-                    return affiliateService.computePageViewDataReport(rawDataSet, params);
-                else if (params.subscriptions === 'subscribe_click')
-                    return affiliateService.computeSubscribeClickDataReport(rawDataSet, params);
                 else if (params.subscriptions === 'affiliate_wise')
                     return affiliateService.computeAffiliateDataReport(rawDataSet, params);
                 else if (params.subscriptions === 'source_wise')

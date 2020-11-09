@@ -7,16 +7,16 @@ class SubscriptionRepository {
                 if (!err) {
                     collection.aggregate( [
                         {$match : {
-                            $and: [{added_dtm: {$gte: new Date(from)}}, {added_dtm: {$lte: new Date(to)}}]
-                        }},
+                                $and: [{added_dtm: {$gte: new Date(from)}}, {added_dtm: {$lte: new Date(to)}}]
+                            }},
                         {$project: {
-                            subscribed_package_id: "$subscribed_package_id",
-                            paywall_id: "$paywall_id",
-                            source: "$source",
-                            affiliate_mid: "$affiliate_mid",
-                            subscription_status: "$subscription_status",
-                            added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } },
-                        }},
+                                subscribed_package_id: "$subscribed_package_id",
+                                paywall_id: "$paywall_id",
+                                source: "$source",
+                                affiliate_mid: "$affiliate_mid",
+                                subscription_status: "$subscription_status",
+                                added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } },
+                            }},
                         { $skip: skip },
                         { $limit: limit }
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
@@ -30,6 +30,7 @@ class SubscriptionRepository {
             });
         });
     }
+
 
     async getChargeDetailsSourceWiseByDateRange (req, from, to, skip, limit) {
         return new Promise((resolve, reject) => {
