@@ -1,12 +1,12 @@
 const container = require("../../../configurations/container");
 const reportsRepo = require('../../../repos/apis/ReportsRepo');
-const subscriptionRepo = container.resolve('subscriptionRepository');
+const billingHistoryRepo = container.resolve('billingHistoryRepository');
 const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
 
 let fromDate, toDate, day, month, finalData, finalList = [], subscribersFinalList = [];
-let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
+let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeSubscriptionReports = async(req, res) => {
     console.log('computeSubscriptionReports');
 
@@ -21,7 +21,10 @@ computeSubscriptionReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
+    console.log('fromDate: ', fromDate, toDate);
+    query = countQuery(fromDate, toDate);
+
+    await helper.getTotalCount(req, fromDate, toDate, 'billinghistories', query).then(async function (totalCount) {
         console.log('totalCount: ', totalCount);
 
         if (totalCount > 0){
@@ -32,7 +35,7 @@ computeSubscriptionReports = async(req, res) => {
 
             //Loop over no.of chunks
             for (i = 0 ; i < totalChunks; i++){
-                await subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, limit).then(async function (subscriptions) {
+                await billingHistoryRepo.computeSubscriptionsFromBillingHistoryByDateRange(req, fromDate, toDate, skip, limit).then(async function (subscriptions) {
                     console.log('subscriptions 1: ', subscriptions.length);
 
                     //set skip variable to limit data
@@ -56,7 +59,7 @@ computeSubscriptionReports = async(req, res) => {
 
             // fetch last chunk Data from DB
             if (lastLimit > 0){
-                await subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (subscriptions) {
+                await billingHistoryRepo.computeSubscriptionsFromBillingHistoryByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (subscriptions) {
                     console.log('subscriptions 2: ', subscriptions.length);
 
                     // Now compute and store data in DB
@@ -115,7 +118,10 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
 
-        await helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
+        console.log('fromDate: ', fromDate, toDate);
+        query = countQuery(fromDate, toDate);
+
+        await helper.getTotalCount(req, fromDate, toDate, 'billinghistories', query).then(async function (totalCount) {
             console.log('totalCount: ', totalCount);
 
             if (totalCount > 0){
@@ -126,7 +132,7 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
 
                 //Loop over no.of chunks
                 for (i = 0 ; i < totalChunks; i++){
-                    await subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, limit).then(async function (subscriptions) {
+                    await billingHistoryRepo.computeSubscriptionsFromBillingHistoryByDateRange(req, fromDate, toDate, skip, limit).then(async function (subscriptions) {
                         console.log('subscriptions 1: ', subscriptions.length);
 
                         //set skip variable to limit data
@@ -147,7 +153,7 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
 
                 // fetch last chunk Data from DB
                 if (lastLimit > 0){
-                    await subscriptionRepo.getSubscriptionsByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (subscriptions) {
+                    await billingHistoryRepo.computeSubscriptionsFromBillingHistoryByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (subscriptions) {
                         console.log('subscriptions 2: ', subscriptions.length);
 
                         // Now compute and store data in DB
@@ -364,6 +370,48 @@ function cloneInfoObj() {
         billing_dtm: '',
         billing_dtm_hours: ''
     };
+}
+
+function countQuery(from, to){
+    return [
+        {
+            $match:{
+                $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+            }
+        },
+        {$project:{
+                source: {$ifNull: ['$source', 'app'] },
+                micro_charge: {$ifNull: ['$micro_charge', 'false'] },
+                paywall_id: {$ifNull: ['$paywall_id', 'Dt6Gp70c'] },
+                package_id: {$ifNull: ['$package_id', 'QDfC'] },
+                operator: {$ifNull: ['$operator', 'telenor'] },
+                billing_status: {$ifNull: ['$billing_status', 'expire'] },
+                transaction_id: "$transaction_id",
+                user_id: "$user_id",
+                billing_dtm: "$billing_dtm",
+            }},
+        {$group: {
+                _id: { "user_id": "$user_id", "package_id": "$package_id"},
+                history: { $push:  {
+                        source: "$source",
+                        micro_charge: "$micro_charge",
+                        paywall_id: "$paywall_id",
+                        package_id: "$package_id",
+                        operator: "$operator",
+                        transaction_id: "$transaction_id",
+                        billing_status: "$billing_status",
+                        billing_dtm: "$billing_dtm"
+                    }}
+            }},
+        {$project:{
+            _id: 0,
+            user_id: "$_id.user_id",
+            history: {$arrayElemAt:["$history", 0]}
+        }},
+        {
+            $count: "count"
+        }
+    ];
 }
 
 module.exports = {
