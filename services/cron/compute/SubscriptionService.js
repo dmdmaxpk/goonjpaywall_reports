@@ -192,65 +192,75 @@ function computeSubscriptionsData(subscriptions) {
                 if (outer_added_dtm === inner_added_dtm){
                     dateInMili = inner_added_dtm;
 
-                    if(innerObj.history.billing_status === "Success" || innerObj.history.billing_status === "trial" || innerObj.history.billing_status === "graced"){
-                        //Package wise subscriptions
-                        if(innerObj.subscribed_package_id === 'QDfC')
-                            newObj.package.dailyLive = newObj.package.dailyLive + 1;
-                        else if(innerObj.subscribed_package_id === 'QDfG')
-                            newObj.package.weeklyLive = newObj.package.weeklyLive + 1;
-                        else if(innerObj.subscribed_package_id === 'QDfH')
-                            newObj.package.dailyComedy = newObj.package.dailyComedy + 1;
-                        else if(innerObj.subscribed_package_id === 'QDfI')
-                            newObj.package.weeklyComedy = newObj.package.weeklyComedy + 1;
+                    console.log('history:', innerObj.hasOwnProperty('history'));
+                    if (innerObj.history) {
+                        if(innerObj.history.billing_status === "Success" || innerObj.history.billing_status === "trial" || innerObj.history.billing_status === "graced"){
+                            //Package wise subscriptions
+                            if(innerObj.subscribed_package_id === 'QDfC')
+                                newObj.package.dailyLive = newObj.package.dailyLive + 1;
+                            else if(innerObj.subscribed_package_id === 'QDfG')
+                                newObj.package.weeklyLive = newObj.package.weeklyLive + 1;
+                            else if(innerObj.subscribed_package_id === 'QDfH')
+                                newObj.package.dailyComedy = newObj.package.dailyComedy + 1;
+                            else if(innerObj.subscribed_package_id === 'QDfI')
+                                newObj.package.weeklyComedy = newObj.package.weeklyComedy + 1;
 
-                        //Paywall wise subscriptions
-                        if(innerObj.paywall_id === 'ghRtjhT7')
-                            newObj.paywall.comedy = newObj.paywall.comedy + 1;
-                        else if(innerObj.paywall_id === 'Dt6Gp70c')
-                            newObj.paywall.live = newObj.paywall.live + 1;
+                            //Paywall wise subscriptions
+                            if(innerObj.paywall_id === 'ghRtjhT7')
+                                newObj.paywall.comedy = newObj.paywall.comedy + 1;
+                            else if(innerObj.paywall_id === 'Dt6Gp70c')
+                                newObj.paywall.live = newObj.paywall.live + 1;
 
-                        //Source wise subscriptions
-                        if(innerObj.source === 'app')
-                            newObj.source.app = newObj.source.app + 1;
-                        else if(innerObj.source === 'web')
-                            newObj.source.web = newObj.source.web + 1;
-                        else if(innerObj.source === 'gdn2')
-                            newObj.source.gdn2 = newObj.source.gdn2 + 1;
-                        else if(innerObj.source === 'HE')
-                            newObj.source.HE = newObj.source.HE + 1;
-                        else if(innerObj.source === 'affiliate_web')
-                            newObj.source.affiliate_web = Number(newObj.source.affiliate_web) + 1;
+                            //Source wise subscriptions
+                            if(innerObj.source === 'app')
+                                newObj.source.app = newObj.source.app + 1;
+                            else if(innerObj.source === 'web')
+                                newObj.source.web = newObj.source.web + 1;
+                            else if(innerObj.source === 'gdn2')
+                                newObj.source.gdn2 = newObj.source.gdn2 + 1;
+                            else if(innerObj.source === 'HE')
+                                newObj.source.HE = newObj.source.HE + 1;
+                            else if(innerObj.source === 'affiliate_web')
+                                newObj.source.affiliate_web = Number(newObj.source.affiliate_web) + 1;
 
-                        //Affiliate mid wise subscriptions
-                        if(innerObj.affiliate_mid){
-                            if(innerObj.affiliate_mid === 'aff3')
-                                newObj.affiliate_mid.aff3 = newObj.affiliate_mid.aff3 + 1;
-                            else if(innerObj.affiliate_mid === 'aff3a')
-                                newObj.affiliate_mid.aff3a = newObj.affiliate_mid.aff3a + 1;
-                            else if(innerObj.affiliate_mid === 'gdn')
-                                newObj.affiliate_mid.gdn = newObj.affiliate_mid.gdn + 1;
-                            else if(innerObj.affiliate_mid === 'gdn2')
-                                newObj.affiliate_mid.gdn2 = newObj.affiliate_mid.gdn2 + 1;
-                            else if(innerObj.affiliate_mid === 'goonj')
-                                newObj.affiliate_mid.goonj = newObj.affiliate_mid.goonj + 1;
-                            else if(innerObj.affiliate_mid === '1565')
-                                newObj.affiliate_mid['1565'] = newObj.affiliate_mid['1565'] + 1;
-                            else if(innerObj.affiliate_mid === '1569')
-                                newObj.affiliate_mid['1569'] = newObj.affiliate_mid['1569'] + 1;
-                            else if(innerObj.affiliate_mid === '1')
-                                newObj.affiliate_mid['1'] = newObj.affiliate_mid['1'] + 1;
-                            else if(innerObj.affiliate_mid === 'null')
-                                newObj.affiliate_mid['null'] = newObj.affiliate_mid['null'] + 1;
+                            //Affiliate mid wise subscriptions
+                            if(innerObj.affiliate_mid){
+                                if(innerObj.affiliate_mid === 'aff3')
+                                    newObj.affiliate_mid.aff3 = newObj.affiliate_mid.aff3 + 1;
+                                else if(innerObj.affiliate_mid === 'aff3a')
+                                    newObj.affiliate_mid.aff3a = newObj.affiliate_mid.aff3a + 1;
+                                else if(innerObj.affiliate_mid === 'gdn')
+                                    newObj.affiliate_mid.gdn = newObj.affiliate_mid.gdn + 1;
+                                else if(innerObj.affiliate_mid === 'gdn2')
+                                    newObj.affiliate_mid.gdn2 = newObj.affiliate_mid.gdn2 + 1;
+                                else if(innerObj.affiliate_mid === 'goonj')
+                                    newObj.affiliate_mid.goonj = newObj.affiliate_mid.goonj + 1;
+                                else if(innerObj.affiliate_mid === '1565')
+                                    newObj.affiliate_mid['1565'] = newObj.affiliate_mid['1565'] + 1;
+                                else if(innerObj.affiliate_mid === '1569')
+                                    newObj.affiliate_mid['1569'] = newObj.affiliate_mid['1569'] + 1;
+                                else if(innerObj.affiliate_mid === '1')
+                                    newObj.affiliate_mid['1'] = newObj.affiliate_mid['1'] + 1;
+                                else if(innerObj.affiliate_mid === 'null')
+                                    newObj.affiliate_mid['null'] = newObj.affiliate_mid['null'] + 1;
+                            }
+
+                            //Active subscriptions & subscribers
+                            newObj.active = newObj.active + 1;
+                            subscriberObj.active = subscriberObj.active + 1;
                         }
-
-                        //Active subscriptions & subscribers
-                        newObj.active = newObj.active + 1;
-                        subscriberObj.active = subscriberObj.active + 1;
-                    }else{
+                        else{
+                            //inactive subscriptions & subscribers
+                            newObj.nonActive = newObj.nonActive + 1;
+                            subscriberObj.nonActive = subscriberObj.nonActive + 1;
+                        }
+                    }
+                    else{
                         //inactive subscriptions & subscribers
                         newObj.nonActive = newObj.nonActive + 1;
                         subscriberObj.nonActive = subscriberObj.nonActive + 1;
                     }
+
 
                     newObj.added_dtm = outerObj.added_dtm;
                     subscriberObj.added_dtm = outerObj.added_dtm;
