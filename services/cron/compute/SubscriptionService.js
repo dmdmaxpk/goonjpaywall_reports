@@ -174,81 +174,80 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
 
 function computeSubscriptionsData(subscriptions) {
 
-    let dateInMili, outer_added_dtm, inner_added_dtm, newObj, outerObj, innerObj, status, subscriberObj, finalList = [], subscribersFinalList = [];
-    let statusArr  = ["Success", "graced", "billed", "trial"];
+    let dateInMili, outer_billing_dtm, inner_billing_dtm, newObj, outerObj, innerObj, billing_status, affiliate_mid, subscriberObj, finalList = [], subscribersFinalList = [];
     for (let j=0; j < subscriptions.length; j++) {
 
         outerObj = subscriptions[j];
 
         newObj = _.clone(cloneInfoObj());
         subscriberObj = _.clone(cloneSubscribersObj());
-        outer_added_dtm = helper.setDate(new Date(outerObj.added_dtm), null, 0, 0, 0).getTime();
+        outer_billing_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
 
-        status = false;
-        if (dateInMili !== outer_added_dtm){
+        billing_status = false;
+        if (dateInMili !== outer_billing_dtm){
             for (let k=0; k < subscriptions.length; k++) {
 
                 innerObj = subscriptions[k];
-                inner_added_dtm = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0).getTime();
+                inner_billing_dtm = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
 
-                if (outer_added_dtm === inner_added_dtm){
-                    dateInMili = inner_added_dtm;
+                if (outer_billing_dtm === inner_billing_dtm){
+                    dateInMili = inner_billing_dtm;
 
-                    if (innerObj.history)
-                        status = innerObj.history.billing_status;
-                    else
-                        status = innerObj.subscription_status;
-
-                    status = statusArr.includes(status) ? true : false;
-
-                    if(status){
+                    billing_status = innerObj.history.billing_status;
+                    if(billing_status === "Success" || billing_status === "trial" || billing_status === "graced"){
                         //Package wise subscriptions
-                        if(innerObj.subscribed_package_id === 'QDfC')
+                        if(innerObj.history.package_id === 'QDfC')
                             newObj.package.dailyLive = newObj.package.dailyLive + 1;
-                        else if(innerObj.subscribed_package_id === 'QDfG')
+                        else if(innerObj.history.package_id === 'QDfG')
                             newObj.package.weeklyLive = newObj.package.weeklyLive + 1;
-                        else if(innerObj.subscribed_package_id === 'QDfH')
+                        else if(innerObj.history.package_id === 'QDfH')
                             newObj.package.dailyComedy = newObj.package.dailyComedy + 1;
-                        else if(innerObj.subscribed_package_id === 'QDfI')
+                        else if(innerObj.history.package_id === 'QDfI')
                             newObj.package.weeklyComedy = newObj.package.weeklyComedy + 1;
 
                         //Paywall wise subscriptions
-                        if(innerObj.paywall_id === 'ghRtjhT7')
+                        if(innerObj.history.paywall_id === 'ghRtjhT7')
                             newObj.paywall.comedy = newObj.paywall.comedy + 1;
-                        else if(innerObj.paywall_id === 'Dt6Gp70c')
+                        else if(innerObj.history.paywall_id === 'Dt6Gp70c')
                             newObj.paywall.live = newObj.paywall.live + 1;
 
                         //Source wise subscriptions
-                        if(innerObj.source === 'app')
+                        if(innerObj.history.source === 'app')
                             newObj.source.app = newObj.source.app + 1;
-                        else if(innerObj.source === 'web')
+                        else if(innerObj.history.source === 'web')
                             newObj.source.web = newObj.source.web + 1;
-                        else if(innerObj.source === 'gdn2')
+                        else if(innerObj.history.source === 'gdn2')
                             newObj.source.gdn2 = newObj.source.gdn2 + 1;
-                        else if(innerObj.source === 'HE')
+                        else if(innerObj.history.source === 'HE')
                             newObj.source.HE = newObj.source.HE + 1;
-                        else if(innerObj.source === 'affiliate_web')
+                        else if(innerObj.history.source === 'affiliate_web')
                             newObj.source.affiliate_web = Number(newObj.source.affiliate_web) + 1;
+                        else
+                            newObj.source.other_mids = Number(newObj.source.other_mids) + 1;
+
 
                         //Affiliate mid wise subscriptions
-                        if(innerObj.affiliate_mid){
-                            if(innerObj.affiliate_mid === 'aff3')
+                        if(innerObj.history.billing_status === 'Affiliate callback sent'){
+                            affiliate_mid = innerObj.history.transaction_id;
+                            affiliate_mid = affiliate_mid.split('*')[1];
+
+                            if(affiliate_mid === 'aff3')
                                 newObj.affiliate_mid.aff3 = newObj.affiliate_mid.aff3 + 1;
-                            else if(innerObj.affiliate_mid === 'aff3a')
+                            else if(affiliate_mid === 'aff3a')
                                 newObj.affiliate_mid.aff3a = newObj.affiliate_mid.aff3a + 1;
-                            else if(innerObj.affiliate_mid === 'gdn')
+                            else if(affiliate_mid === 'gdn')
                                 newObj.affiliate_mid.gdn = newObj.affiliate_mid.gdn + 1;
-                            else if(innerObj.affiliate_mid === 'gdn2')
+                            else if(affiliate_mid === 'gdn2')
                                 newObj.affiliate_mid.gdn2 = newObj.affiliate_mid.gdn2 + 1;
-                            else if(innerObj.affiliate_mid === 'goonj')
+                            else if(affiliate_mid === 'goonj')
                                 newObj.affiliate_mid.goonj = newObj.affiliate_mid.goonj + 1;
-                            else if(innerObj.affiliate_mid === '1565')
+                            else if(affiliate_mid === '1565')
                                 newObj.affiliate_mid['1565'] = newObj.affiliate_mid['1565'] + 1;
-                            else if(innerObj.affiliate_mid === '1569')
+                            else if(affiliate_mid === '1569')
                                 newObj.affiliate_mid['1569'] = newObj.affiliate_mid['1569'] + 1;
-                            else if(innerObj.affiliate_mid === '1')
+                            else if(affiliate_mid === '1')
                                 newObj.affiliate_mid['1'] = newObj.affiliate_mid['1'] + 1;
-                            else if(innerObj.affiliate_mid === 'null')
+                            else if(affiliate_mid === 'null')
                                 newObj.affiliate_mid['null'] = newObj.affiliate_mid['null'] + 1;
                         }
 
@@ -263,10 +262,10 @@ function computeSubscriptionsData(subscriptions) {
                     }
 
                     status = false;
-                    newObj.added_dtm = outerObj.added_dtm;
-                    subscriberObj.added_dtm = outerObj.added_dtm;
-                    newObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
-                    subscriberObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+                    newObj.billing_dtm = outerObj.billing_dtm;
+                    subscriberObj.billing_dtm = outerObj.billing_dtm;
+                    newObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
+                    subscriberObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
                 }
             }
             finalList.push(newObj);
@@ -325,8 +324,8 @@ function cloneSubscribersObj() {
     return {
         active: 0,
         nonActive: 0,
-        added_dtm: '',
-        added_dtm_hours: ''
+        billing_dtm: '',
+        billing_dtm_hours: ''
     }
 }
 function cloneInfoObj() {
@@ -348,7 +347,8 @@ function cloneInfoObj() {
             web: 0,
             gdn2: 0,
             HE: 0,
-            affiliate_web: 0
+            affiliate_web: 0,
+            other_mids: 0
         },
         affiliate_mid: {
             aff3: 0,
@@ -361,8 +361,8 @@ function cloneInfoObj() {
             '1': 0,
             'null': 0,
         },
-        added_dtm: '',
-        added_dtm_hours: ''
+        billing_dtm: '',
+        billing_dtm_hours: ''
     };
 }
 

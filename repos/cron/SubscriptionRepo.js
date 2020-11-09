@@ -7,42 +7,40 @@ class SubscriptionRepository {
                 if (!err) {
                     collection.aggregate([
                         {
-                            $match:{ $and: [{added_dtm: {$gte: new Date(from)}}, {added_dtm: {$lte: new Date(to)}}]
-                        }},
-                        {
-                            $lookup: {
-                                from: "billinghistories",
-                                let: {subscription_id: "$_id"},
-                                pipeline:[
-                                    { $match:
-                                        { $expr:
-                                            { $and:[
-                                                {$eq: ["$subscription_id", "$$subscription_id" ]},
-                                                {$gt: ["$billing_dtm", new Date(from)]},
-                                                {$lt: ["$billing_dtm", new Date(to)]}
-                                            ]}
-                                        }
-                                    },
-                                    { $project: {
-                                        subscription_id: "$subscription_id",
-                                        billing_status: "$billing_status",
-                                        billing_dtm: "$billing_dtm"
-                                    }},
-                                    {$sort: {
-                                        billing_dtm: 1
-                                    }}
-                                ],
-                                as: "history"
+                            $match:{
+                                $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
                             }
+                        },{
+                            $sort: {billing_dtm:-1}
                         },
-                        { $project: {
-                            subscribed_package_id: "$subscribed_package_id",
-                            paywall_id: "$paywall_id",
-                            source: "$source",
-                            affiliate_mid: "$affiliate_mid",
-                            subscription_status: "$subscription_status",
-                            added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } },
-                            history: { $arrayElemAt: [ "$history", -1 ] }
+                        {$project:{
+                            source: {$ifNull: ['$source', 'app'] },
+                            micro_charge: {$ifNull: ['$micro_charge', 'false'] },
+                            paywall_id: {$ifNull: ['$paywall_id', 'Dt6Gp70c'] },
+                            package_id: {$ifNull: ['$package_id', 'QDfC'] },
+                            operator: {$ifNull: ['$operator', 'telenor'] },
+                            billing_status: {$ifNull: ['$billing_status', 'expire'] },
+                            transaction_id: "$transaction_id",
+                            user_id: "$user_id",
+                            billing_dtm: "$billing_dtm",
+                        }},
+                        {$group: {
+                            _id: { "user_id": "$user_id", "package_id": "$package_id"},
+                            history: { $push:  {
+                                source: "$source",
+                                micro_charge: "$micro_charge",
+                                paywall_id: "$paywall_id",
+                                package_id: "$package_id",
+                                operator: "$operator",
+                                transaction_id: "$transaction_id",
+                                billing_status: "$billing_status",
+                                billing_dtm: "$billing_dtm"
+                            }}
+                        }},
+                        {$project:{
+                            _id: 0,
+                            user_id: "$_id.user_id",
+                            history: {$arrayElemAt:["$history", 0]}
                         }},
                         { $skip: skip },
                         { $limit: limit }
