@@ -258,7 +258,7 @@ class Helper {
                     else{
                         console.log('getTotalCount - else case');
                         try {
-                            await collection.aggregate(query).toArray(async function(err, count) {
+                            await collection.aggregate(query,{ allowDiskUse: true }).toArray(async function(err, count) {
                                 if(err){
                                     console.error(collectionName, ' count query - err: ', err.message);
                                     await resolve(0);
