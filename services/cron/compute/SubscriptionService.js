@@ -192,7 +192,6 @@ function computeSubscriptionsData(subscriptions) {
                 if (outer_added_dtm === inner_added_dtm){
                     dateInMili = inner_added_dtm;
 
-                    console.log('history:', innerObj.hasOwnProperty('history'));
                     if (innerObj.history) {
                         if(innerObj.history.billing_status === "Success" || innerObj.history.billing_status === "trial" || innerObj.history.billing_status === "graced"){
                             //Package wise subscriptions
