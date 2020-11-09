@@ -49,34 +49,34 @@ class BillingHistoryRepository {
                             $sort: {billing_dtm:-1}
                         },
                         {$project:{
-                                source: {$ifNull: ['$source', 'app'] },
-                                micro_charge: {$ifNull: ['$micro_charge', 'false'] },
-                                paywall_id: {$ifNull: ['$paywall_id', 'Dt6Gp70c'] },
-                                package_id: {$ifNull: ['$package_id', 'QDfC'] },
-                                operator: {$ifNull: ['$operator', 'telenor'] },
-                                billing_status: {$ifNull: ['$billing_status', 'expire'] },
-                                transaction_id: "$transaction_id",
-                                user_id: "$user_id",
-                                billing_dtm: "$billing_dtm",
-                            }},
+                            source: {$ifNull: ['$source', 'app'] },
+                            micro_charge: {$ifNull: ['$micro_charge', 'false'] },
+                            paywall_id: {$ifNull: ['$paywall_id', 'Dt6Gp70c'] },
+                            package_id: {$ifNull: ['$package_id', 'QDfC'] },
+                            operator: {$ifNull: ['$operator', 'telenor'] },
+                            billing_status: {$ifNull: ['$billing_status', 'expire'] },
+                            transaction_id: "$transaction_id",
+                            user_id: "$user_id",
+                            billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } },
+                        }},
                         {$group: {
-                                _id: { "user_id": "$user_id", "package_id": "$package_id"},
-                                history: { $push:  {
-                                        source: "$source",
-                                        micro_charge: "$micro_charge",
-                                        paywall_id: "$paywall_id",
-                                        package_id: "$package_id",
-                                        operator: "$operator",
-                                        transaction_id: "$transaction_id",
-                                        billing_status: "$billing_status",
-                                        billing_dtm: "$billing_dtm"
-                                    }}
-                            }},
+                            _id: { "user_id": "$user_id", "package_id": "$package_id"},
+                            history: { $push:  {
+                                source: "$source",
+                                micro_charge: "$micro_charge",
+                                paywall_id: "$paywall_id",
+                                package_id: "$package_id",
+                                operator: "$operator",
+                                transaction_id: "$transaction_id",
+                                billing_status: "$billing_status",
+                                billing_dtm: "$billing_dtm"
+                            }}
+                        }},
                         {$project:{
-                                _id: 0,
-                                user_id: "$_id.user_id",
-                                history: {$arrayElemAt:["$history", 0]}
-                            }},
+                            _id: 0,
+                            user_id: "$_id.user_id",
+                            history: {$arrayElemAt:["$history", 0]}
+                        }},
                         { $skip: skip },
                         { $limit: limit }
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
