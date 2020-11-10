@@ -238,6 +238,7 @@ function computeSubscriptionsData(subscriptions) {
                         if(innerObj.history.billing_status === 'Affiliate callback sent'){
                             affiliate_mid = innerObj.history.transaction_id;
                             affiliate_mid = affiliate_mid.split('*')[1];
+                            affiliate_mid = affiliate_mid.trim();
 
                             if(affiliate_mid === 'aff3')
                                 newObj.affiliate_mid.aff3 = newObj.affiliate_mid.aff3 + 1;
