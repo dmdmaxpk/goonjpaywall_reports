@@ -298,8 +298,8 @@ function computeSubscriptionsData(subscriptions) {
 
         innerObj = subscriptions[k];
         thisHour = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
-        subscriptionsArrIndex = helper.checkDataExist(finalList, thisHour, 'added_dtm_hours');
-        subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'added_dtm_hours');
+        subscriptionsArrIndex = helper.checkDataExist(finalList, thisHour, 'billing_dtm_hours');
+        subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'billing_dtm_hours');
         console.log('subscriptionsArrIndex: ', subscriptionsArrIndex);
         console.log('subscribersArrIndex: ', subscribersArrIndex);
 
