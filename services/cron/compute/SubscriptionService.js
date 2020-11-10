@@ -46,13 +46,15 @@ computeSubscriptionReports = async(req, res) => {
                         finalData = computeSubscriptionsData(subscriptions);
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
+                        console.log('finalList: ', finalList.length);
+                        console.log('subscribersFinalList: ', subscribersFinalList.length);
 
                         if (finalList.length > 0 || subscribersFinalList.length > 0){
                             console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
-                            if (totalChunks > 1 || lastLimit > 0)
-                                await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
-                            else
-                                await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
+                            // if (totalChunks > 1 || lastLimit > 0)
+                            //     await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
+                            // else
+                            //     await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
                         }
                     }
                 });
@@ -68,8 +70,8 @@ computeSubscriptionReports = async(req, res) => {
                         finalData = computeSubscriptionsData(subscriptions);
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
-                        if (finalList.length > 0 || subscribersFinalList.length > 0)
-                            await insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
+                        // if (finalList.length > 0 || subscribersFinalList.length > 0)
+                        //     await insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
                     }
                 });
             }
@@ -177,10 +179,11 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
     });
 };
 
-function computeSubscriptionsData(subscriptions) {
+function computeSubscriptionsDataOld(subscriptions) {
 
     console.log('computeSubscriptionsData: ', subscriptions.length);
     let dateInMili, outer_billing_dtm, inner_billing_dtm, newObj, outerObj, innerObj, billing_status, affiliate_mid, subscriberObj, finalList = [], subscribersFinalList = [];
+    let hours_array = [];
     for (let j=0; j < subscriptions.length; j++) {
 
         outerObj = subscriptions[j];
@@ -195,13 +198,12 @@ function computeSubscriptionsData(subscriptions) {
 
                 innerObj = subscriptions[k];
                 inner_billing_dtm = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0).getTime();
-                console.log('inner_billing_dtm: ', inner_billing_dtm);
 
                 if (outer_billing_dtm === inner_billing_dtm){
                     dateInMili = inner_billing_dtm;
+                    console.log('inner_billing_dtm: ', inner_billing_dtm);
 
                     billing_status = innerObj.history.billing_status;
-
                     if(billing_status === "Success" || billing_status === "trial" || billing_status === "graced"){
                         //Package wise subscriptions
                         if(innerObj.history.package_id === 'QDfC')
@@ -285,6 +287,121 @@ function computeSubscriptionsData(subscriptions) {
     }
 
     console.log('computeSubscriptionsData - out from functions: ');
+
+    return {finalList: finalList, subscribersFinalList: subscribersFinalList};
+}
+function computeSubscriptionsData(subscriptions) {
+    console.log('computeSubscriptionsData: ', subscriptions.length);
+    let newObj, thisHour, subscriptionsArrIndex, subscribersArrIndex, innerObj, billing_status, affiliate_mid, subscriberObj, finalList = [], subscribersFinalList = [];
+
+    for (let k=0; k < subscriptions.length; k++) {
+
+        innerObj = subscriptions[k];
+        thisHour = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
+        subscriptionsArrIndex = helper.checkDataExist(finalList, thisHour, 'added_dtm_hours');
+        subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'added_dtm_hours');
+        console.log('subscriptionsArrIndex: ', subscriptionsArrIndex);
+        console.log('subscribersArrIndex: ', subscribersArrIndex);
+
+        if ( subscriptionsArrIndex !== -1 ){
+            console.log('subscribersArrIndex - if ', subscribersArrIndex);
+            newObj = _.clone(finalList[subscriptionsArrIndex]);
+        }
+        else{
+            console.log('subscribersArrIndex - else', subscribersArrIndex);
+            newObj = _.clone(cloneInfoObj());
+        }
+
+        if ( subscribersArrIndex !== -1 )
+            subscriberObj = _.clone(subscribersFinalList[subscribersArrIndex]);
+        else
+            subscriberObj = _.clone(cloneSubscribersObj());
+
+        billing_status = innerObj.history.billing_status;
+        if(billing_status === "Success" || billing_status === "trial" || billing_status === "graced"){
+            //Package wise subscriptions
+            if(innerObj.history.package_id === 'QDfC')
+                newObj.package.dailyLive = newObj.package.dailyLive + 1;
+            else if(innerObj.history.package_id === 'QDfG')
+                newObj.package.weeklyLive = newObj.package.weeklyLive + 1;
+            else if(innerObj.history.package_id === 'QDfH')
+                newObj.package.dailyComedy = newObj.package.dailyComedy + 1;
+            else if(innerObj.history.package_id === 'QDfI')
+                newObj.package.weeklyComedy = newObj.package.weeklyComedy + 1;
+
+            //Paywall wise subscriptions
+            if(innerObj.history.paywall_id === 'ghRtjhT7')
+                newObj.paywall.comedy = newObj.paywall.comedy + 1;
+            else if(innerObj.history.paywall_id === 'Dt6Gp70c')
+                newObj.paywall.live = newObj.paywall.live + 1;
+
+            //Source wise subscriptions
+            if(innerObj.history.source === 'app')
+                newObj.source.app = newObj.source.app + 1;
+            else if(innerObj.history.source === 'web')
+                newObj.source.web = newObj.source.web + 1;
+            else if(innerObj.history.source === 'gdn2')
+                newObj.source.gdn2 = newObj.source.gdn2 + 1;
+            else if(innerObj.history.source === 'HE')
+                newObj.source.HE = newObj.source.HE + 1;
+            else if(innerObj.history.source === 'affiliate_web')
+                newObj.source.affiliate_web = Number(newObj.source.affiliate_web) + 1;
+            else
+                newObj.source.other_mids = Number(newObj.source.other_mids) + 1;
+
+
+            //Affiliate mid wise subscriptions
+            if(innerObj.history.billing_status === 'Affiliate callback sent'){
+                affiliate_mid = innerObj.history.transaction_id;
+                affiliate_mid = affiliate_mid.split('*')[1];
+                affiliate_mid = affiliate_mid.trim();
+
+                if(affiliate_mid === 'aff3')
+                    newObj.affiliate_mid.aff3 = newObj.affiliate_mid.aff3 + 1;
+                else if(affiliate_mid === 'aff3a')
+                    newObj.affiliate_mid.aff3a = newObj.affiliate_mid.aff3a + 1;
+                else if(affiliate_mid === 'gdn')
+                    newObj.affiliate_mid.gdn = newObj.affiliate_mid.gdn + 1;
+                else if(affiliate_mid === 'gdn2')
+                    newObj.affiliate_mid.gdn2 = newObj.affiliate_mid.gdn2 + 1;
+                else if(affiliate_mid === 'goonj')
+                    newObj.affiliate_mid.goonj = newObj.affiliate_mid.goonj + 1;
+                else if(affiliate_mid === '1565')
+                    newObj.affiliate_mid['1565'] = newObj.affiliate_mid['1565'] + 1;
+                else if(affiliate_mid === '1569')
+                    newObj.affiliate_mid['1569'] = newObj.affiliate_mid['1569'] + 1;
+                else if(affiliate_mid === '1')
+                    newObj.affiliate_mid['1'] = newObj.affiliate_mid['1'] + 1;
+                else if(affiliate_mid === 'null')
+                    newObj.affiliate_mid['null'] = newObj.affiliate_mid['null'] + 1;
+            }
+
+            //Active subscriptions & subscribers
+            newObj.active = newObj.active + 1;
+            subscriberObj.active = subscriberObj.active + 1;
+        }
+        else{
+            //inactive subscriptions & subscribers
+            newObj.nonActive = newObj.nonActive + 1;
+            subscriberObj.nonActive = subscriberObj.nonActive + 1;
+        }
+
+        //Update timestamp
+        newObj.billing_dtm = innerObj.history.billing_dtm;
+        subscriberObj.billing_dtm = innerObj.history.billing_dtm;
+        newObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
+        subscriberObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
+
+        if ( subscriptionsArrIndex !== -1 )
+            finalList[subscriptionsArrIndex] = newObj;
+        else
+            finalList.push(newObj);
+
+        if ( subscribersArrIndex !== -1 )
+            subscribersFinalList[subscribersArrIndex] = subscriberObj;
+        else
+            subscribersFinalList.push(subscriberObj);
+    }
 
     return {finalList: finalList, subscribersFinalList: subscribersFinalList};
 }

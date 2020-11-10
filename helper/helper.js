@@ -49,6 +49,25 @@ class Helper {
     ) ;
     }
 
+    static checkDataExist(arrayData, date, type){
+        let obj, index = -1;
+        for(let i = 0; i < arrayData.length; i++) {
+            obj = arrayData[i];
+            if(new Date(obj[type]).getHours() === new Date(date).getHours()) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
+
+    static checkDataExist1(arrayData, date, type){
+        arrayData.some(function(item){
+            return new Date(item[type]).getHours() === new Date(date).getHours();
+        });
+    }
+
     static isToday(someDate) {
         someDate = new Date( someDate );
         someDate = new Date( someDate.setDate(someDate.getDate() + 1));
