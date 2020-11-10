@@ -43,9 +43,13 @@ computeSubscriptionReports = async(req, res) => {
 
                     // Now compute and store data in DB
                     if (subscriptions.length > 0){
+                        console.log('subscriptions.length: ', subscriptions.length);
                         finalData = computeSubscriptionsData(subscriptions);
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
+                        console.log('finalList.length: ', finalList.length);
+                        console.log('subscribersFinalList.length: ', subscribersFinalList.length);
+
                         if (finalList.length > 0 || subscribersFinalList.length > 0){
                             console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
                             if (totalChunks > 1 || lastLimit > 0)
@@ -188,6 +192,7 @@ function computeSubscriptionsData(subscriptions) {
         newObj = _.clone(cloneInfoObj());
         subscriberObj = _.clone(cloneSubscribersObj());
         outer_billing_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
+        console.log('outer_billing_dtm: ', outer_billing_dtm);
 
         billing_status = false;
         if (dateInMili !== outer_billing_dtm){
@@ -195,6 +200,7 @@ function computeSubscriptionsData(subscriptions) {
 
                 innerObj = subscriptions[k];
                 inner_billing_dtm = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
+                console.log('inner_billing_dtm: ', inner_billing_dtm);
 
                 if (outer_billing_dtm === inner_billing_dtm){
                     dateInMili = inner_billing_dtm;
@@ -278,6 +284,8 @@ function computeSubscriptionsData(subscriptions) {
             subscribersFinalList.push(subscriberObj);
         }
     }
+
+    console.log('computeSubscriptionsData - out: ');
 
     return {finalList: finalList, subscribersFinalList: subscribersFinalList};
 }
