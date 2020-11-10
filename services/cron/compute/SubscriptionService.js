@@ -269,7 +269,6 @@ function computeSubscriptionsData(subscriptions) {
                         subscriberObj.nonActive = subscriberObj.nonActive + 1;
                     }
 
-                    status = false;
                     newObj.billing_dtm = outerObj.history.billing_dtm;
                     subscriberObj.billing_dtm = outerObj.history.billing_dtm;
                     newObj.billing_dtm_hours = helper.setDate(new Date(outerObj.history.billing_dtm), null, 0, 0, 0);
