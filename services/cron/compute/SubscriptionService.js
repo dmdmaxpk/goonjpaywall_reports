@@ -42,8 +42,10 @@ computeSubscriptionReports = async(req, res) => {
                     skip = skip + limit;
 
                     // Now compute and store data in DB
+                    console.log('subscriptions 2: ', subscriptions.length);
+
                     if (subscriptions.length > 0){
-                        console.log('subscriptions.length: ', subscriptions.length);
+                        console.log('subscriptions 3: ', subscriptions.length);
                         finalData = computeSubscriptionsData(subscriptions);
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
@@ -144,6 +146,8 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
 
                         // Now compute and store data in DB
                         if (subscriptions.length > 0){
+                            console.log('if (subscriptions.length > 0){: ');
+
                             finalData = computeSubscriptionsData(subscriptions);
                             finalList = finalData.finalList;
                             subscribersFinalList = finalData.subscribersFinalList;
@@ -183,6 +187,8 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
 };
 
 function computeSubscriptionsData(subscriptions) {
+
+    console.log('computeSubscriptionsData ');
 
     let dateInMili, outer_billing_dtm, inner_billing_dtm, newObj, outerObj, innerObj, billing_status, affiliate_mid, subscriberObj, finalList = [], subscribersFinalList = [];
     for (let j=0; j < subscriptions.length; j++) {
