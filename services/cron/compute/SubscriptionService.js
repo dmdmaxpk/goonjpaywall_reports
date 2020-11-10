@@ -188,12 +188,14 @@ function computeSubscriptionsData(subscriptions) {
         newObj = _.clone(cloneInfoObj());
         subscriberObj = _.clone(cloneSubscribersObj());
         outer_billing_dtm = helper.setDate(new Date(outerObj.history.billing_dtm), null, 0, 0, 0).getTime();
+        console.log('outer_billing_dtm: ', outer_billing_dtm);
 
         if (dateInMili !== outer_billing_dtm){
             for (let k=0; k < subscriptions.length; k++) {
 
                 innerObj = subscriptions[k];
                 inner_billing_dtm = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0).getTime();
+                console.log('inner_billing_dtm: ', inner_billing_dtm);
 
                 if (outer_billing_dtm === inner_billing_dtm){
                     dateInMili = inner_billing_dtm;
@@ -274,6 +276,9 @@ function computeSubscriptionsData(subscriptions) {
                     subscriberObj.billing_dtm_hours = helper.setDate(new Date(outerObj.history.billing_dtm), null, 0, 0, 0);
                 }
             }
+
+            console.log('update Arrays data ');
+
             finalList.push(newObj);
             subscribersFinalList.push(subscriberObj);
         }
