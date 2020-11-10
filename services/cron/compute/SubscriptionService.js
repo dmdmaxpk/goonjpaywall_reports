@@ -292,7 +292,7 @@ function computeSubscriptionsDataOld(subscriptions) {
 }
 function computeSubscriptionsData(subscriptions) {
     console.log('computeSubscriptionsData: ', subscriptions.length);
-    let newObj, thisHour, subscriptionsArrIndex, subscribersArrIndex, innerObj, billing_status, affiliate_mid, subscriberObj, finalList = [], subscribersFinalList = [];
+    let newObj, subscriberObj, thisHour, subscriptionsArrIndex, subscribersArrIndex, innerObj, billing_status, affiliate_mid, finalList = [], subscribersFinalList = [];
 
     for (let k=0; k < subscriptions.length; k++) {
 
@@ -401,6 +401,8 @@ function computeSubscriptionsData(subscriptions) {
             subscribersFinalList[subscribersArrIndex] = subscriberObj;
         else
             subscribersFinalList.push(subscriberObj);
+
+        console.log('After Update Arrays');
     }
 
     return {finalList: finalList, subscribersFinalList: subscribersFinalList};

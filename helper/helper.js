@@ -49,10 +49,12 @@ class Helper {
     ) ;
     }
 
-    static checkDataExist(arrayData, date, type){
+    static checkDataExist(dataArr, date, type){
         let obj, index = -1;
-        for(let i = 0; i < arrayData.length; i++) {
-            obj = arrayData[i];
+        for(let i = 0; i < dataArr.length; i++) {
+            obj = dataArr[i];
+            console.log('checkDataExist - ', new Date(obj[type]).getHours(), new Date(date).getHours());
+
             if(new Date(obj[type]).getHours() === new Date(date).getHours()) {
                 index = i;
                 break;
