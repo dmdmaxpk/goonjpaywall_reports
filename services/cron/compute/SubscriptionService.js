@@ -42,15 +42,10 @@ computeSubscriptionReports = async(req, res) => {
                     skip = skip + limit;
 
                     // Now compute and store data in DB
-                    console.log('subscriptions 2: ', subscriptions.length);
-
                     if (subscriptions.length > 0){
-                        console.log('subscriptions 3: ', subscriptions.length);
                         finalData = computeSubscriptionsData(subscriptions);
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
-                        console.log('finalList.length: ', finalList.length);
-                        console.log('subscribersFinalList.length: ', subscribersFinalList.length);
 
                         if (finalList.length > 0 || subscribersFinalList.length > 0){
                             console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
@@ -86,14 +81,12 @@ computeSubscriptionReports = async(req, res) => {
     console.log('computeSubscriptionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
     if (req.day <= helper.getDaysInMonth(month)){
-        console.log('IF');
         if (month < helper.getTodayMonthNo())
             computeSubscriptionReports(req, res);
         else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
             computeSubscriptionReports(req, res);
     }
     else{
-        console.log('ELSE');
         req.day = 1;
         req.month = Number(req.month) + 1;
         console.log('computeSubscriptionReports -> month : ', month, req.month, new Date().getMonth());
@@ -146,8 +139,6 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
 
                         // Now compute and store data in DB
                         if (subscriptions.length > 0){
-                            console.log('if (subscriptions.length > 0){: ');
-
                             finalData = computeSubscriptionsData(subscriptions);
                             finalList = finalData.finalList;
                             subscribersFinalList = finalData.subscribersFinalList;
@@ -187,9 +178,6 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
 };
 
 function computeSubscriptionsData(subscriptions) {
-
-    console.log('computeSubscriptionsData ');
-
     let dateInMili, outer_billing_dtm, inner_billing_dtm, newObj, outerObj, innerObj, billing_status, affiliate_mid, subscriberObj, finalList = [], subscribersFinalList = [];
     for (let j=0; j < subscriptions.length; j++) {
 
@@ -198,7 +186,6 @@ function computeSubscriptionsData(subscriptions) {
         newObj = _.clone(cloneInfoObj());
         subscriberObj = _.clone(cloneSubscribersObj());
         outer_billing_dtm = helper.setDate(new Date(outerObj.history.billing_dtm), null, 0, 0, 0).getTime();
-        console.log('outer_billing_dtm: ', outer_billing_dtm);
 
         billing_status = false;
         if (dateInMili !== outer_billing_dtm){
@@ -206,7 +193,6 @@ function computeSubscriptionsData(subscriptions) {
 
                 innerObj = subscriptions[k];
                 inner_billing_dtm = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0).getTime();
-                console.log('inner_billing_dtm: ', inner_billing_dtm);
 
                 if (outer_billing_dtm === inner_billing_dtm){
                     dateInMili = inner_billing_dtm;
@@ -290,8 +276,6 @@ function computeSubscriptionsData(subscriptions) {
             subscribersFinalList.push(subscriberObj);
         }
     }
-
-    console.log('computeSubscriptionsData - out: ');
 
     return {finalList: finalList, subscribersFinalList: subscribersFinalList};
 }
