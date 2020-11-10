@@ -179,7 +179,7 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
 
 function computeSubscriptionsData(subscriptions) {
 
-    console.log('computeSubscriptionsData');
+    console.log('computeSubscriptionsData: ', subscriptions.length);
     let dateInMili, outer_billing_dtm, inner_billing_dtm, newObj, outerObj, innerObj, billing_status, affiliate_mid, subscriberObj, finalList = [], subscribersFinalList = [];
     for (let j=0; j < subscriptions.length; j++) {
 
@@ -188,7 +188,6 @@ function computeSubscriptionsData(subscriptions) {
         newObj = _.clone(cloneInfoObj());
         subscriberObj = _.clone(cloneSubscribersObj());
         outer_billing_dtm = helper.setDate(new Date(outerObj.history.billing_dtm), null, 0, 0, 0).getTime();
-        console.log('outer_billing_dtm: ', outer_billing_dtm);
 
         if (dateInMili !== outer_billing_dtm){
             for (let k=0; k < subscriptions.length; k++) {
@@ -200,7 +199,6 @@ function computeSubscriptionsData(subscriptions) {
                     dateInMili = inner_billing_dtm;
 
                     billing_status = innerObj.history.billing_status;
-                    console.log('billing_status: ', billing_status);
 
                     if(billing_status === "Success" || billing_status === "trial" || billing_status === "graced"){
                         //Package wise subscriptions
