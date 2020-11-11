@@ -37,15 +37,15 @@ activeInactiveSubscriptionReport = async (rawDataSet, params) =>{
                     hourlyBasisTotalCount.push({
                         totalActive: innerObj.active,
                         totalInactive: innerObj.nonActive,
-                        date: innerObj.added_dtm_hours
+                        date: innerObj.billing_dtm_hours
                     });
 
                     // reset start_date for both month & week so can update with latest one
                     if (week_from_date === null)
-                        week_from_date = innerObj.added_dtm;
+                        week_from_date = innerObj.billing_dtm;
 
                     if (month_from_date === null)
-                        month_from_date = innerObj.added_dtm;
+                        month_from_date = innerObj.billing_dtm;
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -147,15 +147,15 @@ packageWiseSubscriptionReport = async (rawDataSet, params) =>{
                         hourlyBasisTotalCount.push({
                             dailyLive: innerObj.dailyLive, weeklyLive: innerObj.weeklyLive,
                             dailyComedy: innerObj.dailyComedy, weeklyComedy: innerObj.weeklyComedy,
-                            date: subscription.added_dtm_hours
+                            date: subscription.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = subscription.added_dtm;
+                            week_from_date = subscription.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = subscription.added_dtm;
+                            month_from_date = subscription.billing_dtm;
                     }
                 }
 
@@ -265,15 +265,15 @@ sourceWiseSubscriptionReport = async (rawDataSet, params) =>{
                             app: innerObj.app, web: innerObj.web,
                             gdn2: innerObj.gdn2, HE: innerObj.HE,
                             affiliate_web: innerObj.affiliate_web,
-                            date: subscription.added_dtm_hours
+                            date: subscription.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = subscription.added_dtm;
+                            week_from_date = subscription.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = subscription.added_dtm;
+                            month_from_date = subscription.billing_dtm;
                     }
                 }
 
@@ -362,15 +362,15 @@ paywallWiseSubscriptionReport = async (rawDataSet, params) =>{
 
                         // Hourly Bases Data
                         hourlyBasisTotalCount.push({
-                            comedy: innerObj.comedy, live: innerObj.live, date: subscription.added_dtm_hours
+                            comedy: innerObj.comedy, live: innerObj.live, date: subscription.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = subscription.added_dtm;
+                            week_from_date = subscription.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = subscription.added_dtm;
+                            month_from_date = subscription.billing_dtm;
                     }
                 }
 
@@ -499,15 +499,15 @@ affliateMidWiseSubscriptionReport = async (rawDataSet, params) =>{
                             aff3: innerObj.aff3, aff3a: innerObj.aff3a,
                             gdn: innerObj.gdn, gdn2: innerObj.gdn2,
                             goonj: innerObj.goonj, 'null': innerObj['null'],
-                            date: subscription.added_dtm_hours
+                            date: subscription.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = subscription.added_dtm;
+                            week_from_date = subscription.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = subscription.added_dtm;
+                            month_from_date = subscription.billing_dtm;
                     }
                 }
 
@@ -1016,15 +1016,15 @@ successRateSubscriptionFromActiveInactiveReport = async (rawDataSet, params) =>{
                         successful: innerObj.active,
                         total: innerObj.active + innerObj.nonActive,
                         rate: innerObj.active / (innerObj.active + innerObj.nonActive) * 100,
-                        date: innerObj.added_dtm_hours
+                        date: innerObj.billing_dtm_hours
                     });
 
                     // reset start_date for both month & week so can update with latest one
                     if (week_from_date === null)
-                        week_from_date = innerObj.added_dtm;
+                        week_from_date = innerObj.billing_dtm;
 
                     if (month_from_date === null)
-                        month_from_date = innerObj.added_dtm;
+                        month_from_date = innerObj.billing_dtm;
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
