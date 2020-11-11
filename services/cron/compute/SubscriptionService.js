@@ -511,7 +511,7 @@ async function insertNewRecordOld(finalList, subscribersFinalList, dateString, m
 }
 
 function updateDataArr(dbDataArr, computedDataArr) {
-    console.log('updateDataArr');
+    console.log(' %%%%%%%%%%%%%%% updateDataArr %%%%%%%%%%%%% ');
     var thisHour, arrIndex, innerObj, updatedObj;
     for (let i = 0; i < computedDataArr.length; i++){
 
@@ -546,12 +546,14 @@ function updateSingleObj(dbDataArrObj, innerObj){
     console.log(' *************** updateSingleObj *************** ');
     console.log('dbDataArrObj: ', dbDataArrObj);
 
-    dbDataArrObj = dbDataArrObj.active + innerObj.active;
-    dbDataArrObj = dbDataArrObj.nonActive + innerObj.nonActive;
-    dbDataArrObj = updateInnerObj(dbDataArrObj.package, innerObj.package);
-    dbDataArrObj = updateInnerObj(dbDataArrObj.paywall, innerObj.paywall);
-    dbDataArrObj = updateInnerObj(dbDataArrObj.source, innerObj.source);
-    dbDataArrObj = updateInnerObj(dbDataArrObj.affiliate_mid, innerObj.affiliate_mid);
+    dbDataArrObj.active = _.clone(Number(dbDataArrObj.active) + Number(innerObj.active));
+    dbDataArrObj.nonActive = _.clone(Number(dbDataArrObj.nonActive) + Number(innerObj.nonActive));
+    dbDataArrObj.package = _.clone(updateInnerObj(dbDataArrObj.package, innerObj.package));
+    dbDataArrObj.paywall = _.clone(updateInnerObj(dbDataArrObj.paywall, innerObj.paywall));
+    dbDataArrObj.source = _.clone(updateInnerObj(dbDataArrObj.source, innerObj.source));
+    dbDataArrObj.affiliate_mid = _.clone(updateInnerObj(dbDataArrObj.affiliate_mid, innerObj.affiliate_mid));
+    dbDataArrObj.billing_dtm = _.clone(dbDataArrObj.billing_dtm);
+    dbDataArrObj.billing_dtm_hours = _.clone(dbDataArrObj.billing_dtm_hours);
 
     return dbDataArrObj;
 }
