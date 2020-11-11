@@ -413,7 +413,7 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
             if (mode === 0){
                 dbDataArr.subscriptions = finalList;
 
-                if (dbDataArr.subscribers)
+                if (dbDataArr.hasOwnProperty('subscribers'))
                     dbDataArr.subscribers.activeInActive = subscribersFinalList;
                 else{
                     dbDataArr.subscribers = {activeInActive: ''};
