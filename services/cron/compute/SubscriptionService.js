@@ -46,8 +46,8 @@ computeSubscriptionReports = async(req, res) => {
                         finalData = computeSubscriptionsData(subscriptions);
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
-                        console.log('finalList: ', finalList.length);
-                        console.log('subscribersFinalList: ', subscribersFinalList.length);
+                        console.log('finalList: ', finalList);
+                        console.log('subscribersFinalList: ', subscribersFinalList);
 
                         if (finalList.length > 0 || subscribersFinalList.length > 0){
                             console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
