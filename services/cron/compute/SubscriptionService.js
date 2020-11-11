@@ -47,8 +47,7 @@ computeSubscriptionReports = async(req, res) => {
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
                         console.log('finalList: ', finalList);
-                        // console.log('subscribersFinalList: ', subscribersFinalList);
-
+                        
                         if (finalList.length > 0 || subscribersFinalList.length > 0){
                             console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
                             if (totalChunks > 1 || lastLimit > 0)
@@ -413,14 +412,14 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
             if (mode === 0){
                 dbDataArr.subscriptions = finalList;
 
-                if (dbDataArr.hasOwnProperty('subscribers'))
+                if (dbDataArr.subscribers)
                     dbDataArr.subscribers.activeInActive = subscribersFinalList;
                 else{
                     dbDataArr.subscribers = {activeInActive: ''};
                     dbDataArr.subscribers.activeInActive = subscribersFinalList;
                 }
             }else{
-                if (dbDataArr.hasOwnProperty('subscriptions')){
+                if (dbDataArr.subscriptions){
                     finalList = updateDataArr(dbDataArr.subscriptions, finalList, 'subscriptions');
                     dbDataArr.subscriptions = finalList;
                 }
@@ -428,7 +427,7 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
                     dbDataArr.subscriptions = finalList;
 
 
-                if (dbDataArr.hasOwnProperty('subscribers')){
+                if (dbDataArr.subscribers){
                     console.log('dbDataArr.subscribers: ', dbDataArr.hasOwnProperty('subscribers'));
 
                     subscribersFinalList = updateDataArr(dbDataArr.subscribers.activeInActive, subscribersFinalList, 'subscribers');
