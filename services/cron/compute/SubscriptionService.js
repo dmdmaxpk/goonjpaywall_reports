@@ -46,8 +46,7 @@ computeSubscriptionReports = async(req, res) => {
                         finalData = computeSubscriptionsData(subscriptions);
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
-                        console.log('finalList: ', finalList);
-                        
+
                         if (finalList.length > 0 || subscribersFinalList.length > 0){
                             console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
                             if (totalChunks > 1 || lastLimit > 0)
@@ -405,7 +404,6 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
 
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (dbDataArr) {
-        console.log('dbDataArr.length: ', dbDataArr.length);
         if (dbDataArr.length > 0){
             dbDataArr = dbDataArr[0];
 
@@ -428,15 +426,10 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
 
 
                 if (dbDataArr.subscribers){
-                    console.log('dbDataArr.subscribers: ', dbDataArr.hasOwnProperty('subscribers'));
-
                     subscribersFinalList = updateDataArr(dbDataArr.subscribers.activeInActive, subscribersFinalList, 'subscribers');
-                    console.log('subscribersFinalList: ', subscribersFinalList);
-
                     dbDataArr.subscribers.activeInActive = subscribersFinalList;
                 }
                 else{
-                    console.log('dbDataArr.subscribers: ', dbDataArr.hasOwnProperty('subscribers'));
                     dbDataArr.subscribers = {activeInActive: ''};
                     dbDataArr.subscribers.activeInActive = subscribersFinalList;
                 }
@@ -496,41 +489,23 @@ async function insertNewRecordOld(finalList, subscribersFinalList, dateString, m
 }
 
 function updateDataArr(dbDataArr, computedDataArr, mode) {
-    console.log(' %%%%%%%%%%%%%%% updateDataArr %%%%%%%%%%%%% ');
     var thisHour, arrIndex, innerObj, updatedObj;
     for (let i = 0; i < computedDataArr.length; i++){
-
         innerObj = computedDataArr[i];
         thisHour = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
         arrIndex = helper.checkDataExist(dbDataArr, thisHour, 'billing_dtm_hours');
 
-        console.log('thisHour: ', thisHour);
-        console.log('arrIndex: ', arrIndex);
-
         if ( arrIndex !== -1 ){
-            console.log('IF block');
-
             updatedObj = updateSingleObj(_.clone(dbDataArr[arrIndex]), _.clone(innerObj), mode);
             dbDataArr[arrIndex] = _.clone(updatedObj);
-
-            console.log('IF block - dbDataArr[arrIndex]: ', dbDataArr[arrIndex]);
-            console.log('IF block - innerObj: ', innerObj);
-            console.log('IF block - update Arr: ', updatedObj);
         }
-        else {
-            console.log('ELSE block');
-
+        else
             dbDataArr.push(innerObj);
-        }
     }
 
     return dbDataArr;
 }
 function updateSingleObj(dbDataArrObj, innerObj, mode){
-
-    console.log(' *************** updateSingleObj *************** ');
-    console.log('mode: ', mode);
-    console.log('dbDataArrObj: ', dbDataArrObj);
 
     if (mode === 'subscribers') {
         dbDataArrObj.active = _.clone(Number(dbDataArrObj.active) + Number(innerObj.active));
