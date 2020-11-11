@@ -47,14 +47,14 @@ computeSubscriptionReports = async(req, res) => {
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
                         console.log('finalList: ', finalList);
-                        console.log('subscribersFinalList: ', subscribersFinalList);
+                        // console.log('subscribersFinalList: ', subscribersFinalList);
 
                         if (finalList.length > 0 || subscribersFinalList.length > 0){
                             console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
-                            // if (totalChunks > 1 || lastLimit > 0)
-                            //     await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
-                            // else
-                            //     await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
+                            if (totalChunks > 1 || lastLimit > 0)
+                                await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
+                            else
+                                await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
                         }
                     }
                 });
@@ -70,8 +70,8 @@ computeSubscriptionReports = async(req, res) => {
                         finalData = computeSubscriptionsData(subscriptions);
                         finalList = finalData.finalList;
                         subscribersFinalList = finalData.subscribersFinalList;
-                        // if (finalList.length > 0 || subscribersFinalList.length > 0)
-                        //     await insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
+                        if (finalList.length > 0 || subscribersFinalList.length > 0)
+                            await insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
                     }
                 });
             }
@@ -291,26 +291,18 @@ function computeSubscriptionsDataOld(subscriptions) {
     return {finalList: finalList, subscribersFinalList: subscribersFinalList};
 }
 function computeSubscriptionsData(subscriptions) {
-    console.log('computeSubscriptionsData: ', subscriptions.length);
     let newObj, subscriberObj, thisHour, subscriptionsArrIndex, subscribersArrIndex, innerObj, billing_status, affiliate_mid, finalList = [], subscribersFinalList = [];
-
     for (let k=0; k < subscriptions.length; k++) {
 
         innerObj = subscriptions[k];
         thisHour = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
         subscriptionsArrIndex = helper.checkDataExist(finalList, thisHour, 'billing_dtm_hours');
         subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'billing_dtm_hours');
-        console.log('subscriptionsArrIndex: ', subscriptionsArrIndex);
-        console.log('subscribersArrIndex: ', subscribersArrIndex);
 
-        if ( subscriptionsArrIndex !== -1 ){
-            console.log('subscribersArrIndex - if ', subscribersArrIndex);
+        if ( subscriptionsArrIndex !== -1 )
             newObj = _.clone(finalList[subscriptionsArrIndex]);
-        }
-        else{
-            console.log('subscribersArrIndex - else', subscribersArrIndex);
+        else
             newObj = _.clone(cloneInfoObj());
-        }
 
         if ( subscribersArrIndex !== -1 )
             subscriberObj = _.clone(subscribersFinalList[subscribersArrIndex]);
@@ -401,14 +393,80 @@ function computeSubscriptionsData(subscriptions) {
             subscribersFinalList[subscribersArrIndex] = subscriberObj;
         else
             subscribersFinalList.push(subscriberObj);
-
-        console.log('After Update Arrays');
     }
 
     return {finalList: finalList, subscribersFinalList: subscribersFinalList};
 }
 
 async function insertNewRecord(finalList, subscribersFinalList, dateString, mode) {
+    console.log('dateString: ', dateString);
+
+    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
+
+    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
+    await reportsRepo.getReportByDateString(dateString.toString()).then(async function (dbDataArr) {
+        console.log('dbDataArr.length: ', dbDataArr.length);
+        if (dbDataArr.length > 0){
+            dbDataArr = dbDataArr[0];
+
+            if (dbDataArr.subscriptions){
+                console.log('dbDataArr.subscriptions: ', dbDataArr.hasOwnProperty('subscriptions'));
+
+                finalList = updateDataArr(dbDataArr.subscriptions, finalList);
+                console.log('finalList: ', finalList);
+
+                dbDataArr.subscriptions = finalList;
+            }
+            else{
+                console.log('dbDataArr.subscriptions: ', dbDataArr.hasOwnProperty('subscriptions'));
+                dbDataArr.subscriptions = finalList;
+            }
+
+
+            // finalList = updateDataArr(dbDataArr, finalList);
+            // console.log('finalList: ', finalList);
+            // dbDataArr.subscriptions = finalList;
+
+            // subscribersFinalList = updateDataArr(dbDataArr, subscribersFinalList);
+            // console.log('subscribersFinalList: ', subscribersFinalList);
+
+            // dbDataArr.subscriptions = finalList;
+            // dbDataArr.subscribers.activeInActive = subscribersFinalList;
+            //
+            // if (mode === 0){
+            //     dbDataArr.subscriptions = finalList;
+            //
+            //     if (dbDataArr.subscribers)
+            //         dbDataArr.subscribers.activeInActive = subscribersFinalList;
+            //     else{
+            //         dbDataArr.subscribers = {activeInActive: ''};
+            //         dbDataArr.subscribers.activeInActive = subscribersFinalList;
+            //     }
+            // }else{
+            //     if (dbDataArr.subscriptions)
+            //         dbDataArr.subscriptions.concat(finalList);
+            //     else
+            //         dbDataArr.subscriptions = finalList;
+            //
+            //     if (dbDataArr.subscribers)
+            //         dbDataArr.subscribers.activeInActive.concat(subscribersFinalList);
+            //     else{
+            //         dbDataArr.subscribers = {activeInActive: ''};
+            //         dbDataArr.subscribers.activeInActive = subscribersFinalList;
+            //     }
+            // }
+
+            await reportsRepo.updateReport(dbDataArr, dbDataArr._id);
+        }
+        else{
+            let subscribers = {activeInActive: ''};
+            subscribers.activeInActive = subscribersFinalList;
+            // await reportsRepo.createReport({subscriptions: finalList, subscribers: subscribers, date: dateString});
+        }
+    });
+}
+async function insertNewRecordOld(finalList, subscribersFinalList, dateString, mode) {
     console.log('dateString: ', dateString);
 
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
@@ -452,6 +510,60 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
     });
 }
 
+function updateDataArr(dbDataArr, computedDataArr) {
+    console.log('updateDataArr');
+    var thisHour, arrIndex, innerObj, updatedObj;
+    for (let i = 0; i < computedDataArr.length; i++){
+
+        innerObj = computedDataArr[i];
+        thisHour = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+        arrIndex = helper.checkDataExist(dbDataArr, thisHour, 'billing_dtm_hours');
+
+        console.log('thisHour: ', thisHour);
+        console.log('arrIndex: ', arrIndex);
+
+        if ( arrIndex !== -1 ){
+            console.log('IF block');
+
+            updatedObj = updateSingleObj(_.clone(dbDataArr[arrIndex]), _.clone(innerObj));
+            dbDataArr[arrIndex] = _.clone(updatedObj);
+
+            console.log('IF block - dbDataArr[arrIndex]: ', dbDataArr[arrIndex]);
+            console.log('IF block - innerObj: ', innerObj);
+            console.log('IF block - update Arr: ', updatedObj);
+        }
+        else {
+            console.log('ELSE block');
+
+            dbDataArr.push(innerObj);
+        }
+    }
+
+    return dbDataArr;
+}
+function updateSingleObj(dbDataArrObj, innerObj){
+
+    console.log(' *************** updateSingleObj *************** ');
+    console.log('dbDataArrObj: ', dbDataArrObj);
+
+    dbDataArrObj = dbDataArrObj.active + innerObj.active;
+    dbDataArrObj = dbDataArrObj.nonActive + innerObj.nonActive;
+    dbDataArrObj = updateInnerObj(dbDataArrObj.package, innerObj.package);
+    dbDataArrObj = updateInnerObj(dbDataArrObj.paywall, innerObj.paywall);
+    dbDataArrObj = updateInnerObj(dbDataArrObj.source, innerObj.source);
+    dbDataArrObj = updateInnerObj(dbDataArrObj.affiliate_mid, innerObj.affiliate_mid);
+
+    return dbDataArrObj;
+}
+function updateInnerObj(...objs){
+    return objs.reduce((a, b) => {
+        for (let k in b) {
+            if (b.hasOwnProperty(k))
+                a[k] = (a[k] || 0) + b[k];
+        }
+        return a;
+    }, {});
+}
 function cloneSubscribersObj() {
     return {
         active: 0,
