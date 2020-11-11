@@ -410,59 +410,45 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
         if (dbDataArr.length > 0){
             dbDataArr = dbDataArr[0];
 
-            if (dbDataArr.subscriptions){
-                console.log('dbDataArr.subscriptions: ', dbDataArr.hasOwnProperty('subscriptions'));
-
-                finalList = updateDataArr(dbDataArr.subscriptions, finalList);
-                console.log('finalList: ', finalList);
-
+            if (mode === 0){
                 dbDataArr.subscriptions = finalList;
+
+                if (dbDataArr.subscribers)
+                    dbDataArr.subscribers.activeInActive = subscribersFinalList;
+                else{
+                    dbDataArr.subscribers = {activeInActive: ''};
+                    dbDataArr.subscribers.activeInActive = subscribersFinalList;
+                }
+            }else{
+                if (dbDataArr.hasOwnProperty('subscriptions')){
+                    finalList = updateDataArr(dbDataArr.subscriptions, finalList, 'subscriptions');
+                    dbDataArr.subscriptions = finalList;
+                }
+                else
+                    dbDataArr.subscriptions = finalList;
+
+
+                if (dbDataArr.hasOwnProperty('subscribers')){
+                    console.log('dbDataArr.subscribers: ', dbDataArr.hasOwnProperty('subscribers'));
+
+                    subscribersFinalList = updateDataArr(dbDataArr.subscribers.activeInActive, subscribersFinalList, 'subscribers');
+                    console.log('subscribersFinalList: ', subscribersFinalList);
+
+                    dbDataArr.subscribers.activeInActive = subscribersFinalList;
+                }
+                else{
+                    console.log('dbDataArr.subscribers: ', dbDataArr.hasOwnProperty('subscribers'));
+                    dbDataArr.subscribers = {activeInActive: ''};
+                    dbDataArr.subscribers.activeInActive = subscribersFinalList;
+                }
             }
-            else{
-                console.log('dbDataArr.subscriptions: ', dbDataArr.hasOwnProperty('subscriptions'));
-                dbDataArr.subscriptions = finalList;
-            }
-
-
-            // finalList = updateDataArr(dbDataArr, finalList);
-            // console.log('finalList: ', finalList);
-            // dbDataArr.subscriptions = finalList;
-
-            // subscribersFinalList = updateDataArr(dbDataArr, subscribersFinalList);
-            // console.log('subscribersFinalList: ', subscribersFinalList);
-
-            // dbDataArr.subscriptions = finalList;
-            // dbDataArr.subscribers.activeInActive = subscribersFinalList;
-            //
-            // if (mode === 0){
-            //     dbDataArr.subscriptions = finalList;
-            //
-            //     if (dbDataArr.subscribers)
-            //         dbDataArr.subscribers.activeInActive = subscribersFinalList;
-            //     else{
-            //         dbDataArr.subscribers = {activeInActive: ''};
-            //         dbDataArr.subscribers.activeInActive = subscribersFinalList;
-            //     }
-            // }else{
-            //     if (dbDataArr.subscriptions)
-            //         dbDataArr.subscriptions.concat(finalList);
-            //     else
-            //         dbDataArr.subscriptions = finalList;
-            //
-            //     if (dbDataArr.subscribers)
-            //         dbDataArr.subscribers.activeInActive.concat(subscribersFinalList);
-            //     else{
-            //         dbDataArr.subscribers = {activeInActive: ''};
-            //         dbDataArr.subscribers.activeInActive = subscribersFinalList;
-            //     }
-            // }
 
             await reportsRepo.updateReport(dbDataArr, dbDataArr._id);
         }
         else{
             let subscribers = {activeInActive: ''};
             subscribers.activeInActive = subscribersFinalList;
-            // await reportsRepo.createReport({subscriptions: finalList, subscribers: subscribers, date: dateString});
+            await reportsRepo.createReport({subscriptions: finalList, subscribers: subscribers, date: dateString});
         }
     });
 }
@@ -510,7 +496,7 @@ async function insertNewRecordOld(finalList, subscribersFinalList, dateString, m
     });
 }
 
-function updateDataArr(dbDataArr, computedDataArr) {
+function updateDataArr(dbDataArr, computedDataArr, mode) {
     console.log(' %%%%%%%%%%%%%%% updateDataArr %%%%%%%%%%%%% ');
     var thisHour, arrIndex, innerObj, updatedObj;
     for (let i = 0; i < computedDataArr.length; i++){
@@ -525,7 +511,7 @@ function updateDataArr(dbDataArr, computedDataArr) {
         if ( arrIndex !== -1 ){
             console.log('IF block');
 
-            updatedObj = updateSingleObj(_.clone(dbDataArr[arrIndex]), _.clone(innerObj));
+            updatedObj = updateSingleObj(_.clone(dbDataArr[arrIndex]), _.clone(innerObj), mode);
             dbDataArr[arrIndex] = _.clone(updatedObj);
 
             console.log('IF block - dbDataArr[arrIndex]: ', dbDataArr[arrIndex]);
@@ -541,19 +527,26 @@ function updateDataArr(dbDataArr, computedDataArr) {
 
     return dbDataArr;
 }
-function updateSingleObj(dbDataArrObj, innerObj){
+function updateSingleObj(dbDataArrObj, innerObj, mode){
 
     console.log(' *************** updateSingleObj *************** ');
+    console.log('mode: ', mode);
     console.log('dbDataArrObj: ', dbDataArrObj);
 
-    dbDataArrObj.active = _.clone(Number(dbDataArrObj.active) + Number(innerObj.active));
-    dbDataArrObj.nonActive = _.clone(Number(dbDataArrObj.nonActive) + Number(innerObj.nonActive));
-    dbDataArrObj.package = _.clone(updateInnerObj(dbDataArrObj.package, innerObj.package));
-    dbDataArrObj.paywall = _.clone(updateInnerObj(dbDataArrObj.paywall, innerObj.paywall));
-    dbDataArrObj.source = _.clone(updateInnerObj(dbDataArrObj.source, innerObj.source));
-    dbDataArrObj.affiliate_mid = _.clone(updateInnerObj(dbDataArrObj.affiliate_mid, innerObj.affiliate_mid));
-    dbDataArrObj.billing_dtm = _.clone(dbDataArrObj.billing_dtm);
-    dbDataArrObj.billing_dtm_hours = _.clone(dbDataArrObj.billing_dtm_hours);
+    if (mode === 'subscribers') {
+        dbDataArrObj.active = _.clone(Number(dbDataArrObj.active) + Number(innerObj.active));
+        dbDataArrObj.nonActive = _.clone(Number(dbDataArrObj.nonActive) + Number(innerObj.nonActive));
+    }
+    else if (mode === 'subscriptions'){
+        dbDataArrObj.active = _.clone(Number(dbDataArrObj.active) + Number(innerObj.active));
+        dbDataArrObj.nonActive = _.clone(Number(dbDataArrObj.nonActive) + Number(innerObj.nonActive));
+        dbDataArrObj.package = _.clone(updateInnerObj(dbDataArrObj.package, innerObj.package));
+        dbDataArrObj.paywall = _.clone(updateInnerObj(dbDataArrObj.paywall, innerObj.paywall));
+        dbDataArrObj.source = _.clone(updateInnerObj(dbDataArrObj.source, innerObj.source));
+        dbDataArrObj.affiliate_mid = _.clone(updateInnerObj(dbDataArrObj.affiliate_mid, innerObj.affiliate_mid));
+        dbDataArrObj.billing_dtm = _.clone(dbDataArrObj.billing_dtm);
+        dbDataArrObj.billing_dtm_hours = _.clone(dbDataArrObj.billing_dtm_hours);
+    }
 
     return dbDataArrObj;
 }
