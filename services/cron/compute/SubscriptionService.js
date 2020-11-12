@@ -315,7 +315,7 @@ function computeSubscriptionsData(subscriptions) {
 
         //Successful Subscriptions
         if(billing_status === "Success" || billing_status === "billed"){
-            console.log('Successful Subscriptions - billing_status: ', innerObj.history.package_id, billing_status);
+            console.log('Successful Subscriptions - billing_status: ', k, subscriptionsArrIndex, innerObj.history.package_id, billing_status);
 
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
@@ -462,7 +462,7 @@ function computeSubscriptionsData(subscriptions) {
 
         //Active subscriptions & subscribers
         if (billing_status === "Success" || billing_status === "billed"){
-            console.log('Active subscriptions - billing_status: ', billing_status);
+            console.log('Active subscriptions - billing_status: ', k, subscriptionsArrIndex, billing_status);
 
             subscriptionObj.active = Number(subscriptionObj.active) + 1;
             subscriberObj.active = Number(subscriberObj.active) + 1;
@@ -682,12 +682,12 @@ function cloneSubscribersObj() {
     }
 }
 function cloneInfoObj() {
-    let dataObj = _.clone({
+    let dataObj = {
         package: _.clone({ dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 }),
         paywall: _.clone({ comedy: 0, live: 0 }),
         operator: _.clone({ telenor: 0, easypaisa: 0 }),
         source: _.clone({ app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0, other_mids: 0 })
-    });
+    };
     let affiliate = { aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0, '1565': 0, '1569': 0, '1': 0, 'null': 0 };
     return {
         active : 0,
