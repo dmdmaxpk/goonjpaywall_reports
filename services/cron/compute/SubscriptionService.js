@@ -301,17 +301,16 @@ function computeSubscriptionsData(subscriptions) {
         subscriptionsArrIndex = helper.checkDataExist(subscriptionFinalList, thisHour, 'billing_dtm_hours');
         subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'billing_dtm_hours');
 
-        console.log('thisHour : ', thisHour);
         console.log('subscriptionsArrIndex : ', subscriptionsArrIndex);
         if ( subscriptionsArrIndex !== -1 )
-            subscriptionObj = _.clone(subscriptionFinalList[subscriptionsArrIndex]);
+            subscriptionObj = subscriptionFinalList[subscriptionsArrIndex];
         else
-            subscriptionObj = _.clone(cloneInfoObj());
+            subscriptionObj = cloneInfoObj();
 
         if ( subscribersArrIndex !== -1 )
-            subscriberObj = _.clone(subscribersFinalList[subscribersArrIndex]);
+            subscriberObj = subscribersFinalList[subscribersArrIndex];
         else
-            subscriberObj = _.clone(cloneSubscribersObj());
+            subscriberObj = cloneSubscribersObj();
 
         billing_status = innerObj.history.billing_status;
 
