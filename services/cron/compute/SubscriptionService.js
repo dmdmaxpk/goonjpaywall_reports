@@ -436,7 +436,6 @@ function computeSubscriptionsData(subscriptions) {
                 subscriptionObj.affiliate_mid['null'] = subscriptionObj.affiliate_mid['null'] + 1;
         }
 
-
         //Active subscriptions & subscribers
         if (billing_status === "Success"){
             subscriptionObj.active = subscriptionObj.active + 1;
@@ -444,7 +443,7 @@ function computeSubscriptionsData(subscriptions) {
         }
 
         //inactive subscriptions & subscribers
-        if (billing_status !== "Success" || billing_status !== "graced" || billing_status !== "trial") {
+        if (billing_status === "expired" || billing_status === "unsubscribe-request-received-and-expired") {
             subscriptionObj.nonActive = subscriptionObj.nonActive + 1;
             subscriberObj.nonActive = subscriberObj.nonActive + 1;
         }
@@ -613,23 +612,19 @@ function updateSingleObj(dbDataArrObj, innerObj, mode){
         dbDataArrObj.successful.package = _.clone(updateLastObj(dbDataArrObj.successful.package, innerObj.successful.package));
         dbDataArrObj.successful.paywall = _.clone(updateLastObj(dbDataArrObj.successful.paywall, innerObj.successful.paywall));
         dbDataArrObj.successful.source = _.clone(updateLastObj(dbDataArrObj.successful.source, innerObj.successful.source));
-        console.log('dbDataArrObj.successful: ', dbDataArrObj.successful);
 
         //trial wise
         dbDataArrObj.trial.package = _.clone(updateLastObj(dbDataArrObj.trial.package, innerObj.trial.package));
         dbDataArrObj.trial.paywall = _.clone(updateLastObj(dbDataArrObj.trial.paywall, innerObj.trial.paywall));
         dbDataArrObj.trial.source = _.clone(updateLastObj(dbDataArrObj.trial.source, innerObj.trial.source));
-        console.log('dbDataArrObj.trial: ', dbDataArrObj.trial);
 
         //graced wise
         dbDataArrObj.graced.package = _.clone(updateLastObj(dbDataArrObj.graced.package, innerObj.graced.package));
         dbDataArrObj.graced.paywall = _.clone(updateLastObj(dbDataArrObj.graced.paywall, innerObj.graced.paywall));
         dbDataArrObj.graced.source = _.clone(updateLastObj(dbDataArrObj.graced.source, innerObj.graced.source));
-        console.log('dbDataArrObj.graced: ', dbDataArrObj.graced);
 
         // affiliate mids wise
         dbDataArrObj.affiliate_mid = _.clone(updateLastObj(dbDataArrObj.affiliate_mid, innerObj.affiliate_mid));
-        console.log('dbDataArrObj.affiliate_mid: ', dbDataArrObj.affiliate_mid);
 
         dbDataArrObj.billing_dtm = _.clone(dbDataArrObj.billing_dtm);
         dbDataArrObj.billing_dtm_hours = _.clone(dbDataArrObj.billing_dtm_hours);
