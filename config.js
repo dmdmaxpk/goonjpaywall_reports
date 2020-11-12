@@ -1,6 +1,6 @@
 const env = process.env.NODE_ENV || 'development';
 
-const cron_db_query_data_limit = 500;
+const cron_db_query_data_limit = 50;
 let config = {
     development: {
         port: '3006',

@@ -301,8 +301,6 @@ function computeSubscriptionsData(subscriptions) {
         subscriptionsArrIndex = helper.checkDataExist(subscriptionFinalList, thisHour, 'billing_dtm_hours');
         subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'billing_dtm_hours');
 
-        // console.log('thisHour : ', thisHour);
-        // console.log('subscriptionsArrIndex : ', subscriptionsArrIndex);
         if ( subscriptionsArrIndex !== -1 )
             subscriptionObj = _.clone(subscriptionFinalList[subscriptionsArrIndex]);
         else
@@ -315,8 +313,11 @@ function computeSubscriptionsData(subscriptions) {
 
         billing_status = innerObj.history.billing_status;
 
+        console.log('subscriptionObj: ', subscriptionObj);
         //Successful Subscriptions
         if(billing_status === "Success" || billing_status === "billed"){
+            // console.log('subscriptionsArrIndex : ', subscriptionsArrIndex);
+
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
                 subscriptionObj.successful.package.dailyLive = subscriptionObj.successful.package.dailyLive + 1;
