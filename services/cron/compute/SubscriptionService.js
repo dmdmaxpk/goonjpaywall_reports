@@ -47,8 +47,8 @@ computeSubscriptionReports = async(req, res) => {
                         subscriptionFinalList = finalData.subscriptionFinalList;
                         subscribersFinalList = finalData.subscribersFinalList;
 
-                        console.log('subscriptionFinalList: ', subscriptionFinalList);
-                        console.log('subscribersFinalList: ', subscribersFinalList);
+                        // console.log('subscriptionFinalList: ', subscriptionFinalList);
+                        // console.log('subscribersFinalList: ', subscribersFinalList);
                         if (subscriptionFinalList.length > 0 || subscribersFinalList.length > 0){
                             console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
                             if (totalChunks > 1 || lastLimit > 0)
@@ -291,6 +291,8 @@ function computeSubscriptionsDataOld(subscriptions) {
     return {subscriptionFinalList: subscriptionFinalList, subscribersFinalList: subscribersFinalList};
 }
 function computeSubscriptionsData(subscriptions) {
+
+    console.log(' &&&&&&&&&&&  computeSubscriptionsData   &&&&&&&&&&&&&&&&&&');
     let subscriptionObj, subscriberObj, thisHour, subscriptionsArrIndex, subscribersArrIndex, innerObj, billing_status, affiliate_mid, subscriptionFinalList = [], subscribersFinalList = [];
     for (let k=0; k < subscriptions.length; k++) {
 
@@ -299,6 +301,8 @@ function computeSubscriptionsData(subscriptions) {
         subscriptionsArrIndex = helper.checkDataExist(subscriptionFinalList, thisHour, 'billing_dtm_hours');
         subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'billing_dtm_hours');
 
+        console.log('thisHour : ', thisHour);
+        console.log('subscriptionsArrIndex : ', subscriptionsArrIndex);
         if ( subscriptionsArrIndex !== -1 )
             subscriptionObj = _.clone(subscriptionFinalList[subscriptionsArrIndex]);
         else
@@ -315,7 +319,7 @@ function computeSubscriptionsData(subscriptions) {
         if(billing_status === "Success"){
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
-                subscriptionObj.successful.package.dailyLive = subscriptionObj.graced.package.dailyLive + 1;
+                subscriptionObj.successful.package.dailyLive = subscriptionObj.successful.package.dailyLive + 1;
             else if(innerObj.history.package_id === 'QDfG')
                 subscriptionObj.successful.package.weeklyLive = subscriptionObj.successful.package.weeklyLive + 1;
             else if(innerObj.history.package_id === 'QDfH')
@@ -328,6 +332,12 @@ function computeSubscriptionsData(subscriptions) {
                 subscriptionObj.successful.paywall.comedy = subscriptionObj.successful.paywall.comedy + 1;
             else if(innerObj.history.paywall_id === 'Dt6Gp70c')
                 subscriptionObj.successful.paywall.live = subscriptionObj.successful.paywall.live + 1;
+
+            //Operator wise subscriptions
+            if(innerObj.history.operator === 'telenor')
+                subscriptionObj.successful.operator.telenor = subscriptionObj.successful.operator.telenor + 1;
+            else
+                subscriptionObj.successful.operator.easypaisa = subscriptionObj.successful.operator.easypaisa + 1;
 
             //Source wise subscriptions
             if(innerObj.history.source === 'app')
@@ -362,6 +372,12 @@ function computeSubscriptionsData(subscriptions) {
             else if(innerObj.history.paywall_id === 'Dt6Gp70c')
                 subscriptionObj.graced.paywall.live = subscriptionObj.graced.paywall.live + 1;
 
+            //Operator wise subscriptions
+            if(innerObj.history.operator === 'telenor')
+                subscriptionObj.graced.operator.telenor = subscriptionObj.graced.operator.telenor + 1;
+            else
+                subscriptionObj.graced.operator.easypaisa = subscriptionObj.graced.operator.easypaisa + 1;
+
             //Source wise subscriptions
             if(innerObj.history.source === 'app')
                 subscriptionObj.graced.source.app = subscriptionObj.graced.source.app + 1;
@@ -394,6 +410,12 @@ function computeSubscriptionsData(subscriptions) {
                 subscriptionObj.trial.paywall.comedy = subscriptionObj.trial.paywall.comedy + 1;
             else if(innerObj.history.paywall_id === 'Dt6Gp70c')
                 subscriptionObj.trial.paywall.live = subscriptionObj.trial.paywall.live + 1;
+
+            //Operator wise subscriptions
+            if(innerObj.history.operator === 'telenor')
+                subscriptionObj.trial.operator.telenor = subscriptionObj.trial.operator.telenor + 1;
+            else
+                subscriptionObj.trial.operator.easypaisa = subscriptionObj.trial.operator.easypaisa + 1;
 
             //Source wise subscriptions
             if(innerObj.history.source === 'app')
@@ -465,6 +487,8 @@ function computeSubscriptionsData(subscriptions) {
             subscribersFinalList.push(subscriberObj);
     }
 
+    console.log('subscriptionFinalList: ', subscriptionFinalList);
+    // console.log('subscribersFinalList: ', subscribersFinalList);
     return {subscriptionFinalList: subscriptionFinalList, subscribersFinalList: subscribersFinalList};
 }
 
@@ -611,16 +635,19 @@ function updateSingleObj(dbDataArrObj, innerObj, mode){
         //successful wise
         dbDataArrObj.successful.package = _.clone(updateLastObj(dbDataArrObj.successful.package, innerObj.successful.package));
         dbDataArrObj.successful.paywall = _.clone(updateLastObj(dbDataArrObj.successful.paywall, innerObj.successful.paywall));
+        dbDataArrObj.successful.operator = _.clone(updateLastObj(dbDataArrObj.successful.operator, innerObj.successful.operator));
         dbDataArrObj.successful.source = _.clone(updateLastObj(dbDataArrObj.successful.source, innerObj.successful.source));
 
         //trial wise
         dbDataArrObj.trial.package = _.clone(updateLastObj(dbDataArrObj.trial.package, innerObj.trial.package));
         dbDataArrObj.trial.paywall = _.clone(updateLastObj(dbDataArrObj.trial.paywall, innerObj.trial.paywall));
+        dbDataArrObj.trial.operator = _.clone(updateLastObj(dbDataArrObj.trial.operator, innerObj.trial.operator));
         dbDataArrObj.trial.source = _.clone(updateLastObj(dbDataArrObj.trial.source, innerObj.trial.source));
 
         //graced wise
         dbDataArrObj.graced.package = _.clone(updateLastObj(dbDataArrObj.graced.package, innerObj.graced.package));
         dbDataArrObj.graced.paywall = _.clone(updateLastObj(dbDataArrObj.graced.paywall, innerObj.graced.paywall));
+        dbDataArrObj.graced.operator = _.clone(updateLastObj(dbDataArrObj.graced.operator, innerObj.graced.operator));
         dbDataArrObj.graced.source = _.clone(updateLastObj(dbDataArrObj.graced.source, innerObj.graced.source));
 
         // affiliate mids wise
@@ -653,6 +680,7 @@ function cloneInfoObj() {
     let dataObj = {
         package: { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 },
         paywall: { comedy: 0, live: 0 },
+        operator: { telenor: 0, easypaisa: 0 },
         source: { app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0, other_mids: 0 }
     };
     let affiliate = { aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0, '1565': 0, '1569': 0, '1': 0, 'null': 0 };
