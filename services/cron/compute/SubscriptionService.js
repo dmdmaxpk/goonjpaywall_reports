@@ -5,7 +5,7 @@ const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, finalData, finalList = [], subscribersFinalList = [];
+let fromDate, toDate, day, month, finalData, subscriptionFinalList = [], subscribersFinalList = [];
 let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeSubscriptionReports = async(req, res) => {
     console.log('computeSubscriptionReports');
@@ -44,15 +44,15 @@ computeSubscriptionReports = async(req, res) => {
                     // Now compute and store data in DB
                     if (subscriptions.length > 0){
                         finalData = computeSubscriptionsData(subscriptions);
-                        finalList = finalData.finalList;
+                        subscriptionFinalList = finalData.subscriptionFinalList;
                         subscribersFinalList = finalData.subscribersFinalList;
 
-                        if (finalList.length > 0 || subscribersFinalList.length > 0){
+                        if (subscriptionFinalList.length > 0 || subscribersFinalList.length > 0){
                             console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
                             if (totalChunks > 1 || lastLimit > 0)
-                                await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
+                                await insertNewRecord(subscriptionFinalList, subscribersFinalList, fromDate, i);
                             else
-                                await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
+                                await insertNewRecord(subscriptionFinalList, subscribersFinalList, fromDate, i);
                         }
                     }
                 });
@@ -66,10 +66,10 @@ computeSubscriptionReports = async(req, res) => {
                     // Now compute and store data in DB
                     if (subscriptions.length > 0){
                         finalData = computeSubscriptionsData(subscriptions);
-                        finalList = finalData.finalList;
+                        subscriptionFinalList = finalData.subscriptionFinalList;
                         subscribersFinalList = finalData.subscribersFinalList;
-                        if (finalList.length > 0 || subscribersFinalList.length > 0)
-                            await insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
+                        if (subscriptionFinalList.length > 0 || subscribersFinalList.length > 0)
+                            await insertNewRecord(subscriptionFinalList, subscribersFinalList, fromDate, 1);
                     }
                 });
             }
@@ -140,12 +140,12 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
                         // Now compute and store data in DB
                         if (subscriptions.length > 0){
                             finalData = computeSubscriptionsData(subscriptions);
-                            finalList = finalData.finalList;
+                            subscriptionFinalList = finalData.subscriptionFinalList;
                             subscribersFinalList = finalData.subscribersFinalList;
 
-                            console.log('finalList - subscribersFinalList: ', finalList.length, subscribersFinalList.length);
-                            if (finalList.length > 0 || subscribersFinalList.length > 0)
-                                await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
+                            console.log('subscriptionFinalList - subscribersFinalList: ', subscriptionFinalList.length, subscribersFinalList.length);
+                            if (subscriptionFinalList.length > 0 || subscribersFinalList.length > 0)
+                                await insertNewRecord(subscriptionFinalList, subscribersFinalList, fromDate, i);
                         }
                     });
                 }
@@ -158,10 +158,10 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
                         // Now compute and store data in DB
                         if (subscriptions.length > 0){
                             finalData = computeSubscriptionsData(subscriptions);
-                            finalList = finalData.finalList;
+                            subscriptionFinalList = finalData.subscriptionFinalList;
                             subscribersFinalList = finalData.subscribersFinalList;
-                            if (finalList.length > 0 || subscribersFinalList.length > 0)
-                                await insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
+                            if (subscriptionFinalList.length > 0 || subscribersFinalList.length > 0)
+                                await insertNewRecord(subscriptionFinalList, subscribersFinalList, fromDate, 1);
                         }
                     });
                 }
@@ -180,7 +180,7 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
 function computeSubscriptionsDataOld(subscriptions) {
 
     console.log('computeSubscriptionsData: ', subscriptions.length);
-    let dateInMili, outer_billing_dtm, inner_billing_dtm, newObj, outerObj, innerObj, billing_status, affiliate_mid, subscriberObj, finalList = [], subscribersFinalList = [];
+    let dateInMili, outer_billing_dtm, inner_billing_dtm, newObj, outerObj, innerObj, billing_status, affiliate_mid, subscriberObj, subscriptionFinalList = [], subscribersFinalList = [];
     let hours_array = [];
     for (let j=0; j < subscriptions.length; j++) {
 
@@ -279,28 +279,28 @@ function computeSubscriptionsDataOld(subscriptions) {
 
             console.log('update Arrays data ');
 
-            finalList.push(newObj);
+            subscriptionFinalList.push(newObj);
             subscribersFinalList.push(subscriberObj);
         }
     }
 
     console.log('computeSubscriptionsData - out from functions: ');
 
-    return {finalList: finalList, subscribersFinalList: subscribersFinalList};
+    return {subscriptionFinalList: subscriptionFinalList, subscribersFinalList: subscribersFinalList};
 }
 function computeSubscriptionsData(subscriptions) {
-    let newObj, subscriberObj, thisHour, subscriptionsArrIndex, subscribersArrIndex, innerObj, billing_status, affiliate_mid, finalList = [], subscribersFinalList = [];
+    let subscriptionObj, subscriberObj, thisHour, subscriptionsArrIndex, subscribersArrIndex, innerObj, billing_status, affiliate_mid, subscriptionFinalList = [], subscribersFinalList = [];
     for (let k=0; k < subscriptions.length; k++) {
 
         innerObj = subscriptions[k];
         thisHour = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
-        subscriptionsArrIndex = helper.checkDataExist(finalList, thisHour, 'billing_dtm_hours');
+        subscriptionsArrIndex = helper.checkDataExist(subscriptionFinalList, thisHour, 'billing_dtm_hours');
         subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'billing_dtm_hours');
 
         if ( subscriptionsArrIndex !== -1 )
-            newObj = _.clone(finalList[subscriptionsArrIndex]);
+            subscriptionObj = _.clone(subscriptionFinalList[subscriptionsArrIndex]);
         else
-            newObj = _.clone(cloneInfoObj());
+            subscriptionObj = _.clone(cloneInfoObj());
 
         if ( subscribersArrIndex !== -1 )
             subscriberObj = _.clone(subscribersFinalList[subscribersArrIndex]);
@@ -308,84 +308,155 @@ function computeSubscriptionsData(subscriptions) {
             subscriberObj = _.clone(cloneSubscribersObj());
 
         billing_status = innerObj.history.billing_status;
-        if(billing_status === "Success" || billing_status === "trial" || billing_status === "graced"){
+
+        //Successful Subscriptions
+        if(billing_status === "Success"){
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
-                newObj.package.dailyLive = newObj.package.dailyLive + 1;
+                subscriptionObj.successful.package.dailyLive = subscriptionObj.graced.package.dailyLive + 1;
             else if(innerObj.history.package_id === 'QDfG')
-                newObj.package.weeklyLive = newObj.package.weeklyLive + 1;
+                subscriptionObj.successful.package.weeklyLive = subscriptionObj.successful.package.weeklyLive + 1;
             else if(innerObj.history.package_id === 'QDfH')
-                newObj.package.dailyComedy = newObj.package.dailyComedy + 1;
+                subscriptionObj.successful.package.dailyComedy = subscriptionObj.successful.package.dailyComedy + 1;
             else if(innerObj.history.package_id === 'QDfI')
-                newObj.package.weeklyComedy = newObj.package.weeklyComedy + 1;
+                subscriptionObj.successful.package.weeklyComedy = subscriptionObj.successful.package.weeklyComedy + 1;
 
             //Paywall wise subscriptions
             if(innerObj.history.paywall_id === 'ghRtjhT7')
-                newObj.paywall.comedy = newObj.paywall.comedy + 1;
+                subscriptionObj.successful.paywall.comedy = subscriptionObj.successful.paywall.comedy + 1;
             else if(innerObj.history.paywall_id === 'Dt6Gp70c')
-                newObj.paywall.live = newObj.paywall.live + 1;
+                subscriptionObj.successful.paywall.live = subscriptionObj.successful.paywall.live + 1;
 
             //Source wise subscriptions
             if(innerObj.history.source === 'app')
-                newObj.source.app = newObj.source.app + 1;
+                subscriptionObj.successful.source.app = subscriptionObj.successful.source.app + 1;
             else if(innerObj.history.source === 'web')
-                newObj.source.web = newObj.source.web + 1;
+                subscriptionObj.successful.source.web = subscriptionObj.successful.source.web + 1;
             else if(innerObj.history.source === 'gdn2')
-                newObj.source.gdn2 = newObj.source.gdn2 + 1;
+                subscriptionObj.successful.source.gdn2 = subscriptionObj.successful.source.gdn2 + 1;
             else if(innerObj.history.source === 'HE')
-                newObj.source.HE = newObj.source.HE + 1;
+                subscriptionObj.successful.source.HE = subscriptionObj.successful.source.HE + 1;
             else if(innerObj.history.source === 'affiliate_web')
-                newObj.source.affiliate_web = Number(newObj.source.affiliate_web) + 1;
+                subscriptionObj.successful.source.affiliate_web = Number(subscriptionObj.successful.source.affiliate_web) + 1;
             else
-                newObj.source.other_mids = Number(newObj.source.other_mids) + 1;
+                subscriptionObj.successful.source.other_mids = Number(subscriptionObj.successful.source.other_mids) + 1;
+        }
+
+        // Graced subscriptions
+        if (billing_status === "graced") {
+            //Package wise subscriptions
+            if(innerObj.history.package_id === 'QDfC')
+                subscriptionObj.graced.package.dailyLive = subscriptionObj.graced.package.dailyLive + 1;
+            else if(innerObj.history.package_id === 'QDfG')
+                subscriptionObj.graced.package.weeklyLive = subscriptionObj.graced.package.weeklyLive + 1;
+            else if(innerObj.history.package_id === 'QDfH')
+                subscriptionObj.graced.package.dailyComedy = subscriptionObj.graced.package.dailyComedy + 1;
+            else if(innerObj.history.package_id === 'QDfI')
+                subscriptionObj.graced.package.weeklyComedy = subscriptionObj.graced.package.weeklyComedy + 1;
+
+            //Paywall wise subscriptions
+            if(innerObj.history.paywall_id === 'ghRtjhT7')
+                subscriptionObj.graced.paywall.comedy = subscriptionObj.graced.paywall.comedy + 1;
+            else if(innerObj.history.paywall_id === 'Dt6Gp70c')
+                subscriptionObj.graced.paywall.live = subscriptionObj.graced.paywall.live + 1;
+
+            //Source wise subscriptions
+            if(innerObj.history.source === 'app')
+                subscriptionObj.graced.source.app = subscriptionObj.graced.source.app + 1;
+            else if(innerObj.history.source === 'web')
+                subscriptionObj.graced.source.web = subscriptionObj.graced.source.web + 1;
+            else if(innerObj.history.source === 'gdn2')
+                subscriptionObj.graced.source.gdn2 = subscriptionObj.graced.source.gdn2 + 1;
+            else if(innerObj.history.source === 'HE')
+                subscriptionObj.graced.source.HE = subscriptionObj.graced.source.HE + 1;
+            else if(innerObj.history.source === 'affiliate_web')
+                subscriptionObj.graced.source.affiliate_web = Number(subscriptionObj.graced.source.affiliate_web) + 1;
+            else
+                subscriptionObj.graced.source.other_mids = Number(subscriptionObj.graced.source.other_mids) + 1;
+        }
+
+        // Trialed subscriptions
+        if (billing_status === "trial") {
+            //Package wise subscriptions
+            if(innerObj.history.package_id === 'QDfC')
+                subscriptionObj.trial.package.dailyLive = subscriptionObj.trial.package.dailyLive + 1;
+            else if(innerObj.history.package_id === 'QDfG')
+                subscriptionObj.trial.package.weeklyLive = subscriptionObj.trial.package.weeklyLive + 1;
+            else if(innerObj.history.package_id === 'QDfH')
+                subscriptionObj.trial.package.dailyComedy = subscriptionObj.trial.package.dailyComedy + 1;
+            else if(innerObj.history.package_id === 'QDfI')
+                subscriptionObj.trial.package.weeklyComedy = subscriptionObj.trial.package.weeklyComedy + 1;
+
+            //Paywall wise subscriptions
+            if(innerObj.history.paywall_id === 'ghRtjhT7')
+                subscriptionObj.trial.paywall.comedy = subscriptionObj.trial.paywall.comedy + 1;
+            else if(innerObj.history.paywall_id === 'Dt6Gp70c')
+                subscriptionObj.trial.paywall.live = subscriptionObj.trial.paywall.live + 1;
+
+            //Source wise subscriptions
+            if(innerObj.history.source === 'app')
+                subscriptionObj.trial.source.app = subscriptionObj.trial.source.app + 1;
+            else if(innerObj.history.source === 'web')
+                subscriptionObj.trial.source.web = subscriptionObj.trial.source.web + 1;
+            else if(innerObj.history.source === 'gdn2')
+                subscriptionObj.trial.source.gdn2 = subscriptionObj.trial.source.gdn2 + 1;
+            else if(innerObj.history.source === 'HE')
+                subscriptionObj.trial.source.HE = subscriptionObj.trial.source.HE + 1;
+            else if(innerObj.history.source === 'affiliate_web')
+                subscriptionObj.trial.source.affiliate_web = Number(subscriptionObj.trial.source.affiliate_web) + 1;
+            else
+                subscriptionObj.trial.source.other_mids = Number(subscriptionObj.trial.source.other_mids) + 1;
+        }
+
+        //Affiliate mid wise subscriptions
+        if(billing_status === 'Affiliate callback sent'){
+            affiliate_mid = innerObj.history.transaction_id;
+            affiliate_mid = affiliate_mid.split('*')[1];
+            affiliate_mid = affiliate_mid.trim();
+
+            if(affiliate_mid === 'aff3')
+                subscriptionObj.midWise.affiliate_mid.aff3 = subscriptionObj.midWise.affiliate_mid.aff3 + 1;
+            else if(affiliate_mid === 'aff3a')
+                subscriptionObj.midWise.affiliate_mid.aff3a = subscriptionObj.midWise.affiliate_mid.aff3a + 1;
+            else if(affiliate_mid === 'gdn')
+                subscriptionObj.midWise.affiliate_mid.gdn = subscriptionObj.midWise.affiliate_mid.gdn + 1;
+            else if(affiliate_mid === 'gdn2')
+                subscriptionObj.midWise.affiliate_mid.gdn2 = subscriptionObj.midWise.affiliate_mid.gdn2 + 1;
+            else if(affiliate_mid === 'goonj')
+                subscriptionObj.midWise.affiliate_mid.goonj = subscriptionObj.midWise.affiliate_mid.goonj + 1;
+            else if(affiliate_mid === '1565')
+                subscriptionObj.midWise.affiliate_mid['1565'] = subscriptionObj.midWise.affiliate_mid['1565'] + 1;
+            else if(affiliate_mid === '1569')
+                subscriptionObj.midWise.affiliate_mid['1569'] = subscriptionObj.midWise.affiliate_mid['1569'] + 1;
+            else if(affiliate_mid === '1')
+                subscriptionObj.midWise.affiliate_mid['1'] = subscriptionObj.midWise.affiliate_mid['1'] + 1;
+            else if(affiliate_mid === 'null')
+                subscriptionObj.midWise.affiliate_mid['null'] = subscriptionObj.midWise.affiliate_mid['null'] + 1;
+        }
 
 
-            //Affiliate mid wise subscriptions
-            if(innerObj.history.billing_status === 'Affiliate callback sent'){
-                affiliate_mid = innerObj.history.transaction_id;
-                affiliate_mid = affiliate_mid.split('*')[1];
-                affiliate_mid = affiliate_mid.trim();
-
-                if(affiliate_mid === 'aff3')
-                    newObj.affiliate_mid.aff3 = newObj.affiliate_mid.aff3 + 1;
-                else if(affiliate_mid === 'aff3a')
-                    newObj.affiliate_mid.aff3a = newObj.affiliate_mid.aff3a + 1;
-                else if(affiliate_mid === 'gdn')
-                    newObj.affiliate_mid.gdn = newObj.affiliate_mid.gdn + 1;
-                else if(affiliate_mid === 'gdn2')
-                    newObj.affiliate_mid.gdn2 = newObj.affiliate_mid.gdn2 + 1;
-                else if(affiliate_mid === 'goonj')
-                    newObj.affiliate_mid.goonj = newObj.affiliate_mid.goonj + 1;
-                else if(affiliate_mid === '1565')
-                    newObj.affiliate_mid['1565'] = newObj.affiliate_mid['1565'] + 1;
-                else if(affiliate_mid === '1569')
-                    newObj.affiliate_mid['1569'] = newObj.affiliate_mid['1569'] + 1;
-                else if(affiliate_mid === '1')
-                    newObj.affiliate_mid['1'] = newObj.affiliate_mid['1'] + 1;
-                else if(affiliate_mid === 'null')
-                    newObj.affiliate_mid['null'] = newObj.affiliate_mid['null'] + 1;
-            }
-
-            //Active subscriptions & subscribers
-            newObj.active = newObj.active + 1;
+        //Active subscriptions & subscribers
+        if (billing_status === "Success"){
+            subscriptionObj.active = subscriptionObj.active + 1;
             subscriberObj.active = subscriberObj.active + 1;
         }
-        else{
-            //inactive subscriptions & subscribers
-            newObj.nonActive = newObj.nonActive + 1;
+
+        //inactive subscriptions & subscribers
+        if (billing_status !== "Success" || billing_status !== "graced" || billing_status !== "trial") {
+            subscriptionObj.nonActive = subscriptionObj.nonActive + 1;
             subscriberObj.nonActive = subscriberObj.nonActive + 1;
         }
 
         //Update timestamp
-        newObj.billing_dtm = innerObj.history.billing_dtm;
+        subscriptionObj.billing_dtm = innerObj.history.billing_dtm;
         subscriberObj.billing_dtm = innerObj.history.billing_dtm;
-        newObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
+        subscriptionObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
         subscriberObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
 
         if ( subscriptionsArrIndex !== -1 )
-            finalList[subscriptionsArrIndex] = newObj;
+            subscriptionFinalList[subscriptionsArrIndex] = subscriptionObj;
         else
-            finalList.push(newObj);
+            subscriptionFinalList.push(subscriptionObj);
 
         if ( subscribersArrIndex !== -1 )
             subscribersFinalList[subscribersArrIndex] = subscriberObj;
@@ -393,22 +464,22 @@ function computeSubscriptionsData(subscriptions) {
             subscribersFinalList.push(subscriberObj);
     }
 
-    return {finalList: finalList, subscribersFinalList: subscribersFinalList};
+    return {subscriptionFinalList: subscriptionFinalList, subscribersFinalList: subscribersFinalList};
 }
 
-async function insertNewRecord(finalList, subscribersFinalList, dateString, mode) {
+async function insertNewRecord(subscriptionFinalList, subscribersFinalList, dateString, mode) {
     console.log('dateString: ', dateString);
 
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
-    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
+    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, subscriptionFinalList.length, subscribersFinalList.length);
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (dbDataArr) {
         if (dbDataArr.length > 0){
             dbDataArr = dbDataArr[0];
 
             if (mode === 0){
-                dbDataArr.subscriptions = finalList;
+                dbDataArr.subscriptions = subscriptionFinalList;
 
                 if (dbDataArr.subscribers)
                     dbDataArr.subscribers.activeInActive = subscribersFinalList;
@@ -418,11 +489,11 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
                 }
             }else{
                 if (dbDataArr.subscriptions){
-                    finalList = updateDataArr(dbDataArr.subscriptions, finalList, 'subscriptions');
-                    dbDataArr.subscriptions = finalList;
+                    subscriptionFinalList = updateDataArr(dbDataArr.subscriptions, subscriptionFinalList, 'subscriptions');
+                    dbDataArr.subscriptions = subscriptionFinalList;
                 }
                 else
-                    dbDataArr.subscriptions = finalList;
+                    dbDataArr.subscriptions = subscriptionFinalList;
 
 
                 if (dbDataArr.subscribers){
@@ -440,23 +511,23 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
         else{
             let subscribers = {activeInActive: ''};
             subscribers.activeInActive = subscribersFinalList;
-            await reportsRepo.createReport({subscriptions: finalList, subscribers: subscribers, date: dateString});
+            await reportsRepo.createReport({subscriptions: subscriptionFinalList, subscribers: subscribers, date: dateString});
         }
     });
 }
-async function insertNewRecordOld(finalList, subscribersFinalList, dateString, mode) {
+async function insertNewRecordOld(subscriptionFinalList, subscribersFinalList, dateString, mode) {
     console.log('dateString: ', dateString);
 
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
-    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
+    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, subscriptionFinalList.length, subscribersFinalList.length);
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0){
             result = result[0];
 
             if (mode === 0){
-                result.subscriptions = finalList;
+                result.subscriptions = subscriptionFinalList;
 
                 if (result.subscribers)
                     result.subscribers.activeInActive = subscribersFinalList;
@@ -466,9 +537,9 @@ async function insertNewRecordOld(finalList, subscribersFinalList, dateString, m
                 }
             }else{
                 if (result.subscriptions)
-                    result.subscriptions.concat(finalList);
+                    result.subscriptions.concat(subscriptionFinalList);
                 else
-                    result.subscriptions = finalList;
+                    result.subscriptions = subscriptionFinalList;
 
                 if (result.subscribers)
                     result.subscribers.activeInActive.concat(subscribersFinalList);
@@ -483,7 +554,7 @@ async function insertNewRecordOld(finalList, subscribersFinalList, dateString, m
         else{
             let subscribers = {activeInActive: ''};
             subscribers.activeInActive = subscribersFinalList;
-            await reportsRepo.createReport({subscriptions: finalList, subscribers: subscribers, date: dateString});
+            await reportsRepo.createReport({subscriptions: subscriptionFinalList, subscribers: subscribers, date: dateString});
         }
     });
 }
@@ -514,17 +585,32 @@ function updateSingleObj(dbDataArrObj, innerObj, mode){
     else if (mode === 'subscriptions'){
         dbDataArrObj.active = _.clone(Number(dbDataArrObj.active) + Number(innerObj.active));
         dbDataArrObj.nonActive = _.clone(Number(dbDataArrObj.nonActive) + Number(innerObj.nonActive));
-        dbDataArrObj.package = _.clone(updateInnerObj(dbDataArrObj.package, innerObj.package));
-        dbDataArrObj.paywall = _.clone(updateInnerObj(dbDataArrObj.paywall, innerObj.paywall));
-        dbDataArrObj.source = _.clone(updateInnerObj(dbDataArrObj.source, innerObj.source));
-        dbDataArrObj.affiliate_mid = _.clone(updateInnerObj(dbDataArrObj.affiliate_mid, innerObj.affiliate_mid));
+
+        //successful wise
+        dbDataArrObj.successful.package = _.clone(updateLastObj(dbDataArrObj.successful.package, innerObj.successful.package));
+        dbDataArrObj.successful.paywall = _.clone(updateLastObj(dbDataArrObj.successful.paywall, innerObj.successful.paywall));
+        dbDataArrObj.successful.source = _.clone(updateLastObj(dbDataArrObj.successful.source, innerObj.successful.source));
+
+        //trial wise
+        dbDataArrObj.trial.package = _.clone(updateLastObj(dbDataArrObj.trial.package, innerObj.trial.package));
+        dbDataArrObj.trial.paywall = _.clone(updateLastObj(dbDataArrObj.trial.paywall, innerObj.trial.paywall));
+        dbDataArrObj.trial.source = _.clone(updateLastObj(dbDataArrObj.trial.source, innerObj.trial.source));
+
+        //graced wise
+        dbDataArrObj.graced.package = _.clone(updateLastObj(dbDataArrObj.graced.package, innerObj.graced.package));
+        dbDataArrObj.graced.paywall = _.clone(updateLastObj(dbDataArrObj.graced.paywall, innerObj.graced.paywall));
+        dbDataArrObj.graced.source = _.clone(updateLastObj(dbDataArrObj.graced.source, innerObj.graced.source));
+
+        // affiliate mids wise
+        dbDataArrObj.midWise = _.clone(updateLastObj(dbDataArrObj.midWise, innerObj.midWise));
+
         dbDataArrObj.billing_dtm = _.clone(dbDataArrObj.billing_dtm);
         dbDataArrObj.billing_dtm_hours = _.clone(dbDataArrObj.billing_dtm_hours);
     }
 
     return dbDataArrObj;
 }
-function updateInnerObj(...objs){
+function updateLastObj(...objs){
     return objs.reduce((a, b) => {
         for (let k in b) {
             if (b.hasOwnProperty(k))
@@ -542,38 +628,19 @@ function cloneSubscribersObj() {
     }
 }
 function cloneInfoObj() {
+    let dataObj = {
+        package: { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 },
+        paywall: { comedy: 0, live: 0 },
+        source: { app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0, other_mids: 0 }
+    };
+    let affiliate = { aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0, '1565': 0, '1569': 0, '1': 0, 'null': 0 };
     return {
         active : 0,
         nonActive: 0,
-        package: {
-            dailyLive: 0,
-            weeklyLive: 0,
-            dailyComedy: 0,
-            weeklyComedy: 0
-        },
-        paywall: {
-            comedy: 0,
-            live: 0
-        },
-        source: {
-            app: 0,
-            web: 0,
-            gdn2: 0,
-            HE: 0,
-            affiliate_web: 0,
-            other_mids: 0
-        },
-        affiliate_mid: {
-            aff3: 0,
-            aff3a: 0,
-            gdn: 0,
-            gdn2: 0,
-            goonj: 0,
-            '1565': 0,
-            '1569': 0,
-            '1': 0,
-            'null': 0,
-        },
+        successful: _.clone(dataObj),
+        graced: _.clone(dataObj),
+        trial: _.clone(dataObj),
+        midWise: _.clone(affiliate),
         billing_dtm: '',
         billing_dtm_hours: ''
     };
