@@ -682,12 +682,12 @@ function cloneSubscribersObj() {
     }
 }
 function cloneInfoObj() {
-    let dataObj = {
-        package: { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 },
-        paywall: { comedy: 0, live: 0 },
-        operator: { telenor: 0, easypaisa: 0 },
-        source: { app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0, other_mids: 0 }
-    };
+    let dataObj = _.clone({
+        package: _.clone({ dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 }),
+        paywall: _.clone({ comedy: 0, live: 0 }),
+        operator: _.clone({ telenor: 0, easypaisa: 0 }),
+        source: _.clone({ app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0, other_mids: 0 })
+    });
     let affiliate = { aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0, '1565': 0, '1569': 0, '1': 0, 'null': 0 };
     return {
         active : 0,
