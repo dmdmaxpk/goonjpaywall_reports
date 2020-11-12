@@ -504,7 +504,7 @@ async function insertNewRecord(subscriptionFinalList, subscribersFinalList, date
             dbDataArr = dbDataArr[0];
 
             if (itration === 0){
-                console.log('iterationNo === ', itration);
+                console.log('iterationNo === if ', itration);
 
                 dbDataArr.subscriptions = subscriptionFinalList;
 
@@ -516,7 +516,7 @@ async function insertNewRecord(subscriptionFinalList, subscribersFinalList, date
                 }
             }else{
 
-                console.log('iterationNo === ', itration);
+                console.log('iterationNo === else ', itration);
 
                 if (dbDataArr.subscriptions){
                     console.log('IF Case === ');
