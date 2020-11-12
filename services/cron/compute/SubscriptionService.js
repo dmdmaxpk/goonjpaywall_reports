@@ -315,39 +315,39 @@ function computeSubscriptionsData(subscriptions) {
 
         //Successful Subscriptions
         if(billing_status === "Success" || billing_status === "billed"){
-            console.log('Successful Subscriptions - billing_status: ', billing_status);
+            console.log('Successful Subscriptions - billing_status: ', innerObj.history.package_id, billing_status);
 
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
-                subscriptionObj.successful.package.dailyLive = subscriptionObj.successful.package.dailyLive + 1;
+                subscriptionObj.successful.package.dailyLive = Number(subscriptionObj.successful.package.dailyLive) + 1;
             else if(innerObj.history.package_id === 'QDfG')
-                subscriptionObj.successful.package.weeklyLive = subscriptionObj.successful.package.weeklyLive + 1;
+                subscriptionObj.successful.package.weeklyLive = Number(subscriptionObj.successful.package.weeklyLive) + 1;
             else if(innerObj.history.package_id === 'QDfH')
-                subscriptionObj.successful.package.dailyComedy = subscriptionObj.successful.package.dailyComedy + 1;
+                subscriptionObj.successful.package.dailyComedy = Number(subscriptionObj.successful.package.dailyComedy) + 1;
             else if(innerObj.history.package_id === 'QDfI')
-                subscriptionObj.successful.package.weeklyComedy = subscriptionObj.successful.package.weeklyComedy + 1;
+                subscriptionObj.successful.package.weeklyComedy = Number(subscriptionObj.successful.package.weeklyComedy) + 1;
 
             //Paywall wise subscriptions
             if(innerObj.history.paywall_id === 'ghRtjhT7')
-                subscriptionObj.successful.paywall.comedy = subscriptionObj.successful.paywall.comedy + 1;
+                subscriptionObj.successful.paywall.comedy = Number(subscriptionObj.successful.paywall.comedy) + 1;
             else if(innerObj.history.paywall_id === 'Dt6Gp70c')
-                subscriptionObj.successful.paywall.live = subscriptionObj.successful.paywall.live + 1;
+                subscriptionObj.successful.paywall.live = Number(subscriptionObj.successful.paywall.live) + 1;
 
             //Operator wise subscriptions
             if(innerObj.history.operator === 'telenor')
-                subscriptionObj.successful.operator.telenor = subscriptionObj.successful.operator.telenor + 1;
+                subscriptionObj.successful.operator.telenor = Number(subscriptionObj.successful.operator.telenor) + 1;
             else
-                subscriptionObj.successful.operator.easypaisa = subscriptionObj.successful.operator.easypaisa + 1;
+                subscriptionObj.successful.operator.easypaisa = Number(subscriptionObj.successful.operator.easypaisa) + 1;
 
             //Source wise subscriptions
             if(innerObj.history.source === 'app')
-                subscriptionObj.successful.source.app = subscriptionObj.successful.source.app + 1;
+                subscriptionObj.successful.source.app = Number(subscriptionObj.successful.source.app) + 1;
             else if(innerObj.history.source === 'web')
-                subscriptionObj.successful.source.web = subscriptionObj.successful.source.web + 1;
+                subscriptionObj.successful.source.web = Number(subscriptionObj.successful.source.web) + 1;
             else if(innerObj.history.source === 'gdn2')
-                subscriptionObj.successful.source.gdn2 = subscriptionObj.successful.source.gdn2 + 1;
+                subscriptionObj.successful.source.gdn2 = Number(subscriptionObj.successful.source.gdn2) + 1;
             else if(innerObj.history.source === 'HE')
-                subscriptionObj.successful.source.HE = subscriptionObj.successful.source.HE + 1;
+                subscriptionObj.successful.source.HE = Number(subscriptionObj.successful.source.HE) + 1;
             else if(innerObj.history.source === 'affiliate_web')
                 subscriptionObj.successful.source.affiliate_web = Number(subscriptionObj.successful.source.affiliate_web) + 1;
             else
@@ -464,16 +464,16 @@ function computeSubscriptionsData(subscriptions) {
         if (billing_status === "Success" || billing_status === "billed"){
             console.log('Active subscriptions - billing_status: ', billing_status);
 
-            subscriptionObj.active = subscriptionObj.active + 1;
-            subscriberObj.active = subscriberObj.active + 1;
+            subscriptionObj.active = Number(subscriptionObj.active) + 1;
+            subscriberObj.active = Number(subscriberObj.active) + 1;
 
             console.log('subscriptionObj.active : ', subscriptionObj.active);
         }
 
         //inactive subscriptions & subscribers
         if (billing_status === "expired" || billing_status === "unsubscribe-request-received-and-expired") {
-            subscriptionObj.nonActive = subscriptionObj.nonActive + 1;
-            subscriberObj.nonActive = subscriberObj.nonActive + 1;
+            subscriptionObj.nonActive = Number(subscriptionObj.nonActive) + 1;
+            subscriberObj.nonActive = Number(subscriberObj.nonActive) + 1;
         }
 
         //Update timestamp
