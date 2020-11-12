@@ -47,6 +47,8 @@ computeSubscriptionReports = async(req, res) => {
                         subscriptionFinalList = finalData.subscriptionFinalList;
                         subscribersFinalList = finalData.subscribersFinalList;
 
+                        console.log('subscriptionFinalList: ', subscriptionFinalList);
+                        console.log('subscribersFinalList: ', subscribersFinalList);
                         if (subscriptionFinalList.length > 0 || subscribersFinalList.length > 0){
                             console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
                             if (totalChunks > 1 || lastLimit > 0)
@@ -415,23 +417,23 @@ function computeSubscriptionsData(subscriptions) {
             affiliate_mid = affiliate_mid.trim();
 
             if(affiliate_mid === 'aff3')
-                subscriptionObj.midWise.affiliate_mid.aff3 = subscriptionObj.midWise.affiliate_mid.aff3 + 1;
+                subscriptionObj.affiliate_mid.aff3 = subscriptionObj.affiliate_mid.aff3 + 1;
             else if(affiliate_mid === 'aff3a')
-                subscriptionObj.midWise.affiliate_mid.aff3a = subscriptionObj.midWise.affiliate_mid.aff3a + 1;
+                subscriptionObj.affiliate_mid.aff3a = subscriptionObj.affiliate_mid.aff3a + 1;
             else if(affiliate_mid === 'gdn')
-                subscriptionObj.midWise.affiliate_mid.gdn = subscriptionObj.midWise.affiliate_mid.gdn + 1;
+                subscriptionObj.affiliate_mid.gdn = subscriptionObj.affiliate_mid.gdn + 1;
             else if(affiliate_mid === 'gdn2')
-                subscriptionObj.midWise.affiliate_mid.gdn2 = subscriptionObj.midWise.affiliate_mid.gdn2 + 1;
+                subscriptionObj.affiliate_mid.gdn2 = subscriptionObj.affiliate_mid.gdn2 + 1;
             else if(affiliate_mid === 'goonj')
-                subscriptionObj.midWise.affiliate_mid.goonj = subscriptionObj.midWise.affiliate_mid.goonj + 1;
+                subscriptionObj.affiliate_mid.goonj = subscriptionObj.affiliate_mid.goonj + 1;
             else if(affiliate_mid === '1565')
-                subscriptionObj.midWise.affiliate_mid['1565'] = subscriptionObj.midWise.affiliate_mid['1565'] + 1;
+                subscriptionObj.affiliate_mid['1565'] = subscriptionObj.affiliate_mid['1565'] + 1;
             else if(affiliate_mid === '1569')
-                subscriptionObj.midWise.affiliate_mid['1569'] = subscriptionObj.midWise.affiliate_mid['1569'] + 1;
+                subscriptionObj.affiliate_mid['1569'] = subscriptionObj.affiliate_mid['1569'] + 1;
             else if(affiliate_mid === '1')
-                subscriptionObj.midWise.affiliate_mid['1'] = subscriptionObj.midWise.affiliate_mid['1'] + 1;
+                subscriptionObj.affiliate_mid['1'] = subscriptionObj.affiliate_mid['1'] + 1;
             else if(affiliate_mid === 'null')
-                subscriptionObj.midWise.affiliate_mid['null'] = subscriptionObj.midWise.affiliate_mid['null'] + 1;
+                subscriptionObj.affiliate_mid['null'] = subscriptionObj.affiliate_mid['null'] + 1;
         }
 
 
@@ -467,7 +469,7 @@ function computeSubscriptionsData(subscriptions) {
     return {subscriptionFinalList: subscriptionFinalList, subscribersFinalList: subscribersFinalList};
 }
 
-async function insertNewRecord(subscriptionFinalList, subscribersFinalList, dateString, mode) {
+async function insertNewRecord(subscriptionFinalList, subscribersFinalList, dateString, itration) {
     console.log('dateString: ', dateString);
 
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
@@ -478,7 +480,9 @@ async function insertNewRecord(subscriptionFinalList, subscribersFinalList, date
         if (dbDataArr.length > 0){
             dbDataArr = dbDataArr[0];
 
-            if (mode === 0){
+            if (itration === 0){
+                console.log('iterationNo === ', itration);
+
                 dbDataArr.subscriptions = subscriptionFinalList;
 
                 if (dbDataArr.subscribers)
@@ -488,22 +492,29 @@ async function insertNewRecord(subscriptionFinalList, subscribersFinalList, date
                     dbDataArr.subscribers.activeInActive = subscribersFinalList;
                 }
             }else{
+
+                console.log('iterationNo === ', itration);
+
                 if (dbDataArr.subscriptions){
+                    console.log('IF Case === ');
+
                     subscriptionFinalList = updateDataArr(dbDataArr.subscriptions, subscriptionFinalList, 'subscriptions');
                     dbDataArr.subscriptions = subscriptionFinalList;
                 }
-                else
-                    dbDataArr.subscriptions = subscriptionFinalList;
-
-
-                if (dbDataArr.subscribers){
-                    subscribersFinalList = updateDataArr(dbDataArr.subscribers.activeInActive, subscribersFinalList, 'subscribers');
-                    dbDataArr.subscribers.activeInActive = subscribersFinalList;
-                }
                 else{
-                    dbDataArr.subscribers = {activeInActive: ''};
-                    dbDataArr.subscribers.activeInActive = subscribersFinalList;
+                    console.log('Else Case === ');
+                    dbDataArr.subscriptions = subscriptionFinalList;
                 }
+
+
+                // if (dbDataArr.subscribers){
+                //     subscribersFinalList = updateDataArr(dbDataArr.subscribers.activeInActive, subscribersFinalList, 'subscribers');
+                //     dbDataArr.subscribers.activeInActive = subscribersFinalList;
+                // }
+                // else{
+                //     dbDataArr.subscribers = {activeInActive: ''};
+                //     dbDataArr.subscribers.activeInActive = subscribersFinalList;
+                // }
             }
 
             await reportsRepo.updateReport(dbDataArr, dbDataArr._id);
@@ -560,15 +571,25 @@ async function insertNewRecordOld(subscriptionFinalList, subscribersFinalList, d
 }
 
 function updateDataArr(dbDataArr, computedDataArr, mode) {
+    console.log('************  updateDataArr *********** : ');
+
     var thisHour, arrIndex, innerObj, updatedObj;
     for (let i = 0; i < computedDataArr.length; i++){
         innerObj = computedDataArr[i];
         thisHour = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
         arrIndex = helper.checkDataExist(dbDataArr, thisHour, 'billing_dtm_hours');
 
+        console.log('thisHour: ', thisHour);
+        console.log('arrIndex: ', arrIndex);
         if ( arrIndex !== -1 ){
+
+            console.log('Before - innerObj: ', innerObj);
+            console.log('Before - dbDataArr[arrIndex]: ', dbDataArr[arrIndex]);
+
             updatedObj = updateSingleObj(_.clone(dbDataArr[arrIndex]), _.clone(innerObj), mode);
             dbDataArr[arrIndex] = _.clone(updatedObj);
+
+            console.log('After - dbDataArr[arrIndex]: ', dbDataArr[arrIndex]);
         }
         else
             dbDataArr.push(innerObj);
@@ -577,6 +598,8 @@ function updateDataArr(dbDataArr, computedDataArr, mode) {
     return dbDataArr;
 }
 function updateSingleObj(dbDataArrObj, innerObj, mode){
+
+    console.log('%%%%%%%%%%%%%%%  dbDataArrObj %%%%%%%%%%%%%%%% : ', mode);
 
     if (mode === 'subscribers') {
         dbDataArrObj.active = _.clone(Number(dbDataArrObj.active) + Number(innerObj.active));
@@ -590,19 +613,23 @@ function updateSingleObj(dbDataArrObj, innerObj, mode){
         dbDataArrObj.successful.package = _.clone(updateLastObj(dbDataArrObj.successful.package, innerObj.successful.package));
         dbDataArrObj.successful.paywall = _.clone(updateLastObj(dbDataArrObj.successful.paywall, innerObj.successful.paywall));
         dbDataArrObj.successful.source = _.clone(updateLastObj(dbDataArrObj.successful.source, innerObj.successful.source));
+        console.log('dbDataArrObj.successful: ', dbDataArrObj.successful);
 
         //trial wise
         dbDataArrObj.trial.package = _.clone(updateLastObj(dbDataArrObj.trial.package, innerObj.trial.package));
         dbDataArrObj.trial.paywall = _.clone(updateLastObj(dbDataArrObj.trial.paywall, innerObj.trial.paywall));
         dbDataArrObj.trial.source = _.clone(updateLastObj(dbDataArrObj.trial.source, innerObj.trial.source));
+        console.log('dbDataArrObj.trial: ', dbDataArrObj.trial);
 
         //graced wise
         dbDataArrObj.graced.package = _.clone(updateLastObj(dbDataArrObj.graced.package, innerObj.graced.package));
         dbDataArrObj.graced.paywall = _.clone(updateLastObj(dbDataArrObj.graced.paywall, innerObj.graced.paywall));
         dbDataArrObj.graced.source = _.clone(updateLastObj(dbDataArrObj.graced.source, innerObj.graced.source));
+        console.log('dbDataArrObj.graced: ', dbDataArrObj.graced);
 
         // affiliate mids wise
-        dbDataArrObj.midWise = _.clone(updateLastObj(dbDataArrObj.midWise, innerObj.midWise));
+        dbDataArrObj.affiliate_mid = _.clone(updateLastObj(dbDataArrObj.affiliate_mid, innerObj.affiliate_mid));
+        console.log('dbDataArrObj.affiliate_mid: ', dbDataArrObj.affiliate_mid);
 
         dbDataArrObj.billing_dtm = _.clone(dbDataArrObj.billing_dtm);
         dbDataArrObj.billing_dtm_hours = _.clone(dbDataArrObj.billing_dtm_hours);
@@ -640,7 +667,7 @@ function cloneInfoObj() {
         successful: _.clone(dataObj),
         graced: _.clone(dataObj),
         trial: _.clone(dataObj),
-        midWise: _.clone(affiliate),
+        affiliate_mid: _.clone(affiliate),
         billing_dtm: '',
         billing_dtm_hours: ''
     };
