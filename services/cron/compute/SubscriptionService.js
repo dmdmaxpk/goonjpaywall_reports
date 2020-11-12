@@ -313,10 +313,9 @@ function computeSubscriptionsData(subscriptions) {
 
         billing_status = innerObj.history.billing_status;
 
-        console.log('subscriptionObj: ', subscriptionObj);
         //Successful Subscriptions
         if(billing_status === "Success" || billing_status === "billed"){
-            // console.log('subscriptionsArrIndex : ', subscriptionsArrIndex);
+            console.log('Successful Subscriptions - billing_status: ', billing_status);
 
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
@@ -353,6 +352,8 @@ function computeSubscriptionsData(subscriptions) {
                 subscriptionObj.successful.source.affiliate_web = Number(subscriptionObj.successful.source.affiliate_web) + 1;
             else
                 subscriptionObj.successful.source.other_mids = Number(subscriptionObj.successful.source.other_mids) + 1;
+
+            console.log('subscriptionObj.successful : ', subscriptionObj.successful);
         }
 
         // Graced subscriptions
@@ -461,8 +462,12 @@ function computeSubscriptionsData(subscriptions) {
 
         //Active subscriptions & subscribers
         if (billing_status === "Success" || billing_status === "billed"){
+            console.log('Active subscriptions - billing_status: ', billing_status);
+
             subscriptionObj.active = subscriptionObj.active + 1;
             subscriberObj.active = subscriberObj.active + 1;
+
+            console.log('subscriptionObj.active : ', subscriptionObj.active);
         }
 
         //inactive subscriptions & subscribers
