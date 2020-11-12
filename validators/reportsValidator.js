@@ -25,8 +25,16 @@ class ReportsValidator{
                 break;
             case 'subscriptions':
                 this.checkDateIsNull(params, "Get Subscriptions");
-                this.checkSubTypeIsNull(params.sub_type, "Subscriptions", ['active_inactive', 'package_wise', 'source_wise', 'paywall_wise', '' +
-                '', 'callback_send', 'success_rate']);
+                this.checkSubTypeIsNull(params.sub_type, "Subscriptions", ['active_inactive', 'successful', 'graced', 'trialed', 'success_rate', 'callback_send']);
+
+                if (params.sub_type === 'successful')
+                    this.checkSubTypeIsNull(params.successful, "Get Subscriptions - Successful", ['package_wise', 'paywall_wise', 'operator_wise', 'source_wise']);
+
+                if (params.sub_type === 'graced')
+                    this.checkSubTypeIsNull(params.graced, "Get Subscriptions - Graced", ['package_wise', 'paywall_wise', 'operator_wise', 'source_wise']);
+
+                if (params.sub_type === 'trialed')
+                    this.checkSubTypeIsNull(params.trialed, "Get Subscriptions - Trialed", ['package_wise', 'paywall_wise', 'operator_wise', 'source_wise']);
 
                 break;
             case 'success_rate':

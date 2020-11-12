@@ -316,7 +316,7 @@ function computeSubscriptionsData(subscriptions) {
         billing_status = innerObj.history.billing_status;
 
         //Successful Subscriptions
-        if(billing_status === "Success"){
+        if(billing_status === "Success" || billing_status === "billed"){
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
                 subscriptionObj.successful.package.dailyLive = subscriptionObj.successful.package.dailyLive + 1;
@@ -459,7 +459,7 @@ function computeSubscriptionsData(subscriptions) {
         }
 
         //Active subscriptions & subscribers
-        if (billing_status === "Success"){
+        if (billing_status === "Success" || billing_status === "billed"){
             subscriptionObj.active = subscriptionObj.active + 1;
             subscriberObj.active = subscriberObj.active + 1;
         }
