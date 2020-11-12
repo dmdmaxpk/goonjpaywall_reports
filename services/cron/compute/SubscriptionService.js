@@ -301,16 +301,17 @@ function computeSubscriptionsData(subscriptions) {
         subscriptionsArrIndex = helper.checkDataExist(subscriptionFinalList, thisHour, 'billing_dtm_hours');
         subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'billing_dtm_hours');
 
-        console.log('subscriptionsArrIndex : ', subscriptionsArrIndex);
+        // console.log('thisHour : ', thisHour);
+        // console.log('subscriptionsArrIndex : ', subscriptionsArrIndex);
         if ( subscriptionsArrIndex !== -1 )
-            subscriptionObj = subscriptionFinalList[subscriptionsArrIndex];
+            subscriptionObj = _.clone(subscriptionFinalList[subscriptionsArrIndex]);
         else
-            subscriptionObj = cloneInfoObj();
+            subscriptionObj = _.clone(cloneInfoObj());
 
         if ( subscribersArrIndex !== -1 )
-            subscriberObj = subscribersFinalList[subscribersArrIndex];
+            subscriberObj = _.clone(subscribersFinalList[subscribersArrIndex]);
         else
-            subscriberObj = cloneSubscribersObj();
+            subscriberObj = _.clone(cloneSubscribersObj());
 
         billing_status = innerObj.history.billing_status;
 
@@ -476,17 +477,17 @@ function computeSubscriptionsData(subscriptions) {
         subscriberObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
 
         if ( subscriptionsArrIndex !== -1 )
-            subscriptionFinalList[subscriptionsArrIndex] = subscriptionObj;
+            subscriptionFinalList[subscriptionsArrIndex] = _.clone(subscriptionObj);
         else
-            subscriptionFinalList.push(subscriptionObj);
+            subscriptionFinalList.push(_.clone(subscriptionObj));
 
         if ( subscribersArrIndex !== -1 )
-            subscribersFinalList[subscribersArrIndex] = subscriberObj;
+            subscribersFinalList[subscribersArrIndex] = _.clone(subscriberObj);
         else
-            subscribersFinalList.push(subscriberObj);
+            subscribersFinalList.push(_.clone(subscriberObj));
     }
 
-    console.log('subscriptionFinalList: ', subscriptionFinalList);
+    // console.log('subscriptionFinalList: ', subscriptionFinalList);
     // console.log('subscribersFinalList: ', subscribersFinalList);
     return {subscriptionFinalList: subscriptionFinalList, subscribersFinalList: subscribersFinalList};
 }
@@ -601,7 +602,6 @@ function updateDataArr(dbDataArr, computedDataArr, mode) {
         thisHour = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
         arrIndex = helper.checkDataExist(dbDataArr, thisHour, 'billing_dtm_hours');
 
-        console.log('thisHour: ', thisHour);
         console.log('arrIndex: ', arrIndex);
         if ( arrIndex !== -1 ){
 
