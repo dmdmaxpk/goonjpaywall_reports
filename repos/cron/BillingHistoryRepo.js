@@ -45,10 +45,7 @@ class BillingHistoryRepository {
                             $match:{
                                 $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
                             }
-                        },
-                        { $skip: skip },
-                        { $limit: limit },
-                        {
+                        },{
                             $sort: {billing_dtm:-1}
                         },
                         {$project:{
@@ -79,8 +76,10 @@ class BillingHistoryRepository {
                             _id: 0,
                             user_id: "$_id.user_id",
                             history: {$arrayElemAt:["$history", 0]}
-                        }}
-                    ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
+                        }},
+                        { $skip: skip },
+                        { $limit: limit }
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('computeSubscriptionsFromBillingHistoryByDateRange - err: ', err.message);
                             resolve([]);
