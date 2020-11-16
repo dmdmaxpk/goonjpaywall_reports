@@ -301,14 +301,14 @@ function computeSubscriptionsData(subscriptions) {
         subscriptionsArrIndex = helper.checkDataExist(subscriptionFinalList, thisHour, 'billing_dtm_hours');
         subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'billing_dtm_hours');
 
-        console.log('new index =====', k);
+        console.log('new index =====', k, thisHour);
         if ( subscriptionsArrIndex !== -1 ){
             subscriptionObj = _.clone(subscriptionFinalList[subscriptionsArrIndex]);
-            console.log('subscriptionObj -1: ', subscriptionObj);
+            console.log('subscriptionObj !== -1: ', subscriptionObj);
         }
         else{
             subscriptionObj = _.clone(cloneSubscriptionsObj());
-            console.log('subscriptionObj > -1: ', subscriptionObj);
+            console.log('subscriptionObj === -1: ', subscriptionObj);
         }
 
         if ( subscribersArrIndex !== -1 )
@@ -320,11 +320,14 @@ function computeSubscriptionsData(subscriptions) {
 
         //Successful Subscriptions
         if(billing_status === "Success" || billing_status === "billed"){
-            console.log('Successful Subscriptions - billing_status: ', k, subscriptionsArrIndex, innerObj.history.package_id, billing_status);
+            console.log('Successful - billing_status: ', innerObj.history.package_id, billing_status);
 
             //Package wise subscriptions
-            if(innerObj.history.package_id === 'QDfC')
+            if(innerObj.history.package_id === 'QDfC'){
+                console.log('QDfC Before: ', subscriptionObj.successful.package.dailyLive);
                 subscriptionObj.successful.package.dailyLive = Number(subscriptionObj.successful.package.dailyLive) + 1;
+                console.log('QDfC After: ', subscriptionObj.successful.package.dailyLive);
+            }
             else if(innerObj.history.package_id === 'QDfG')
                 subscriptionObj.successful.package.weeklyLive = Number(subscriptionObj.successful.package.weeklyLive) + 1;
             else if(innerObj.history.package_id === 'QDfH')
@@ -358,7 +361,7 @@ function computeSubscriptionsData(subscriptions) {
             else
                 subscriptionObj.successful.source.other_mids = Number(subscriptionObj.successful.source.other_mids) + 1;
 
-            console.log('subscriptionObj.successful : ', subscriptionObj.successful);
+            // console.log('subscriptionObj.successful : ', subscriptionObj.successful);
         }
 
         // Graced subscriptions
@@ -489,11 +492,11 @@ function computeSubscriptionsData(subscriptions) {
 
         console.log('insert/update time =======', subscriptionObj);
         if ( subscriptionsArrIndex !== -1 ){
-            console.log('subscriptionsArrIndex -1: ', subscriptionsArrIndex);
+            console.log('subscriptionsArrIndex !== -1: ', subscriptionsArrIndex);
             subscriptionFinalList[subscriptionsArrIndex] = _.clone(subscriptionObj);
         }
         else{
-            console.log('subscriptionsArrIndex > -1: ', subscriptionObj);
+            console.log('subscriptionsArrIndex === -1: ', subscriptionObj);
             subscriptionFinalList.push(_.clone(subscriptionObj));
         }
 
