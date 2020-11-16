@@ -302,18 +302,15 @@ function computeSubscriptionsData(subscriptions) {
         subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'billing_dtm_hours');
         billing_status = innerObj.history.billing_status;
 
-        if ( subscriptionsArrIndex !== -1 ){
+        if ( subscriptionsArrIndex !== -1 )
             subscriptionObj = subscriptionFinalList[subscriptionsArrIndex];
-        }
-        else{
+        else
             subscriptionObj = _.cloneDeep(cloneSubscriptionsObj());
-        }
 
         if ( subscribersArrIndex !== -1 )
             subscriberObj = subscribersFinalList[subscribersArrIndex];
         else
             subscriberObj = _.cloneDeep(cloneSubscribersObj());
-
 
         //Successful Subscriptions
         if(billing_status === "Success" || billing_status === "billed"){
@@ -486,12 +483,10 @@ function computeSubscriptionsData(subscriptions) {
         subscriptionObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
         subscriberObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
 
-        if ( subscriptionsArrIndex !== -1 ){
+        if ( subscriptionsArrIndex !== -1 )
             subscriptionFinalList[subscriptionsArrIndex] = subscriptionObj;
-        }
-        else{
+        else
             subscriptionFinalList.push(subscriptionObj);
-        }
 
         if ( subscribersArrIndex !== -1 )
             subscribersFinalList[subscribersArrIndex] = subscriberObj;
