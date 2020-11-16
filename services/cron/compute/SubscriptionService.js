@@ -188,7 +188,7 @@ function computeSubscriptionsDataOld(subscriptions) {
 
         outerObj = subscriptions[j];
 
-        newObj = _.clone(cloneInfoObj());
+        newObj = _.clone(cloneSubscriptionsObj());
         subscriberObj = _.clone(cloneSubscribersObj());
         outer_billing_dtm = helper.setDate(new Date(outerObj.history.billing_dtm), null, 0, 0, 0).getTime();
         console.log('outer_billing_dtm: ', outer_billing_dtm);
@@ -304,7 +304,7 @@ function computeSubscriptionsData(subscriptions) {
         if ( subscriptionsArrIndex !== -1 )
             subscriptionObj = _.clone(subscriptionFinalList[subscriptionsArrIndex]);
         else
-            subscriptionObj = _.clone(cloneInfoObj());
+            subscriptionObj = _.clone(cloneSubscriptionsObj());
 
         if ( subscribersArrIndex !== -1 )
             subscriberObj = _.clone(subscribersFinalList[subscribersArrIndex]);
@@ -681,7 +681,7 @@ function cloneSubscribersObj() {
         billing_dtm_hours: ''
     }
 }
-function cloneInfoObj() {
+function cloneSubscriptionsObj() {
     let dataObj = {
         package: _.clone({ dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 }),
         paywall: _.clone({ comedy: 0, live: 0 }),
