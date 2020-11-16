@@ -302,14 +302,11 @@ function computeSubscriptionsData(subscriptions) {
         subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'billing_dtm_hours');
         billing_status = innerObj.history.billing_status;
 
-        console.log('new index =====', k, billing_status, thisHour);
         if ( subscriptionsArrIndex !== -1 ){
             subscriptionObj = subscriptionFinalList[subscriptionsArrIndex];
-            console.log('subscriptionObj !== -1: ', subscriptionObj);
         }
         else{
             subscriptionObj = _.cloneDeep(cloneSubscriptionsObj());
-            console.log('subscriptionObj === -1: ', subscriptionObj);
         }
 
         if ( subscribersArrIndex !== -1 )
@@ -320,7 +317,6 @@ function computeSubscriptionsData(subscriptions) {
 
         //Successful Subscriptions
         if(billing_status === "Success" || billing_status === "billed"){
-            console.log('Successful - billing_status: ', innerObj.history.package_id, billing_status);
 
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC'){
@@ -366,7 +362,6 @@ function computeSubscriptionsData(subscriptions) {
 
         // Graced subscriptions
         if (billing_status === "graced") {
-            console.log('Graced - billing_status: ', innerObj.history.package_id, billing_status);
 
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
@@ -407,7 +402,6 @@ function computeSubscriptionsData(subscriptions) {
 
         // Trialed subscriptions
         if (billing_status === "trial") {
-            console.log('Trial - billing_status: ', innerObj.history.package_id, billing_status);
 
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
@@ -448,7 +442,6 @@ function computeSubscriptionsData(subscriptions) {
 
         //Affiliate mid wise subscriptions
         if(billing_status === 'Affiliate callback sent'){
-            console.log('Affiliate callback sent - billing_status: ', innerObj.history.package_id, billing_status);
 
             affiliate_mid = innerObj.history.transaction_id;
             affiliate_mid = affiliate_mid.split('*')[1];
@@ -496,13 +489,10 @@ function computeSubscriptionsData(subscriptions) {
         subscriptionObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
         subscriberObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
 
-        console.log('insert/update time =======', subscriptionObj);
         if ( subscriptionsArrIndex !== -1 ){
-            console.log('subscriptionsArrIndex !== -1: ', subscriptionsArrIndex);
             subscriptionFinalList[subscriptionsArrIndex] = subscriptionObj;
         }
         else{
-            console.log('subscriptionsArrIndex === -1: ', subscriptionObj);
             subscriptionFinalList.push(subscriptionObj);
         }
 
@@ -555,14 +545,14 @@ async function insertNewRecord(subscriptionFinalList, subscribersFinalList, date
                 }
 
 
-                // if (dbDataArr.subscribers){
-                //     subscribersFinalList = updateDataArr(dbDataArr.subscribers.activeInActive, subscribersFinalList, 'subscribers');
-                //     dbDataArr.subscribers.activeInActive = subscribersFinalList;
-                // }
-                // else{
-                //     dbDataArr.subscribers = {activeInActive: ''};
-                //     dbDataArr.subscribers.activeInActive = subscribersFinalList;
-                // }
+                if (dbDataArr.subscribers){
+                    subscribersFinalList = updateDataArr(dbDataArr.subscribers.activeInActive, subscribersFinalList, 'subscribers');
+                    dbDataArr.subscribers.activeInActive = subscribersFinalList;
+                }
+                else{
+                    dbDataArr.subscribers = {activeInActive: ''};
+                    dbDataArr.subscribers.activeInActive = subscribersFinalList;
+                }
             }
 
             await reportsRepo.updateReport(dbDataArr, dbDataArr._id);
