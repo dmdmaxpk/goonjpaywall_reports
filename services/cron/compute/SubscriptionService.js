@@ -308,14 +308,14 @@ function computeSubscriptionsData(subscriptions) {
             console.log('subscriptionObj !== -1: ', subscriptionObj);
         }
         else{
-            subscriptionObj = _.clone(cloneSubscriptionsObj());
+            subscriptionObj = _.cloneDeep(cloneSubscriptionsObj());
             console.log('subscriptionObj === -1: ', subscriptionObj);
         }
 
         if ( subscribersArrIndex !== -1 )
             subscriberObj = subscribersFinalList[subscribersArrIndex];
         else
-            subscriberObj = _.clone(cloneSubscribersObj());
+            subscriberObj = _.cloneDeep(cloneSubscribersObj());
 
 
         //Successful Subscriptions
@@ -702,19 +702,19 @@ function cloneSubscribersObj() {
 }
 function cloneSubscriptionsObj() {
     let dataObj = {
-        package: _.clone({ dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 }),
-        paywall: _.clone({ comedy: 0, live: 0 }),
-        operator: _.clone({ telenor: 0, easypaisa: 0 }),
-        source: _.clone({ app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0, other_mids: 0 })
+        package: _.cloneDeep({ dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 }),
+        paywall: _.cloneDeep({ comedy: 0, live: 0 }),
+        operator: _.cloneDeep({ telenor: 0, easypaisa: 0 }),
+        source: _.cloneDeep({ app: 0, web: 0, gdn2: 0, HE: 0, affiliate_web: 0, other_mids: 0 })
     };
     let affiliate = { aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0, '1565': 0, '1569': 0, '1': 0, 'null': 0 };
     return {
         active : 0,
         nonActive: 0,
-        successful: _.clone(dataObj),
-        graced: _.clone(dataObj),
-        trial: _.clone(dataObj),
-        affiliate_mid: _.clone(affiliate),
+        successful: _.cloneDeep(dataObj),
+        graced: _.cloneDeep(dataObj),
+        trial: _.cloneDeep(dataObj),
+        affiliate_mid: _.cloneDeep(affiliate),
         billing_dtm: '',
         billing_dtm_hours: ''
     };
