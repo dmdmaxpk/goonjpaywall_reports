@@ -79,7 +79,7 @@ class BillingHistoryRepository {
                         }},
                         { $skip: skip },
                         { $limit: limit }
-                    ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('computeSubscriptionsFromBillingHistoryByDateRange - err: ', err.message);
                             resolve([]);

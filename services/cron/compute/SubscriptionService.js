@@ -300,8 +300,9 @@ function computeSubscriptionsData(subscriptions) {
         thisHour = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
         subscriptionsArrIndex = helper.checkDataExist(subscriptionFinalList, thisHour, 'billing_dtm_hours');
         subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'billing_dtm_hours');
+        billing_status = innerObj.history.billing_status;
 
-        console.log('new index =====', k, thisHour);
+        console.log('new index =====', k, billing_status, thisHour);
         if ( subscriptionsArrIndex !== -1 ){
             subscriptionObj = _.clone(subscriptionFinalList[subscriptionsArrIndex]);
             console.log('subscriptionObj !== -1: ', subscriptionObj);
@@ -316,7 +317,6 @@ function computeSubscriptionsData(subscriptions) {
         else
             subscriberObj = _.clone(cloneSubscribersObj());
 
-        billing_status = innerObj.history.billing_status;
 
         //Successful Subscriptions
         if(billing_status === "Success" || billing_status === "billed"){
@@ -366,6 +366,8 @@ function computeSubscriptionsData(subscriptions) {
 
         // Graced subscriptions
         if (billing_status === "graced") {
+            console.log('Graced - billing_status: ', innerObj.history.package_id, billing_status);
+
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
                 subscriptionObj.graced.package.dailyLive = subscriptionObj.graced.package.dailyLive + 1;
@@ -405,6 +407,8 @@ function computeSubscriptionsData(subscriptions) {
 
         // Trialed subscriptions
         if (billing_status === "trial") {
+            console.log('Trial - billing_status: ', innerObj.history.package_id, billing_status);
+
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
                 subscriptionObj.trial.package.dailyLive = subscriptionObj.trial.package.dailyLive + 1;
@@ -444,6 +448,8 @@ function computeSubscriptionsData(subscriptions) {
 
         //Affiliate mid wise subscriptions
         if(billing_status === 'Affiliate callback sent'){
+            console.log('Affiliate callback sent - billing_status: ', innerObj.history.package_id, billing_status);
+
             affiliate_mid = innerObj.history.transaction_id;
             affiliate_mid = affiliate_mid.split('*')[1];
             affiliate_mid = affiliate_mid.trim();
