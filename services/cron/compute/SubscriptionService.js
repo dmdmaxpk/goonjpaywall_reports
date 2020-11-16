@@ -495,21 +495,21 @@ function computeSubscriptionsData(subscriptions) {
         subscriberObj.billing_dtm = innerObj.history.billing_dtm;
         subscriptionObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
         subscriberObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
-
+*/
         console.log('insert/update time =======', subscriptionObj);
         if ( subscriptionsArrIndex !== -1 ){
             console.log('subscriptionsArrIndex !== -1: ', subscriptionsArrIndex);
-            subscriptionFinalList[subscriptionsArrIndex] = _.clone(subscriptionObj);
+            subscriptionFinalList[subscriptionsArrIndex] = subscriptionObj;
         }
         else{
             console.log('subscriptionsArrIndex === -1: ', subscriptionObj);
-            subscriptionFinalList.push(_.clone(subscriptionObj));
+            subscriptionFinalList.push(subscriptionObj);
         }
 
         if ( subscribersArrIndex !== -1 )
-            subscribersFinalList[subscribersArrIndex] = _.clone(subscriberObj);
+            subscribersFinalList[subscribersArrIndex] = subscriberObj;
         else
-            subscribersFinalList.push(_.clone(subscriberObj));*/
+            subscribersFinalList.push(subscriberObj);
     }
 
     // console.log('subscriptionFinalList: ', subscriptionFinalList);
