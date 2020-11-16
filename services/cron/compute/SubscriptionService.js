@@ -301,12 +301,15 @@ function computeSubscriptionsData(subscriptions) {
         subscriptionsArrIndex = helper.checkDataExist(subscriptionFinalList, thisHour, 'billing_dtm_hours');
         subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'billing_dtm_hours');
 
+        console.log('new index =====', k);
         if ( subscriptionsArrIndex !== -1 ){
             subscriptionObj = _.clone(subscriptionFinalList[subscriptionsArrIndex]);
-            console.log('subscriptionObj: ', subscriptionObj);
+            console.log('subscriptionObj -1: ', subscriptionObj);
         }
-        else
+        else{
             subscriptionObj = _.clone(cloneSubscriptionsObj());
+            console.log('subscriptionObj > -1: ', subscriptionObj);
+        }
 
         if ( subscribersArrIndex !== -1 )
             subscriberObj = _.clone(subscribersFinalList[subscribersArrIndex]);
@@ -464,12 +467,12 @@ function computeSubscriptionsData(subscriptions) {
 
         //Active subscriptions & subscribers
         if (billing_status === "Success" || billing_status === "billed"){
-            console.log('Active subscriptions - billing_status: ', k, subscriptionsArrIndex, billing_status);
+            // console.log('Active subscriptions - billing_status: ', k, subscriptionsArrIndex, billing_status);
 
             subscriptionObj.active = Number(subscriptionObj.active) + 1;
             subscriberObj.active = Number(subscriberObj.active) + 1;
 
-            console.log('subscriptionObj.active : ', subscriptionObj.active);
+            // console.log('subscriptionObj.active : ', subscriptionObj.active);
         }
 
         //inactive subscriptions & subscribers
@@ -484,10 +487,15 @@ function computeSubscriptionsData(subscriptions) {
         subscriptionObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
         subscriberObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
 
-        if ( subscriptionsArrIndex !== -1 )
+        console.log('insert/update time =======', subscriptionObj);
+        if ( subscriptionsArrIndex !== -1 ){
+            console.log('subscriptionsArrIndex -1: ', subscriptionsArrIndex);
             subscriptionFinalList[subscriptionsArrIndex] = _.clone(subscriptionObj);
-        else
+        }
+        else{
+            console.log('subscriptionsArrIndex > -1: ', subscriptionObj);
             subscriptionFinalList.push(_.clone(subscriptionObj));
+        }
 
         if ( subscribersArrIndex !== -1 )
             subscribersFinalList[subscribersArrIndex] = _.clone(subscriberObj);
