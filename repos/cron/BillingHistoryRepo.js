@@ -77,9 +77,7 @@ class BillingHistoryRepository {
                             user_id: "$_id.user_id",
                             history: {$arrayElemAt:["$history", 0]}
                         }},
-                        { $skip: skip },
-                        { $limit: limit }
-                    ],{ allowDiskUse: true }).toArray(function(err, items) {
+                    ],{ allowDiskUse: true }).skip(skip).limit(limit).toArray(function(err, items) {
                         if(err){
                             console.log('computeSubscriptionsFromBillingHistoryByDateRange - err: ', err.message);
                             resolve([]);

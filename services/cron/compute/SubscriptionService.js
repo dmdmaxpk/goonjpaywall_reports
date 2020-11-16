@@ -711,10 +711,10 @@ function cloneSubscriptionsObj() {
     return {
         active : 0,
         nonActive: 0,
-        successful: _.clone(dataObj),
-        graced: _.clone(dataObj),
-        trial: _.clone(dataObj),
-        affiliate_mid: _.clone(affiliate),
+        successful: dataObj,
+        graced: dataObj,
+        trial: dataObj,
+        affiliate_mid: affiliate,
         billing_dtm: '',
         billing_dtm_hours: ''
     };
