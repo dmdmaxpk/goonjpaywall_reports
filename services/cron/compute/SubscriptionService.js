@@ -358,7 +358,7 @@ function computeSubscriptionsData(subscriptions) {
         }
 
         // Graced subscriptions
-        if (billing_status === "graced") {
+        else if (billing_status === "graced") {
 
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
@@ -398,7 +398,7 @@ function computeSubscriptionsData(subscriptions) {
         }
 
         // Trialed subscriptions
-        if (billing_status === "trial") {
+        else if (billing_status === "trial") {
 
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
@@ -438,7 +438,7 @@ function computeSubscriptionsData(subscriptions) {
         }
 
         //Affiliate mid wise subscriptions
-        if(billing_status === 'Affiliate callback sent'){
+        else if(billing_status === 'Affiliate callback sent'){
 
             affiliate_mid = innerObj.history.transaction_id;
             affiliate_mid = affiliate_mid.split('*')[1];
@@ -475,7 +475,7 @@ function computeSubscriptionsData(subscriptions) {
         }
 
         //inactive subscriptions & subscribers
-        if (billing_status === "expired" || billing_status === "unsubscribe-request-received-and-expired") {
+        else if (billing_status === "expired" || billing_status === "unsubscribe-request-received-and-expired") {
             subscriptionObj.nonActive = Number(subscriptionObj.nonActive) + 1;
             subscriberObj.nonActive = Number(subscriberObj.nonActive) + 1;
         }
