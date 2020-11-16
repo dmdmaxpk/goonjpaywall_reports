@@ -443,11 +443,12 @@ function computeBillingHistoryData(data) {
 }
 
 async function insertNewRecord(sourceWiseUnSub, sourceWiseTrail, transactingSubsList, dateString, iterationNo) {
+    console.log('dateString: ', dateString);
 
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
-    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
 
+    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (dbDataArr) {
         if (dbDataArr.length > 0){
             dbDataArr = dbDataArr[0];
