@@ -301,8 +301,10 @@ function computeSubscriptionsData(subscriptions) {
         subscriptionsArrIndex = helper.checkDataExist(subscriptionFinalList, thisHour, 'billing_dtm_hours');
         subscribersArrIndex = helper.checkDataExist(subscribersFinalList, thisHour, 'billing_dtm_hours');
 
-        if ( subscriptionsArrIndex !== -1 )
+        if ( subscriptionsArrIndex !== -1 ){
             subscriptionObj = _.clone(subscriptionFinalList[subscriptionsArrIndex]);
+            console.log('subscriptionObj: ', subscriptionObj);
+        }
         else
             subscriptionObj = _.clone(cloneSubscriptionsObj());
 
