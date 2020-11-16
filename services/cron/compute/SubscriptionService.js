@@ -405,7 +405,7 @@ function computeSubscriptionsData(subscriptions) {
                 subscriptionObj.graced.source.other_mids = Number(subscriptionObj.graced.source.other_mids) + 1;
         }
 
-        // Trialed subscriptions
+        /*// Trialed subscriptions
         if (billing_status === "trial") {
             console.log('Trial - billing_status: ', innerObj.history.package_id, billing_status);
 
@@ -488,10 +488,10 @@ function computeSubscriptionsData(subscriptions) {
         if (billing_status === "expired" || billing_status === "unsubscribe-request-received-and-expired") {
             subscriptionObj.nonActive = Number(subscriptionObj.nonActive) + 1;
             subscriberObj.nonActive = Number(subscriberObj.nonActive) + 1;
-        }
+        }*/
 
         //Update timestamp
-        subscriptionObj.billing_dtm = innerObj.history.billing_dtm;
+        /*subscriptionObj.billing_dtm = innerObj.history.billing_dtm;
         subscriberObj.billing_dtm = innerObj.history.billing_dtm;
         subscriptionObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
         subscriberObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
@@ -509,7 +509,7 @@ function computeSubscriptionsData(subscriptions) {
         if ( subscribersArrIndex !== -1 )
             subscribersFinalList[subscribersArrIndex] = _.clone(subscriberObj);
         else
-            subscribersFinalList.push(_.clone(subscriberObj));
+            subscribersFinalList.push(_.clone(subscriberObj));*/
     }
 
     // console.log('subscriptionFinalList: ', subscriptionFinalList);
