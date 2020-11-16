@@ -304,7 +304,7 @@ function computeSubscriptionsData(subscriptions) {
 
         console.log('new index =====', k, billing_status, thisHour);
         if ( subscriptionsArrIndex !== -1 ){
-            subscriptionObj = _.clone(subscriptionFinalList[subscriptionsArrIndex]);
+            subscriptionObj = subscriptionFinalList[subscriptionsArrIndex];
             console.log('subscriptionObj !== -1: ', subscriptionObj);
         }
         else{
@@ -313,7 +313,7 @@ function computeSubscriptionsData(subscriptions) {
         }
 
         if ( subscribersArrIndex !== -1 )
-            subscriberObj = _.clone(subscribersFinalList[subscribersArrIndex]);
+            subscriberObj = subscribersFinalList[subscribersArrIndex];
         else
             subscriberObj = _.clone(cloneSubscribersObj());
 
@@ -711,10 +711,10 @@ function cloneSubscriptionsObj() {
     return {
         active : 0,
         nonActive: 0,
-        successful: dataObj,
-        graced: dataObj,
-        trial: dataObj,
-        affiliate_mid: affiliate,
+        successful: _.clone(dataObj),
+        graced: _.clone(dataObj),
+        trial: _.clone(dataObj),
+        affiliate_mid: _.clone(affiliate),
         billing_dtm: '',
         billing_dtm_hours: ''
     };
