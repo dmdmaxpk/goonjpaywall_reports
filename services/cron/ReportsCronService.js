@@ -33,7 +33,7 @@ cronComputeDailyDataReports = async (req, res) => {
 
     // compute Callback report Data
     helper.threeLinesConsoleLog('CallbackSendService - promiseBasedComputeCallbackSendReports');
-    await CallbackSendService.promiseBasedComputeCallbackSendReports(req,res);
+    // await CallbackSendService.promiseBasedComputeCallbackSendReports(req,res);
 
     // compute Charge Details report Data
     helper.threeLinesConsoleLog('ChargeDetailsRevenueServices - promiseBasedComputeChargeDetailsReports');

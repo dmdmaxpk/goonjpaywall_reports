@@ -43,6 +43,13 @@ class BillingHistoryRepository {
                     collection.aggregate([
                         {
                             $match:{
+                                $or:[
+                                    {billing_status: "trial"},
+                                    {billing_status: "Success"},
+                                    {billing_status: "expired"},
+                                    {billing_status: "Affiliate callback sent"},
+                                    {billing_status: "unsubscribe-request-received-and-expired"}
+                                ],
                                 $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
                             }
                         },{
@@ -57,7 +64,7 @@ class BillingHistoryRepository {
                             billing_status: {$ifNull: ['$billing_status', 'expire'] },
                             transaction_id: "$transaction_id",
                             user_id: "$user_id",
-                            billing_dtm: "$billing_dtm",
+                            billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } },
                         }},
                         {$group: {
                             _id: { "user_id": "$user_id", "package_id": "$package_id"},
