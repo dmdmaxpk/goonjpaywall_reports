@@ -174,7 +174,7 @@ promiseBasedComputeDailySubscriptionReports = async(req, res) => {
 
 function computeSubscriptionsData(subscriptions) {
 
-    let dateInMili, outer_added_dtm, inner_added_dtm, newObj, outerObj, innerObj, subscriberObj, finalList = [], subscribersFinalList = [];
+    let dateInMili, subscription_status, outer_added_dtm, inner_added_dtm, newObj, outerObj, innerObj, subscriberObj, finalList = [], subscribersFinalList = [];
     for (let j=0; j < subscriptions.length; j++) {
 
         outerObj = subscriptions[j];
@@ -192,7 +192,8 @@ function computeSubscriptionsData(subscriptions) {
                 if (outer_added_dtm === inner_added_dtm){
                     dateInMili = inner_added_dtm;
 
-                    if(billing_status === "billed" || billing_status === "trial" || billing_status === "graced") {
+                    subscription_status = innerObj.subscription_status;
+                    if(subscription_status === "billed" || subscription_status === "trial" || subscription_status === "graced") {
                         //Package wise subscriptions
                         if (innerObj.subscribed_package_id === 'QDfC')
                             newObj.package.dailyLive = newObj.package.dailyLive + 1;
@@ -245,12 +246,11 @@ function computeSubscriptionsData(subscriptions) {
                         newObj.active = newObj.active + 1;
                         subscriberObj.active = subscriberObj.active + 1;
                     }
-                    else if (billing_status === "expired" || billing_status === "not_billed"){
+                    else if (subscription_status === "expired" || subscription_status === "not_billed"){
                         //inactive subscriptions & subscribers
                         newObj.nonActive = newObj.nonActive + 1;
                         subscriberObj.nonActive = subscriberObj.nonActive + 1;
                     }
-
 
                     newObj.added_dtm = outerObj.added_dtm;
                     subscriberObj.added_dtm = outerObj.added_dtm;
