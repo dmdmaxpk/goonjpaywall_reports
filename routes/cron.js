@@ -10,22 +10,22 @@ router.route('/compute-subscriber-reports')
     .get(connection.connect, controller.computeSubscriberReports); //**
 
 router.route('/compute-subscription-reports')
-    .get(connection.connect, controller.computeSubscriptionReports); //**
+    .get(connection.connect, controller.computeSubscriptionReports); //
 
 router.route('/compute-callback-send-reports')
-    .get(connection.connect, controller.computeCallbackSendReports); //**
+    .get(connection.connect, controller.computeCallbackSendReports); //
 
 router.route('/compute-revenue-net-addition-reports')
-    .get(connection.connect, controller.computeRevenueNetAdditionReports); //**
+    .get(connection.connect, controller.computeRevenueNetAdditionReports); //
 
 router.route('/compute-billing-history-reports')
-    .get(connection.connect, controller.computeBillingHistoryReports); //****
+    .get(connection.connect, controller.computeBillingHistoryReports); //
 
 router.route('/compute-charge-detail-reports')
-    .get(connection.connect, controller.computeChargeDetailsReports); //**
+    .get(connection.connect, controller.computeChargeDetailsReports); //
 
 router.route('/compute-charge-detail-source-wise-reports')
-    .get(connection.connect, controller.computeChargeDetailsSourceWiseReports); //**
+    .get(connection.connect, controller.computeChargeDetailsSourceWiseReports); //
 
 router.route('/compute-affiliate-reports')
     .get(connection.connect, controller.computeAffiliateReports); //**
