@@ -202,7 +202,7 @@ function computeSubscriptionsData(subscriptions) {
             subscriberObj = _.cloneDeep(cloneSubscribersObj());
 
         //Successful Subscriptions
-        if(billing_status === "Success" || billing_status === "billed"){
+        if(billing_status === "Success"){
 
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
@@ -351,7 +351,7 @@ function computeSubscriptionsData(subscriptions) {
         }
 
         //Active subscriptions & subscribers
-        if (billing_status === "Success" || billing_status === "billed"){
+        if (billing_status === "Success"){
             // console.log('Active subscriptions - billing_status: ', k, subscriptionsArrIndex, billing_status);
 
             subscriptionObj.active = Number(subscriptionObj.active) + 1;
