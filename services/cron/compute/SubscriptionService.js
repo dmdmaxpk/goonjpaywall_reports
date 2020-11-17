@@ -202,7 +202,7 @@ function computeSubscriptionsData(subscriptions) {
             subscriberObj = _.cloneDeep(cloneSubscribersObj());
 
         //Successful Subscriptions
-        if(billing_status === "Success"){
+        if(billing_status === "Success" || billing_status === "billed"){
 
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
