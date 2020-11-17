@@ -32,12 +32,12 @@ cronComputeDailyDataReports = async (req, res) => {
     // await SubscriptionService.promiseBasedComputeSubscriptionReports(req,res);
 
     // compute Callback report Data
-    helper.threeLinesConsoleLog('CallbackSendService - promiseBasedComputeCallbackSendReports');
-    // await CallbackSendService.promiseBasedComputeCallbackSendReports(req,res);
+    // helper.threeLinesConsoleLog('CallbackSendService - promiseBasedComputeCallbackSendReports');
+    // // await CallbackSendService.promiseBasedComputeCallbackSendReports(req,res);
 
     // compute Charge Details report Data
     helper.threeLinesConsoleLog('ChargeDetailsRevenueServices - promiseBasedComputeChargeDetailsReports');
-    // await ChargeDetailsRevenueServices.promiseBasedComputeChargeDetailsReports(req,res);
+    await ChargeDetailsRevenueServices.promiseBasedComputeChargeDetailsReports(req,res);
 
     // compute Charge Details Source Wise report Data
     helper.threeLinesConsoleLog('ChargeDetailsSourceWiseServices - promiseBasedComputeChargeDetailsReports');

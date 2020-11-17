@@ -8,7 +8,7 @@ class SubscriptionRepository {
                     collection.aggregate([
                         {
                             $match: {
-                                $or:[{"subscription_status": "billed"}, {"subscription_status": "graced"}],
+                                subscription_status: "billed",
                                 $and: [{added_dtm: {$gte: new Date(from)}}, {added_dtm: {$lte: new Date(to)}}]
                             }
                         },
@@ -32,8 +32,7 @@ class SubscriptionRepository {
                                         cond: {
                                             $or: [
                                                 {$eq: ['$$history.billing_status', "Success"]},
-                                                {$eq: ['$$history.billing_status', "billed"]},
-                                                {$eq: ['$$history.billing_status', "graced"]},
+                                                {$eq: ['$$history.billing_status', "billed"]}
                                             ]
                                         }
                                     }
