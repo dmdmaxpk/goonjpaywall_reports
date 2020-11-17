@@ -7,8 +7,8 @@ const  _ = require('lodash');
 
 let fromDate, toDate, day, month, finalData, finalList = [], subscribersFinalList = [];
 let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
-computeSubscriptionReports = async(req, res) => {
-    console.log('computeSubscriptionReports');
+computeDailySubscriptionReports = async(req, res) => {
+    console.log('computeDailySubscriptionReports');
 
     /*
     * Compute date and time for data fetching from db
@@ -74,34 +74,34 @@ computeSubscriptionReports = async(req, res) => {
 
     // Get compute data for next time slot
     req.day = Number(req.day) + 1;
-    console.log('computeSubscriptionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+    console.log('computeDailySubscriptionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
     if (req.day <= helper.getDaysInMonth(month)){
         console.log('IF');
         if (month < helper.getTodayMonthNo())
-            computeSubscriptionReports(req, res);
+            computeDailySubscriptionReports(req, res);
         else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-            computeSubscriptionReports(req, res);
+            computeDailySubscriptionReports(req, res);
     }
     else{
         console.log('ELSE');
         req.day = 1;
         req.month = Number(req.month) + 1;
-        console.log('computeSubscriptionReports -> month : ', month, req.month, new Date().getMonth());
+        console.log('computeDailySubscriptionReports -> month : ', month, req.month, new Date().getMonth());
 
         if (req.month <= helper.getTodayMonthNo())
-            computeSubscriptionReports(req, res);
+            computeDailySubscriptionReports(req, res);
     }
 
     if (helper.isToday(fromDate)){
-        console.log('computeSubscriptionReports - data compute - done');
+        console.log('computeDailySubscriptionReports - data compute - done');
         delete req.day;
         delete req.month;
     }
 };
 
-promiseBasedComputeSubscriptionReports = async(req, res) => {
-    console.log('promiseBasedComputeSubscriptionReports');
+promiseBasedComputeDailySubscriptionReports = async(req, res) => {
+    console.log('promiseBasedComputeDailySubscriptionReports');
     return new Promise(async (resolve, reject) => {
 
         /*
@@ -164,7 +164,7 @@ promiseBasedComputeSubscriptionReports = async(req, res) => {
         });
 
         if (helper.isToday(fromDate)){
-            console.log('promiseBasedComputeSubscriptionReports - data compute - done');
+            console.log('promiseBasedComputeDailySubscriptionReports - data compute - done');
             delete req.day;
             delete req.month;
         }
@@ -367,6 +367,6 @@ function cloneInfoObj() {
 }
 
 module.exports = {
-    computeSubscriptionReports: computeSubscriptionReports,
-    promiseBasedComputeSubscriptionReports: promiseBasedComputeSubscriptionReports,
+    computeDailySubscriptionReports: computeDailySubscriptionReports,
+    promiseBasedComputeDailySubscriptionReports: promiseBasedComputeDailySubscriptionReports,
 };

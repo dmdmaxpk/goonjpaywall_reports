@@ -7,8 +7,8 @@ const  _ = require('lodash');
 
 let fromDate, toDate, day, month, finalData, subscriptionFinalList = [], subscribersFinalList = [];
 let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
-computeSubscriptionReports = async(req, res) => {
-    console.log('computeSubscriptionReports');
+computeSubscriptionsFromBillingService = async(req, res) => {
+    console.log('computeSubscriptionsFromBillingService');
 
     /*
     * Compute date and time for data fetching from db
@@ -80,25 +80,25 @@ computeSubscriptionReports = async(req, res) => {
 
     // Get compute data for next time slot
     req.day = Number(req.day) + 1;
-    console.log('computeSubscriptionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+    console.log('computeSubscriptionsFromBillingService -> day : ', day, req.day, helper.getDaysInMonth(month));
 
     if (req.day <= helper.getDaysInMonth(month)){
         if (month < helper.getTodayMonthNo())
-            computeSubscriptionReports(req, res);
+            computeSubscriptionsFromBillingService(req, res);
         else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-            computeSubscriptionReports(req, res);
+            computeSubscriptionsFromBillingService(req, res);
     }
     else{
         req.day = 1;
         req.month = Number(req.month) + 1;
-        console.log('computeSubscriptionReports -> month : ', month, req.month, new Date().getMonth());
+        console.log('computeSubscriptionsFromBillingService -> month : ', month, req.month, new Date().getMonth());
 
         if (req.month <= helper.getTodayMonthNo())
-            computeSubscriptionReports(req, res);
+            computeSubscriptionsFromBillingService(req, res);
     }
 
     if (helper.isToday(fromDate)){
-        console.log('computeSubscriptionReports - data compute - done');
+        console.log('computeSubscriptionsFromBillingService - data compute - done');
         delete req.day;
         delete req.month;
     }
@@ -595,6 +595,6 @@ function countQuery(from, to){
 }
 
 module.exports = {
-    computeSubscriptionReports: computeSubscriptionReports,
+    computeSubscriptionsFromBillingService: computeSubscriptionsFromBillingService,
     promiseBasedComputeSubscriptionReports: promiseBasedComputeSubscriptionReports,
 };

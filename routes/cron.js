@@ -9,8 +9,11 @@ router.route('/compute-user-reports')
 router.route('/compute-subscriber-reports')
     .get(connection.connect, controller.computeSubscriberReports); //**
 
-router.route('/compute-subscription-reports')
-    .get(connection.connect, controller.computeSubscriptionReports); //
+router.route('/compute-subscriptions-from-billing-reports')
+    .get(connection.connect, controller.computeSubscriptionFromBillingService); //
+
+router.route('/compute-daily-subscription-reports')
+    .get(connection.connect, controller.computeDailySubscriptionReports); //
 
 router.route('/compute-callback-send-reports')
     .get(connection.connect, controller.computeCallbackSendReports); //**

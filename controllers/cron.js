@@ -1,6 +1,7 @@
 const UserService = require('../services/cron/compute/UserService');
 const SubscriberService = require('../services/cron/compute/SubscriberService');
-const SubscriptionService = require('../services/cron/compute/SubscriptionFromBillingService');
+const SubscriptionService = require('../services/cron/compute/SubscriptionsService');
+const SubscriptionFromBillingService = require('../services/cron/compute/SubscriptionFromBillingService');
 const BillingHistoryService = require('../services/cron/compute/BillingHistoryService');
 const CallbackSendService = require('../services/cron/compute/CallbackSendService');
 const RevenueNetAdditionService = require('../services/cron/compute/RevenueNetAdditionService');
@@ -36,9 +37,14 @@ exports.computeSubscriberTransactionsReports = async (req,res) =>  {
     res.send("computeSubscriberReports - Executed\n");
 };
 
-exports.computeSubscriptionReports = async (req,res) =>  {
-    SubscriptionService.computeSubscriptionReports(req,res);
-    res.send("computeSubscriptionReports - Executed\n");
+exports.computeDailySubscriptionReports = async (req,res) =>  {
+    SubscriptionService.computeDailySubscriptionReports(req,res);
+    res.send("computeDailySubscriptionReports - Executed\n");
+};
+
+exports.computeSubscriptionFromBillingService = async (req,res) =>  {
+    SubscriptionFromBillingService.computeSubscriptionsFromBillingService(req,res);
+    res.send("SubscriptionFromBillingService - Executed\n");
 };
 
 exports.computeBillingHistoryReports = async (req,res) =>  {
