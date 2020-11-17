@@ -20,7 +20,7 @@ packageWiseSuccessfulSubscriptionReport = async (rawDataSet, params) =>{
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
             if (outerObj.subscriptions){
-                for (let j=0; j<outerObj.subscriptions.length; j++) {
+                for (let j=0; j < outerObj.subscriptions.length; j++) {
                     subscription = outerObj.subscriptions[j];
                     if (subscription.successful) {
                         successful = subscription.successful;
