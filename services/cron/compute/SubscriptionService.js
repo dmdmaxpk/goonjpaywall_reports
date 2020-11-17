@@ -477,36 +477,33 @@ function updateSingleObj(dbDataArrObj, innerObj, mode){
     console.log('%%%%%%%%%%%%%%%  dbDataArrObj %%%%%%%%%%%%%%%% : ', mode);
 
     if (mode === 'subscribers') {
-        dbDataArrObj.active = _.cloneDeep(Number(dbDataArrObj.active) + Number(innerObj.active));
-        dbDataArrObj.nonActive = _.cloneDeep(Number(dbDataArrObj.nonActive) + Number(innerObj.nonActive));
+        dbDataArrObj.active = Number(dbDataArrObj.active) + Number(innerObj.active);
+        dbDataArrObj.nonActive = Number(dbDataArrObj.nonActive) + Number(innerObj.nonActive);
     }
     else if (mode === 'subscriptions'){
-        dbDataArrObj.active = _.cloneDeep(Number(dbDataArrObj.active) + Number(innerObj.active));
-        dbDataArrObj.nonActive = _.cloneDeep(Number(dbDataArrObj.nonActive) + Number(innerObj.nonActive));
+        dbDataArrObj.active = Number(dbDataArrObj.active) + Number(innerObj.active);
+        dbDataArrObj.nonActive = Number(dbDataArrObj.nonActive) + Number(innerObj.nonActive);
 
         //successful wise
-        dbDataArrObj.successful.package = _.cloneDeep(updateLastObj(dbDataArrObj.successful.package, innerObj.successful.package));
-        dbDataArrObj.successful.paywall = _.cloneDeep(updateLastObj(dbDataArrObj.successful.paywall, innerObj.successful.paywall));
-        dbDataArrObj.successful.operator = _.cloneDeep(updateLastObj(dbDataArrObj.successful.operator, innerObj.successful.operator));
-        dbDataArrObj.successful.source = _.cloneDeep(updateLastObj(dbDataArrObj.successful.source, innerObj.successful.source));
+        dbDataArrObj.successful.package = updateLastObj(dbDataArrObj.successful.package, innerObj.successful.package);
+        dbDataArrObj.successful.paywall = updateLastObj(dbDataArrObj.successful.paywall, innerObj.successful.paywall);
+        dbDataArrObj.successful.operator = updateLastObj(dbDataArrObj.successful.operator, innerObj.successful.operator);
+        dbDataArrObj.successful.source = updateLastObj(dbDataArrObj.successful.source, innerObj.successful.source);
 
         //trial wise
-        dbDataArrObj.trial.package = _.cloneDeep(updateLastObj(dbDataArrObj.trial.package, innerObj.trial.package));
-        dbDataArrObj.trial.paywall = _.cloneDeep(updateLastObj(dbDataArrObj.trial.paywall, innerObj.trial.paywall));
-        dbDataArrObj.trial.operator = _.cloneDeep(updateLastObj(dbDataArrObj.trial.operator, innerObj.trial.operator));
-        dbDataArrObj.trial.source = _.cloneDeep(updateLastObj(dbDataArrObj.trial.source, innerObj.trial.source));
+        dbDataArrObj.trial.package = updateLastObj(dbDataArrObj.trial.package, innerObj.trial.package);
+        dbDataArrObj.trial.paywall = updateLastObj(dbDataArrObj.trial.paywall, innerObj.trial.paywall);
+        dbDataArrObj.trial.operator = updateLastObj(dbDataArrObj.trial.operator, innerObj.trial.operator);
+        dbDataArrObj.trial.source = updateLastObj(dbDataArrObj.trial.source, innerObj.trial.source);
 
         //graced wise
-        dbDataArrObj.graced.package = _.cloneDeep(updateLastObj(dbDataArrObj.graced.package, innerObj.graced.package));
-        dbDataArrObj.graced.paywall = _.cloneDeep(updateLastObj(dbDataArrObj.graced.paywall, innerObj.graced.paywall));
-        dbDataArrObj.graced.operator = _.cloneDeep(updateLastObj(dbDataArrObj.graced.operator, innerObj.graced.operator));
-        dbDataArrObj.graced.source = _.cloneDeep(updateLastObj(dbDataArrObj.graced.source, innerObj.graced.source));
+        dbDataArrObj.graced.package = updateLastObj(dbDataArrObj.graced.package, innerObj.graced.package);
+        dbDataArrObj.graced.paywall = updateLastObj(dbDataArrObj.graced.paywall, innerObj.graced.paywall);
+        dbDataArrObj.graced.operator = updateLastObj(dbDataArrObj.graced.operator, innerObj.graced.operator);
+        dbDataArrObj.graced.source = updateLastObj(dbDataArrObj.graced.source, innerObj.graced.source);
 
         // affiliate mids wise
-        dbDataArrObj.affiliate_mid = _.cloneDeep(updateLastObj(dbDataArrObj.affiliate_mid, innerObj.affiliate_mid));
-
-        dbDataArrObj.billing_dtm = _.cloneDeep(dbDataArrObj.billing_dtm);
-        dbDataArrObj.billing_dtm_hours = _.cloneDeep(dbDataArrObj.billing_dtm_hours);
+        dbDataArrObj.affiliate_mid = updateLastObj(dbDataArrObj.affiliate_mid, innerObj.affiliate_mid);
     }
 
     return dbDataArrObj;
@@ -515,7 +512,7 @@ function updateLastObj(...objs){
     return objs.reduce((a, b) => {
         for (let k in b) {
             if (b.hasOwnProperty(k))
-                a[k] = (a[k] || 0) + b[k];
+                a[k] = (Number(a[k]) || 0) + Number(b[k]);
         }
         return a;
     }, {});
