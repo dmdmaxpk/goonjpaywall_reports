@@ -57,7 +57,7 @@ class BillingHistoryRepository {
                             billing_status: {$ifNull: ['$billing_status', 'expire'] },
                             transaction_id: "$transaction_id",
                             user_id: "$user_id",
-                            billing_dtm: $billing_dtm,
+                            billing_dtm: "$billing_dtm",
                         }},
                         {$group: {
                             _id: { "user_id": "$user_id", "package_id": "$package_id"},
