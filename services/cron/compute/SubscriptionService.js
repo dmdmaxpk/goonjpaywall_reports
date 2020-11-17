@@ -373,12 +373,12 @@ function computeSubscriptionsData(subscriptions) {
                     subscriberObj.billing_dtm_hours = helper.setDate(new Date(innerObj.history.billing_dtm), null, 0, 0, 0);
                 }
             }
-            finalList.push(subscriptionObj);
+            subscriptionFinalList.push(subscriptionObj);
             subscribersFinalList.push(subscriberObj);
         }
     }
 
-    return {finalList: finalList, subscribersFinalList: subscribersFinalList};
+    return {subscriptionFinalList: subscriptionFinalList, subscribersFinalList: subscribersFinalList};
 }
 
 function computeSubscriptionsDataOld(subscriptions) {
