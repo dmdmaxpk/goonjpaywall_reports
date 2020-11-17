@@ -244,7 +244,7 @@ function computeSubscriptionsData(subscriptions) {
         }
 
         // Graced subscriptions
-        else if (billing_status === "graced") {
+        if (billing_status === "graced") {
 
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
@@ -284,7 +284,7 @@ function computeSubscriptionsData(subscriptions) {
         }
 
         // Trialed subscriptions
-        else if (billing_status === "trial") {
+        if (billing_status === "trial") {
 
             //Package wise subscriptions
             if(innerObj.history.package_id === 'QDfC')
@@ -324,7 +324,7 @@ function computeSubscriptionsData(subscriptions) {
         }
 
         //Affiliate mid wise subscriptions
-        else if(billing_status === 'Affiliate callback sent'){
+        if(billing_status === 'Affiliate callback sent'){
 
             affiliate_mid = innerObj.history.transaction_id;
             affiliate_mid = affiliate_mid.split('*')[1];
@@ -361,7 +361,7 @@ function computeSubscriptionsData(subscriptions) {
         }
 
         //inactive subscriptions & subscribers
-        else if (billing_status === "expired" || billing_status === "unsubscribe-request-received-and-expired") {
+        if (billing_status === "expired" || billing_status === "unsubscribe-request-received-and-expired") {
             subscriptionObj.nonActive = Number(subscriptionObj.nonActive) + 1;
             subscriberObj.nonActive = Number(subscriberObj.nonActive) + 1;
         }
@@ -461,7 +461,7 @@ function updateDataArr(dbDataArr, computedDataArr, mode) {
             console.log('Before - innerObj: ', innerObj);
             console.log('Before - dbDataArr[arrIndex]: ', dbDataArr[arrIndex]);
 
-            updatedObj = updateSingleObj(_.cloneDeep(dbDataArr[arrIndex]), _.cloneDeep(innerObj), mode);
+            updatedObj = updateSingleObj(dbDataArr[arrIndex], innerObj, mode);
             dbDataArr[arrIndex] = _.cloneDeep(updatedObj);
 
             console.log('After - dbDataArr[arrIndex]: ', dbDataArr[arrIndex]);
