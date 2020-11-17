@@ -12,7 +12,7 @@ computeLogsPageViewReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 22, 5);
+    dateData = helper.computeNextDate(req, 10, 11);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -64,7 +64,7 @@ computeLogsSubscribeClicksReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 24, 3);
+    dateData = helper.computeNextDate(req, 10, 11);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
