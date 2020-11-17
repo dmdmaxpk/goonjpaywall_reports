@@ -10,6 +10,7 @@ const netAdditionService = require("./compute/NetAdditionService");
 const revenueService = require("./compute/RevenueService");
 const subscriberService = require("./compute/SubscriberService");
 const subscriptionService = require("./compute/SubscriptionService");
+const SubscriptionsFromBillingService = require("./compute/SubscriptionsFromBillingService");
 const transactionService = require("./compute/TransactionService");
 const trialService = require("./compute/TrialService");
 const usersService = require("./compute/UsersService");
@@ -51,43 +52,59 @@ generateReportsData = async (req,res) => {
         else if (params.type === 'subscriptions'){
             if (params.sub_type === 'active_inactive')
                 return subscriptionService.activeInactiveSubscriptionReport(rawDataSet, params);
-            else if (params.sub_type === 'success_rate')
-                return subscriptionService.successRateSubscriptionFromActiveInactiveReport(rawDataSet, params);
+            else if (params.sub_type === 'package_wise')
+                return subscriptionService.packageWiseSubscriptionReport(rawDataSet, params);
+            else if (params.sub_type === 'source_wise')
+                return subscriptionService.sourceWiseSubscriptionReport(rawDataSet, params);
+            else if (params.sub_type === 'paywall_wise')
+                return subscriptionService.paywallWiseSubscriptionReport(rawDataSet, params);
+            else if (params.sub_type === 'affiliate_mid')
+                return subscriptionService.affliateMidWiseSubscriptionReport(rawDataSet, params);
             else if (params.sub_type === 'callback_send')
                 return subscriptionService.callbackSendSubscriptionReport(rawDataSet, params);
+            else if (params.sub_type === 'success_rate')
+                return subscriptionService.successRateSubscriptionReport(rawDataSet, params);
+        }
+        else if (params.type === 'subscriptionsFromBilling'){
+            if (params.sub_type === 'active_inactive')
+                return SubscriptionsFromBillingService.activeInactiveSubscriptionReport(rawDataSet, params);
+            else if (params.sub_type === 'success_rate')
+                return SubscriptionsFromBillingService.successRateSubscriptionFromActiveInactiveReport(rawDataSet, params);
+            else if (params.sub_type === 'callback_send')
+                return SubscriptionsFromBillingService.callbackSendSubscriptionReport(rawDataSet, params);
             else if (params.successful === 'affiliate_mid')
-                return subscriptionService.affliateMidWiseSubscriptionReport(rawDataSet, params);
+                return SubscriptionsFromBillingService.affliateMidWiseSubscriptionReport(rawDataSet, params);
             else if(params.sub_type === 'successful'){
                 if (params.successful === 'package_wise')
-                    return subscriptionService.packageWiseSuccessfulSubscriptionReport(rawDataSet, params);
+                    return SubscriptionsFromBillingService.packageWiseSuccessfulSubscriptionReport(rawDataSet, params);
                 else if (params.successful === 'source_wise')
-                    return subscriptionService.sourceWiseSuccessfulSubscriptionReport(rawDataSet, params);
+                    return SubscriptionsFromBillingService.sourceWiseSuccessfulSubscriptionReport(rawDataSet, params);
                 else if (params.successful === 'paywall_wise')
-                    return subscriptionService.paywallWiseSuccessfulSubscriptionReport(rawDataSet, params);
+                    return SubscriptionsFromBillingService.paywallWiseSuccessfulSubscriptionReport(rawDataSet, params);
                 else if (params.successful === 'operator_wise')
-                    return subscriptionService.operatorWiseSuccessfulSubscriptionReport(rawDataSet, params);
+                    return SubscriptionsFromBillingService.operatorWiseSuccessfulSubscriptionReport(rawDataSet, params);
             }
             else if(params.sub_type === 'graced'){
                 if (params.successful === 'package_wise')
-                    return subscriptionService.packageWiseGracedSubscriptionReport(rawDataSet, params);
+                    return SubscriptionsFromBillingService.packageWiseGracedSubscriptionReport(rawDataSet, params);
                 else if (params.successful === 'source_wise')
-                    return subscriptionService.sourceWiseGracedSubscriptionReport(rawDataSet, params);
+                    return SubscriptionsFromBillingService.sourceWiseGracedSubscriptionReport(rawDataSet, params);
                 else if (params.successful === 'paywall_wise')
-                    return subscriptionService.paywallWiseGracedSubscriptionReport(rawDataSet, params);
+                    return SubscriptionsFromBillingService.paywallWiseGracedSubscriptionReport(rawDataSet, params);
                 else if (params.successful === 'operator_wise')
-                    return subscriptionService.operatorWiseGracedSubscriptionReport(rawDataSet, params);
+                    return SubscriptionsFromBillingService.operatorWiseGracedSubscriptionReport(rawDataSet, params);
             }
             else if(params.sub_type === 'trialed'){
                 if (params.successful === 'package_wise')
-                    return subscriptionService.packageWiseTrialedSubscriptionReport(rawDataSet, params);
+                    return SubscriptionsFromBillingService.packageWiseTrialedSubscriptionReport(rawDataSet, params);
                 else if (params.successful === 'source_wise')
-                    return subscriptionService.sourceWiseTrialedSubscriptionReport(rawDataSet, params);
+                    return SubscriptionsFromBillingService.sourceWiseTrialedSubscriptionReport(rawDataSet, params);
                 else if (params.successful === 'paywall_wise')
-                    return subscriptionService.paywallWiseTrialedSubscriptionReport(rawDataSet, params);
+                    return SubscriptionsFromBillingService.paywallWiseTrialedSubscriptionReport(rawDataSet, params);
                 else if (params.successful === 'operator_wise')
-                    return subscriptionService.operatorWiseTrialedSubscriptionReport(rawDataSet, params);
+                    return SubscriptionsFromBillingService.operatorWiseTrialedSubscriptionReport(rawDataSet, params);
             }
-                // return subscriptionService.successRateSubscriptionReport(rawDataSet, params);
+                // return SubscriptionsFromBillingService.successRateSubscriptionReport(rawDataSet, params);
         }
         else if (params.type === 'revenue'){
             if (params.sub_type === 'package_wise')

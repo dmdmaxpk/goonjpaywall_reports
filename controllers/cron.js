@@ -1,6 +1,6 @@
 const UserService = require('../services/cron/compute/UserService');
 const SubscriberService = require('../services/cron/compute/SubscriberService');
-const SubscriptionService = require('../services/cron/compute/SubscriptionService');
+const SubscriptionService = require('../services/cron/compute/SubscriptionFromBillingService');
 const BillingHistoryService = require('../services/cron/compute/BillingHistoryService');
 const CallbackSendService = require('../services/cron/compute/CallbackSendService');
 const RevenueNetAdditionService = require('../services/cron/compute/RevenueNetAdditionService');
