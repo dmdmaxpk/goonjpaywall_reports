@@ -274,7 +274,6 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
 
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
-        console.log('result: ', result.length);
         if (result.length > 0){
             result = result[0];
 
@@ -301,13 +300,9 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
                 }
             }
 
-            console.log('updateReport - subscriptions: ', subscriptions.length);
-
             await reportsRepo.updateReport(result, result._id);
         }
         else{
-            console.log('createReport - subscribersFinalList: ', subscribersFinalList.length);
-
             let subscribers = {activeInActive: ''};
             subscribers.activeInActive = subscribersFinalList;
             await reportsRepo.createReport({subscriptions: finalList, subscribers: subscribers, date: dateString});
