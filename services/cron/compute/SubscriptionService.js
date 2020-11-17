@@ -831,6 +831,13 @@ function countQuery(from, to){
     return [
         {
             $match:{
+                $or:[
+                    {billing_status: "trial"},
+                    {billing_status: "Success"},
+                    {billing_status: "expired"},
+                    {billing_status: "Affiliate callback sent"},
+                    {billing_status: "unsubscribe-request-received-and-expired"}
+                ],
                 $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
             }
         },
