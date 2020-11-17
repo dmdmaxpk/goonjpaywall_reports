@@ -45,7 +45,7 @@ cronComputeDailyDataReports = async (req, res) => {
 
     // compute Net Addition report Data
     helper.threeLinesConsoleLog('RevenueNetAdditionService - promiseBasedComputeRevenueNetAdditionReports');
-    // await RevenueNetAdditionService.promiseBasedComputeRevenueNetAdditionReports(req,res);
+    await RevenueNetAdditionService.promiseBasedComputeRevenueNetAdditionReports(req,res);
 
     // compute Affiliate - Affiliate Mids report Data
     helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateMidsFromSubscriptionsReports');
