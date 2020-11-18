@@ -404,6 +404,7 @@ function cloneInfoObj() {
             CP_telenorccd: { expire: 0, system: 0, total: 0 },
             CP_productccd: { expire: 0, system: 0, total: 0 },
             CP_ideationccd1: { expire: 0, system: 0, total: 0 },
+            CP_ideationccd2: { expire: 0, system: 0, total: 0 },
             system_after_grace_end: { expire: 0, system: 0, total: 0 }
         },
         package: {

@@ -584,7 +584,9 @@ computeNetAdditionsReport = async (rawDataSet, params) =>{
 // Clone Objects to initialise the properties - Net Addition or Charge Details
 function cloneObjectSourceWiseObj() {
     let obj =  { expire: 0, system: 0, total: 0 };
-    return { app: _.clone(obj), web: _.clone(obj), HE: _.clone(obj), sms: _.clone(obj), gdn2: _.clone(obj), CP: _.clone(obj), null: _.clone(obj), affiliate_web: _.clone(obj), system_after_grace_end: _.clone(obj) }
+    //app, web, ccp_api, CP_whatsappccd, dmdmax, system, CP_telenorccd, CP_productccd, CP_ideationccd1, system_after_grace_end
+    return { app: _.clone(obj), web: _.clone(obj), ccp_api: _.clone(obj), CP_whatsappccd: _.clone(obj), dmdmax: _.clone(obj),
+        system: _.clone(obj), CP_telenorccd: _.clone(obj), CP_productccd: _.clone(obj), CP_ideationccd1: _.clone(obj), system_after_grace_end: _.clone(obj) }
 }
 function cloneObjectPackageWiseObj() {
     let obj =  { expire: 0, system: 0, total: 0 };
