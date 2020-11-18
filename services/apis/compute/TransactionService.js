@@ -382,7 +382,7 @@ computeTransactionsPackageWiseReport = async (rawDataSet, params) =>{
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
             console.log('------------outerObj.callbackSend--------------', outerObj.callbackSend, outerObj.hasOwnProperty('callbackSend'));
-            console.log('------------outerObj.transactions--------------', outerObj.transactions, outerObj.hasOwnProperty('transactions'));
+            console.log('------------outerObj.transactions--------------', outerObj.transactions, outerObj.transactions.length);
 
             if (outerObj.transactions){
                 for (let j=0; j<outerObj.transactions.length; j++) {
@@ -393,7 +393,7 @@ computeTransactionsPackageWiseReport = async (rawDataSet, params) =>{
                         console.log('transactions.transactions----------', transactions.transactions);
                         if (transactions.transactions.package) {
                             innerObj = transactions.transactions.package;
-                            console.log('transactions.transactions----------', innerObj.dailyLive)
+                            console.log('transactions.transactions----------', innerObj.dailyLive);
 
                             if (innerObj.dailyLive){
                                 dataObj.dailyLive = dataObj.dailyLive + innerObj.dailyLive;
