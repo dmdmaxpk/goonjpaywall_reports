@@ -16,13 +16,27 @@ const trialService = require("./compute/TrialService");
 const usersService = require("./compute/UsersService");
 const affiliateService = require("./compute/AffiliateService");
 
+const helper = require("../../helper/helper");
+
 generateReportsData = async (req,res) => {
     try {
-        let params = req.query, rawDataSet;
+        let params = req.query, rawDataSet, computedDate;
         if (params.type === 'affiliate')
             rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
-        else
+        else if (params.type === 'revenue') {
+            console.log('generateReportsData - : ', params.type);
+
+            params.from_date = helper.setDateWithTimezone(params.from_date, 'out');
+            params.from_date = helper.setDateWithTimezone(params.to_date, 'out');
+            console.log('params.from_date: ', params.from_date);
+            console.log('params.to_date: ', params.to_date);
+
+            
             rawDataSet = await reportsRepo.generateReportsData(params);
+        }
+        else{
+
+        }
 
         if (params.type === 'users') {
             if (params.sub_type === 'active_inactive')

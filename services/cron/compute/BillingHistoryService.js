@@ -16,7 +16,7 @@ computeBillingHistoryReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 16, 10);
+    dateData = helper.computeNextDate(req, 9, 11);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -227,74 +227,74 @@ function computeBillingHistoryData(data) {
         else
             transactionObj.transactions.billingStatus.other_subscriptions_status_wise = transactionObj.transactions.billingStatus.other_subscriptions_status_wise + 1;
 
-        //Package wise revenue and Billed Users
+        if (innerObj.billing_status === 'Success' || innerObj.billing_status === 'billed') {
+            //Package wise revenue and Billed Users
+            if(innerObj.package_id === 'QDfC'){
+                transactionObj.transactions.package.dailyLive = transactionObj.transactions.package.dailyLive + 1;
+                transactionObj.subscribers.package.dailyLive = transactionObj.subscribers.package.dailyLive + 1;
+            }
+            else if(innerObj.package_id === 'QDfG'){
+                transactionObj.transactions.package.weeklyLive = transactionObj.transactions.package.weeklyLive + 1;
+                transactionObj.subscribers.package.weeklyLive = transactionObj.subscribers.package.weeklyLive + 1;
+            }
+            else if(innerObj.package_id === 'QDfH'){
+                transactionObj.transactions.package.dailyComedy = transactionObj.transactions.package.dailyComedy + 1;
+                transactionObj.subscribers.package.dailyComedy = transactionObj.subscribers.package.dailyComedy + 1;
+            }
+            else if(innerObj.package_id === 'QDfI'){
+                transactionObj.transactions.package.weeklyComedy = transactionObj.transactions.package.weeklyComedy + 1;
+                transactionObj.subscribers.package.weeklyComedy = transactionObj.subscribers.package.weeklyComedy + 1;
+            }
 
-        if(innerObj.package_id === 'QDfC'){
-            transactionObj.transactions.package.dailyLive = transactionObj.transactions.package.dailyLive + 1;
-            transactionObj.subscribers.package.dailyLive = transactionObj.subscribers.package.dailyLive + 1;
-        }
-        else if(innerObj.package_id === 'QDfG'){
-            transactionObj.transactions.package.weeklyLive = transactionObj.transactions.package.weeklyLive + 1;
-            transactionObj.subscribers.package.weeklyLive = transactionObj.subscribers.package.weeklyLive + 1;
-        }
-        else if(innerObj.package_id === 'QDfH'){
-            transactionObj.transactions.package.dailyComedy = transactionObj.transactions.package.dailyComedy + 1;
-            transactionObj.subscribers.package.dailyComedy = transactionObj.subscribers.package.dailyComedy + 1;
-        }
-        else if(innerObj.package_id === 'QDfI'){
-            transactionObj.transactions.package.weeklyComedy = transactionObj.transactions.package.weeklyComedy + 1;
-            transactionObj.subscribers.package.weeklyComedy = transactionObj.subscribers.package.weeklyComedy + 1;
-        }
+            //Paywall wise revenue and Billed Users
+            if(innerObj.paywall_id === 'Dt6Gp70c'){
+                transactionObj.transactions.paywall.comedy = transactionObj.transactions.paywall.comedy + 1;
+                transactionObj.subscribers.paywall.comedy = transactionObj.subscribers.paywall.comedy + 1;
+            }
+            else if(innerObj.paywall_id === 'ghRtjhT7'){
+                transactionObj.transactions.paywall.live = transactionObj.transactions.paywall.live + 1;
+                transactionObj.subscribers.paywall.live = transactionObj.subscribers.paywall.live + 1;
+            }
 
-        //Paywall wise revenue and Billed Users
-        if(innerObj.paywall_id === 'Dt6Gp70c'){
-            transactionObj.transactions.paywall.comedy = transactionObj.transactions.paywall.comedy + 1;
-            transactionObj.subscribers.paywall.comedy = transactionObj.subscribers.paywall.comedy + 1;
-        }
-        else if(innerObj.paywall_id === 'ghRtjhT7'){
-            transactionObj.transactions.paywall.live = transactionObj.transactions.paywall.live + 1;
-            transactionObj.subscribers.paywall.live = transactionObj.subscribers.paywall.live + 1;
-        }
+            //Operator wise revenue and Billed Users
+            if(innerObj.operator === 'telenor' || !innerObj.hasOwnProperty('operator')){
+                transactionObj.transactions.operator.telenor = transactionObj.transactions.operator.telenor + 1;
+                transactionObj.subscribers.operator.telenor = transactionObj.subscribers.operator.telenor + 1;
+            } else if(innerObj.operator === 'easypaisa'){
+                transactionObj.transactions.operator.easypaisa = transactionObj.transactions.operator.easypaisa + 1;
+                transactionObj.subscribers.operator.easypaisa = transactionObj.subscribers.operator.easypaisa + 1;
+            }
 
-        //Operator wise revenue and Billed Users
-        if(innerObj.operator === 'telenor' || !innerObj.hasOwnProperty('operator')){
-            transactionObj.transactions.operator.telenor = transactionObj.transactions.operator.telenor + 1;
-            transactionObj.subscribers.operator.telenor = transactionObj.subscribers.operator.telenor + 1;
-        } else if(innerObj.operator === 'easypaisa'){
-            transactionObj.transactions.operator.easypaisa = transactionObj.transactions.operator.easypaisa + 1;
-            transactionObj.subscribers.operator.easypaisa = transactionObj.subscribers.operator.easypaisa + 1;
+            //Price wise charge & transaction details
+            if (innerObj.price === 15){
+                transactionObj.transactions.price['15'] = transactionObj.transactions.price['15'] + 1;
+                transactionObj.subscribers.price['15'] = transactionObj.subscribers.price['15'] + 1;
+            }
+            else if (innerObj.price === 11){
+                transactionObj.transactions.price['11'] = transactionObj.transactions.price['11'] + 1;
+                transactionObj.subscribers.price['11'] = transactionObj.subscribers.price['11'] + 1;
+            }
+            else if (innerObj.price === 10){
+                transactionObj.transactions.price['10'] = transactionObj.transactions.price['10'] + 1;
+                transactionObj.subscribers.price['10'] = transactionObj.subscribers.price['10'] + 1;
+            }
+            else if (innerObj.price === 7){
+                transactionObj.transactions.price['7'] = transactionObj.transactions.price['7'] + 1;
+                transactionObj.subscribers.price['7'] = transactionObj.subscribers.price['7'] + 1;
+            }
+            else if (innerObj.price === 5){
+                transactionObj.transactions.price['5'] = transactionObj.transactions.price['5'] + 1;
+                transactionObj.subscribers.price['5'] = transactionObj.subscribers.price['5'] + 1;
+            }
+            else if(innerObj.price === 4){
+                transactionObj.transactions.price['4'] = transactionObj.transactions.price['4'] + 1;
+                transactionObj.subscribers.price['4'] = transactionObj.subscribers.price['4'] + 1;
+            }
+            else if (innerObj.price === 2){
+                transactionObj.transactions.price['2'] = transactionObj.transactions.price['2'] + 1;
+                transactionObj.subscribers.price['2'] = transactionObj.subscribers.price['2'] + 1;
+            }
         }
-
-        //Price wise charge & transaction details
-        if (innerObj.price === 15){
-            transactionObj.transactions.price['15'] = transactionObj.transactions.price['15'] + 1;
-            transactionObj.subscribers.price['15'] = transactionObj.subscribers.price['15'] + 1;
-        }
-        else if (innerObj.price === 11){
-            transactionObj.transactions.price['11'] = transactionObj.transactions.price['11'] + 1;
-            transactionObj.subscribers.price['11'] = transactionObj.subscribers.price['11'] + 1;
-        }
-        else if (innerObj.price === 10){
-            transactionObj.transactions.price['10'] = transactionObj.transactions.price['10'] + 1;
-            transactionObj.subscribers.price['10'] = transactionObj.subscribers.price['10'] + 1;
-        }
-        else if (innerObj.price === 7){
-            transactionObj.transactions.price['7'] = transactionObj.transactions.price['7'] + 1;
-            transactionObj.subscribers.price['7'] = transactionObj.subscribers.price['7'] + 1;
-        }
-        else if (innerObj.price === 5){
-            transactionObj.transactions.price['5'] = transactionObj.transactions.price['5'] + 1;
-            transactionObj.subscribers.price['5'] = transactionObj.subscribers.price['5'] + 1;
-        }
-        else if(innerObj.price === 4){
-            transactionObj.transactions.price['4'] = transactionObj.transactions.price['4'] + 1;
-            transactionObj.subscribers.price['4'] = transactionObj.subscribers.price['4'] + 1;
-        }
-        else if (innerObj.price === 2){
-            transactionObj.transactions.price['2'] = transactionObj.transactions.price['2'] + 1;
-            transactionObj.subscribers.price['2'] = transactionObj.subscribers.price['2'] + 1;
-        }
-
 
         //Transactions success/failure rate and net total
         if (innerObj.billing_status === 'Success' || innerObj.billing_status === 'billed'){
