@@ -22,87 +22,85 @@ computeRevenuePackageWiseReport = async (rawDataSet, params) =>{
                     billingHistory = outerObj.billingHistory[j];
 
                     added_dtm_hours = new Date(billingHistory.added_dtm_hours);
-                    console.log('added_dtm_hours: ', added_dtm_hours);
-                    console.log('params.from_date: ', new Date(params.from_date));
-                    console.log('params.to_date: ', new Date(params.to_date));
+                    // console.log('added_dtm_hours: ', added_dtm_hours);
+                    // console.log('params.from_date: ', new Date(params.from_date));
+                    // console.log('params.to_date: ', new Date(params.to_date));
 
                     if (added_dtm_hours >= new Date(params.from_date) && added_dtm_hours <= new Date(params.to_date)){
                         console.log('===============================: ', added_dtm_hours);
 
-                    }
+                        if (billingHistory.revenue) {
+                            if (billingHistory.revenue.package){
+                                innerObj = billingHistory.revenue.package;
+                                if (innerObj.liveDaily){
+                                    dataObj.totalLiveDaily = dataObj.totalLiveDaily + innerObj.liveDaily;
+                                    dataObj.netTotal = dataObj.netTotal + innerObj.liveDaily;
 
+                                    dayDataObj.totalLiveDaily = dayDataObj.totalLiveDaily + innerObj.liveDaily;
+                                    dayDataObj.netTotal = dayDataObj.netTotal + innerObj.liveDaily;
 
-                    if (billingHistory.revenue) {
-                        if (billingHistory.revenue.package){
-                            innerObj = billingHistory.revenue.package;
-                            if (innerObj.liveDaily){
-                                dataObj.totalLiveDaily = dataObj.totalLiveDaily + innerObj.liveDaily;
-                                dataObj.netTotal = dataObj.netTotal + innerObj.liveDaily;
+                                    weeklyDataObj.totalLiveDaily = weeklyDataObj.totalLiveDaily + innerObj.liveDaily;
+                                    weeklyDataObj.netTotal = weeklyDataObj.netTotal + innerObj.liveDaily;
 
-                                dayDataObj.totalLiveDaily = dayDataObj.totalLiveDaily + innerObj.liveDaily;
-                                dayDataObj.netTotal = dayDataObj.netTotal + innerObj.liveDaily;
+                                    monthlyDataObj.totalLiveDaily = monthlyDataObj.totalLiveDaily + innerObj.liveDaily;
+                                    monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.liveDaily;
+                                }
+                                if (innerObj.liveWeekly){
+                                    dataObj.totalLiveWeekly = dataObj.totalLiveWeekly + innerObj.liveWeekly;
+                                    dataObj.netTotal = dataObj.netTotal + innerObj.liveWeekly;
 
-                                weeklyDataObj.totalLiveDaily = weeklyDataObj.totalLiveDaily + innerObj.liveDaily;
-                                weeklyDataObj.netTotal = weeklyDataObj.netTotal + innerObj.liveDaily;
+                                    dayDataObj.totalLiveWeekly = dayDataObj.totalLiveWeekly + innerObj.liveWeekly;
+                                    dayDataObj.netTotal = dayDataObj.netTotal + innerObj.liveWeekly;
 
-                                monthlyDataObj.totalLiveDaily = monthlyDataObj.totalLiveDaily + innerObj.liveDaily;
-                                monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.liveDaily;
+                                    weeklyDataObj.totalLiveWeekly = weeklyDataObj.totalLiveWeekly + innerObj.liveWeekly;
+                                    weeklyDataObj.netTotal = weeklyDataObj.netTotal + innerObj.liveWeekly;
+
+                                    monthlyDataObj.totalLiveWeekly = monthlyDataObj.totalLiveWeekly + innerObj.liveWeekly;
+                                    monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.liveWeekly;
+
+                                }
+                                if (innerObj.comedyDaily){
+                                    dataObj.totalComedyDaily = dataObj.totalComedyDaily + innerObj.comedyDaily;
+                                    dataObj.netTotal = dataObj.netTotal + innerObj.comedyDaily;
+
+                                    dayDataObj.totalComedyDaily = dayDataObj.totalComedyDaily + innerObj.comedyDaily;
+                                    dayDataObj.netTotal = dayDataObj.netTotal + innerObj.comedyDaily;
+
+                                    weeklyDataObj.totalComedyDaily = weeklyDataObj.totalComedyDaily + innerObj.comedyDaily;
+                                    weeklyDataObj.netTotal = weeklyDataObj.netTotal + innerObj.comedyDaily;
+
+                                    monthlyDataObj.totalComedyDaily = monthlyDataObj.totalComedyDaily + innerObj.comedyDaily;
+                                    monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.comedyDaily;
+                                }
+                                if (innerObj.comedyWeekly){
+                                    dataObj.totalComedyWeekly = dataObj.totalComedyWeekly + innerObj.comedyWeekly;
+                                    dataObj.netTotal = dataObj.netTotal + innerObj.comedyWeekly;
+
+                                    dayDataObj.totalComedyWeekly = dayDataObj.totalComedyWeekly + innerObj.comedyWeekly;
+                                    dayDataObj.netTotal = dayDataObj.netTotal + innerObj.comedyWeekly;
+
+                                    weeklyDataObj.totalComedyWeekly = weeklyDataObj.totalComedyWeekly + innerObj.comedyWeekly;
+                                    weeklyDataObj.netTotal = weeklyDataObj.netTotal + innerObj.comedyWeekly;
+
+                                    monthlyDataObj.totalComedyWeekly = monthlyDataObj.totalComedyWeekly + innerObj.comedyWeekly;
+                                    monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.comedyWeekly;
+                                }
+
+                                // Hourly Bases Data
+                                hourlyBasisTotalCount.push({
+                                    totalLiveDaily: innerObj.liveDaily, totalLiveWeekly: innerObj.liveWeekly,
+                                    totalComedyDaily: innerObj.comedyDaily, totalComedyWeekly: innerObj.comedyWeekly,
+                                    netTotal: innerObj.liveDaily + innerObj.liveWeekly + innerObj.comedyDaily + innerObj.comedyWeekly,
+                                    date: billingHistory.added_dtm_hours
+                                });
+
+                                // reset start_date for both month & week so can update with latest one
+                                if (week_from_date === null)
+                                    week_from_date = billingHistory.added_dtm;
+
+                                if (month_from_date === null)
+                                    month_from_date = billingHistory.added_dtm;
                             }
-                            if (innerObj.liveWeekly){
-                                dataObj.totalLiveWeekly = dataObj.totalLiveWeekly + innerObj.liveWeekly;
-                                dataObj.netTotal = dataObj.netTotal + innerObj.liveWeekly;
-
-                                dayDataObj.totalLiveWeekly = dayDataObj.totalLiveWeekly + innerObj.liveWeekly;
-                                dayDataObj.netTotal = dayDataObj.netTotal + innerObj.liveWeekly;
-
-                                weeklyDataObj.totalLiveWeekly = weeklyDataObj.totalLiveWeekly + innerObj.liveWeekly;
-                                weeklyDataObj.netTotal = weeklyDataObj.netTotal + innerObj.liveWeekly;
-
-                                monthlyDataObj.totalLiveWeekly = monthlyDataObj.totalLiveWeekly + innerObj.liveWeekly;
-                                monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.liveWeekly;
-
-                            }
-                            if (innerObj.comedyDaily){
-                                dataObj.totalComedyDaily = dataObj.totalComedyDaily + innerObj.comedyDaily;
-                                dataObj.netTotal = dataObj.netTotal + innerObj.comedyDaily;
-
-                                dayDataObj.totalComedyDaily = dayDataObj.totalComedyDaily + innerObj.comedyDaily;
-                                dayDataObj.netTotal = dayDataObj.netTotal + innerObj.comedyDaily;
-
-                                weeklyDataObj.totalComedyDaily = weeklyDataObj.totalComedyDaily + innerObj.comedyDaily;
-                                weeklyDataObj.netTotal = weeklyDataObj.netTotal + innerObj.comedyDaily;
-
-                                monthlyDataObj.totalComedyDaily = monthlyDataObj.totalComedyDaily + innerObj.comedyDaily;
-                                monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.comedyDaily;
-                            }
-                            if (innerObj.comedyWeekly){
-                                dataObj.totalComedyWeekly = dataObj.totalComedyWeekly + innerObj.comedyWeekly;
-                                dataObj.netTotal = dataObj.netTotal + innerObj.comedyWeekly;
-
-                                dayDataObj.totalComedyWeekly = dayDataObj.totalComedyWeekly + innerObj.comedyWeekly;
-                                dayDataObj.netTotal = dayDataObj.netTotal + innerObj.comedyWeekly;
-
-                                weeklyDataObj.totalComedyWeekly = weeklyDataObj.totalComedyWeekly + innerObj.comedyWeekly;
-                                weeklyDataObj.netTotal = weeklyDataObj.netTotal + innerObj.comedyWeekly;
-
-                                monthlyDataObj.totalComedyWeekly = monthlyDataObj.totalComedyWeekly + innerObj.comedyWeekly;
-                                monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.comedyWeekly;
-                            }
-
-                            // Hourly Bases Data
-                            hourlyBasisTotalCount.push({
-                                totalLiveDaily: innerObj.liveDaily, totalLiveWeekly: innerObj.liveWeekly,
-                                totalComedyDaily: innerObj.comedyDaily, totalComedyWeekly: innerObj.comedyWeekly,
-                                netTotal: innerObj.liveDaily + innerObj.liveWeekly + innerObj.comedyDaily + innerObj.comedyWeekly,
-                                date: billingHistory.added_dtm_hours
-                            });
-
-                            // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null)
-                                week_from_date = billingHistory.added_dtm;
-
-                            if (month_from_date === null)
-                                month_from_date = billingHistory.added_dtm;
                         }
                     }
                 }
