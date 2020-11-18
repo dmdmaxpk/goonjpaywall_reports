@@ -381,9 +381,14 @@ computeTransactionsPackageWiseReport = async (rawDataSet, params) =>{
             if (outerObj.transactions){
                 for (let j=0; j<outerObj.transactions.length; j++) {
                     transactions = outerObj.transactions[j];
+                    console.log('transactions----------')
+
                     if (transactions.transactions) {
+                        console.log('transactions.transactions----------')
                         if (transactions.transactions.package) {
                             innerObj = transactions.transactions.package;
+                            console.log('transactions.transactions----------', innerObj.dailyLive)
+
                             if (innerObj.dailyLive){
                                 dataObj.dailyLive = dataObj.dailyLive + innerObj.dailyLive;
                                 dayDataObj.dailyLive = dayDataObj.dailyLive + innerObj.dailyLive;
