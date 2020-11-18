@@ -113,7 +113,7 @@ promiseBasedComputeChargeDetailsReports = async(req, res) => {
         * Compute date and time for data fetching from db
         * Script will execute to fetch data as per day
         * */
-        dateData = helper.computeTodayDate(req);
+        dateData = helper.computeTodayDateWithLocalTime(req);
         req = dateData.req;
         day = dateData.day;
         month = dateData.month;
