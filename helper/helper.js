@@ -163,13 +163,10 @@ class Helper {
         req.month = month;
 
         fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
-        // fromDate = this.setDateWithTimezone(fromDate, 'in');
         console.log('computeTodayDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
         toDate.setDate(toDate.getDate() + 1);
-        // toDate.setHours(23, 59, 59);
-        // toDate = this.setDateWithTimezone(toDate, 'in');
         console.log('computeTodayDate - toDate : ', toDate);
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
@@ -244,13 +241,10 @@ class Helper {
         req.month = month;
 
         fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
-        // fromDate = this.setDateWithTimezone(fromDate, 'in');
         console.log('computeNextDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
         toDate.setDate(toDate.getDate() + 1);
-        // toDate.setHours(23, 59, 59);
-        // toDate = this.setDateWithTimezone(toDate, 'in');
         console.log('computeNextDate - toDate : ', toDate);
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
