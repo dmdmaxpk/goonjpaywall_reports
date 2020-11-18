@@ -179,7 +179,7 @@ class BillingHistoryRepository {
                                 package: "$package_id",
                                 paywall: "$paywall_id",
                                 operator: "$operator",
-                                billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } }
+                                billing_dtm: "$billing_dtm"
                             }
                         },
                         { $skip: skip },
