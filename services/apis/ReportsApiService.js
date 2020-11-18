@@ -20,14 +20,21 @@ const helper = require("../../helper/helper");
 
 generateReportsData = async (req,res) => {
     try {
-        let params = req.query, rawDataSet, computedDate;
+        let params = req.query, rawDataSet;
         if (params.type === 'affiliate')
             rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
         else if (params.type === 'revenue') {
             console.log('generateReportsData - : ', params.type);
 
-            params.from_date = helper.setDateWithTimezone(new Date(params.from_date), 'out');
-            params.from_date = helper.setDateWithTimezone(new Date(params.to_date), 'out');
+            params.from_date = new Date(params.from_date);
+            params.to_date = new Date(params.to_date);
+            params.from_date = helper.setDateWithTimezone(params.from_date, 'out');
+
+            params.to_date.setDate(params.to_date.getDate() + 1);
+            console.log('params.to_date.set(): ', params.to_date);
+
+            params.to_date = helper.setDateWithTimezone(params.to_date, 'out');
+            
             console.log('params.from_date: ', params.from_date);
             console.log('params.to_date: ', params.to_date);
 
