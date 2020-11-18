@@ -21,6 +21,10 @@ computeRevenuePackageWiseReport = async (rawDataSet, params) =>{
                 for (let j=0; j<outerObj.billingHistory.length; j++){
                     billingHistory = outerObj.billingHistory[j];
                     billing_dtm_hours = new Date(billingHistory.billing_dtm_hours);
+                    console.log('billing_dtm_hours: ', billing_dtm_hours);
+                    console.log('params.from_date: ', new Date(params.from_date));
+                    console.log('params.to_date: ', new Date(params.to_date));
+
                     if (billing_dtm_hours >= new Date(params.from_date) && billing_dtm_hours <= new Date(params.to_date)){
                         console.log('billing_dtm_hours: ', billing_dtm_hours);
 
