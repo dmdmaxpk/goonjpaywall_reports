@@ -174,22 +174,22 @@ promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
 
 function computeNetAdditionRevenueData(netAdditions) {
 
-    let dateInMili, outer_added_dtm, inner_added_dtm, expire_type, newObj, outerObj, innerObj, finalList = [];
+    let dateInMili, outer_billing_dtm, inner_billing_dtm, expire_type, newObj, outerObj, innerObj, finalList = [];
     for (let j=0; j < netAdditions.length; j++) {
 
         outerObj = netAdditions[j];
 
         newObj = _.clone(cloneInfoObj());
-        outer_added_dtm = helper.setDate(new Date(outerObj.added_dtm), null, 0, 0, 0).getTime();
+        outer_billing_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
 
-        if (dateInMili !== outer_added_dtm){
+        if (dateInMili !== outer_billing_dtm){
             for (let k=0; k < netAdditions.length; k++) {
 
                 innerObj = netAdditions[k];
-                inner_added_dtm = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0).getTime();
+                inner_billing_dtm = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
 
-                if (outer_added_dtm === inner_added_dtm){
-                    dateInMili = inner_added_dtm;
+                if (outer_billing_dtm === inner_billing_dtm){
+                    dateInMili = inner_billing_dtm;
                     if (innerObj.billing_source === 'system-after-grace-end' || innerObj.billing_source === 'system' || innerObj.billing_source === 'dmdmax'){
                         expire_type = 'system';
                         newObj.netAdditionType.system = newObj.netAdditionType.system + 1;
@@ -360,8 +360,8 @@ function computeNetAdditionRevenueData(netAdditions) {
                         newObj.operator.telenor.total = newObj.operator.telenor.total + 1;
                     }
 
-                    newObj.added_dtm = innerObj.added_dtm;
-                    newObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+                    newObj.billing_dtm = innerObj.billing_dtm;
+                    newObj.billing_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
                 }
             }
             finalList.push(newObj);
@@ -422,8 +422,8 @@ function cloneInfoObj() {
             live: { expire: 0, system: 0, total: 0 }
         },
         netAdditionType: { expire: 0, system: 0 },
-        added_dtm: '',
-        added_dtm_hours: ''
+        billing_dtm: '',
+        billing_dtm_hours: ''
     };
 }
 

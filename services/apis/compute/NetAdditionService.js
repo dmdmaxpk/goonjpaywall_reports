@@ -114,15 +114,15 @@ computeNetAdditionsSourceWiseReport = async (rawDataSet, params) =>{
                             CP_ideationccd1: innerObj.CP_ideationccd1,
                             CP_ideationccd2: innerObj.CP_ideationccd2,
                             system_after_grace_end: innerObj.system_after_grace_end,
-                            date: netAddition.added_dtm_hours
+                            date: netAddition.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = netAddition.added_dtm;
+                            week_from_date = netAddition.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = netAddition.added_dtm;
+                            month_from_date = netAddition.billing_dtm;
                     }
                 }
 
@@ -231,15 +231,15 @@ computeNetAdditionsPackageWiseReport = async (rawDataSet, params) =>{
                             weeklyLive: innerObj.weeklyLive,
                             dailyComedy: innerObj.dailyComedy,
                             weeklyComedy: innerObj.weeklyComedy,
-                            date: netAddition.added_dtm_hours
+                            date: netAddition.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = netAddition.added_dtm;
+                            week_from_date = netAddition.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = netAddition.added_dtm;
+                            month_from_date = netAddition.billing_dtm;
                     }
                 }
 
@@ -332,15 +332,15 @@ computeNetAdditionsPaywallWiseReport = async (rawDataSet, params) =>{
                         hourlyBasisTotalCount.push({
                             comedy: innerObj.comedy,
                             live: innerObj.live,
-                            date: netAddition.added_dtm_hours
+                            date: netAddition.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = netAddition.added_dtm;
+                            week_from_date = netAddition.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = netAddition.added_dtm;
+                            month_from_date = netAddition.billing_dtm;
                     }
                 }
 
@@ -433,15 +433,15 @@ computeNetAdditionsOperatorWiseReport = async (rawDataSet, params) =>{
                         hourlyBasisTotalCount.push({
                             telenor: innerObj.telenor,
                             easypaisa: innerObj.easypaisa,
-                            date: netAddition.added_dtm_hours
+                            date: netAddition.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = netAddition.added_dtm;
+                            week_from_date = netAddition.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = netAddition.added_dtm;
+                            month_from_date = netAddition.billing_dtm;
                     }
                 }
 
@@ -532,15 +532,15 @@ computeNetAdditionsReport = async (rawDataSet, params) =>{
                         hourlyBasisTotalCount.push({
                             expire: innerObj.expire,
                             system: innerObj.system,
-                            date: netAddition.added_dtm_hours
+                            date: netAddition.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = netAddition.added_dtm;
+                            week_from_date = netAddition.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = netAddition.added_dtm;
+                            month_from_date = netAddition.billing_dtm;
                     }
                 }
 
