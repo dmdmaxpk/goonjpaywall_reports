@@ -24,7 +24,7 @@ computeRevenueNetAdditionReports = async(req, res) => {
     console.log('fromDate: ', fromDate, toDate);
     query = countQuery(fromDate, toDate);
 
-    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
+    await helper.getTotalCount(req, fromDate, toDate, 'billinghistories', query).then(async function (totalCount) {
         console.log('totalCount: ', totalCount);
 
         if (totalCount > 0){
@@ -116,7 +116,7 @@ promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
         console.log('fromDate: ', fromDate, toDate);
         query = countQuery(fromDate, toDate);
 
-        await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
+        await helper.getTotalCount(req, fromDate, toDate, 'billinghistories', query).then(async function (totalCount) {
             console.log('totalCount: ', totalCount);
 
             if (totalCount > 0){
