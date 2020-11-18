@@ -164,7 +164,7 @@ class BillingHistoryRepository {
     async getNetAdditionByDateRange(req, from, to, skip, limit){
         return new Promise((resolve, reject) => {
             console.log('getNetAdditionByDateRange: ', from, to);
-            req.db.collection('subscriptions', function (err, collection) {
+            req.db.collection('billinghistories', function (err, collection) {
 
                 if (!err) {
                     collection.aggregate( [
