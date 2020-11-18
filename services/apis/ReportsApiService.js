@@ -40,9 +40,11 @@ generateReportsData = async (req,res) => {
 
 
             rawDataSet = await reportsRepo.generateReportsData(params);
+            console.log('rawDataSet: ', rawDataSet);
         }
         else{
 
+            rawDataSet = await reportsRepo.generateReportsData(params);
         }
 
         if (params.type === 'users') {
