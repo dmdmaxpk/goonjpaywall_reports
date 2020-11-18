@@ -22,6 +22,7 @@ computeNetAdditionsSourceWiseReport = async (rawDataSet, params) =>{
                     netAddition = outerObj.netAdditions[j];
                     if (netAddition.source) {
                         innerObj = netAddition.source;
+
                         if (innerObj.app){
                             returnData = updateDataArrs(innerObj, 'app', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
@@ -36,43 +37,57 @@ computeNetAdditionsSourceWiseReport = async (rawDataSet, params) =>{
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
-                        if (innerObj.HE){
-                            returnData = updateDataArrs(innerObj, 'HE', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        if (innerObj.ccp_api){
+                            returnData = updateDataArrs(innerObj, 'ccp_api', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
-                        if (innerObj.sms){
-                            returnData = updateDataArrs(innerObj, 'sms', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        if (innerObj.CP_whatsappccd){
+                            returnData = updateDataArrs(innerObj, 'CP_whatsappccd', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
-                        if (innerObj.gdn2){
-                            returnData = updateDataArrs(innerObj, 'gdn2', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        if (innerObj.dmdmax){
+                            returnData = updateDataArrs(innerObj, 'dmdmax', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
-                        if (innerObj.CP){
-                            returnData = updateDataArrs(innerObj, 'CP', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        if (innerObj.system){
+                            returnData = updateDataArrs(innerObj, 'system', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
-                        if (innerObj.null){
-                            returnData = updateDataArrs(innerObj, 'null', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        if (innerObj.CP_telenorccd){
+                            returnData = updateDataArrs(innerObj, 'CP_telenorccd', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
                             monthlyDataObj = returnData.monthlyDataObj;
                         }
-                        if (innerObj.affiliate_web){
-                            returnData = updateDataArrs(innerObj, 'affiliate_web', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                        if (innerObj.CP_productccd){
+                            returnData = updateDataArrs(innerObj, 'CP_productccd', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = returnData.dataObj;
+                            dayDataObj = returnData.dayDataObj;
+                            weeklyDataObj = returnData.weeklyDataObj;
+                            monthlyDataObj = returnData.monthlyDataObj;
+                        }
+                        if (innerObj.CP_ideationccd1){
+                            returnData = updateDataArrs(innerObj, 'CP_ideationccd1', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                            dataObj = returnData.dataObj;
+                            dayDataObj = returnData.dayDataObj;
+                            weeklyDataObj = returnData.weeklyDataObj;
+                            monthlyDataObj = returnData.monthlyDataObj;
+                        }
+                        if (innerObj.CP_ideationccd2){
+                            returnData = updateDataArrs(innerObj, 'CP_ideationccd2', dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                             dataObj = returnData.dataObj;
                             dayDataObj = returnData.dayDataObj;
                             weeklyDataObj = returnData.weeklyDataObj;
@@ -90,12 +105,14 @@ computeNetAdditionsSourceWiseReport = async (rawDataSet, params) =>{
                         hourlyBasisTotalCount.push({
                             app: innerObj.app,
                             web: innerObj.web,
-                            HE: innerObj.HE,
-                            sms: innerObj.sms,
-                            gdn2: innerObj.gdn2,
-                            CP: innerObj.CP,
-                            null: innerObj.null,
-                            affiliate_web: innerObj.affiliate_web,
+                            ccp_api: innerObj.ccp_api,
+                            CP_whatsappccd: innerObj.CP_whatsappccd,
+                            dmdmax: innerObj.dmdmax,
+                            system: innerObj.system,
+                            CP_telenorccd: innerObj.CP_telenorccd,
+                            CP_productccd: innerObj.CP_productccd,
+                            CP_ideationccd1: innerObj.CP_ideationccd1,
+                            CP_ideationccd2: innerObj.CP_ideationccd2,
                             system_after_grace_end: innerObj.system_after_grace_end,
                             date: netAddition.added_dtm_hours
                         });
@@ -584,9 +601,9 @@ computeNetAdditionsReport = async (rawDataSet, params) =>{
 // Clone Objects to initialise the properties - Net Addition or Charge Details
 function cloneObjectSourceWiseObj() {
     let obj =  { expire: 0, system: 0, total: 0 };
-    //app, web, ccp_api, CP_whatsappccd, dmdmax, system, CP_telenorccd, CP_productccd, CP_ideationccd1, system_after_grace_end
     return { app: _.clone(obj), web: _.clone(obj), ccp_api: _.clone(obj), CP_whatsappccd: _.clone(obj), dmdmax: _.clone(obj),
-        system: _.clone(obj), CP_telenorccd: _.clone(obj), CP_productccd: _.clone(obj), CP_ideationccd1: _.clone(obj), system_after_grace_end: _.clone(obj) }
+        system: _.clone(obj), CP_telenorccd: _.clone(obj), CP_productccd: _.clone(obj), CP_ideationccd1: _.clone(obj),
+        CP_ideationccd2: _.clone(obj), system_after_grace_end: _.clone(obj) }
 }
 function cloneObjectPackageWiseObj() {
     let obj =  { expire: 0, system: 0, total: 0 };
