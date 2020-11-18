@@ -223,7 +223,7 @@ class Helper {
 
         toDate  = new Date(_.clone(fromDate));
         toDate.setDate(toDate.getDate() + 1);
-        toDate.setHours(23, 59, 59);
+        // toDate.setHours(23, 59, 59);
         // toDate = this.setDateWithTimezone(toDate, 'in');
         console.log('computeNextDate - toDate : ', toDate);
 
