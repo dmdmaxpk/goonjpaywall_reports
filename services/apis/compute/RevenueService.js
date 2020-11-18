@@ -7,7 +7,7 @@ const  _ = require('lodash');
 computeRevenuePackageWiseReport = async (rawDataSet, params) =>{
     console.log('computeRevenuePackageWiseReport');
 
-    let monthNo, dayNo, week_from_date = null, month_from_date = null, billing_dtm_hours;
+    let monthNo, dayNo, week_from_date = null, month_from_date = null, added_dtm_hours;
     let outerObj, innerObj, billingHistory, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
     let dataObj = {totalLiveDaily: 0, totalLiveWeekly: 0, totalComedyDaily: 0, totalComedyWeekly: 0, netTotal: 0};
     let dayDataObj = {totalLiveDaily: 0, totalLiveWeekly: 0, totalComedyDaily: 0, totalComedyWeekly: 0, netTotal: 0};
@@ -20,16 +20,19 @@ computeRevenuePackageWiseReport = async (rawDataSet, params) =>{
             if (outerObj.billingHistory){
                 for (let j=0; j<outerObj.billingHistory.length; j++){
                     billingHistory = outerObj.billingHistory[j];
+
+                    added_dtm_hours = new Date(billingHistory.added_dtm_hours);
+                    console.log('added_dtm_hours: ', added_dtm_hours);
+                    console.log('params.from_date: ', new Date(params.from_date));
+                    console.log('params.to_date: ', new Date(params.to_date));
+
+                    if (added_dtm_hours >= new Date(params.from_date) && added_dtm_hours <= new Date(params.to_date)){
+                        console.log('===============================: ', added_dtm_hours);
+
+                    }
+
+
                     if (billingHistory.revenue) {
-                        billing_dtm_hours = new Date(billingHistory.revenue.billing_dtm_hours);
-                        console.log('billing_dtm_hours: ', billing_dtm_hours);
-                        console.log('params.from_date: ', new Date(params.from_date));
-                        console.log('params.to_date: ', new Date(params.to_date));
-
-                        if (billing_dtm_hours >= new Date(params.from_date) && billing_dtm_hours <= new Date(params.to_date)){
-                            console.log('===============================: ', billing_dtm_hours);
-
-                        }
                         if (billingHistory.revenue.package){
                             innerObj = billingHistory.revenue.package;
                             if (innerObj.liveDaily){
