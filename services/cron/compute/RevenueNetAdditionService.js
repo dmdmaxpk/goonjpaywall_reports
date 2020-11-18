@@ -179,7 +179,7 @@ function computeNetAdditionRevenueData(netAdditions) {
 
         outerObj = netAdditions[j];
 
-        newObj = _.clone(cloneInfoObj());
+        newObj = _.cloneDeep(cloneInfoObj());
         outer_billing_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
 
         if (dateInMili !== outer_billing_dtm){
@@ -393,33 +393,35 @@ async function insertNewRecord(finalList, dateString, mode) {
 }
 
 function cloneInfoObj() {
+    let expireObj = { expire: 0, system: 0, total: 0 };
+
     return {
         source: {
-            app: { expire: 0, system: 0, total: 0 },
-            web: { expire: 0, system: 0, total: 0 },
-            ccp_api: { expire: 0, system: 0, total: 0 },
-            CP_whatsappccd: { expire: 0, system: 0, total: 0 },
-            dmdmax: { expire: 0, system: 0, total: 0 },
-            system: { expire: 0, system: 0, total: 0 },
-            CP_telenorccd: { expire: 0, system: 0, total: 0 },
-            CP_productccd: { expire: 0, system: 0, total: 0 },
-            CP_ideationccd1: { expire: 0, system: 0, total: 0 },
-            CP_ideationccd2: { expire: 0, system: 0, total: 0 },
-            system_after_grace_end: { expire: 0, system: 0, total: 0 }
+            app: _.cloneDeep(expireObj),
+            web: _.cloneDeep(expireObj),
+            ccp_api: _.cloneDeep(expireObj),
+            CP_whatsappccd: _.cloneDeep(expireObj),
+            dmdmax: _.cloneDeep(expireObj),
+            system: _.cloneDeep(expireObj),
+            CP_telenorccd: _.cloneDeep(expireObj),
+            CP_productccd: _.cloneDeep(expireObj),
+            CP_ideationccd1: _.cloneDeep(expireObj),
+            CP_ideationccd2: _.cloneDeep(expireObj),
+            system_after_grace_end: _.cloneDeep(expireObj)
         },
         package: {
-            dailyLive: { expire: 0, system: 0, total: 0 },
-            weeklyLive: { expire: 0, system: 0, total: 0 },
-            dailyComedy: { expire: 0, system: 0, total: 0 },
-            weeklyComedy: { expire: 0, system: 0, total: 0 }
+            dailyLive: _.cloneDeep(expireObj),
+            weeklyLive: _.cloneDeep(expireObj),
+            dailyComedy: _.cloneDeep(expireObj),
+            weeklyComedy: _.cloneDeep(expireObj)
         },
         operator: {
-            telenor: { expire: 0, system: 0, total: 0 },
-            easypaisa: { expire: 0, system: 0, total: 0 }
+            telenor: _.cloneDeep(expireObj),
+            easypaisa: _.cloneDeep(expireObj)
         },
         paywall: {
-            comedy: { expire: 0, system: 0, total: 0 },
-            live: { expire: 0, system: 0, total: 0 }
+            comedy: _.cloneDeep(expireObj),
+            live: _.cloneDeep(expireObj)
         },
         netAdditionType: { expire: 0, system: 0 },
         billing_dtm: '',
