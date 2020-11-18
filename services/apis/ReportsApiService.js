@@ -26,21 +26,21 @@ generateReportsData = async (req,res) => {
         else if (params.type === 'revenue') {
             console.log('generateReportsData - : ', params.type);
 
-            // params.from_date = new Date(params.from_date);
-            // params.to_date = new Date(params.to_date);
-            //
-            // params.from_date.setDate(params.from_date.getDate() - 1);
-            // console.log('params.from_date: ', params.from_date);
-            // console.log('params.to_date: ', params.to_date);
+            params.from_date = new Date(params.from_date);
+            params.to_date = new Date(params.to_date);
+
+            params.from_date.setDate(params.from_date.getDate() - 1);
+            console.log('params.from_date: ', params.from_date);
+            console.log('params.to_date: ', params.to_date);
 
             rawDataSet = await reportsRepo.generateReportsData(params);
-            // console.log('rawDataSet ================ : ');
-            //
-            // params.from_date = helper.setDate(params.from_date, 19, 0, 0, 0);
-            // params.to_date = helper.setDate(params.to_date, 19, 0, 0, 0);
-            //
-            // console.log('params.from_date: ', params.from_date);
-            // console.log('params.to_date: ', params.to_date);
+            console.log('rawDataSet ================ : ');
+
+            params.from_date = helper.setDate(params.from_date, 19, 0, 0, 0);
+            params.to_date = helper.setDate(params.to_date, 19, 0, 0, 0);
+
+            console.log('params.from_date: ', params.from_date);
+            console.log('params.to_date: ', params.to_date);
         }
         else{
 
