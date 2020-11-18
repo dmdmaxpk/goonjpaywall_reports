@@ -34,6 +34,13 @@ generateReportsData = async (req,res) => {
             console.log('params.to_date: ', params.to_date);
 
             rawDataSet = await reportsRepo.generateReportsData(params);
+            console.log('rawDataSet ================ : ');
+
+            params.from_date = helper.setDate(params.from_date, 19, 0, 0, 0);
+            params.to_date = helper.setDate(params.to_date, 19, 0, 0, 0);
+
+            console.log('params.from_date: ', params.from_date);
+            console.log('params.to_date: ', params.to_date);
         }
         else{
 
