@@ -16,7 +16,7 @@ computeBillingHistoryReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 9, 11);
+    dateData = helper.computeNextDate(req, 15, 10);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
