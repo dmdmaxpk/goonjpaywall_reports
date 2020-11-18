@@ -7,7 +7,7 @@ const  _ = require('lodash');
 computeRevenuePackageWiseReport = async (rawDataSet, params) =>{
     console.log('computeRevenuePackageWiseReport');
 
-    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let monthNo, dayNo, week_from_date = null, month_from_date = null, billing_dtm_hours;
     let outerObj, innerObj, billingHistory, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
     let dataObj = {totalLiveDaily: 0, totalLiveWeekly: 0, totalComedyDaily: 0, totalComedyWeekly: 0, netTotal: 0};
     let dayDataObj = {totalLiveDaily: 0, totalLiveWeekly: 0, totalComedyDaily: 0, totalComedyWeekly: 0, netTotal: 0};
@@ -20,6 +20,11 @@ computeRevenuePackageWiseReport = async (rawDataSet, params) =>{
             if (outerObj.billingHistory){
                 for (let j=0; j<outerObj.billingHistory.length; j++){
                     billingHistory = outerObj.billingHistory[j];
+                    billing_dtm_hours = new Date(billingHistory.billing_dtm_hours);
+                    if (billing_dtm_hours >= new Date(params.from_date) && billing_dtm_hours <= new Date(params.to_date)){
+                        console.log('billing_dtm_hours: ', billing_dtm_hours);
+
+                    }
                     if (billingHistory.revenue) {
                         if (billingHistory.revenue.package){
                             innerObj = billingHistory.revenue.package;
