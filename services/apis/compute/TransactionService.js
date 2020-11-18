@@ -377,9 +377,8 @@ computeTransactionsPackageWiseReport = async (rawDataSet, params) =>{
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
-            outerObj = rawDataSet[i];
+            outerObj = rawDataSet[i]['transactions'];
             console.log('outerObj: ', outerObj);
-            console.log('list: ', outerObj['transactions']);
 
             if (outerObj.transactions){
                 for (let j=0; j<outerObj.transactions.length; j++) {
