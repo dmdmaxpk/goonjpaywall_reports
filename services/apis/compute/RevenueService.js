@@ -21,13 +21,13 @@ computeRevenuePackageWiseReport = async (rawDataSet, params) =>{
                 for (let j=0; j<outerObj.billingHistory.length; j++){
                     billingHistory = outerObj.billingHistory[j];
 
-                    added_dtm_hours = new Date(billingHistory.added_dtm_hours);
+                    // added_dtm_hours = new Date(billingHistory.added_dtm_hours);
                     // console.log('added_dtm_hours: ', added_dtm_hours);
                     // console.log('params.from_date: ', new Date(params.from_date));
                     // console.log('params.to_date: ', new Date(params.to_date));
 
-                    if (added_dtm_hours >= new Date(params.from_date) && added_dtm_hours <= new Date(params.to_date)){
-                        console.log('===============================: ', added_dtm_hours);
+                    // if (added_dtm_hours >= new Date(params.from_date) && added_dtm_hours <= new Date(params.to_date)){
+                    //     console.log('===============================: ', added_dtm_hours);
 
                         if (billingHistory.revenue) {
                             if (billingHistory.revenue.package){
@@ -102,7 +102,7 @@ computeRevenuePackageWiseReport = async (rawDataSet, params) =>{
                                     month_from_date = billingHistory.added_dtm;
                             }
                         }
-                    }
+                    // }
                 }
 
                 monthNo = new Date(outerObj.date).getMonth() + 1;
