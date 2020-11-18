@@ -28,11 +28,11 @@ generateReportsData = async (req,res) => {
 
             params.from_date = new Date(params.from_date);
             params.to_date = new Date(params.to_date);
-            params.from_date = helper.setDateWithTimezone(params.from_date, 'in');
 
-            params.to_date.setDate(params.to_date.getDate() - 1);
+            params.from_date.setDate(params.from_date.getDate() - 1);
             console.log('params.to_date.set(): ', params.to_date);
 
+            params.from_date = helper.setDateWithTimezone(params.from_date, 'in');
             params.to_date = helper.setDateWithTimezone(params.to_date, 'in');
 
             console.log('params.from_date: ', params.from_date);
