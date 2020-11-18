@@ -375,9 +375,13 @@ computeTransactionsPackageWiseReport = async (rawDataSet, params) =>{
     let weeklyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
     let monthlyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
 
+    console.log('-rawDataSet.length-', rawDataSet.length)
+
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
+            console.log('--------------------------')
+
             if (outerObj.transactions){
                 for (let j=0; j<outerObj.transactions.length; j++) {
                     transactions = outerObj.transactions[j];
