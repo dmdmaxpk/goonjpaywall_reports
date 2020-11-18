@@ -169,53 +169,17 @@ class BillingHistoryRepository {
                 if (!err) {
                     collection.aggregate( [
                         {$match : {
-                                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                                $or:[{billing_status: "expired"}, {billing_status: "unsubscribe-request-recieved"}, {billing_status: "unsubscribe-request-received-and-expired"}],
+                                $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lt:new Date(to)}}]
                             }},
-                        {$lookup:{
-                                from: "billinghistories",
-                                localField: "subscriber_id",
-                                foreignField: "subscriber_id",
-                                as: "histories"}
-                        },
-                        { $project: {
-                                source:"$source",
-                                added_dtm: "$added_dtm",
-                                subscription_status:"$subscription_status",
-                                bill_status: { $filter: {
-                                        input: "$histories",
-                                        as: "history",
-                                        cond: { $or: [
-                                                { $eq: ['$$history.billing_status',"expired"] },
-                                                { $eq: ['$$history.billing_status',"unsubscribe-request-recieved"] },
-                                                { $eq: ['$$history.billing_status',"unsubscribe-request-received-and-expired"] }
-                                            ]}
-                                    }} }
-                        },
+
                         {$project: {
-                                source:"$source",
-                                added_dtm:"$added_dtm",
-                                numOfFailed: { $size:"$bill_status" },
-                                subscription_status:"$subscription_status",
-                                billing_source: {"$arrayElemAt": ["$bill_status.source",0]},
-                                billing_status: {"$arrayElemAt": ["$bill_status.billing_status",0]},
-                                package: {"$arrayElemAt": ["$bill_status.package_id",0]},
-                                paywall: {"$arrayElemAt": ["$bill_status.paywall_id",0]},
-                                operator: {"$arrayElemAt": ["$bill_status.operator",0]},
-                                billing_dtm: {"$arrayElemAt": ["$bill_status.billing_dtm",0]}
-                            }
-                        },
-                        {$match: { numOfFailed: {$gte: 1}  }},
-                        {$project: {
-                                _id: 0,
-                                source:"$source",
-                                subscription_status:"$subscription_status",
-                                billing_status:"$billing_status",
-                                billing_source:"$billing_source",
-                                package: "$package",
-                                paywall: "$paywall",
+                                billing_source:"$source",
+                                billing_status: "$billing_status",
+                                package: "$package_id",
+                                paywall: "$paywall_id",
                                 operator: "$operator",
-                                billing_dtm: "$billing_dtm",
-                                added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } }
+                                billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } }
                             }
                         },
                         { $skip: skip },

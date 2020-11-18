@@ -200,7 +200,7 @@ function computeNetAdditionRevenueData(netAdditions) {
                     }
 
                     //Source wise Net Addition
-                    if (innerObj.source === 'app'){
+                    if (innerObj.billing_source === 'app'){
                         if(expire_type === 'expire')
                             newObj.source.app.expire = newObj.source.app.expire + 1;
                         else
@@ -208,7 +208,7 @@ function computeNetAdditionRevenueData(netAdditions) {
 
                         newObj.source.app.total = newObj.source.app.total + 1;
                     }
-                    else if (innerObj.source === 'web'){
+                    else if (innerObj.billing_source === 'web'){
                         if(expire_type === 'expire')
                             newObj.source.web.expire = newObj.source.web.expire + 1;
                         else
@@ -216,55 +216,71 @@ function computeNetAdditionRevenueData(netAdditions) {
 
                         newObj.source.web.total = newObj.source.web.total + 1;
                     }
-                    else if (innerObj.source === 'HE'){
+                    else if (innerObj.billing_source === 'CP_whatsappccd'){
                         if(expire_type === 'expire')
-                            newObj.source.HE.expire = newObj.source.HE.expire + 1;
+                            newObj.source.CP_whatsappccd.expire = newObj.source.CP_whatsappccd.expire + 1;
                         else
-                            newObj.source.HE.system = newObj.source.HE.system + 1;
+                            newObj.source.CP_whatsappccd.system = newObj.source.CP_whatsappccd.system + 1;
 
-                        newObj.source.HE.total = newObj.source.HE.total + 1;
+                        newObj.source.CP_whatsappccd.total = newObj.source.CP_whatsappccd.total + 1;
                     }
-                    else if (innerObj.source === 'sms'){
+                    else if (innerObj.billing_source === 'ccp_api'){
                         if(expire_type === 'expire')
-                            newObj.source.sms.expire = newObj.source.sms.expire + 1;
+                            newObj.source.ccp_api.expire = newObj.source.ccp_api.expire + 1;
                         else
-                            newObj.source.sms.system = newObj.source.sms.system + 1;
+                            newObj.source.ccp_api.system = newObj.source.ccp_api.system + 1;
 
-                        newObj.source.sms.total = newObj.source.sms.total + 1;
+                        newObj.source.ccp_api.total = newObj.source.ccp_api.total + 1;
                     }
-                    else if (innerObj.source === 'gdn2'){
+                    else if (innerObj.billing_source === 'dmdmax'){
                         if(expire_type === 'expire')
-                            newObj.source.gdn2.expire = newObj.source.gdn2.expire + 1;
+                            newObj.source.dmdmax.expire = newObj.source.dmdmax.expire + 1;
                         else
-                            newObj.source.gdn2.system = newObj.source.gdn2.system + 1;
+                            newObj.source.dmdmax.system = newObj.source.dmdmax.system + 1;
 
-                        newObj.source.gdn2.total = newObj.source.gdn2.total + 1;
+                        newObj.source.dmdmax.total = newObj.source.dmdmax.total + 1;
                     }
-                    else if (innerObj.source === 'CP'){
+                    else if (innerObj.billing_source === 'system'){
                         if(expire_type === 'expire')
-                            newObj.source.CP.expire = newObj.source.CP.expire + 1;
+                            newObj.source.system.expire = newObj.source.system.expire + 1;
                         else
-                            newObj.source.CP.system = newObj.source.CP.system + 1;
+                            newObj.source.system.system = newObj.source.system.system + 1;
 
-                        newObj.source.CP.total = newObj.source.CP.total + 1;
+                        newObj.source.system.total = newObj.source.system.total + 1;
                     }
-                    else if (innerObj.source === 'null'){
+                    else if (innerObj.billing_source === 'CP_telenorccd'){
                         if(expire_type === 'expire')
-                            newObj.source.null.expire = newObj.source.null.expire + 1;
+                            newObj.source.CP_telenorccd.expire = newObj.source.CP_telenorccd.expire + 1;
                         else
-                            newObj.source.null.system = newObj.source.null.system + 1;
+                            newObj.source.CP_telenorccd.system = newObj.source.CP_telenorccd.system + 1;
 
-                        newObj.source.null.total = newObj.source.null.total + 1;
+                        newObj.source.CP_telenorccd.total = newObj.source.CP_telenorccd.total + 1;
                     }
-                    else if (innerObj.source === 'affiliate_web'){
+                    else if (innerObj.billing_source === 'CP_productccd'){
                         if(expire_type === 'expire')
-                            newObj.source.affiliate_web.expire = newObj.source.affiliate_web.expire + 1;
+                            newObj.source.CP_productccd.expire = newObj.source.CP_productccd.expire + 1;
                         else
-                            newObj.source.affiliate_web.system = newObj.source.affiliate_web.system + 1;
+                            newObj.source.CP_productccd.system = newObj.source.CP_productccd.system + 1;
 
-                        newObj.source.affiliate_web.total = newObj.source.affiliate_web.total + 1;
+                        newObj.source.CP_productccd.total = newObj.source.CP_productccd.total + 1;
                     }
-                    else if (innerObj.source === 'system_after_grace_end'){
+                    else if (innerObj.billing_source === 'CP_ideationccd1'){
+                        if(expire_type === 'expire')
+                            newObj.source.CP_ideationccd1.expire = newObj.source.CP_ideationccd1.expire + 1;
+                        else
+                            newObj.source.CP_ideationccd1.system = newObj.source.CP_ideationccd1.system + 1;
+
+                        newObj.source.CP_ideationccd1.total = newObj.source.CP_ideationccd1.total + 1;
+                    }
+                    else if (innerObj.billing_source === 'CP_ideationccd2'){
+                        if(expire_type === 'expire')
+                            newObj.source.CP_ideationccd2.expire = newObj.source.CP_ideationccd2.expire + 1;
+                        else
+                            newObj.source.CP_ideationccd2.system = newObj.source.CP_ideationccd2.system + 1;
+
+                        newObj.source.CP_ideationccd2.total = newObj.source.CP_ideationccd2.total + 1;
+                    }
+                    else if (innerObj.billing_source === 'system-after-grace-end'){
                         if(expire_type === 'expire')
                             newObj.source.system_after_grace_end.expire = newObj.source.system_after_grace_end.expire + 1;
                         else
@@ -381,12 +397,13 @@ function cloneInfoObj() {
         source: {
             app: { expire: 0, system: 0, total: 0 },
             web: { expire: 0, system: 0, total: 0 },
-            HE: { expire: 0, system: 0, total: 0 },
-            sms: { expire: 0, system: 0, total: 0 },
-            gdn2: { expire: 0, system: 0, total: 0 },
-            CP: { expire: 0, system: 0, total: 0 },
-            null: { expire: 0, system: 0, total: 0 },
-            affiliate_web: { expire: 0, system: 0, total: 0 },
+            ccp_api: { expire: 0, system: 0, total: 0 },
+            CP_whatsappccd: { expire: 0, system: 0, total: 0 },
+            dmdmax: { expire: 0, system: 0, total: 0 },
+            system: { expire: 0, system: 0, total: 0 },
+            CP_telenorccd: { expire: 0, system: 0, total: 0 },
+            CP_productccd: { expire: 0, system: 0, total: 0 },
+            CP_ideationccd1: { expire: 0, system: 0, total: 0 },
             system_after_grace_end: { expire: 0, system: 0, total: 0 }
         },
         package: {
