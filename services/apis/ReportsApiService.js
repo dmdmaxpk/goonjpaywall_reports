@@ -26,12 +26,12 @@ generateReportsData = async (req,res) => {
         else if (params.type === 'revenue') {
             console.log('generateReportsData - : ', params.type);
 
-            params.from_date = helper.setDateWithTimezone(params.from_date, 'out');
-            params.from_date = helper.setDateWithTimezone(params.to_date, 'out');
+            params.from_date = helper.setDateWithTimezone(new Date(params.from_date), 'out');
+            params.from_date = helper.setDateWithTimezone(new Date(params.to_date), 'out');
             console.log('params.from_date: ', params.from_date);
             console.log('params.to_date: ', params.to_date);
 
-            
+
             rawDataSet = await reportsRepo.generateReportsData(params);
         }
         else{
