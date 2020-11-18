@@ -205,6 +205,31 @@ class Helper {
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }
 
+    static computeNextDateWithLocalTime(req, sDay, sMonth){
+
+        let fromDate, toDate, day, month;
+
+        day = req.day ? req.day : sDay;
+        day = day > 9 ? day : '0'+Number(day);
+        req.day = day;
+
+        month = req.month ? req.month : sMonth;
+        month = month > 9 ? month : '0'+Number(month);
+        req.month = month;
+
+        fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
+        // fromDate = this.setDateWithTimezone(fromDate, 'in');
+        console.log('computeNextDate - fromDate : ', fromDate);
+
+        toDate  = new Date(_.clone(fromDate));
+        toDate.setDate(toDate.getDate() + 1);
+        toDate.setHours(23, 59, 59);
+        // toDate = this.setDateWithTimezone(toDate, 'in');
+        console.log('computeNextDate - toDate : ', toDate);
+
+        return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
+    }
+
     static computeNextEightHoursDate(req, sDay, sMonth){
 
         let fromDate, toDate, day, month, fromHours, toHours;
