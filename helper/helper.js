@@ -249,7 +249,7 @@ class Helper {
 
         //return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
 
-        return {req: req, day: 18, month: 11, fromDate: '2020-11-18T00:00:00.000Z', toDate: '2020-11-18T13:00:00.000Z'};
+        return {req: req, day: 12, month: 11, fromDate: '2020-11-18T00:00:00.000Z', toDate: '2020-11-18T13:00:00.000Z'};
     }
 
     static computeNextEightHoursDate(req, sDay, sMonth){
