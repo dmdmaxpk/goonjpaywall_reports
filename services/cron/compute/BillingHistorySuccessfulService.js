@@ -7,7 +7,7 @@ const  _ = require('lodash');
 
 let fromDate, toDate, day, month, computedData;
 let transactionsList = [], subscribersList = [];
-let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
+let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 
 computeBillingHistorySuccessfulReports = async(req, res) => {
     console.log('computeBillingHistorySuccessfulReports: ');
@@ -23,7 +23,10 @@ computeBillingHistorySuccessfulReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    await helper.getTotalCount(req, fromDate, toDate, 'billinghistories').then(async function (totalCount) {
+    console.log('fromDate: ', fromDate, toDate);
+    query = countQuery(fromDate, toDate);
+
+    await helper.getTotalCount(req, fromDate, toDate, 'billinghistories', query).then(async function (totalCount) {
         console.log('totalCount: ', totalCount);
 
         if (totalCount > 0){
@@ -107,7 +110,10 @@ promiseBasedComputeBillingHistorySuccessfulReports = async(req, res) => {
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
 
-        await helper.getTotalCount(req, fromDate, toDate, 'billinghistories').then(async function (totalCount) {
+        console.log('fromDate: ', fromDate, toDate);
+        query = countQuery(fromDate, toDate);
+
+        await helper.getTotalCount(req, fromDate, toDate, 'billinghistories', query).then(async function (totalCount) {
             console.log('totalCount: ', totalCount);
 
             if (totalCount > 0){
@@ -430,6 +436,17 @@ function cloneSubscriberObj() {
     }
 }
 
+function countQuery(from, to){
+    return [
+        {$match : {
+            $or: [{billing_status: "Success"}, {billing_status: "billed"}],
+            $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+        }},
+        {
+            $count: "count"
+        }
+    ];
+}
 module.exports = {
     computeBillingHistorySuccessfulReports: computeBillingHistorySuccessfulReports,
     promiseBasedComputeBillingHistorySuccessfulReports: promiseBasedComputeBillingHistorySuccessfulReports
