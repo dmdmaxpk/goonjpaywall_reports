@@ -259,6 +259,53 @@ function computeBillingHistorySuccessfulData(data) {
                         subscriberObj.price['2'] = subscriberObj.price['2'] + 1;
                     }
 
+                    //Source wise total count for subscribers & transactions
+                    if(innerObj.source === 'app'){
+                        transactionObj.source.app = transactionObj.source.app + 1;
+                        subscriberObj.source.app = subscriberObj.source.app + 1;
+                    }
+                    else if(innerObj.source === 'web'){
+                        transactionObj.source.web = transactionObj.source.web + 1;
+                        subscriberObj.source.web = subscriberObj.source.web + 1;
+                    }
+                    else if(innerObj.source === 'ccp_api'){
+                        transactionObj.source.ccp_api = transactionObj.source.ccp_api + 1;
+                        subscriberObj.source.ccp_api = subscriberObj.source.ccp_api + 1;
+                    }
+                    else if(innerObj.source === 'CP_whatsappccd'){
+                        transactionObj.source.CP_whatsappccd = transactionObj.source.CP_whatsappccd + 1;
+                        subscriberObj.source.CP_whatsappccd = subscriberObj.source.CP_whatsappccd + 1;
+                    }
+                    else if(innerObj.source === 'dmdmax'){
+                        transactionObj.source.dmdmax = transactionObj.source.dmdmax + 1;
+                        subscriberObj.source.dmdmax = subscriberObj.source.dmdmax + 1;
+                    }
+                    else if(innerObj.source === 'system'){
+                        transactionObj.source.system = transactionObj.source.system + 1;
+                        subscriberObj.source.system = subscriberObj.source.system + 1;
+                    }
+                    else if(innerObj.source === 'CP_telenorccd'){
+                        transactionObj.source.CP_telenorccd = transactionObj.source.CP_telenorccd + 1;
+                        subscriberObj.source.CP_telenorccd = subscriberObj.source.CP_telenorccd + 1;
+                    }
+                    else if(innerObj.source === 'CP_productccd'){
+                        transactionObj.source.CP_productccd = transactionObj.source.CP_productccd + 1;
+                        subscriberObj.source.CP_productccd = subscriberObj.source.CP_productccd + 1;
+                    }
+                    else if(innerObj.source === 'CP_ideationccd1'){
+                        transactionObj.source.CP_ideationccd1 = transactionObj.source.CP_ideationccd1 + 1;
+                        subscriberObj.source.CP_ideationccd1 = subscriberObj.source.CP_ideationccd1 + 1;
+                    }
+                    else if(innerObj.source === 'CP_ideationccd2'){
+                        transactionObj.source.CP_ideationccd2 = transactionObj.source.CP_ideationccd2 + 1;
+                        subscriberObj.source.CP_ideationccd2 = subscriberObj.source.CP_ideationccd2 + 1;
+                    }
+                    else if(innerObj.source === 'system_after_grace_end'){
+                        transactionObj.source.system_after_grace_end = transactionObj.source.system_after_grace_end + 1;
+                        subscriberObj.source.system_after_grace_end = subscriberObj.source.system_after_grace_end + 1;
+                    }
+
+
                     //Transactions success/failure rate and net total
                     if (innerObj.billing_status === 'Success' || innerObj.billing_status === 'billed'){
                         //Success rate
@@ -277,8 +324,8 @@ function computeBillingHistorySuccessfulData(data) {
                     transactionObj.billing_dtm = outerObj.billing_dtm;
                     transactionObj.billing_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
 
-                    subscribersList.billing_dtm = outerObj.billing_dtm;
-                    subscribersList.billing_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
+                    subscriberObj.billing_dtm = outerObj.billing_dtm;
+                    subscriberObj.billing_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
                 }
             }
 
@@ -357,12 +404,14 @@ function cloneTransactionObj() {
         source: {
             app: 0,
             web: 0,
-            HE: 0,
-            sms: 0,
-            gdn2: 0,
-            CP: 0,
-            null: 0,
-            affiliate_web: 0,
+            ccp_api: 0,
+            CP_whatsappccd: 0,
+            dmdmax: 0,
+            system: 0,
+            CP_telenorccd: 0,
+            CP_productccd: 0,
+            CP_ideationccd1: 0,
+            CP_ideationccd2: 0,
             system_after_grace_end: 0
         },
         package: {
@@ -400,12 +449,14 @@ function cloneSubscriberObj() {
         source: {
             app: 0,
             web: 0,
-            HE: 0,
-            sms: 0,
-            gdn2: 0,
-            CP: 0,
-            null: 0,
-            affiliate_web: 0,
+            ccp_api: 0,
+            CP_whatsappccd: 0,
+            dmdmax: 0,
+            system: 0,
+            CP_telenorccd: 0,
+            CP_productccd: 0,
+            CP_ideationccd1: 0,
+            CP_ideationccd2: 0,
             system_after_grace_end: 0
         },
         package: {

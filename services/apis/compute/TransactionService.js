@@ -4,340 +4,143 @@ const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
 // Transactions Compute Functions
-computeTransactionsAvgReport = async (rawDataSet, params) =>{
-    console.log('computeTransactionsAvgReport');
+computeTransactionsSourceWiseReport = async (rawDataSet, params) =>{
+    console.log('computeTransactionsSourceWiseReport');
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
-    let outerObj, innerObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
-    let dayDataObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
-    let weeklyDataObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
-    let monthlyDataObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
-
-    if (rawDataSet.length > 0){
-        for (let i=0; i<rawDataSet.length; i++){
-            outerObj = rawDataSet[i];
-            if (outerObj.avgTransactions){
-                innerObj = outerObj.avgTransactions[0];
-
-                if (innerObj.totalTransactions){
-                    dataObj.totalTransactions = dataObj.totalTransactions + innerObj.totalTransactions;
-                    dayDataObj.totalTransactions = dayDataObj.totalTransactions + innerObj.totalTransactions;
-                    weeklyDataObj.totalTransactions = weeklyDataObj.totalTransactions + innerObj.totalTransactions;
-                    monthlyDataObj.totalTransactions = monthlyDataObj.totalTransactions + innerObj.totalTransactions;
-                }
-                if (innerObj.uniqueSubscribers){
-                    dataObj.uniqueSubscribers = dataObj.uniqueSubscribers + innerObj.uniqueSubscribers;
-                    dayDataObj.uniqueSubscribers = dayDataObj.uniqueSubscribers + innerObj.uniqueSubscribers;
-                    weeklyDataObj.uniqueSubscribers = weeklyDataObj.uniqueSubscribers + innerObj.uniqueSubscribers;
-                    monthlyDataObj.uniqueSubscribers = monthlyDataObj.uniqueSubscribers + innerObj.uniqueSubscribers;
-                }
-                if (innerObj.totalPrice){
-                    dataObj.totalPrice = dataObj.totalPrice + innerObj.totalPrice;
-                    dayDataObj.totalPrice = dayDataObj.totalPrice + innerObj.totalPrice;
-                    weeklyDataObj.totalPrice = weeklyDataObj.totalPrice + innerObj.totalPrice;
-                    monthlyDataObj.totalPrice = monthlyDataObj.totalPrice + innerObj.totalPrice;
-                }
-                if (innerObj.avg_transactions){
-                    dataObj.avg_transactions = dataObj.avg_transactions + innerObj.avg_transactions;
-                    dayDataObj.avg_transactions = dayDataObj.avg_transactions + innerObj.avg_transactions;
-                    weeklyDataObj.avg_transactions = weeklyDataObj.avg_transactions + innerObj.avg_transactions;
-                    monthlyDataObj.avg_transactions = monthlyDataObj.avg_transactions + innerObj.avg_transactions;
-                }
-                if (innerObj.avg_value){
-                    dataObj.avg_value = dataObj.avg_value + innerObj.avg_value;
-                    dayDataObj.avg_value = dayDataObj.avg_value + innerObj.avg_value;
-                    weeklyDataObj.avg_value = weeklyDataObj.avg_value + innerObj.avg_value;
-                    monthlyDataObj.avg_value = monthlyDataObj.avg_value + innerObj.avg_value;
-                }
-
-                // reset start_date for both month & week so can update with latest one
-                if (week_from_date === null)
-                    week_from_date = innerObj.added_dtm;
-
-                if (month_from_date === null)
-                    month_from_date = innerObj.added_dtm;
-
-                monthNo = new Date(outerObj.date).getMonth() + 1;
-                dayNo = new Date(outerObj.date).getDate();
-
-                // Monthly Data Count
-                if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
-                    monthlyDataObj.from_date = month_from_date;
-                    monthlyDataObj.to_date = outerObj.date;
-                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0});
-                    month_from_date = null;
-                }
-
-                // Weekly Data Count
-                if (Number(dayNo) % 7 === 0){
-                    weeklyDataObj.from_date = week_from_date;
-                    weeklyDataObj.to_date = outerObj.date;
-                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0});
-                    week_from_date = null;
-                }
-
-                // Day Wise Date Count
-                dayDataObj.date = outerObj.date;
-                dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0});
-            }
-        }
-
-        //Insert last data in week array that is less then one week data
-        if (week_from_date !== null){
-            weeklyDataObj.from_date = week_from_date;
-            weeklyDataObj.to_date = outerObj.date;
-            weekWiseTotalCount.push(_.clone(weeklyDataObj));
-        }
-
-        //Insert last data in month array that is less then one month data
-        if (month_from_date !== null){
-            monthlyDataObj.from_date = month_from_date;
-            monthlyDataObj.to_date = outerObj.date;
-            monthWiseTotalCount.push(_.clone(monthlyDataObj));
-        }
-
-        // Total Count Data
-        // date range (start-date, end-date)
-        dataObj = _.clone(dataObj);
-        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
-        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
-    }
-    else {
-        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
-    }
-};
-computeTransactionsRateReport = async (rawDataSet, params) =>{
-    console.log('computeTransactionsRateReport');
-
-    let monthNo, dayNo, week_from_date = null, month_from_date = null;
-    let outerObj, innerObj, transactions, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = { successRate: 0, failureRate: 0, netTotal: 0 };
-    let dayDataObj = { successRate: 0, failureRate: 0, netTotal: 0 };
-    let weeklyDataObj = { successRate: 0, failureRate: 0, netTotal: 0 };
-    let monthlyDataObj = { successRate: 0, failureRate: 0, netTotal: 0 };
+    let outerObj, innerObj, transactions, successful, sourceObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = { app: 0, web: 0, ccp_api: 0, CP_whatsappccd: 0, dmdmax: 0, system: 0, CP_telenorccd: 0, CP_productccd: 0, CP_ideationccd1: 0 , CP_ideationccd2: 0 , system_after_grace_end: 0 };
+    let dayDataObj = { app: 0, web: 0, ccp_api: 0, CP_whatsappccd: 0, dmdmax: 0, system: 0, CP_telenorccd: 0, CP_productccd: 0, CP_ideationccd1: 0 , CP_ideationccd2: 0 , system_after_grace_end: 0 };
+    let weeklyDataObj = { app: 0, web: 0, ccp_api: 0, CP_whatsappccd: 0, dmdmax: 0, system: 0, CP_telenorccd: 0, CP_productccd: 0, CP_ideationccd1: 0 , CP_ideationccd2: 0 , system_after_grace_end: 0 };
+    let monthlyDataObj = { app: 0, web: 0, ccp_api: 0, CP_whatsappccd: 0, dmdmax: 0, system: 0, CP_telenorccd: 0, CP_productccd: 0, CP_ideationccd1: 0 , CP_ideationccd2: 0 , system_after_grace_end: 0 };
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
             if (outerObj.transactions){
-                for (let j=0; j<outerObj.transactions.length; j++) {
-                    transactions = outerObj.transactions[j];
-                    if (transactions.transactions) {
-                        innerObj = transactions.transactions;
-
-                        if (innerObj.successRate){
-                            dataObj.successRate = dataObj.successRate + innerObj.successRate;
-                            dayDataObj.successRate = dayDataObj.successRate + innerObj.successRate;
-                            weeklyDataObj.successRate = weeklyDataObj.successRate + innerObj.successRate;
-                            monthlyDataObj.successRate = monthlyDataObj.successRate + innerObj.successRate;
+                transactions = outerObj.transactions;
+                if (transactions.successful) {
+                    successful = transactions.successful;
+                    for (let j=0; j < successful.length; j++) {
+                        sourceObj = successful[j];
+                        innerObj = sourceObj.source;
+                        if (innerObj.app){
+                            dataObj.app = dataObj.app + innerObj.app;
+                            dayDataObj.app = dayDataObj.app + innerObj.app;
+                            weeklyDataObj.app = weeklyDataObj.app + innerObj.app;
+                            monthlyDataObj.app = monthlyDataObj.app + innerObj.app;
                         }
-                        if (innerObj.failureRate){
-                            dataObj.failureRate = dataObj.failureRate + innerObj.failureRate;
-                            dayDataObj.failureRate = dayDataObj.failureRate + innerObj.failureRate;
-                            weeklyDataObj.failureRate = weeklyDataObj.failureRate + innerObj.failureRate;
-                            monthlyDataObj.failureRate = monthlyDataObj.failureRate + innerObj.failureRate;
+                        if (innerObj.web){
+                            dataObj.web = dataObj.web + innerObj.web;
+                            dayDataObj.web = dayDataObj.web + innerObj.web;
+                            weeklyDataObj.web = weeklyDataObj.web + innerObj.web;
+                            monthlyDataObj.web = monthlyDataObj.web + innerObj.web;
                         }
-                        if (innerObj.netTotal){
-                            dataObj.netTotal = dataObj.netTotal + innerObj.netTotal;
-                            dayDataObj.netTotal = dayDataObj.netTotal + innerObj.netTotal;
-                            weeklyDataObj.netTotal = weeklyDataObj.netTotal + innerObj.netTotal;
-                            monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.netTotal;
+                        if (innerObj.ccp_api){
+                            dataObj.ccp_api = dataObj.ccp_api + innerObj.ccp_api;
+                            dayDataObj.ccp_api = dayDataObj.ccp_api + innerObj.ccp_api;
+                            weeklyDataObj.ccp_api = weeklyDataObj.ccp_api + innerObj.ccp_api;
+                            monthlyDataObj.ccp_api = monthlyDataObj.ccp_api + innerObj.ccp_api;
                         }
-
+                        if (innerObj.CP_whatsappccd){
+                            dataObj.CP_whatsappccd = dataObj.CP_whatsappccd + innerObj.CP_whatsappccd;
+                            dayDataObj.CP_whatsappccd = dayDataObj.CP_whatsappccd + innerObj.CP_whatsappccd;
+                            weeklyDataObj.CP_whatsappccd = weeklyDataObj.CP_whatsappccd + innerObj.CP_whatsappccd;
+                            monthlyDataObj.CP_whatsappccd = monthlyDataObj.CP_whatsappccd + innerObj.CP_whatsappccd;
+                        }
+                        if (innerObj.dmdmax){
+                            dataObj.dmdmax = dataObj.dmdmax + innerObj.dmdmax;
+                            dayDataObj.dmdmax = dayDataObj.dmdmax + innerObj.dmdmax;
+                            weeklyDataObj.dmdmax = weeklyDataObj.dmdmax + innerObj.dmdmax;
+                            monthlyDataObj.dmdmax = monthlyDataObj.dmdmax + innerObj.dmdmax;
+                        }
+                        if (innerObj.system){
+                            dataObj.system = dataObj.system + innerObj.system;
+                            dayDataObj.system = dayDataObj.system + innerObj.system;
+                            weeklyDataObj.system = weeklyDataObj.system + innerObj.system;
+                            monthlyDataObj.system = monthlyDataObj.system + innerObj.system;
+                        }
+                        if (innerObj.CP_telenorccd){
+                            dataObj.CP_telenorccd = dataObj.CP_telenorccd + innerObj.CP_telenorccd;
+                            dayDataObj.CP_telenorccd = dayDataObj.CP_telenorccd + innerObj.CP_telenorccd;
+                            weeklyDataObj.CP_telenorccd = weeklyDataObj.CP_telenorccd + innerObj.CP_telenorccd;
+                            monthlyDataObj.CP_telenorccd = monthlyDataObj.CP_telenorccd + innerObj.CP_telenorccd;
+                        }
+                        if (innerObj.CP_productccd){
+                            dataObj.CP_productccd = dataObj.CP_productccd + innerObj.CP_productccd;
+                            dayDataObj.CP_productccd = dayDataObj.CP_productccd + innerObj.CP_productccd;
+                            weeklyDataObj.CP_productccd = weeklyDataObj.CP_productccd + innerObj.CP_productccd;
+                            monthlyDataObj.CP_productccd = monthlyDataObj.CP_productccd + innerObj.CP_productccd;
+                        }
+                        if (innerObj.CP_ideationccd1){
+                            dataObj.CP_ideationccd1 = dataObj.CP_ideationccd1 + innerObj.CP_ideationccd1;
+                            dayDataObj.CP_ideationccd1 = dayDataObj.CP_ideationccd1 + innerObj.CP_ideationccd1;
+                            weeklyDataObj.CP_ideationccd1 = weeklyDataObj.CP_ideationccd1 + innerObj.CP_ideationccd1;
+                            monthlyDataObj.CP_ideationccd1 = monthlyDataObj.CP_ideationccd1 + innerObj.CP_ideationccd1;
+                        }
+                        if (innerObj.CP_ideationccd2){
+                            dataObj.CP_ideationccd2 = dataObj.CP_ideationccd2 + innerObj.CP_ideationccd2;
+                            dayDataObj.CP_ideationccd2 = dayDataObj.CP_ideationccd2 + innerObj.CP_ideationccd2;
+                            weeklyDataObj.CP_ideationccd2 = weeklyDataObj.CP_ideationccd2 + innerObj.CP_ideationccd2;
+                            monthlyDataObj.CP_ideationccd2 = monthlyDataObj.CP_ideationccd2 + innerObj.CP_ideationccd2;
+                        }
+                        if (innerObj.system_after_grace_end){
+                            dataObj.system_after_grace_end = dataObj.system_after_grace_end + innerObj.system_after_grace_end;
+                            dayDataObj.system_after_grace_end = dayDataObj.system_after_grace_end + innerObj.system_after_grace_end;
+                            weeklyDataObj.system_after_grace_end = weeklyDataObj.system_after_grace_end + innerObj.system_after_grace_end;
+                            monthlyDataObj.system_after_grace_end = monthlyDataObj.system_after_grace_end + innerObj.system_after_grace_end;
+                        }
 
                         // Hourly Bases Data
                         hourlyBasisTotalCount.push({
-                            successRate: innerObj.successRate,
-                            failureRate: innerObj.failureRate,
-                            netTotal: innerObj.netTotal,
-                            date: transactions.added_dtm
+                            app: innerObj.app,
+                            web: innerObj.web,
+                            ccp_api: innerObj.ccp_api,
+                            CP_whatsappccd: innerObj.CP_whatsappccd,
+                            dmdmax: innerObj.dmdmax,
+                            system: innerObj.system,
+                            CP_telenorccd: innerObj.CP_telenorccd,
+                            CP_productccd: innerObj.CP_productccd,
+                            CP_ideationccd1: innerObj.CP_ideationccd1,
+                            CP_ideationccd2: innerObj.CP_ideationccd2,
+                            system_after_grace_end: innerObj.system_after_grace_end,
+                            date: sourceObj.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = transactions.added_dtm;
+                            week_from_date = sourceObj.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = transactions.added_dtm;
+                            month_from_date = sourceObj.billing_dtm;
                     }
+
+                    monthNo = new Date(outerObj.date).getMonth() + 1;
+                    dayNo = new Date(outerObj.date).getDate();
+
+                    // Monthly Data Count
+                    if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
+                        monthlyDataObj.from_date = month_from_date;
+                        monthlyDataObj.to_date = outerObj.date;
+                        monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                        monthlyDataObj = _.clone({ app: 0, web: 0, ccp_api: 0, CP_whatsappccd: 0, dmdmax: 0, system: 0, CP_telenorccd: 0, CP_productccd: 0, CP_ideationccd1: 0 , CP_ideationccd2: 0 , system_after_grace_end: 0 });
+                        month_from_date = null;
+                    }
+
+                    // Weekly Data Count
+                    if (Number(dayNo) % 7 === 0){
+                        weeklyDataObj.from_date = week_from_date;
+                        weeklyDataObj.to_date = outerObj.date;
+                        weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                        weeklyDataObj = _.clone({ app: 0, web: 0, ccp_api: 0, CP_whatsappccd: 0, dmdmax: 0, system: 0, CP_telenorccd: 0, CP_productccd: 0, CP_ideationccd1: 0 , CP_ideationccd2: 0 , system_after_grace_end: 0 });
+                        week_from_date = null;
+                    }
+
+                    // Day Wise Date Count
+                    dayDataObj.date = outerObj.date;
+                    dayWiseTotalCount.push(_.clone(dayDataObj));
+                    dayDataObj = _.clone({ app: 0, web: 0, ccp_api: 0, CP_whatsappccd: 0, dmdmax: 0, system: 0, CP_telenorccd: 0, CP_productccd: 0, CP_ideationccd1: 0 , CP_ideationccd2: 0 , system_after_grace_end: 0 });
                 }
-
-                monthNo = new Date(outerObj.date).getMonth() + 1;
-                dayNo = new Date(outerObj.date).getDate();
-
-                // Monthly Data Count
-                if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
-                    monthlyDataObj.from_date = month_from_date;
-                    monthlyDataObj.to_date = outerObj.date;
-                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({ successRate: 0, failureRate: 0, netTotal: 0 });
-                    month_from_date = null;
-                }
-
-                // Weekly Data Count
-                if (Number(dayNo) % 7 === 0){
-                    weeklyDataObj.from_date = week_from_date;
-                    weeklyDataObj.to_date = outerObj.date;
-                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({ successRate: 0, failureRate: 0, netTotal: 0 });
-                    week_from_date = null;
-                }
-
-                // Day Wise Date Count
-                dayDataObj.date = outerObj.date;
-                dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({ successRate: 0, failureRate: 0, netTotal: 0 });
-            }
-        }
-
-        //Insert last data in week array that is less then one week data
-        if (week_from_date !== null){
-            weeklyDataObj.from_date = week_from_date;
-            weeklyDataObj.to_date = outerObj.date;
-            weekWiseTotalCount.push(_.clone(weeklyDataObj));
-        }
-
-        //Insert last data in month array that is less then one month data
-        if (month_from_date !== null){
-            monthlyDataObj.from_date = month_from_date;
-            monthlyDataObj.to_date = outerObj.date;
-            monthWiseTotalCount.push(_.clone(monthlyDataObj));
-        }
-
-        // Total Count Data
-        // date range (start-date, end-date)
-        dataObj = _.clone(dataObj);
-        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
-        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
-    }
-    else {
-        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
-    }
-};
-computeTransactionsSourceWiseReport = async (rawDataSet, params) =>{
-    console.log('computeTransactionsSourceWiseReport');
-
-    let monthNo, dayNo, week_from_date = null, month_from_date = null;
-    let outerObj, innerObj, transactionsSourceWise, sourceObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = { app: 0, web: 0, HE: 0, sms: 0, gdn2: 0, CP: 0, null: 0, affiliate_web: 0, system_after_grace_end: 0 };
-    let dayDataObj = { app: 0, web: 0, HE: 0, sms: 0, gdn2: 0, CP: 0, null: 0, affiliate_web: 0, system_after_grace_end: 0 };
-    let weeklyDataObj = { app: 0, web: 0, HE: 0, sms: 0, gdn2: 0, CP: 0, null: 0, affiliate_web: 0, system_after_grace_end: 0 };
-    let monthlyDataObj = { app: 0, web: 0, HE: 0, sms: 0, gdn2: 0, CP: 0, null: 0, affiliate_web: 0, system_after_grace_end: 0 };
-
-    if (rawDataSet.length > 0){
-        for (let i=0; i<rawDataSet.length; i++){
-            outerObj = rawDataSet[i];
-            if (outerObj.transactionsSourceWise){
-                transactionsSourceWise = outerObj.transactionsSourceWise;
-                for (let j=0; j < transactionsSourceWise.length; j++) {
-                    sourceObj = transactionsSourceWise[j];
-                    innerObj = sourceObj.source;
-                    if (innerObj.app){
-                        dataObj.app = dataObj.app + innerObj.app;
-                        dayDataObj.app = dayDataObj.app + innerObj.app;
-                        weeklyDataObj.app = weeklyDataObj.app + innerObj.app;
-                        monthlyDataObj.app = monthlyDataObj.app + innerObj.app;
-                    }
-                    if (innerObj.web){
-                        dataObj.web = dataObj.web + innerObj.web;
-                        dayDataObj.web = dayDataObj.web + innerObj.web;
-                        weeklyDataObj.web = weeklyDataObj.web + innerObj.web;
-                        monthlyDataObj.web = monthlyDataObj.web + innerObj.web;
-                    }
-                    if (innerObj.HE){
-                        dataObj.HE = dataObj.HE + innerObj.HE;
-                        dayDataObj.HE = dayDataObj.HE + innerObj.HE;
-                        weeklyDataObj.HE = weeklyDataObj.HE + innerObj.HE;
-                        monthlyDataObj.HE = monthlyDataObj.HE + innerObj.HE;
-                    }
-                    if (innerObj.sms){
-                        dataObj.sms = dataObj.sms + innerObj.sms;
-                        dayDataObj.sms = dayDataObj.sms + innerObj.sms;
-                        weeklyDataObj.sms = weeklyDataObj.sms + innerObj.sms;
-                        monthlyDataObj.sms = monthlyDataObj.sms + innerObj.sms;
-                    }
-                    if (innerObj.gdn2){
-                        dataObj.gdn2 = dataObj.gdn2 + innerObj.gdn2;
-                        dayDataObj.gdn2 = dayDataObj.gdn2 + innerObj.gdn2;
-                        weeklyDataObj.gdn2 = weeklyDataObj.gdn2 + innerObj.gdn2;
-                        monthlyDataObj.gdn2 = monthlyDataObj.gdn2 + innerObj.gdn2;
-                    }
-                    if (innerObj.CP){
-                        dataObj.CP = dataObj.CP + innerObj.CP;
-                        dayDataObj.CP = dayDataObj.CP + innerObj.CP;
-                        weeklyDataObj.CP = weeklyDataObj.CP + innerObj.CP;
-                        monthlyDataObj.CP = monthlyDataObj.CP + innerObj.CP;
-                    }
-                    if (innerObj.null){
-                        dataObj.null = dataObj.null + innerObj.null;
-                        dayDataObj.null = dayDataObj.null + innerObj.null;
-                        weeklyDataObj.null = weeklyDataObj.null + innerObj.null;
-                        monthlyDataObj.null = monthlyDataObj.null + innerObj.null;
-                    }
-                    if (innerObj.affiliate_web){
-                        dataObj.affiliate_web = dataObj.affiliate_web + innerObj.affiliate_web;
-                        dayDataObj.affiliate_web = dayDataObj.affiliate_web + innerObj.affiliate_web;
-                        weeklyDataObj.affiliate_web = weeklyDataObj.affiliate_web + innerObj.affiliate_web;
-                        monthlyDataObj.affiliate_web = monthlyDataObj.affiliate_web + innerObj.affiliate_web;
-                    }
-                    if (innerObj.system_after_grace_end){
-                        dataObj.system_after_grace_end = dataObj.system_after_grace_end + innerObj.system_after_grace_end;
-                        dayDataObj.system_after_grace_end = dayDataObj.system_after_grace_end + innerObj.system_after_grace_end;
-                        weeklyDataObj.system_after_grace_end = weeklyDataObj.system_after_grace_end + innerObj.system_after_grace_end;
-                        monthlyDataObj.system_after_grace_end = monthlyDataObj.system_after_grace_end + innerObj.system_after_grace_end;
-                    }
-
-                    // Hourly Bases Data
-                    hourlyBasisTotalCount.push({
-                        app: innerObj.app,
-                        web: innerObj.web,
-                        HE: innerObj.HE,
-                        sms: innerObj.sms,
-                        gdn2: innerObj.gdn2,
-                        CP: innerObj.CP,
-                        null: innerObj.null,
-                        affiliate_web: innerObj.affiliate_web,
-                        system_after_grace_end: innerObj.system_after_grace_end,
-                        date: sourceObj.added_dtm_hours
-                    });
-
-                    // reset start_date for both month & week so can update with latest one
-                    if (week_from_date === null)
-                        week_from_date = sourceObj.added_dtm;
-
-                    if (month_from_date === null)
-                        month_from_date = sourceObj.added_dtm;
-                }
-
-                monthNo = new Date(outerObj.date).getMonth() + 1;
-                dayNo = new Date(outerObj.date).getDate();
-
-                // Monthly Data Count
-                if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
-                    monthlyDataObj.from_date = month_from_date;
-                    monthlyDataObj.to_date = outerObj.date;
-                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({ app: 0, web: 0, HE: 0, sms: 0, gdn2: 0, CP: 0, null: 0, affiliate_web: 0, system_after_grace_end: 0 });
-                    month_from_date = null;
-                }
-
-                // Weekly Data Count
-                if (Number(dayNo) % 7 === 0){
-                    weeklyDataObj.from_date = week_from_date;
-                    weeklyDataObj.to_date = outerObj.date;
-                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({ app: 0, web: 0, HE: 0, sms: 0, gdn2: 0, CP: 0, null: 0, affiliate_web: 0, system_after_grace_end: 0 });
-                    week_from_date = null;
-                }
-
-                // Day Wise Date Count
-                dayDataObj.date = outerObj.date;
-                dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({ app: 0, web: 0, HE: 0, sms: 0, gdn2: 0, CP: 0, null: 0, affiliate_web: 0, system_after_grace_end: 0 });
             }
         }
 
@@ -791,6 +594,220 @@ computeTransactionsPriceWiseWiseReport = async (rawDataSet, params) =>{
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
                 dayDataObj = _.clone({ '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 });
+            }
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // Total Count Data
+        // date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
+    }
+};
+computeTransactionsAvgReport = async (rawDataSet, params) =>{
+    console.log('computeTransactionsAvgReport');
+
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, innerObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
+    let dayDataObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
+    let weeklyDataObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
+    let monthlyDataObj = {totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0};
+
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+            if (outerObj.avgTransactions){
+                innerObj = outerObj.avgTransactions[0];
+
+                if (innerObj.totalTransactions){
+                    dataObj.totalTransactions = dataObj.totalTransactions + innerObj.totalTransactions;
+                    dayDataObj.totalTransactions = dayDataObj.totalTransactions + innerObj.totalTransactions;
+                    weeklyDataObj.totalTransactions = weeklyDataObj.totalTransactions + innerObj.totalTransactions;
+                    monthlyDataObj.totalTransactions = monthlyDataObj.totalTransactions + innerObj.totalTransactions;
+                }
+                if (innerObj.uniqueSubscribers){
+                    dataObj.uniqueSubscribers = dataObj.uniqueSubscribers + innerObj.uniqueSubscribers;
+                    dayDataObj.uniqueSubscribers = dayDataObj.uniqueSubscribers + innerObj.uniqueSubscribers;
+                    weeklyDataObj.uniqueSubscribers = weeklyDataObj.uniqueSubscribers + innerObj.uniqueSubscribers;
+                    monthlyDataObj.uniqueSubscribers = monthlyDataObj.uniqueSubscribers + innerObj.uniqueSubscribers;
+                }
+                if (innerObj.totalPrice){
+                    dataObj.totalPrice = dataObj.totalPrice + innerObj.totalPrice;
+                    dayDataObj.totalPrice = dayDataObj.totalPrice + innerObj.totalPrice;
+                    weeklyDataObj.totalPrice = weeklyDataObj.totalPrice + innerObj.totalPrice;
+                    monthlyDataObj.totalPrice = monthlyDataObj.totalPrice + innerObj.totalPrice;
+                }
+                if (innerObj.avg_transactions){
+                    dataObj.avg_transactions = dataObj.avg_transactions + innerObj.avg_transactions;
+                    dayDataObj.avg_transactions = dayDataObj.avg_transactions + innerObj.avg_transactions;
+                    weeklyDataObj.avg_transactions = weeklyDataObj.avg_transactions + innerObj.avg_transactions;
+                    monthlyDataObj.avg_transactions = monthlyDataObj.avg_transactions + innerObj.avg_transactions;
+                }
+                if (innerObj.avg_value){
+                    dataObj.avg_value = dataObj.avg_value + innerObj.avg_value;
+                    dayDataObj.avg_value = dayDataObj.avg_value + innerObj.avg_value;
+                    weeklyDataObj.avg_value = weeklyDataObj.avg_value + innerObj.avg_value;
+                    monthlyDataObj.avg_value = monthlyDataObj.avg_value + innerObj.avg_value;
+                }
+
+                // reset start_date for both month & week so can update with latest one
+                if (week_from_date === null)
+                    week_from_date = innerObj.added_dtm;
+
+                if (month_from_date === null)
+                    month_from_date = innerObj.added_dtm;
+
+                monthNo = new Date(outerObj.date).getMonth() + 1;
+                dayNo = new Date(outerObj.date).getDate();
+
+                // Monthly Data Count
+                if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
+                    monthlyDataObj.from_date = month_from_date;
+                    monthlyDataObj.to_date = outerObj.date;
+                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                    monthlyDataObj = _.clone({totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0});
+                    month_from_date = null;
+                }
+
+                // Weekly Data Count
+                if (Number(dayNo) % 7 === 0){
+                    weeklyDataObj.from_date = week_from_date;
+                    weeklyDataObj.to_date = outerObj.date;
+                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                    weeklyDataObj = _.clone({totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0});
+                    week_from_date = null;
+                }
+
+                // Day Wise Date Count
+                dayDataObj.date = outerObj.date;
+                dayWiseTotalCount.push(_.clone(dayDataObj));
+                dayDataObj = _.clone({totalTransactions: 0, uniqueSubscribers: 0, totalPrice: 0, avg_transactions: 0, avg_value: 0});
+            }
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // Total Count Data
+        // date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
+    }
+};
+computeTransactionsRateReport = async (rawDataSet, params) =>{
+    console.log('computeTransactionsRateReport');
+
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, innerObj, transactions, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = { successRate: 0, failureRate: 0, netTotal: 0 };
+    let dayDataObj = { successRate: 0, failureRate: 0, netTotal: 0 };
+    let weeklyDataObj = { successRate: 0, failureRate: 0, netTotal: 0 };
+    let monthlyDataObj = { successRate: 0, failureRate: 0, netTotal: 0 };
+
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+            if (outerObj.transactions){
+                for (let j=0; j<outerObj.transactions.length; j++) {
+                    transactions = outerObj.transactions[j];
+                    if (transactions.transactions) {
+                        innerObj = transactions.transactions;
+
+                        if (innerObj.successRate){
+                            dataObj.successRate = dataObj.successRate + innerObj.successRate;
+                            dayDataObj.successRate = dayDataObj.successRate + innerObj.successRate;
+                            weeklyDataObj.successRate = weeklyDataObj.successRate + innerObj.successRate;
+                            monthlyDataObj.successRate = monthlyDataObj.successRate + innerObj.successRate;
+                        }
+                        if (innerObj.failureRate){
+                            dataObj.failureRate = dataObj.failureRate + innerObj.failureRate;
+                            dayDataObj.failureRate = dayDataObj.failureRate + innerObj.failureRate;
+                            weeklyDataObj.failureRate = weeklyDataObj.failureRate + innerObj.failureRate;
+                            monthlyDataObj.failureRate = monthlyDataObj.failureRate + innerObj.failureRate;
+                        }
+                        if (innerObj.netTotal){
+                            dataObj.netTotal = dataObj.netTotal + innerObj.netTotal;
+                            dayDataObj.netTotal = dayDataObj.netTotal + innerObj.netTotal;
+                            weeklyDataObj.netTotal = weeklyDataObj.netTotal + innerObj.netTotal;
+                            monthlyDataObj.netTotal = monthlyDataObj.netTotal + innerObj.netTotal;
+                        }
+
+
+                        // Hourly Bases Data
+                        hourlyBasisTotalCount.push({
+                            successRate: innerObj.successRate,
+                            failureRate: innerObj.failureRate,
+                            netTotal: innerObj.netTotal,
+                            date: transactions.added_dtm
+                        });
+
+                        // reset start_date for both month & week so can update with latest one
+                        if (week_from_date === null)
+                            week_from_date = transactions.added_dtm;
+
+                        if (month_from_date === null)
+                            month_from_date = transactions.added_dtm;
+                    }
+                }
+
+                monthNo = new Date(outerObj.date).getMonth() + 1;
+                dayNo = new Date(outerObj.date).getDate();
+
+                // Monthly Data Count
+                if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
+                    monthlyDataObj.from_date = month_from_date;
+                    monthlyDataObj.to_date = outerObj.date;
+                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                    monthlyDataObj = _.clone({ successRate: 0, failureRate: 0, netTotal: 0 });
+                    month_from_date = null;
+                }
+
+                // Weekly Data Count
+                if (Number(dayNo) % 7 === 0){
+                    weeklyDataObj.from_date = week_from_date;
+                    weeklyDataObj.to_date = outerObj.date;
+                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                    weeklyDataObj = _.clone({ successRate: 0, failureRate: 0, netTotal: 0 });
+                    week_from_date = null;
+                }
+
+                // Day Wise Date Count
+                dayDataObj.date = outerObj.date;
+                dayWiseTotalCount.push(_.clone(dayDataObj));
+                dayDataObj = _.clone({ successRate: 0, failureRate: 0, netTotal: 0 });
             }
         }
 
@@ -1723,14 +1740,14 @@ function cloneRevenueBillingStatusWiseObj(){
 }
 
 module.exports = {
-    computeTransactionsAvgReport: computeTransactionsAvgReport,
-    computeTransactionsRateReport: computeTransactionsRateReport,
     computeTransactionsSourceWiseReport: computeTransactionsSourceWiseReport,
     computeTransactionsPackageWiseReport: computeTransactionsPackageWiseReport,
     computeTransactionsPaywallWiseReport: computeTransactionsPaywallWiseReport,
     computeTransactionsOperatorWiseReport: computeTransactionsOperatorWiseReport,
     computeTransactionsPriceWiseWiseReport: computeTransactionsPriceWiseWiseReport,
     computeRevenueBillingStatusWiseReport: computeRevenueBillingStatusWiseReport,
+    computeTransactionsAvgReport: computeTransactionsAvgReport,
+    computeTransactionsRateReport: computeTransactionsRateReport,
 
     computeTransactingSubscribersSourceWiseReport: computeTransactingSubscribersSourceWiseReport,
     computeTransactingSubscribersPackageWiseReport: computeTransactingSubscribersPackageWiseReport,
