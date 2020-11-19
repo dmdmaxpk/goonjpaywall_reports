@@ -70,31 +70,31 @@ computeRevenueNetAdditionReports = async(req, res) => {
         }
 
         // Get compute data for next time slot
-        req.day = Number(req.day) + 1;
-        console.log('computeRevenueNetAdditionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        // req.day = Number(req.day) + 1;
+        // console.log('computeRevenueNetAdditionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            console.log('IF');
-            if (month < helper.getTodayMonthNo())
-                computeRevenueNetAdditionReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeRevenueNetAdditionReports(req, res);
-        }
-        else{
-            console.log('ELSE');
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('computeRevenueNetAdditionReports -> month : ', month, req.month, new Date().getMonth());
+        // if (req.day <= helper.getDaysInMonth(month)){
+        //     console.log('IF');
+        //     if (month < helper.getTodayMonthNo())
+        //         computeRevenueNetAdditionReports(req, res);
+        //     else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+        //         computeRevenueNetAdditionReports(req, res);
+        // }
+        // else{
+        //     console.log('ELSE');
+        //     req.day = 1;
+        //     req.month = Number(req.month) + 1;
+        //     console.log('computeRevenueNetAdditionReports -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= helper.getTodayMonthNo())
-                computeRevenueNetAdditionReports(req, res);
-        }
+        //     if (req.month <= helper.getTodayMonthNo())
+        //         computeRevenueNetAdditionReports(req, res);
+        // }
 
-        if (helper.isToday(fromDate)){
-            console.log('computeRevenueNetAdditionReports - data compute - done');
-            delete req.day;
-            delete req.month;
-        }
+        // if (helper.isToday(fromDate)){
+        //     console.log('computeRevenueNetAdditionReports - data compute - done');
+        //     delete req.day;
+        //     delete req.month;
+        // }
     });
 };
 
