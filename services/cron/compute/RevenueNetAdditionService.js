@@ -138,8 +138,8 @@ promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
                             finalData = computeNetAdditionRevenueData(netAdditions);
                             finalList = finalData.finalList;
                             console.log('finalList.length : ', finalList.length);
-                            // if (finalList.length > 0)
-                            //     await insertNewRecord(finalList, fromDate, i);
+                            if (finalList.length > 0)
+                                await insertNewRecord(finalList, fromDate, i);
                         }
                     });
                 }
@@ -154,8 +154,8 @@ promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
                             finalData = computeNetAdditionRevenueData(netAdditions);
                             finalList = finalData.finalList;
                             console.log('finalList.length : ', finalList.length);
-                            // if (finalList.length > 0)
-                            //     await insertNewRecord(finalList, fromDate, 1);
+                            if (finalList.length > 0)
+                                await insertNewRecord(finalList, fromDate, 1);
                         }
                     });
                 }
