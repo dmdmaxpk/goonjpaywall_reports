@@ -369,7 +369,7 @@ function computeNetAdditionRevenueData(netAdditions) {
         }
     }
 
-    console.log("==> Final list: ", JSON.stringify(finalList));
+    //console.log("==> Final list: ", JSON.stringify(finalList));
     return {finalList: finalList};
 }
 
