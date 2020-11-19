@@ -378,22 +378,25 @@ computeTransactionsPackageWiseReport = async (rawDataSet, params) =>{
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
-            console.log('Object.keys(outerObj);: ', Object.keys(outerObj));
-
-            let keys = Object.keys(outerObj);
-            console.log('keys: ', keys);
-            console.log('keys: ', keys[3]);
-            // console.log('keys[3][0].transactions: ', keys[3][0].transactions);
-
-            console.log('callbackSend - hasOwnProperty: ', outerObj.hasOwnProperty('callbackSend'));
-            console.log('transactions - hasOwnProperty: ', outerObj.hasOwnProperty('transactions'));
+            console.log('outerObj: ', outerObj);
+            console.log('outerObj.callbackSend: ', outerObj.callbackSend);
             console.log('outerObj.transactions: ', outerObj.transactions);
-            console.log('outerObj[\'transactions\']: ', outerObj['transactions']);
-            console.log('Object.keys(outerObj.callbackSend);: ', Object.entries(outerObj));
-            console.log('Object.keys(outerObj);: ', Object.keys(outerObj));
-            console.log('Object.getOwnPropertyNames(outerObj): ', Object.getOwnPropertyNames(outerObj));
-            console.log('callbackSend: ', outerObj.callbackSend);
-            console.log('Object.keys(outerObj.callbackSend);: ', Object.keys(outerObj.callbackSend));
+            // console.log('Object.keys(outerObj);: ', Object.keys(outerObj));
+            //
+            // let keys = Object.entries(outerObj);
+            // console.log('keys: ', keys);
+            // console.log('keys: ', keys[3]);
+            // // console.log('keys[3][0].transactions: ', keys[3][0].transactions);
+            //
+            // console.log('callbackSend - hasOwnProperty: ', outerObj.hasOwnProperty('callbackSend'));
+            // console.log('transactions - hasOwnProperty: ', outerObj.hasOwnProperty('transactions'));
+            // console.log('outerObj.transactions: ', outerObj.transactions);
+            // console.log('outerObj[\'transactions\']: ', outerObj['transactions']);
+            // console.log('Object.keys(outerObj.callbackSend);: ', Object.entries(outerObj));
+            // console.log('Object.keys(outerObj);: ', Object.keys(outerObj));
+            // console.log('Object.getOwnPropertyNames(outerObj): ', Object.getOwnPropertyNames(outerObj));
+            // console.log('callbackSend: ', outerObj.callbackSend);
+            // console.log('Object.keys(outerObj.callbackSend);: ', Object.keys(outerObj.callbackSend));
 
             if (outerObj.transactions){
                 for (let j=0; j<outerObj.transactions.length; j++) {
