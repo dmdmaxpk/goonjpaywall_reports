@@ -300,13 +300,10 @@ computeTransactionsPaywallWiseReport = async (rawDataSet, params) =>{
                 transactions = outerObj.transactions;
                 if (transactions.successful) {
                     successful = transactions.successful;
-                    console.log('successful: ', successful);
-                    for (let j = 0; j < outerObj.successful.length; j++) {
+                    for (let j = 0; j < successful.length; j++) {
                         paywallObj = successful[j];
-
                         innerObj = paywallObj.paywall;
-                        console.log('paywallObj: ', innerObj);
-
+                        
                         if (innerObj.live) {
                             dataObj.live = dataObj.live + innerObj.live;
                             dayDataObj.live = dayDataObj.live + innerObj.live;
