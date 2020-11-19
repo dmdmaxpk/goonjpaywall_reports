@@ -175,6 +175,7 @@ promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
 function computeNetAdditionRevenueData(netAdditions) {
     console.log('==>', netAdditions);
     let dateInMili, outer_billing_dtm, inner_billing_dtm, expire_type, newObj, outerObj, innerObj, finalList = [];
+    
     for (let j=0; j < netAdditions.length; j++) {
 
         outerObj = netAdditions[j];
@@ -368,7 +369,8 @@ function computeNetAdditionRevenueData(netAdditions) {
         }
     }
 
-    return {finalList: finalList};
+    console.log("==> Final list: ", finalList);
+    //return {finalList: finalList};
 }
 
 async function insertNewRecord(finalList, dateString, mode) {
