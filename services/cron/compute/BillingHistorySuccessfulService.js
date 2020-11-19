@@ -185,7 +185,6 @@ function computeBillingHistorySuccessfulData(data) {
 
         if (!check){
             hoursArr.push(thisHour);
-            console.log('hoursArr: ', hoursArr.length);
             for (let k=0; k < data.length; k++) {
 
                 innerObj = data[k];
@@ -304,7 +303,6 @@ function computeBillingHistorySuccessfulData(data) {
                         transactionObj.source.system_after_grace_end = transactionObj.source.system_after_grace_end + 1;
                         subscriberObj.source.system_after_grace_end = subscriberObj.source.system_after_grace_end + 1;
                     }
-
 
                     //Transactions success/failure rate and net total
                     if (innerObj.billing_status === 'Success' || innerObj.billing_status === 'billed'){
