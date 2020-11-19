@@ -381,6 +381,9 @@ computeTransactionsPackageWiseReport = async (rawDataSet, params) =>{
             console.log('Object.keys(outerObj);: ', Object.keys(outerObj));
 
             let keys = Object.keys(outerObj);
+            console.log('keys: ', keys);
+            console.log('keys: ', keys._doc);
+            console.log('keys: ', keys['_doc']);
             console.log('Object.keys(outerObj)._doc: ', keys['_doc']);
             console.log('Object.keys(outerObj)._doc[0]: ', keys['_doc'][0]);
             console.log('Object.keys(outerObj)._doc[0].transactions: ', keys['_doc'][0].transactions);
