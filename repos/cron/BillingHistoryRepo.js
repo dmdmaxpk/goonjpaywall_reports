@@ -169,8 +169,8 @@ class BillingHistoryRepository {
                 if (!err) {
                     collection.aggregate( [
                         {$match : {
+                                $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lt:new Date(to)}}],
                                 $or:[{billing_status: "expired"}, {billing_status: "unsubscribe-request-received-and-expired"}],
-                                $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lt:new Date(to)}}]
                             }},
 
                         {$project: {
