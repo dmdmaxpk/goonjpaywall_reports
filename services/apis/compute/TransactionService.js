@@ -379,9 +379,12 @@ computeTransactionsPackageWiseReport = async (rawDataSet, params) =>{
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
             // console.log('outerObj: ', outerObj);
-            console.log('transactions: ', outerObj.transactions);
-            outerObj = JSON.parse(outerObj);
-            console.log('transactions: ', outerObj.transactions);
+            console.log('callbackSend - hasOwnProperty: ', outerObj.hasOwnProperty('callbackSend'));
+            console.log('transactions - hasOwnProperty: ', outerObj.hasOwnProperty('transactions'));
+            console.log('outerObj.transactions: ', outerObj.transactions);
+            console.log('outerObj[\'transactions\']: ', outerObj['transactions']);
+            console.log('Object.keys(outerObj);: ', Object.keys(outerObj));
+            console.log('Object.getOwnPropertyNames(outerObj): ', Object.getOwnPropertyNames(outerObj));
 
             if (outerObj.transactions){
                 for (let j=0; j<outerObj.transactions.length; j++) {
