@@ -162,6 +162,8 @@ class BillingHistoryRepository {
     }
 
     async getNetAdditionByDateRange(req, from, to, skip, limit){
+        from = '2020-11-18T00:00:00.000Z';
+        to = '2020-11-18T02:00.000Z';
         return new Promise((resolve, reject) => {
             console.log('getNetAdditionByDateRange: ', from, to);
             req.db.collection('billinghistories', function (err, collection) {
