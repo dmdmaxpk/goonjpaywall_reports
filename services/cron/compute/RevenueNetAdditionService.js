@@ -183,7 +183,8 @@ function computeNetAdditionRevenueData(netAdditions) {
         newObj = _.cloneDeep(cloneInfoObj());
         // outer_billing_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
 
-        thisHour = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0);
+        outer_billing_dtm = new Date(outerObj.billing_dtm);
+        thisHour = outer_billing_dtm.getUTCHours();
         check = hoursArr.includes(thisHour);
         console.log('check: ', check, thisHour);
 
