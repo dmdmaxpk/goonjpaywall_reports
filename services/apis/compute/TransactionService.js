@@ -379,7 +379,6 @@ computeTransactionsPackageWiseReport = async (rawDataSet, params) =>{
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
-            outerObj = JSON.parse(outerObj);
             console.log('typeof outerObj: ', typeof outerObj);
 
             console.log('callbackSend - hasOwnProperty: ', outerObj.hasOwnProperty('callbackSend'));
