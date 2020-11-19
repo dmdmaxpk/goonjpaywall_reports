@@ -173,7 +173,7 @@ promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
 };
 
 function computeNetAdditionRevenueData(netAdditions) {
-
+    console.log('==>', JSON.stringify(netAdditions));
     let dateInMili, outer_billing_dtm, inner_billing_dtm, expire_type, newObj, outerObj, innerObj, finalList = [];
     for (let j=0; j < netAdditions.length; j++) {
 
