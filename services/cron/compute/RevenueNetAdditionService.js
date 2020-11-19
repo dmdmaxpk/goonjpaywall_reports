@@ -432,7 +432,7 @@ function cloneInfoObj() {
 function countQuery(from, to){
     return [
         {$match : {
-                $or:[{billing_status: "expired"}, {billing_status: "unsubscribe-request-recieved"}, {billing_status: "unsubscribe-request-received-and-expired"}],
+                $or:[{billing_status: "expired"}, {billing_status: "unsubscribe-request-received-and-expired"}],
                 $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lt:new Date(to)}}]
             }},
         {
