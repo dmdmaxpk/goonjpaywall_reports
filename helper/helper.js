@@ -247,7 +247,9 @@ class Helper {
         toDate.setDate(toDate.getDate() + 1);
         console.log('computeNextDate - toDate : ', toDate);
 
-        return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
+        //return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
+
+        return {req: req, day: 18, month: 11, fromDate: '2020-11-18T05:00:00.000Z', toDate: '2020-11-18T08:00:00.000Z'};
     }
 
     static computeNextEightHoursDate(req, sDay, sMonth){

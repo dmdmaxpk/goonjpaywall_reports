@@ -26,7 +26,6 @@ computeRevenueNetAdditionReports = async(req, res) => {
 
     await helper.getTotalCount(req, fromDate, toDate, 'billinghistories', query).then(async function (totalCount) {
         console.log('totalCount: ', totalCount);
-        totalCount = 10;
         
         if (totalCount > 0){
             computeChunks = helper.getChunks(totalCount);
