@@ -375,21 +375,22 @@ computeTransactionsPackageWiseReport = async (rawDataSet, params) =>{
     let weeklyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
     let monthlyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
 
-    console.log('typeof rawDataSet: ', typeof rawDataSet);
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
-            console.log('typeof outerObj: ', typeof outerObj);
+            console.log('Object.keys(outerObj)._doc: ', Object.keys(outerObj)._doc);
+            console.log('Object.keys(outerObj)._doc[0]: ', Object.keys(outerObj)._doc[0]);
+            console.log('Object.keys(outerObj)._doc[0].transactions: ', Object.keys(outerObj)._doc[0].transactions);
 
-            console.log('callbackSend - hasOwnProperty: ', outerObj.hasOwnProperty('callbackSend'));
-            console.log('transactions - hasOwnProperty: ', outerObj.hasOwnProperty('transactions'));
-            console.log('outerObj.transactions: ', outerObj.transactions);
-            console.log('outerObj[\'transactions\']: ', outerObj['transactions']);
-            console.log('Object.keys(outerObj.callbackSend);: ', Object.entries(outerObj));
-            console.log('Object.keys(outerObj);: ', Object.keys(outerObj));
-            console.log('Object.getOwnPropertyNames(outerObj): ', Object.getOwnPropertyNames(outerObj));
-            console.log('callbackSend: ', outerObj.callbackSend);
-            console.log('Object.keys(outerObj.callbackSend);: ', Object.keys(outerObj.callbackSend));
+            // console.log('callbackSend - hasOwnProperty: ', outerObj.hasOwnProperty('callbackSend'));
+            // console.log('transactions - hasOwnProperty: ', outerObj.hasOwnProperty('transactions'));
+            // console.log('outerObj.transactions: ', outerObj.transactions);
+            // console.log('outerObj[\'transactions\']: ', outerObj['transactions']);
+            // console.log('Object.keys(outerObj.callbackSend);: ', Object.entries(outerObj));
+            // console.log('Object.keys(outerObj);: ', Object.keys(outerObj));
+            // console.log('Object.getOwnPropertyNames(outerObj): ', Object.getOwnPropertyNames(outerObj));
+            // console.log('callbackSend: ', outerObj.callbackSend);
+            // console.log('Object.keys(outerObj.callbackSend);: ', Object.keys(outerObj.callbackSend));
 
             if (outerObj.transactions){
                 for (let j=0; j<outerObj.transactions.length; j++) {
