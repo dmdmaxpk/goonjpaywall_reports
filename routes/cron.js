@@ -24,6 +24,9 @@ router.route('/compute-revenue-net-addition-reports')
 router.route('/compute-billing-history-reports')
     .get(connection.connect, controller.computeBillingHistoryReports); //
 
+router.route('/compute-billing-history-successful-reports')
+    .get(connection.connect, controller.computeBillingHistorySuccessfulReports); //
+
 router.route('/compute-charge-detail-reports')
     .get(connection.connect, controller.computeChargeDetailsReports); //**
 

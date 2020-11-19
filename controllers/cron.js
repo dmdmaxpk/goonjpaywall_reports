@@ -12,6 +12,8 @@ const SubscriberSubscriptionsReports = require('../services/cron/compute/Subscri
 const SubscriberTransactionsReports = require('../services/cron/compute/SubscriberTransactionsReports');
 const AffiliateSubscriptionsService = require('../services/cron/compute/AffiliateDataFromSubscriptionsService');
 
+const BillingHistorySuccessfulService = require('../services/cron/compute/BillingHistorySuccessfulService');
+
 const HelogsService = require('../services/cron/compute/HelogsService');
 const LogsService = require('../services/cron/compute/LogsService');
 
@@ -50,6 +52,11 @@ exports.computeSubscriptionFromBillingService = async (req,res) =>  {
 exports.computeBillingHistoryReports = async (req,res) =>  {
     BillingHistoryService.computeBillingHistoryReports(req,res);
     res.send("computeBillingHistoryReports - Executed\n");
+};
+
+exports.computeBillingHistorySuccessfulReports = async (req,res) =>  {
+    BillingHistorySuccessfulService.computeBillingHistorySuccessfulReports(req,res);
+    res.send("computeBillingHistorySuccessfulReports - Executed\n");
 };
 
 exports.computeCallbackSendReports = async (req,res) =>  {
