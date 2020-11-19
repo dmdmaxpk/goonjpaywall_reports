@@ -45,17 +45,16 @@ class BillingHistoryRepository {
                             $or: [{billing_status: "Success"}, {billing_status: "billed"}],
                             $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
                         }},
-                        {$project: {
-                            billing_status: "$billing_status",
-                            package_id: "$package_id",
-                            paywall_id: "$paywall_id",
-                            operator: "$operator",
-                            micro_charge: "$micro_charge",
-                            user_id: "$user_id",
-                            source: "$source",
+                        {$project:{
                             price: "$price",
+                            source: {$ifNull: ['$source', 'app'] },
+                            paywall_id: {$ifNull: ['$paywall_id', 'Dt6Gp70c'] },
+                            package_id: {$ifNull: ['$package_id', 'QDfC'] },
+                            operator: {$ifNull: ['$operator', 'telenor'] },
+                            billing_status: {$ifNull: ['$billing_status', 'expire'] },
+                            transaction_id: "$transaction_id",
                             operator_response: "$operator_response",
-                            billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } }
+                            billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } },
                         }},
                         { $skip: skip },
                         { $limit: limit }
