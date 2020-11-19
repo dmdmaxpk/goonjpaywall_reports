@@ -149,21 +149,23 @@ generateReportsData = async (req,res) => {
                 return netAdditionService.computeNetAdditionsReport(rawDataSet, params);
         }
         else if (params.type === 'transactions'){
-            if (params.transactions === 'source_wise')
-                return transactionService.computeTransactionsSourceWiseReport(rawDataSet, params);
-            else if(params.transactions === 'package_wise')
-                return transactionService.computeTransactionsPackageWiseReport(rawDataSet, params);
-            else if(params.transactions === 'paywall_wise')
-                return transactionService.computeTransactionsPaywallWiseReport(rawDataSet, params);
-            else if(params.transactions === 'operator_wise')
-                return transactionService.computeTransactionsOperatorWiseReport(rawDataSet, params);
-            else if (params.transactions === 'price_wise')
-                return transactionService.computeTransactionsPriceWiseWiseReport(rawDataSet, params);
-            else if (params.sub_type === 'successful')
-                return transactionService.computeTransactionsAvgReport(rawDataSet, params);
-            else if (params.transactions === 'success_failure_rate')
-                return transactionService.computeTransactionsRateReport(rawDataSet, params);
-                }
+            if (params.sub_type === 'successful'){
+                if (params.successful === 'source_wise')
+                    return transactionService.computeTransactionsSourceWiseReport(rawDataSet, params);
+                else if(params.successful === 'package_wise')
+                    return transactionService.computeTransactionsPackageWiseReport(rawDataSet, params);
+                else if(params.successful === 'paywall_wise')
+                    return transactionService.computeTransactionsPaywallWiseReport(rawDataSet, params);
+                else if(params.successful === 'operator_wise')
+                    return transactionService.computeTransactionsOperatorWiseReport(rawDataSet, params);
+                else if (params.successful === 'price_wise')
+                    return transactionService.computeTransactionsPriceWiseWiseReport(rawDataSet, params);
+                else if (params.successful === 'avg_transaction')
+                    return transactionService.computeTransactionsAvgReport(rawDataSet, params);
+                else if (params.successful === 'success_failure_rate')
+                    return transactionService.computeTransactionsRateReport(rawDataSet, params);
+            }
+        }
         else if (params.type === 'transactionsOld'){
             if (params.sub_type === 'transactions'){
                 if (params.transactions === 'avg_transaction')
