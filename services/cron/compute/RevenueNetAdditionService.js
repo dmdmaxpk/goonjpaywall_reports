@@ -175,6 +175,7 @@ promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
 function computeNetAdditionRevenueData(netAdditions) {
 
     let dateInMili, outer_billing_dtm, inner_billing_dtm, expire_type, newObj, outerObj, innerObj, finalList = [];
+    let check, hoursArr = [];
     for (let j=0; j < netAdditions.length; j++) {
 
         outerObj = netAdditions[j];
@@ -182,7 +183,13 @@ function computeNetAdditionRevenueData(netAdditions) {
         newObj = _.cloneDeep(cloneInfoObj());
         outer_billing_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
 
-        if (dateInMili !== outer_billing_dtm){
+        thisHour = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0);
+        check = hoursArr.includes(thisHour);
+        console.log('check: ', check);
+
+        if (!check){
+            hoursArr.push(thisHour);
+            console.log('hoursArr: ', hoursArr.length);
             for (let k=0; k < netAdditions.length; k++) {
 
                 innerObj = netAdditions[k];

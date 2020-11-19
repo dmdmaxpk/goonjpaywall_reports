@@ -35,6 +35,42 @@ class BillingHistoryRepository {
         });
     }
 
+    async getBillingHistorySuccessfulByDateRange (req, from, to, skip, limit) {
+        console.log('getBillingHistorySuccessfulByDateRange - ', from, to);
+        return new Promise((resolve, reject) => {
+            req.db.collection('billinghistories', function (err, collection) {
+                if (!err) {
+                    collection.aggregate( [
+                        {$match : {
+                            $or: [{billing_status: "Success"}, {billing_status: "billed"}],
+                            $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+                        }},
+                        {$project: {
+                            billing_status: "$billing_status",
+                            package_id: "$package_id",
+                            paywall_id: "$paywall_id",
+                            operator: "$operator",
+                            micro_charge: "$micro_charge",
+                            user_id: "$user_id",
+                            source: "$source",
+                            price: "$price",
+                            operator_response: "$operator_response",
+                            billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } }
+                        }},
+                        { $skip: skip },
+                        { $limit: limit }
+                    ], { allowDiskUse: true }).toArray(function(err, items) {
+                        if(err){
+                            console.log('getBillingHistorySuccessfulByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            });
+        });
+    }
+
     async computeSubscriptionsFromBillingHistoryByDateRange (req, from, to, skip, limit) {
         return new Promise((resolve, reject) => {
             console.log('computeSubscriptionsFromBillingHistoryByDateRange: ', from, to, skip, limit);
@@ -179,7 +215,7 @@ class BillingHistoryRepository {
                                 package: "$package_id",
                                 paywall: "$paywall_id",
                                 operator: "$operator",
-                                billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } }
+                                billing_dtm: "$billing_dtm"
                             }
                         },
                         { $skip: skip },
