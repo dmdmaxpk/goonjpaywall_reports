@@ -138,8 +138,8 @@ promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
                             finalData = computeNetAdditionRevenueData(netAdditions);
                             finalList = finalData.finalList;
                             console.log('finalList.length : ', finalList.length);
-                            if (finalList.length > 0)
-                                await insertNewRecord(finalList, fromDate, i);
+                            // if (finalList.length > 0)
+                            //     await insertNewRecord(finalList, fromDate, i);
                         }
                     });
                 }
@@ -154,8 +154,8 @@ promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
                             finalData = computeNetAdditionRevenueData(netAdditions);
                             finalList = finalData.finalList;
                             console.log('finalList.length : ', finalList.length);
-                            if (finalList.length > 0)
-                                await insertNewRecord(finalList, fromDate, 1);
+                            // if (finalList.length > 0)
+                            //     await insertNewRecord(finalList, fromDate, 1);
                         }
                     });
                 }
@@ -181,11 +181,11 @@ function computeNetAdditionRevenueData(netAdditions) {
         outerObj = netAdditions[j];
 
         newObj = _.cloneDeep(cloneInfoObj());
-        outer_billing_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
+        // outer_billing_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
 
         thisHour = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0);
         check = hoursArr.includes(thisHour);
-        console.log('check: ', check);
+        console.log('check: ', check, thisHour);
 
         if (!check){
             hoursArr.push(thisHour);
