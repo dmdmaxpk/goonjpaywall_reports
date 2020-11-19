@@ -63,20 +63,6 @@ class Helper {
         return index;
     }
 
-    static checkDataExistInArr(hoursArr, date, type){
-        let obj, index = -1;
-        for(let i = 0; i < dataArr.length; i++) {
-            obj = dataArr[i];
-            // console.log('checkDataExist - ', new Date(obj[type]).getHours(), new Date(date).getHours());
-            if(new Date(obj[type]).getHours() === new Date(date).getHours()) {
-                index = i;
-                break;
-            }
-        }
-
-        return index;
-    }
-
     static checkDataExist1(arrayData, date, type){
         arrayData.some(function(item){
             return new Date(item[type]).getHours() === new Date(date).getHours();

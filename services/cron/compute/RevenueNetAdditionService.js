@@ -174,7 +174,7 @@ promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
 
 function computeNetAdditionRevenueData(netAdditions) {
 
-    let dateInMili, outer_billing_dtm, inner_billing_dtm, expire_type, newObj, outerObj, innerObj, finalList = [];
+    let outer_billing_dtm, inner_billing_dtm, expire_type, newObj, outerObj, innerObj, finalList = [];
     let check, hoursArr = [];
     for (let j=0; j < netAdditions.length; j++) {
 
@@ -185,7 +185,6 @@ function computeNetAdditionRevenueData(netAdditions) {
 
         thisHour = new Date(outerObj.billing_dtm).getUTCHours();
         check = hoursArr.includes(thisHour);
-        // console.log('check: ', check, thisHour);
 
         if (!check){
             hoursArr.push(thisHour);
@@ -196,7 +195,7 @@ function computeNetAdditionRevenueData(netAdditions) {
                 inner_billing_dtm = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
 
                 if (outer_billing_dtm === inner_billing_dtm){
-                    dateInMili = inner_billing_dtm;
+
                     if (innerObj.billing_source === 'system-after-grace-end' || innerObj.billing_source === 'system' || innerObj.billing_source === 'dmdmax'){
                         expire_type = 'system';
                         newObj.netAdditionType.system = newObj.netAdditionType.system + 1;
