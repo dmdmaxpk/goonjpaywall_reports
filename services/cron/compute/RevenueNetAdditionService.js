@@ -369,8 +369,8 @@ function computeNetAdditionRevenueData(netAdditions) {
         }
     }
 
-    console.log("==> Final list: ", finalList);
-    //return {finalList: finalList};
+    console.log("==> Final list: ", JSON.stringify(finalList));
+    return {finalList: finalList};
 }
 
 async function insertNewRecord(finalList, dateString, mode) {
