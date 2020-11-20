@@ -360,16 +360,8 @@ async function insertNewRecord(transactionsList, subscribersList, dateString, mo
             console.log('mode: ', mode);
 
             if (mode === 0){
-                if (result.transactions){
-                    console.log('transactions - if: ');
-                    result.transactions.successful = transactionsList;
-                }
-                else{
-                    console.log('transactions - else: ');
-
-                    result.transactions = {successful: ''};
-                    result.transactions.successful = transactionsList;
-                }
+                result.transactions = {successful: ''};
+                result.transactions.successful = transactionsList;
 
                 if (result.subscribers)
                     result.subscribers.successful = subscribersList;
