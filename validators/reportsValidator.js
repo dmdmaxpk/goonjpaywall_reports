@@ -66,7 +66,7 @@ class ReportsValidator{
                 this.checkSubTypeIsNull(params.sub_type, "Transactions", ['successful', 'trialed', 'graced']);
 
                 if (params.sub_type === 'successful')
-                    this.checkSubTypeIsNull(params.successful, "Successful Transactions", ['source_wise', 'package_wise', 'paywall_wise', 'price_wise', 'success_failure_rate', 'avg_transaction', 'new_vs_returning']);
+                    this.checkSubTypeIsNull(params.successful, "Successful Transactions", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise', 'success_failure_rate', 'avg_transaction', 'new_vs_returning']);
 
                 if (params.sub_type === 'trialed')
                     this.checkSubTypeIsNull(params.trialed, "Trialed Transactions", ['source_wise', 'package_wise', 'paywall_wise', 'price_wise']);

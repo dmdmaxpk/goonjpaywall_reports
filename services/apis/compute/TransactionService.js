@@ -303,7 +303,7 @@ computeTransactionsPaywallWiseReport = async (rawDataSet, params) =>{
                     for (let j = 0; j < successful.length; j++) {
                         paywallObj = successful[j];
                         innerObj = paywallObj.paywall;
-                        
+
                         if (innerObj.live) {
                             dataObj.live = dataObj.live + innerObj.live;
                             dayDataObj.live = dayDataObj.live + innerObj.live;

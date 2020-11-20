@@ -185,6 +185,8 @@ function computeBillingHistorySuccessfulData(data) {
 
         if (!check){
             hoursArr.push(thisHour);
+            console.log('hoursArr: ', hoursArr.length);
+
             for (let k=0; k < data.length; k++) {
 
                 innerObj = data[k];
