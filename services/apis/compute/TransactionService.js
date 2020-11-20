@@ -194,19 +194,19 @@ computeTransactionsPackageWiseReport = async (rawDataSet, params) =>{
                             weeklyDataObj.dailyLive = weeklyDataObj.dailyLive + innerObj.dailyLive;
                             monthlyDataObj.dailyLive = monthlyDataObj.dailyLive + innerObj.dailyLive;
                         }
-                        else if (innerObj.weeklyLive) {
+                        if (innerObj.weeklyLive) {
                             dataObj.weeklyLive = dataObj.weeklyLive + innerObj.weeklyLive;
                             dayDataObj.weeklyLive = dayDataObj.weeklyLive + innerObj.weeklyLive;
                             weeklyDataObj.weeklyLive = weeklyDataObj.weeklyLive + innerObj.weeklyLive;
                             monthlyDataObj.weeklyLive = monthlyDataObj.weeklyLive + innerObj.weeklyLive;
                         }
-                        else if (innerObj.dailyComedy) {
+                        if (innerObj.dailyComedy) {
                             dataObj.dailyComedy = dataObj.dailyComedy + innerObj.dailyComedy;
                             dayDataObj.dailyComedy = dayDataObj.dailyComedy + innerObj.dailyComedy;
                             weeklyDataObj.dailyComedy = weeklyDataObj.dailyComedy + innerObj.dailyComedy;
                             monthlyDataObj.dailyComedy = monthlyDataObj.dailyComedy + innerObj.dailyComedy;
                         }
-                        else if (innerObj.weeklyComedy) {
+                        if (innerObj.weeklyComedy) {
                             dataObj.weeklyComedy = dataObj.weeklyComedy + innerObj.weeklyComedy;
                             dayDataObj.weeklyComedy = dayDataObj.weeklyComedy + innerObj.weeklyComedy;
                             weeklyDataObj.weeklyComedy = weeklyDataObj.weeklyComedy + innerObj.weeklyComedy;
