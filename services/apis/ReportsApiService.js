@@ -80,7 +80,7 @@ generateReportsData = async (req,res) => {
 
             if (params.sub_type === 'active_inactive'){
 
-                // return subscriptionService.activeInactiveSubscriptionReport(rawDataSet, params);
+                return subscriptionService.activeInactiveSubscriptionReport(rawDataSet, params);
             }
             else if (params.sub_type === 'affiliate_mid'){
 
