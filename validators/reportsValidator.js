@@ -25,7 +25,20 @@ class ReportsValidator{
                 break;
             case 'subscriptions':
                 this.checkDateIsNull(params, "Get Subscribers");
-                this.checkSubTypeIsNull(params.sub_type, "Subscriptions", ['active_inactive', 'package_wise', 'source_wise', 'paywall_wise', 'operator_wise', 'price_wise', 'affiliate_mid', 'callback_send', 'success_rate']);
+                // this.checkSubTypeIsNull(params.sub_type, "Subscriptions", ['active_inactive', 'package_wise', 'source_wise', 'paywall_wise', 'operator_wise', 'price_wise']);
+                this.checkSubTypeIsNull(params.sub_type, "Subscriptions", ['successful', 'trialed', 'graced', 'callback_send', 'active_inactive']);
+
+                if (params.sub_type === 'successful')
+                    this.checkSubTypeIsNull(params.successful, "Successful Subscriptions", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise', 'success_rate']);
+
+                if (params.sub_type === 'trialed')
+                    this.checkSubTypeIsNull(params.trialed, "Trialed Subscriptions", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise']);
+
+                if (params.sub_type === 'graced')
+                    this.checkSubTypeIsNull(params.graced, "Graced Subscriptions", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise']);
+
+                if (params.sub_type === 'callback_send')
+                    this.checkSubTypeIsNull(params.graced, "Graced Subscriptions", ['affiliate_mid', 'package_wise', 'paywall_wise', 'operator_wise']);
 
                 break;
             case 'subscriptionsFromBilling':

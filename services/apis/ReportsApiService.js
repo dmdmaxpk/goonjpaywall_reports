@@ -71,7 +71,7 @@ generateReportsData = async (req,res) => {
             else if (params.sub_type === 'operator_wise'){
 
                 return transactionService.computeTransactionsOperatorWiseReport(rawDataSet, params);
-                // return subscriptionService.affliateMidWiseSubscriptionReport(rawDataSet, params);
+                return subscriptionService.affliateMidWiseSubscriptionReport(rawDataSet, params);
             }
             else if (params.sub_type === 'price_wise'){
                 return transactionService.computeTransactionsPriceWiseWiseReport(rawDataSet, params);
