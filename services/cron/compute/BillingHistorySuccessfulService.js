@@ -419,7 +419,7 @@ function cloneTransactionObj() {
             '7': 0,
             '5': 0,
             '4': 0,
-            '3': 0,
+            '2': 0,
         },
         successfulTotal: 0,
         billing_dtm: '',
@@ -462,7 +462,7 @@ function cloneSubscriberObj() {
                 '7': 0,
                 '5': 0,
                 '4': 0,
-                '3': 0,
+                '2': 0,
             },
         billing_dtm: '',
         billing_dtm_hours: ''
