@@ -25,7 +25,7 @@ class ReportsValidator{
                 break;
             case 'subscriptions':
                 this.checkDateIsNull(params, "Get Subscribers");
-                this.checkSubTypeIsNull(params.sub_type, "Subscriptions", ['active_inactive', 'package_wise', 'source_wise', 'paywall_wise', 'operator_wise', 'affiliate_mid', 'callback_send', 'success_rate']);
+                this.checkSubTypeIsNull(params.sub_type, "Subscriptions", ['active_inactive', 'package_wise', 'source_wise', 'paywall_wise', 'operator_wise', 'price_wise', 'affiliate_mid', 'callback_send', 'success_rate']);
 
                 break;
             case 'subscriptionsFromBilling':

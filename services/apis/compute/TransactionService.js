@@ -423,15 +423,15 @@ computeTransactionsOperatorWiseReport = async (rawDataSet, params) =>{
                         hourlyBasisTotalCount.push({
                             telenor: innerObj.telenor,
                             easypaisa: innerObj.easypaisa,
-                            date: operatorObj.added_dtm_hours
+                            date: operatorObj.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = operatorObj.added_dtm;
+                            week_from_date = operatorObj.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = operatorObj.added_dtm;
+                            month_from_date = operatorObj.billing_dtm;
                     }
                 }
 
@@ -491,7 +491,7 @@ computeTransactionsPriceWiseWiseReport = async (rawDataSet, params) =>{
     console.log('computeTransactionsPriceWiseWiseReport');
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
-    let outerObj, innerObj, transactions, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let outerObj, innerObj, transactions, successful, priceObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
     let dataObj = { '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
     let dayDataObj = { '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
     let weeklyDataObj = { '15': 0, '11': 0, '10': 0, '7': 0, '5': 0, '4': 0, '2': 0 };
@@ -501,73 +501,74 @@ computeTransactionsPriceWiseWiseReport = async (rawDataSet, params) =>{
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
             if (outerObj.transactions){
-                for (let j=0; j<outerObj.transactions.length; j++) {
-                    transactions = outerObj.transactions[j];
-                    if (transactions.transactions) {
-                        if (transactions.transactions.price) {
-                            innerObj = transactions.transactions.price;
-                            if (innerObj['15']){
-                                dataObj['15'] = dataObj['15'] + innerObj['15'];
-                                dayDataObj['15'] = dayDataObj['15'] + innerObj['15'];
-                                weeklyDataObj['15'] = weeklyDataObj['15'] + innerObj['15'];
-                                monthlyDataObj['15'] = monthlyDataObj['15'] + innerObj['15'];
-                            }
-                            if (innerObj['11']){
-                                dataObj['11'] = dataObj['11'] + innerObj['11'];
-                                dayDataObj['11'] = dayDataObj['11'] + innerObj['11'];
-                                weeklyDataObj['11'] = weeklyDataObj['11'] + innerObj['11'];
-                                monthlyDataObj['11'] = monthlyDataObj['11'] + innerObj['11'];
-                            }
-                            if (innerObj['10']){
-                                dataObj['10'] = dataObj['10'] + innerObj['10'];
-                                dayDataObj['10'] = dayDataObj['10'] + innerObj['10'];
-                                weeklyDataObj['10'] = weeklyDataObj['10'] + innerObj['10'];
-                                monthlyDataObj['10'] = monthlyDataObj['10'] + innerObj['10'];
-                            }
-                            if (innerObj['7']){
-                                dataObj['7'] = dataObj['7'] + innerObj['7'];
-                                dayDataObj['7'] = dayDataObj['7'] + innerObj['7'];
-                                weeklyDataObj['7'] = weeklyDataObj['7'] + innerObj['7'];
-                                monthlyDataObj['7'] = monthlyDataObj['7'] + innerObj['7'];
-                            }
-                            if (innerObj['5']){
-                                dataObj['5'] = dataObj['5'] + innerObj['5'];
-                                dayDataObj['5'] = dayDataObj['5'] + innerObj['5'];
-                                weeklyDataObj['5'] = weeklyDataObj['5'] + innerObj['5'];
-                                monthlyDataObj['5'] = monthlyDataObj['5'] + innerObj['5'];
-                            }
-                            if (innerObj['4']){
-                                dataObj['4'] = dataObj['4'] + innerObj['4'];
-                                dayDataObj['4'] = dayDataObj['4'] + innerObj['4'];
-                                weeklyDataObj['4'] = weeklyDataObj['4'] + innerObj['4'];
-                                monthlyDataObj['4'] = monthlyDataObj['4'] + innerObj['4'];
-                            }
-                            if (innerObj['2']){
-                                dataObj['2'] = dataObj['2'] + innerObj['2'];
-                                dayDataObj['2'] = dayDataObj['2'] + innerObj['2'];
-                                weeklyDataObj['2'] = weeklyDataObj['2'] + innerObj['2'];
-                                monthlyDataObj['2'] = monthlyDataObj['2'] + innerObj['2'];
-                            }
+                transactions = outerObj.transactions;
+                if (transactions.successful) {
+                    successful = transactions.successful;
+                    for (let j = 0; j < successful.length; j++) {
+                        priceObj = successful[j];
+                        innerObj = priceObj.price;
 
-                            // Hourly Bases Data
-                            hourlyBasisTotalCount.push({
-                                '15': innerObj['15']|| 0,
-                                '11': innerObj['11']|| 0,
-                                '10': innerObj['10']|| 0,
-                                '7': innerObj['7']|| 0,
-                                '5': innerObj['5']|| 0,
-                                '4': innerObj['4']|| 0,
-                                '2': innerObj['2']|| 0,
-                                date: transactions.added_dtm
-                            });
-
-                            // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null)
-                                week_from_date = transactions.added_dtm;
-
-                            if (month_from_date === null)
-                                month_from_date = transactions.added_dtm;
+                        if (innerObj['15']){
+                            dataObj['15'] = dataObj['15'] + innerObj['15'];
+                            dayDataObj['15'] = dayDataObj['15'] + innerObj['15'];
+                            weeklyDataObj['15'] = weeklyDataObj['15'] + innerObj['15'];
+                            monthlyDataObj['15'] = monthlyDataObj['15'] + innerObj['15'];
                         }
+                        if (innerObj['11']){
+                            dataObj['11'] = dataObj['11'] + innerObj['11'];
+                            dayDataObj['11'] = dayDataObj['11'] + innerObj['11'];
+                            weeklyDataObj['11'] = weeklyDataObj['11'] + innerObj['11'];
+                            monthlyDataObj['11'] = monthlyDataObj['11'] + innerObj['11'];
+                        }
+                        if (innerObj['10']){
+                            dataObj['10'] = dataObj['10'] + innerObj['10'];
+                            dayDataObj['10'] = dayDataObj['10'] + innerObj['10'];
+                            weeklyDataObj['10'] = weeklyDataObj['10'] + innerObj['10'];
+                            monthlyDataObj['10'] = monthlyDataObj['10'] + innerObj['10'];
+                        }
+                        if (innerObj['7']){
+                            dataObj['7'] = dataObj['7'] + innerObj['7'];
+                            dayDataObj['7'] = dayDataObj['7'] + innerObj['7'];
+                            weeklyDataObj['7'] = weeklyDataObj['7'] + innerObj['7'];
+                            monthlyDataObj['7'] = monthlyDataObj['7'] + innerObj['7'];
+                        }
+                        if (innerObj['5']){
+                            dataObj['5'] = dataObj['5'] + innerObj['5'];
+                            dayDataObj['5'] = dayDataObj['5'] + innerObj['5'];
+                            weeklyDataObj['5'] = weeklyDataObj['5'] + innerObj['5'];
+                            monthlyDataObj['5'] = monthlyDataObj['5'] + innerObj['5'];
+                        }
+                        if (innerObj['4']){
+                            dataObj['4'] = dataObj['4'] + innerObj['4'];
+                            dayDataObj['4'] = dayDataObj['4'] + innerObj['4'];
+                            weeklyDataObj['4'] = weeklyDataObj['4'] + innerObj['4'];
+                            monthlyDataObj['4'] = monthlyDataObj['4'] + innerObj['4'];
+                        }
+                        if (innerObj['2']){
+                            dataObj['2'] = dataObj['2'] + innerObj['2'];
+                            dayDataObj['2'] = dayDataObj['2'] + innerObj['2'];
+                            weeklyDataObj['2'] = weeklyDataObj['2'] + innerObj['2'];
+                            monthlyDataObj['2'] = monthlyDataObj['2'] + innerObj['2'];
+                        }
+
+                        // Hourly Bases Data
+                        hourlyBasisTotalCount.push({
+                            '15': innerObj['15']|| 0,
+                            '11': innerObj['11']|| 0,
+                            '10': innerObj['10']|| 0,
+                            '7': innerObj['7']|| 0,
+                            '5': innerObj['5']|| 0,
+                            '4': innerObj['4']|| 0,
+                            '2': innerObj['2']|| 0,
+                            date: priceObj.billing_dtm_hours
+                        });
+
+                        // reset start_date for both month & week so can update with latest one
+                        if (week_from_date === null)
+                            week_from_date = priceObj.billing_dtm;
+
+                        if (month_from_date === null)
+                            month_from_date = priceObj.billing_dtm;
                     }
                 }
 
@@ -623,6 +624,7 @@ computeTransactionsPriceWiseWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
+
 computeTransactionsAvgReport = async (rawDataSet, params) =>{
     console.log('computeTransactionsAvgReport');
 
