@@ -52,16 +52,31 @@ generateReportsData = async (req,res) => {
                 return subscriberService.computeActiveSubscribersReport(rawDataSet, params);
         }
         else if (params.type === 'subscriptions'){
-            if (params.sub_type === 'active_inactive')
-                return subscriptionService.activeInactiveSubscriptionReport(rawDataSet, params);
-            else if (params.sub_type === 'package_wise')
-                return subscriptionService.packageWiseSubscriptionReport(rawDataSet, params);
-            else if (params.sub_type === 'source_wise')
-                return subscriptionService.sourceWiseSubscriptionReport(rawDataSet, params);
-            else if (params.sub_type === 'paywall_wise')
-                return subscriptionService.paywallWiseSubscriptionReport(rawDataSet, params);
-            else if (params.sub_type === 'affiliate_mid')
-                return subscriptionService.affliateMidWiseSubscriptionReport(rawDataSet, params);
+            if (params.sub_type === 'active_inactive'){
+
+                // return subscriptionService.activeInactiveSubscriptionReport(rawDataSet, params);
+            }
+            else if (params.sub_type === 'source_wise'){
+                return transactionService.computeTransactionsSourceWiseReport(rawDataSet, params);
+                // return subscriptionService.sourceWiseSubscriptionReport(rawDataSet, params);
+            }
+            else if (params.sub_type === 'package_wise'){
+                return transactionService.computeTransactionsPackageWiseReport(rawDataSet, params);
+                // return subscriptionService.packageWiseSubscriptionReport(rawDataSet, params);
+            }
+            else if (params.sub_type === 'paywall_wise'){
+                return transactionService.computeTransactionsPaywallWiseReport(rawDataSet, params);
+                // return subscriptionService.paywallWiseSubscriptionReport(rawDataSet, params);
+            }
+            else if (params.sub_type === 'operator_wise'){
+
+                return transactionService.computeTransactionsOperatorWiseReport(rawDataSet, params);
+                // return subscriptionService.affliateMidWiseSubscriptionReport(rawDataSet, params);
+            }
+            else if (params.sub_type === 'affiliate_mid'){
+
+                // return subscriptionService.affliateMidWiseSubscriptionReport(rawDataSet, params);
+            }
             else if (params.sub_type === 'callback_send')
                 return subscriptionService.callbackSendSubscriptionReport(rawDataSet, params);
             else if (params.sub_type === 'success_rate')

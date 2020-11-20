@@ -219,15 +219,15 @@ computeTransactionsPackageWiseReport = async (rawDataSet, params) =>{
                             weeklyLive: innerObj.weeklyLive,
                             dailyComedy: innerObj.dailyComedy,
                             weeklyComedy: innerObj.weeklyComedy,
-                            date: transactions.billing_dtm_hours
+                            date: packageObj.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.billing_dtm;
+                            week_from_date = packageObj.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.billing_dtm;
+                            month_from_date = packageObj.billing_dtm;
                     }
 
                     monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -321,15 +321,15 @@ computeTransactionsPaywallWiseReport = async (rawDataSet, params) =>{
                         hourlyBasisTotalCount.push({
                             live: innerObj.live,
                             comedy: innerObj.comedy,
-                            date: transactions.billing_dtm_hours
+                            date: paywallObj.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.billing_dtm;
+                            week_from_date = paywallObj.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.billing_dtm;
+                            month_from_date = paywallObj.billing_dtm;
                     }
 
                     monthNo = new Date(outerObj.date).getMonth() + 1;
@@ -423,15 +423,15 @@ computeTransactionsOperatorWiseReport = async (rawDataSet, params) =>{
                         hourlyBasisTotalCount.push({
                             telenor: innerObj.telenor,
                             easypaisa: innerObj.easypaisa,
-                            date: transactions.added_dtm_hours
+                            date: operatorObj.added_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                            week_from_date = operatorObj.added_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
+                            month_from_date = operatorObj.added_dtm;
                     }
                 }
 

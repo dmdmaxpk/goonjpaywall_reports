@@ -306,17 +306,8 @@ function computeBillingHistorySuccessfulData(data) {
                         subscriberObj.source.system_after_grace_end = subscriberObj.source.system_after_grace_end + 1;
                     }
 
-                    //Transactions success/failure rate and net total
-                    if (innerObj.billing_status === 'Success' || innerObj.billing_status === 'billed'){
-                        //Success rate
-                        transactionObj.successRate = transactionObj.successRate + 1;
-                        transactionObj.netTotal = transactionObj.netTotal + 1;
-                    }
-                    else{
-                        //Failure Rate
-                        transactionObj.netTotal = transactionObj.netTotal + 1;
-                        transactionObj.failureRate = transactionObj.failureRate + 1;
-                    }
+                    //net total
+                    transactionObj.successfulTotal = transactionObj.successfulTotal + 1;
 
                     /*
                     * Timestepms
@@ -327,16 +318,6 @@ function computeBillingHistorySuccessfulData(data) {
                     subscriberObj.billing_dtm = outerObj.billing_dtm;
                     subscriberObj.billing_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
                 }
-            }
-
-            //Calculate success and failure rate
-            if (transactionObj.netTotal > 0){
-                transactionObj.successRate = (transactionObj.successRate / transactionObj.netTotal) * 100;
-                transactionObj.failureRate = (transactionObj.failureRate / transactionObj.netTotal) * 100;
-            }
-            else{
-                transactionObj.failureRate = 0;
-                transactionObj.successRate = 0;
             }
 
             transactionsList.push(transactionObj);
@@ -440,9 +421,7 @@ function cloneTransactionObj() {
             '4': 0,
             '3': 0,
         },
-        netTotal: 0,
-        failureRate: 0,
-        successRate: 0,
+        successfulTotal: 0,
         billing_dtm: '',
         billing_dtm_hours: ''
     }
