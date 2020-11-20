@@ -389,7 +389,7 @@ computeTransactionsOperatorWiseReport = async (rawDataSet, params) =>{
     console.log('computeTransactionsOperatorWiseReport');
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
-    let outerObj, innerObj, transactions, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let outerObj, innerObj, transactions, successful, operatorObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
     let dataObj = { telenor: 0, easypaisa: 0 };
     let dayDataObj = { telenor: 0, easypaisa: 0 };
     let weeklyDataObj = { telenor: 0, easypaisa: 0 };
@@ -399,38 +399,39 @@ computeTransactionsOperatorWiseReport = async (rawDataSet, params) =>{
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
             if (outerObj.transactions){
-                for (let j=0; j<outerObj.transactions.length; j++) {
-                    transactions = outerObj.transactions[j];
-                    if (transactions.transactions) {
-                        if (transactions.transactions.operator) {
-                            innerObj = transactions.transactions.operator;
-                            if (innerObj.telenor){
-                                dataObj.telenor = dataObj.telenor + innerObj.telenor;
-                                dayDataObj.telenor = dayDataObj.telenor + innerObj.telenor;
-                                weeklyDataObj.telenor = weeklyDataObj.telenor + innerObj.telenor;
-                                monthlyDataObj.telenor = monthlyDataObj.telenor + innerObj.telenor;
-                            }
-                            if (innerObj.easypaisa){
-                                dataObj.easypaisa = dataObj.easypaisa + innerObj.easypaisa;
-                                dayDataObj.easypaisa = dayDataObj.easypaisa + innerObj.easypaisa;
-                                weeklyDataObj.easypaisa = weeklyDataObj.easypaisa + innerObj.easypaisa;
-                                monthlyDataObj.easypaisa = monthlyDataObj.easypaisa + innerObj.easypaisa;
-                            }
+                transactions = outerObj.transactions;
+                if (transactions.successful) {
+                    successful = transactions.successful;
+                    for (let j = 0; j < successful.length; j++) {
+                        operatorObj = successful[j];
+                        innerObj = operatorObj.operator;
 
-                            // Hourly Bases Data
-                            hourlyBasisTotalCount.push({
-                                telenor: innerObj.telenor,
-                                easypaisa: innerObj.easypaisa,
-                                date: transactions.added_dtm_hours
-                            });
-
-                            // reset start_date for both month & week so can update with latest one
-                            if (week_from_date === null)
-                                week_from_date = innerObj.added_dtm;
-
-                            if (month_from_date === null)
-                                month_from_date = innerObj.added_dtm;
+                        if (innerObj.telenor){
+                            dataObj.telenor = dataObj.telenor + innerObj.telenor;
+                            dayDataObj.telenor = dayDataObj.telenor + innerObj.telenor;
+                            weeklyDataObj.telenor = weeklyDataObj.telenor + innerObj.telenor;
+                            monthlyDataObj.telenor = monthlyDataObj.telenor + innerObj.telenor;
                         }
+                        if (innerObj.easypaisa){
+                            dataObj.easypaisa = dataObj.easypaisa + innerObj.easypaisa;
+                            dayDataObj.easypaisa = dayDataObj.easypaisa + innerObj.easypaisa;
+                            weeklyDataObj.easypaisa = weeklyDataObj.easypaisa + innerObj.easypaisa;
+                            monthlyDataObj.easypaisa = monthlyDataObj.easypaisa + innerObj.easypaisa;
+                        }
+
+                        // Hourly Bases Data
+                        hourlyBasisTotalCount.push({
+                            telenor: innerObj.telenor,
+                            easypaisa: innerObj.easypaisa,
+                            date: transactions.added_dtm_hours
+                        });
+
+                        // reset start_date for both month & week so can update with latest one
+                        if (week_from_date === null)
+                            week_from_date = innerObj.added_dtm;
+
+                        if (month_from_date === null)
+                            month_from_date = innerObj.added_dtm;
                     }
                 }
 

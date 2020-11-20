@@ -16,7 +16,7 @@ computeBillingHistorySuccessfulReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 16, 10);
+    dateData = helper.computeNextDate(req, 17, 10);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -357,10 +357,16 @@ async function insertNewRecord(transactionsList, subscribersList, dateString, mo
         if (result.length > 0){
             result = result[0];
 
+            console.log('mode: ', mode);
+
             if (mode === 0){
-                if (result.transactions)
+                if (result.transactions){
+                    console.log('transactions - if: ');
                     result.transactions.successful = transactionsList;
+                }
                 else{
+                    console.log('transactions - else: ');
+
                     result.transactions = {successful: ''};
                     result.transactions.successful = transactionsList;
                 }
@@ -373,9 +379,14 @@ async function insertNewRecord(transactionsList, subscribersList, dateString, mo
                 }
             }
             else{
-                if (result.transactions)
+                if (result.transactions){
+                    console.log('transactions - if: ');
+
                     result.transactions.successful.concat(transactionsList);
+                }
                 else{
+                    console.log('transactions - else: ');
+
                     result.transactions = {successful: ''};
                     result.transactions.successful = transactionsList;
                 }
