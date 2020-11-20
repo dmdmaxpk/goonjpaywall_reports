@@ -39,9 +39,9 @@ exports.computeSubscriberTransactionsReports = async (req,res) =>  {
     res.send("computeSubscriberReports - Executed\n");
 };
 
-exports.promiseBasedComputeDailySubscriptionReports = async (req,res) =>  {
-    SubscriptionService.promiseBasedComputeDailySubscriptionReports(req,res);
-    res.send("promiseBasedComputeDailySubscriptionReports - Executed\n");
+exports.computeDailySubscriptionReports = async (req,res) =>  {
+    SubscriptionService.computeDailySubscriptionReports(req,res);
+    res.send("computeDailySubscriptionReports - Executed\n");
 };
 
 exports.computeSubscriptionFromBillingService = async (req,res) =>  {
