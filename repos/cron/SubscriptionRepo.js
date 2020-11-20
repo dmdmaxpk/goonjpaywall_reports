@@ -145,6 +145,71 @@ class SubscriptionRepository {
         });
     }
 
+    async getSubscriptionSourceWiseSuccessfulByDateRange (req, from, to, skip, limit){
+        return new Promise((resolve, reject) => {
+            console.log('getSubscriptionSourceWiseSuccessfulByDateRange: ', from, to, skip, limit);
+            req.db.collection('subscriptions', function (err, collection) {
+                if (!err) {
+                    collection.aggregate([
+                        {
+                            $match:{
+                                subscriptions_status: "billed",
+                                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                            }
+                        },
+                        {
+                            $lookup: {
+                                from: "billinghistories",
+                                localField: "subscriber_id",
+                                foreignField: "subscriber_id",
+                                as: "histories"
+                            }
+                        },
+                        {
+                            $project: {
+                                source: "$source",
+                                added_dtm: "$added_dtm",
+                                succeses: {
+                                    $filter: {
+                                        input: "$histories",
+                                        as: "history",
+                                        cond: {
+                                            $or: [
+                                                {$eq: ['$$history.billing_status', "Success"]},
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                source: "$source",
+                                added_dtm: "$added_dtm",
+                                numOfSucc: {$size: "$succeses"},
+                            }
+                        },
+                        {$match: {numOfSucc: {$gte: 1}}},
+                        {
+                            $project: {
+                                source: {$ifNull: ['source', 'app'] },
+                                added_dtm: "$added_dtm",
+                            }
+                        },
+                        { $skip: skip },
+                        { $limit: limit }
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
+                        if(err){
+                            console.log('getSubscriptionSourceWiseSuccessfulByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            })
+        });
+    }
+
     async getAffiliateDataByDateRange (req, from, to){
         return new Promise((resolve, reject) => {
             console.log('getAffiliateDataByDateRange: ', from, to);

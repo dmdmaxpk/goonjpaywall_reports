@@ -54,8 +54,8 @@ generateReportsData = async (req,res) => {
         else if (params.type === 'subscriptions'){
             if (params.sub_type === 'successful'){
                 if (params.successful === 'source_wise'){
-                    return transactionService.computeTransactionsSourceWiseReport(rawDataSet, params);
-                    // return subscriptionService.sourceWiseSubscriptionReport(rawDataSet, params);
+                    // return transactionService.computeTransactionsSourceWiseReport(rawDataSet, params);
+                    return subscriptionService.sourceWiseSubscriptionReport(rawDataSet, params);
                 }
                 else if (params.successful === 'package_wise'){
                     return transactionService.computeTransactionsPackageWiseReport(rawDataSet, params);
