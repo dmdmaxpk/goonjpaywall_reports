@@ -5,8 +5,8 @@ const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, finalData, finalList = [], subscribersFinalList = [];
-let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
+let fromDate, toDate, day, month, finalData, subscriptionsFinalList = [], subscribersFinalList = [];
+let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeDailySubscriptionReports = async(req, res) => {
     console.log('computeDailySubscriptionReports');
 
@@ -21,7 +21,10 @@ computeDailySubscriptionReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
+    console.log('fromDate: ', fromDate, toDate);
+    query = countQuery(fromDate, toDate);
+
+    await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
         console.log('totalCount: ', totalCount);
 
         if (totalCount > 0){
@@ -41,14 +44,14 @@ computeDailySubscriptionReports = async(req, res) => {
                     // Now compute and store data in DB
                     if (subscriptions.length > 0){
                         finalData = computeSubscriptionsData(subscriptions);
-                        finalList = finalData.finalList;
+                        subscriptionsFinalList = finalData.subscriptionsFinalList;
                         subscribersFinalList = finalData.subscribersFinalList;
-                        if (finalList.length > 0 || subscribersFinalList.length > 0){
+                        if (subscriptionsFinalList.length > 0 || subscribersFinalList.length > 0){
                             console.log('totalChunks - lastLimit: ', totalChunks, lastLimit);
                             if (totalChunks > 1 || lastLimit > 0)
-                                await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
+                                await insertNewRecord(subscriptionsFinalList, subscribersFinalList, fromDate, i);
                             else
-                                await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
+                                await insertNewRecord(subscriptionsFinalList, subscribersFinalList, fromDate, i);
                         }
                     }
                 });
@@ -62,10 +65,10 @@ computeDailySubscriptionReports = async(req, res) => {
                     // Now compute and store data in DB
                     if (subscriptions.length > 0){
                         finalData = computeSubscriptionsData(subscriptions);
-                        finalList = finalData.finalList;
+                        subscriptionsFinalList = finalData.subscriptionsFinalList;
                         subscribersFinalList = finalData.subscribersFinalList;
-                        if (finalList.length > 0 || subscribersFinalList.length > 0)
-                            await insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
+                        if (subscriptionsFinalList.length > 0 || subscribersFinalList.length > 0)
+                            await insertNewRecord(subscriptionsFinalList, subscribersFinalList, fromDate, 1);
                     }
                 });
             }
@@ -115,7 +118,10 @@ promiseBasedComputeDailySubscriptionReports = async(req, res) => {
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
 
-        await helper.getTotalCount(req, fromDate, toDate, 'subscriptions').then(async function (totalCount) {
+        console.log('fromDate: ', fromDate, toDate);
+        query = countQuery(fromDate, toDate);
+
+        await helper.getTotalCount(req, fromDate, toDate, 'subscriptions', query).then(async function (totalCount) {
             console.log('totalCount: ', totalCount);
 
             if (totalCount > 0){
@@ -135,12 +141,12 @@ promiseBasedComputeDailySubscriptionReports = async(req, res) => {
                         // Now compute and store data in DB
                         if (subscriptions.length > 0){
                             finalData = computeSubscriptionsData(subscriptions);
-                            finalList = finalData.finalList;
+                            subscriptionsFinalList = finalData.subscriptionsFinalList;
                             subscribersFinalList = finalData.subscribersFinalList;
 
-                            console.log('finalList - subscribersFinalList: ', finalList.length, subscribersFinalList.length);
-                            if (finalList.length > 0 || subscribersFinalList.length > 0)
-                                await insertNewRecord(finalList, subscribersFinalList, fromDate, i);
+                            console.log('subscriptionsFinalList - subscribersFinalList: ', subscriptionsFinalList.length, subscribersFinalList.length);
+                            if (subscriptionsFinalList.length > 0 || subscribersFinalList.length > 0)
+                                await insertNewRecord(subscriptionsFinalList, subscribersFinalList, fromDate, i);
                         }
                     });
                 }
@@ -153,10 +159,10 @@ promiseBasedComputeDailySubscriptionReports = async(req, res) => {
                         // Now compute and store data in DB
                         if (subscriptions.length > 0){
                             finalData = computeSubscriptionsData(subscriptions);
-                            finalList = finalData.finalList;
+                            subscriptionsFinalList = finalData.subscriptionsFinalList;
                             subscribersFinalList = finalData.subscribersFinalList;
-                            if (finalList.length > 0 || subscribersFinalList.length > 0)
-                                await insertNewRecord(finalList, subscribersFinalList, fromDate, 1);
+                            if (subscriptionsFinalList.length > 0 || subscribersFinalList.length > 0)
+                                await insertNewRecord(subscriptionsFinalList, subscribersFinalList, fromDate, 1);
                         }
                     });
                 }
@@ -174,7 +180,9 @@ promiseBasedComputeDailySubscriptionReports = async(req, res) => {
 
 function computeSubscriptionsData(subscriptions) {
 
-    let dateInMili, subscription_status, outer_added_dtm, inner_added_dtm, newObj, outerObj, innerObj, subscriberObj, finalList = [], subscribersFinalList = [];
+    let subscription_status, outer_added_dtm, inner_added_dtm, newObj, outerObj, innerObj, subscriberObj, subscriptionsFinalList = [], subscribersFinalList = [];
+    let check, hoursArr = [];
+
     for (let j=0; j < subscriptions.length; j++) {
 
         outerObj = subscriptions[j];
@@ -183,65 +191,20 @@ function computeSubscriptionsData(subscriptions) {
         subscriberObj = _.clone(cloneSubscribersObj());
         outer_added_dtm = helper.setDate(new Date(outerObj.added_dtm), null, 0, 0, 0).getTime();
 
-        if (dateInMili !== outer_added_dtm){
+        thisHour = new Date(outerObj.added_dtm).getUTCHours();
+        check = hoursArr.includes(thisHour);
+
+        if (!check){
+            hoursArr.push(thisHour);
+            console.log('hoursArr: ', hoursArr.length);
             for (let k=0; k < subscriptions.length; k++) {
 
                 innerObj = subscriptions[k];
                 inner_added_dtm = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0).getTime();
 
                 if (outer_added_dtm === inner_added_dtm){
-                    dateInMili = inner_added_dtm;
-
                     subscription_status = innerObj.subscription_status;
-                    if(subscription_status === "billed" || subscription_status === "trial" || subscription_status === "graced") {
-                        //Package wise subscriptions
-                        if (innerObj.subscribed_package_id === 'QDfC')
-                            newObj.package.dailyLive = newObj.package.dailyLive + 1;
-                        else if (innerObj.subscribed_package_id === 'QDfG')
-                            newObj.package.weeklyLive = newObj.package.weeklyLive + 1;
-                        else if (innerObj.subscribed_package_id === 'QDfH')
-                            newObj.package.dailyComedy = newObj.package.dailyComedy + 1;
-                        else if (innerObj.subscribed_package_id === 'QDfI')
-                            newObj.package.weeklyComedy = newObj.package.weeklyComedy + 1;
-
-                        //Paywall wise subscriptions
-                        if (innerObj.paywall_id === 'ghRtjhT7')
-                            newObj.paywall.comedy = newObj.paywall.comedy + 1;
-                        else if (innerObj.paywall_id === 'Dt6Gp70c')
-                            newObj.paywall.live = newObj.paywall.live + 1;
-
-                        //Source wise subscriptions
-                        if (innerObj.source === 'app')
-                            newObj.source.app = newObj.source.app + 1;
-                        else if (innerObj.source === 'web')
-                            newObj.source.web = newObj.source.web + 1;
-                        else if (innerObj.source === 'gdn2')
-                            newObj.source.gdn2 = newObj.source.gdn2 + 1;
-                        else if (innerObj.source === 'HE')
-                            newObj.source.HE = newObj.source.HE + 1;
-                        else if (innerObj.source === 'affiliate_web')
-                            newObj.source.affiliate_web = Number(newObj.source.affiliate_web) + 1;
-
-                        //Affiliate mid wise subscriptions
-                        if (innerObj.affiliate_mid) {
-                            if (innerObj.affiliate_mid === 'aff3')
-                                newObj.affiliate_mid.aff3 = newObj.affiliate_mid.aff3 + 1;
-                            else if (innerObj.affiliate_mid === 'aff3a')
-                                newObj.affiliate_mid.aff3a = newObj.affiliate_mid.aff3a + 1;
-                            else if (innerObj.affiliate_mid === 'gdn')
-                                newObj.affiliate_mid.gdn = newObj.affiliate_mid.gdn + 1;
-                            else if (innerObj.affiliate_mid === 'gdn2')
-                                newObj.affiliate_mid.gdn2 = newObj.affiliate_mid.gdn2 + 1;
-                            else if (innerObj.affiliate_mid === 'goonj')
-                                newObj.affiliate_mid.goonj = newObj.affiliate_mid.goonj + 1;
-                            else if (innerObj.affiliate_mid === '1565')
-                                newObj.affiliate_mid['1565'] = newObj.affiliate_mid['1565'] + 1;
-                            else if (innerObj.affiliate_mid === '1')
-                                newObj.affiliate_mid['1'] = newObj.affiliate_mid['1'] + 1;
-                            else if (innerObj.affiliate_mid === 'null')
-                                newObj.affiliate_mid['null'] = newObj.affiliate_mid['null'] + 1;
-                        }
-
+                    if(subscription_status === "billed") {
                         //Active subscriptions & subscribers
                         newObj.active = newObj.active + 1;
                         subscriberObj.active = subscriberObj.active + 1;
@@ -258,27 +221,33 @@ function computeSubscriptionsData(subscriptions) {
                     subscriberObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
                 }
             }
-            finalList.push(newObj);
+            subscriptionsFinalList.push(newObj);
             subscribersFinalList.push(subscriberObj);
         }
     }
 
-    return {finalList: finalList, subscribersFinalList: subscribersFinalList};
+    return {subscriptionsFinalList: subscriptionsFinalList, subscribersFinalList: subscribersFinalList};
 }
 
-async function insertNewRecord(finalList, subscribersFinalList, dateString, mode) {
+async function insertNewRecord(subscriptionsFinalList, subscribersFinalList, dateString, mode) {
     console.log('dateString: ', dateString);
 
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
-    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, finalList.length, subscribersFinalList.length);
+    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, subscriptionsFinalList.length, subscribersFinalList.length);
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0){
             result = result[0];
 
             if (mode === 0){
-                result.subscriptions = finalList;
+
+                if (result.subscriptions)
+                    result.subscriptions.activeInActive = subscriptionsFinalList;
+                else{
+                    result.subscriptions = {activeInActive: ''};
+                    result.subscriptions.activeInActive = subscriptionsFinalList;
+                }
 
                 if (result.subscribers)
                     result.subscribers.activeInActive = subscribersFinalList;
@@ -288,9 +257,11 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
                 }
             }else{
                 if (result.subscriptions)
-                    result.subscriptions.concat(finalList);
-                else
-                    result.subscriptions = finalList;
+                    result.subscriptions.activeInActive.concat(subscriptionsFinalList);
+                else{
+                    result.subscriptions = {activeInActive: ''};
+                    result.subscriptions.activeInActive = subscriptionsFinalList;
+                }
 
                 if (result.subscribers)
                     result.subscribers.activeInActive.concat(subscribersFinalList);
@@ -303,9 +274,12 @@ async function insertNewRecord(finalList, subscribersFinalList, dateString, mode
             await reportsRepo.updateReport(result, result._id);
         }
         else{
+            let subscriptions = {activeInActive: ''};
+            subscriptions.activeInActive = subscriptionsFinalList;
+
             let subscribers = {activeInActive: ''};
             subscribers.activeInActive = subscribersFinalList;
-            await reportsRepo.createReport({subscriptions: finalList, subscribers: subscribers, date: dateString});
+            await reportsRepo.createReport({subscriptions: subscriptions, subscribers: subscribers, date: dateString});
         }
     });
 }
@@ -314,46 +288,29 @@ function cloneSubscribersObj() {
     return {
         active: 0,
         nonActive: 0,
-        billing_dtm: '',
-        billing_dtm_hours: ''
+        added_dtm: '',
+        added_dtm_hours: ''
     }
 }
 function cloneInfoObj() {
     return {
         active : 0,
         nonActive: 0,
-        package: {
-            dailyLive: 0,
-            weeklyLive: 0,
-            dailyComedy: 0,
-            weeklyComedy: 0
-        },
-        paywall: {
-            comedy: 0,
-            live: 0
-        },
-        source: {
-            app: 0,
-            web: 0,
-            gdn2: 0,
-            HE: 0,
-            affiliate_web: 0,
-            other_mids: 0
-        },
-        affiliate_mid: {
-            aff3: 0,
-            aff3a: 0,
-            gdn: 0,
-            gdn2: 0,
-            goonj: 0,
-            '1565': 0,
-            '1569': 0,
-            '1': 0,
-            'null': 0,
-        },
-        billing_dtm: '',
-        billing_dtm_hours: ''
+        added_dtm: '',
+        added_dtm_hours: ''
     };
+}
+
+function countQuery(from, to){
+    return [
+        {$match : {
+                $or: [{subscription_status: "billed"}, {subscription_status: "not_billed"}, {subscription_status: "expired"}],
+                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+            }},
+        {
+            $count: "count"
+        }
+    ];
 }
 
 module.exports = {
