@@ -52,29 +52,35 @@ generateReportsData = async (req,res) => {
                 return subscriberService.computeActiveSubscribersReport(rawDataSet, params);
         }
         else if (params.type === 'subscriptions'){
+            if (params.sub_type === 'successful'){
+                if (params.successful === 'source_wise'){
+                    return transactionService.computeTransactionsSourceWiseReport(rawDataSet, params);
+                    // return subscriptionService.sourceWiseSubscriptionReport(rawDataSet, params);
+                }
+                else if (params.successful === 'package_wise'){
+                    return transactionService.computeTransactionsPackageWiseReport(rawDataSet, params);
+                    // return subscriptionService.packageWiseSubscriptionReport(rawDataSet, params);
+                }
+                else if (params.successful === 'paywall_wise'){
+                    return transactionService.computeTransactionsPaywallWiseReport(rawDataSet, params);
+                    // return subscriptionService.paywallWiseSubscriptionReport(rawDataSet, params);
+                }
+                else if (params.successful === 'operator_wise'){
+
+                    return transactionService.computeTransactionsOperatorWiseReport(rawDataSet, params);
+                    return subscriptionService.affliateMidWiseSubscriptionReport(rawDataSet, params);
+                }
+                else if (params.successful === 'price_wise'){
+                    return transactionService.computeTransactionsPriceWiseWiseReport(rawDataSet, params);
+                }
+                else if (params.successful === 'success_rate'){
+                    // return transactionService.computeTransactionsPriceWiseWiseReport(rawDataSet, params);
+                }
+            }
+
             if (params.sub_type === 'active_inactive'){
 
                 // return subscriptionService.activeInactiveSubscriptionReport(rawDataSet, params);
-            }
-            else if (params.sub_type === 'source_wise'){
-                return transactionService.computeTransactionsSourceWiseReport(rawDataSet, params);
-                // return subscriptionService.sourceWiseSubscriptionReport(rawDataSet, params);
-            }
-            else if (params.sub_type === 'package_wise'){
-                return transactionService.computeTransactionsPackageWiseReport(rawDataSet, params);
-                // return subscriptionService.packageWiseSubscriptionReport(rawDataSet, params);
-            }
-            else if (params.sub_type === 'paywall_wise'){
-                return transactionService.computeTransactionsPaywallWiseReport(rawDataSet, params);
-                // return subscriptionService.paywallWiseSubscriptionReport(rawDataSet, params);
-            }
-            else if (params.sub_type === 'operator_wise'){
-
-                return transactionService.computeTransactionsOperatorWiseReport(rawDataSet, params);
-                return subscriptionService.affliateMidWiseSubscriptionReport(rawDataSet, params);
-            }
-            else if (params.sub_type === 'price_wise'){
-                return transactionService.computeTransactionsPriceWiseWiseReport(rawDataSet, params);
             }
             else if (params.sub_type === 'affiliate_mid'){
 

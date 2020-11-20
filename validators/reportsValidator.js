@@ -38,7 +38,7 @@ class ReportsValidator{
                     this.checkSubTypeIsNull(params.graced, "Graced Subscriptions", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise']);
 
                 if (params.sub_type === 'callback_send')
-                    this.checkSubTypeIsNull(params.graced, "Graced Subscriptions", ['affiliate_mid', 'package_wise', 'paywall_wise', 'operator_wise']);
+                    this.checkSubTypeIsNull(params.callback_send, "Callback Send Subscriptions", ['affiliate_mid', 'package_wise', 'paywall_wise', 'operator_wise']);
 
                 break;
             case 'subscriptionsFromBilling':
