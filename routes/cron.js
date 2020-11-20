@@ -15,6 +15,9 @@ router.route('/compute-subscriptions-from-billing-reports')
 router.route('/compute-subscription-reports')
     .get(connection.connect, controller.computeDailySubscriptionReports); //
 
+router.route('/compute-subscription-source-wise-reports')
+    .get(connection.connect, controller.SubscriptionsSourceWiseSuccessfulService); //
+
 router.route('/compute-callback-send-reports')
     .get(connection.connect, controller.computeCallbackSendReports); //**
 
