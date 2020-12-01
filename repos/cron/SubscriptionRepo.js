@@ -148,51 +148,43 @@ class SubscriptionRepository {
     async getSubscriptionSourceWiseSuccessfulByDateRange (req, from, to, skip, limit){
         return new Promise((resolve, reject) => {
             console.log('getSubscriptionSourceWiseSuccessfulByDateRange: ', from, to, skip, limit);
-            req.db.collection('subscriptions', function (err, collection) {
+            req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
                         {
                             $match:{
-                                subscriptions_status: "billed",
-                                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                                billing_status: "Success",
+                                $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
                             }
                         },
                         {
-                            $lookup: {
-                                from: "billinghistories",
-                                localField: "subscriber_id",
-                                foreignField: "subscriber_id",
-                                as: "histories"
-                            }
-                        },
-                        {
-                            $project: {
-                                source: "$source",
-                                succeses: {
-                                    $filter: {
-                                        input: "$histories",
-                                        as: "history",
-                                        cond: {
-                                            $or: [
-                                                {$eq: ['$$history.$billing_dtm', "Success"]},
-                                            ]
+                            $lookup:{
+                                from: "subscriptions",
+                                let: {subscriber_id: "$subscriber_id"},
+                                pipeline:[
+                                    {
+                                        $match: {
+                                            $expr: {
+                                                $and:[
+                                                    {$eq: ["$subscriber_id", "$$subscriber_id"]},
+                                                ]
+                                            }
                                         }
                                     }
-                                }
+                                ],
+                                as: "subs"
                             }
                         },
                         {
                             $project: {
-                                source: "$source",
-                                billing_dtm: {"$arrayElemAt": ["$succeses.billing_dtm", 0]},
-                                numOfSucc: {$size: "$succeses"},
-                            }
-                        },
-                        {$match: {numOfSucc: {$gte: 1}}},
-                        {
-                            $project: {
-                                source: {$ifNull: ['$source', 'app'] },
+                                source: {$ifNull: ['$subs.source', 'app'] },
                                 billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } },
+                            }
+                        },
+                        {
+                            $project: {
+                                source: {"$arrayElemAt": ["$source",0]},
+                                billing_dtm: "$billing_dtm"
                             }
                         },
                         { $skip: skip },
