@@ -273,15 +273,15 @@ sourceWiseSubscriptionReport = async (rawDataSet, params) =>{
                             app: innerObj.app, web: innerObj.web,
                             gdn2: innerObj.gdn2, HE: innerObj.HE,
                             affiliate_web: innerObj.affiliate_web,
-                            date: sourceObj.added_dtm_hours
+                            date: sourceObj.billing_dtm_hours
                         });
 
                         // reset start_date for both month & week so can update with latest one
                         if (week_from_date === null)
-                            week_from_date = sourceObj.added_dtm;
+                            week_from_date = sourceObj.billing_dtm;
 
                         if (month_from_date === null)
-                            month_from_date = sourceObj.added_dtm;
+                            month_from_date = sourceObj.billing_dtm;
                     }
 
                     monthNo = new Date(outerObj.date).getMonth() + 1;
