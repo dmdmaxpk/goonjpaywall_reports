@@ -323,7 +323,7 @@ class Helper {
                                     console.error(collectionName, ' count query - err: ', err.message);
                                     await resolve(0);
                                 }
-                                console.log('count[0].count: ', count)
+                                console.log('count[0].count: ', count);
                                 (count.length > 0) ? await resolve(count[0].count) : await resolve(0);
                             });
                         }catch (e) {
