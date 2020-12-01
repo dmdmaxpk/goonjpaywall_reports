@@ -16,7 +16,7 @@ SubscriptionsSourceWiseSuccessfulService = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 17, 10);
+    dateData = helper.computeNextDateWithLocalTime(req, 15, 10);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -166,7 +166,7 @@ promiseBasedComputeBillingHistorySuccessfulReports = async(req, res) => {
 
 function computeSubscriptionsSourceWiseSuccessfulData(data) {
 
-    let outerObj, innerObj, subscriptionObj, outer_added_dtm, inner_added_dtm;
+    let outerObj, innerObj, subscriptionObj, outer_billing_dtm, inner_billing_dtm;
     let check, subscriptionList = [], hoursArr = [];
 
     for (let j=0; j < data.length; j++) {
@@ -174,8 +174,8 @@ function computeSubscriptionsSourceWiseSuccessfulData(data) {
         subscriptionObj = _.cloneDeep(cloneSubscriptionObj());
 
         outerObj = data[j];
-        outer_added_dtm = helper.setDate(new Date(outerObj.added_dtm), null, 0, 0, 0).getTime();
-        thisHour = new Date(outerObj.added_dtm).getUTCHours();
+        outer_billing_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
+        thisHour = new Date(outerObj.billing_dtm).getUTCHours();
         check = hoursArr.includes(thisHour);
 
         if (!check){
@@ -185,8 +185,8 @@ function computeSubscriptionsSourceWiseSuccessfulData(data) {
             for (let k=0; k < data.length; k++) {
 
                 innerObj = data[k];
-                inner_added_dtm = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0).getTime();
-                if (outer_added_dtm === inner_added_dtm){
+                inner_billing_dtm = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
+                if (outer_billing_dtm === inner_billing_dtm){
 
                     //Source wise total count for subscribers & transactions
                     if(innerObj.source === 'app')
@@ -203,8 +203,8 @@ function computeSubscriptionsSourceWiseSuccessfulData(data) {
                     /*
                     * Timestepms
                     * */
-                    subscriptionObj.added_dtm = outerObj.added_dtm;
-                    subscriptionObj.added_dtm_hours = helper.setDate(new Date(innerObj.added_dtm), null, 0, 0, 0);
+                    subscriptionObj.billing_dtm = outerObj.billing_dtm;
+                    subscriptionObj.billing_dtm_hours = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0);
                 }
             }
 
@@ -264,8 +264,8 @@ function cloneSubscriptionObj() {
             HE: 0,
             affiliate_web: 0,
         },
-        added_dtm: '',
-        added_dtm_hours: ''
+        billing_dtm: '',
+        billing_dtm_hours: ''
     }
 }
 
@@ -274,7 +274,7 @@ function countQuery(from, to){
         {
             $match:{
                 subscriptions_status: "billed",
-                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
             }
         },
         {
@@ -288,7 +288,7 @@ function countQuery(from, to){
         {
             $project: {
                 source: "$source",
-                added_dtm: "$added_dtm",
+                billing_dtm: "$billing_dtm",
                 succeses: {
                     $filter: {
                         input: "$histories",
@@ -305,7 +305,7 @@ function countQuery(from, to){
         {
             $project: {
                 source: "$source",
-                added_dtm: "$added_dtm",
+                billing_dtm: {"$arrayElemAt": ["$succeses.billing_dtm", 0]},
                 numOfSucc: {$size: "$succeses"},
             }
         },
@@ -313,7 +313,7 @@ function countQuery(from, to){
         {
             $project: {
                 source: {$ifNull: ['source', 'app'] },
-                added_dtm: "$added_dtm",
+                billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } },
             }
         },
         {

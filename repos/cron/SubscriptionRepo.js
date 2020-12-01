@@ -168,14 +168,13 @@ class SubscriptionRepository {
                         {
                             $project: {
                                 source: "$source",
-                                added_dtm: "$added_dtm",
                                 succeses: {
                                     $filter: {
                                         input: "$histories",
                                         as: "history",
                                         cond: {
                                             $or: [
-                                                {$eq: ['$$history.billing_status', "Success"]},
+                                                {$eq: ['$$history.$billing_dtm', "Success"]},
                                             ]
                                         }
                                     }
@@ -185,15 +184,15 @@ class SubscriptionRepository {
                         {
                             $project: {
                                 source: "$source",
-                                added_dtm: "$added_dtm",
+                                billing_dtm: {"$arrayElemAt": ["$succeses.billing_dtm", 0]},
                                 numOfSucc: {$size: "$succeses"},
                             }
                         },
                         {$match: {numOfSucc: {$gte: 1}}},
                         {
                             $project: {
-                                source: {$ifNull: ['source', 'app'] },
-                                added_dtm: "$added_dtm",
+                                source: {$ifNull: ['$source', 'app'] },
+                                billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } },
                             }
                         },
                         { $skip: skip },
