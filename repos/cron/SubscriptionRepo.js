@@ -178,7 +178,7 @@ class SubscriptionRepository {
                         {
                             $project: {
                                 source: {$ifNull: ['$subs.source', 'app'] },
-                                billing_dtm: "$billing_dtm",
+                                billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } },
                             }
                         },
                         {
