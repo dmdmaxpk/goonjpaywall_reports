@@ -189,16 +189,16 @@ function computeSubscriptionsSourceWiseSuccessfulData(data) {
                 if (outer_billing_dtm === inner_billing_dtm){
 
                     //Source wise total count for subscribers & transactions
-                    if(innerObj.source === 'app')
-                        subscriptionObj.source.app = subscriptionObj.source.app + 1;
                     if(innerObj.source === 'web')
                         subscriptionObj.source.web = subscriptionObj.source.web + 1;
-                    if(innerObj.source === 'gdn2')
+                    else if(innerObj.source === 'gdn2')
                         subscriptionObj.source.gdn2 = subscriptionObj.source.gdn2 + 1;
-                    if(innerObj.source === 'HE')
+                    else if(innerObj.source === 'HE')
                         subscriptionObj.source.HE = subscriptionObj.source.HE + 1;
-                    if(innerObj.source === 'affiliate_web')
+                    else if(innerObj.source === 'affiliate_web')
                         subscriptionObj.source.affiliate_web = subscriptionObj.source.affiliate_web + 1;
+                    else
+                        subscriptionObj.source.app = subscriptionObj.source.app + 1;
 
                     /*
                     * Timestepms
