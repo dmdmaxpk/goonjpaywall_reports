@@ -95,8 +95,8 @@ SubscriptionsSourceWiseSuccessfulService = async(req, res) => {
         }
     });
 };
-promiseBasedComputeBillingHistorySuccessfulReports = async(req, res) => {
-    console.log('promiseBasedComputeBillingHistorySuccessfulReports: ');
+promiseBasedSubscriptionsSourceWiseSuccessfulReports = async(req, res) => {
+    console.log('promiseBasedSubscriptionsSourceWiseSuccessfulReports: ');
     return new Promise(async (resolve, reject) => {
 
         /*
@@ -155,7 +155,7 @@ promiseBasedComputeBillingHistorySuccessfulReports = async(req, res) => {
             }
 
             if (helper.isToday(fromDate)){
-                console.log('promiseBasedComputeBillingHistorySuccessfulReports - data compute - done');
+                console.log('promiseBasedSubscriptionsSourceWiseSuccessfulReports - data compute - done');
                 delete req.day;
                 delete req.month;
             }
@@ -302,5 +302,5 @@ function countQuery(from, to){
 }
 module.exports = {
     SubscriptionsSourceWiseSuccessfulService: SubscriptionsSourceWiseSuccessfulService,
-    promiseBasedComputeBillingHistorySuccessfulReports: promiseBasedComputeBillingHistorySuccessfulReports
+    promiseBasedSubscriptionsSourceWiseSuccessfulReports: promiseBasedSubscriptionsSourceWiseSuccessfulReports
 };

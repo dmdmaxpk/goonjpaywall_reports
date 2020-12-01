@@ -12,6 +12,7 @@ const SubscriberSubscriptionsReports = require('./compute/SubscriberSubscription
 const SubscriberTransactionsReports = require('./compute/SubscriberTransactionsReports');
 const AffiliateSubscriptionsService = require('./compute/AffiliateDataFromSubscriptionsService');
 const BillingHistorySuccessfulService = require('./compute/BillingHistorySuccessfulService');
+const SubscriptionsSourceWiseSuccessfulService = require('./compute/SubscriptionsSourceWiseSuccessfulService');
 
 const HelogsService = require('./compute/HelogsService');
 const LogsService = require('./compute/LogsService');
@@ -36,6 +37,10 @@ cronComputeDailyDataReports = async (req, res) => {
     // compute Subscriptions report Data
     helper.threeLinesConsoleLog('SubscriptionService - promiseBasedComputeBillingHistorySuccessfulReports');
     await BillingHistorySuccessfulService.promiseBasedComputeBillingHistorySuccessfulReports(req,res);
+
+    // compute Subscriptions report Data
+    helper.threeLinesConsoleLog('SubscriptionsSourceWiseSuccessfulService - promiseBasedSubscriptionsSourceWiseSuccessfulReports');
+    await SubscriptionsSourceWiseSuccessfulService.promiseBasedSubscriptionsSourceWiseSuccessfulReports(req,res);
 
     // compute Callback report Data
     helper.threeLinesConsoleLog('CallbackSendService - promiseBasedComputeCallbackSendReports');
