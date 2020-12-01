@@ -250,6 +250,25 @@ class Helper {
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }
 
+    static computeNextMonthDateWithLocalTime(req, sDay, sMonth){
+
+        let fromDate, toDate, month, daysInMonth;
+
+        month = req.month ? req.month : sMonth;
+        month = month > 9 ? month : '0'+Number(month);
+        req.month = month;
+
+        fromDate  = new Date('2020-'+month+'-01T00:00:00.000Z');
+        console.log('computeNextDate - fromDate : ', fromDate);
+
+        toDate  = new Date(_.clone(fromDate));
+        daysInMonth = this.getDaysInMonth(month)
+        toDate.setDate(toDate.getDate() + daysInMonth - 1);
+        console.log('computeNextDate - toDate : ', toDate);
+
+        return {req: req, month: month, fromDate: fromDate, toDate: toDate};
+    }
+
     static computeNextEightHoursDate(req, sDay, sMonth){
 
         let fromDate, toDate, day, month, fromHours, toHours;
@@ -316,7 +335,7 @@ class Helper {
                         }
                     }
                     else{
-                        console.log('collectionName ', collectionName);
+                        console.log('getTotalCount - Else case');
 
                         try {
                             await collection.aggregate(query,{ allowDiskUse: true }).toArray(async function(err, count) {

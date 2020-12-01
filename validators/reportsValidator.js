@@ -20,7 +20,10 @@ class ReportsValidator{
                 break;
             case 'subscribers':
                 this.checkDateIsNull(params, "Subscribers");
-                this.checkSubTypeIsNull(params.sub_type, "Subscribers", ['total', 'active_inactive']);
+                this.checkSubTypeIsNull(params.sub_type, "Subscribers", ['total', 'active_inactive', 'successful']);
+
+                if (params.sub_type === 'successful')
+                    this.checkSubTypeIsNull(params.successful, "Transacting Subscribers", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise']);
 
                 break;
             case 'subscriptions':

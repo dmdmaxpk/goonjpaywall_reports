@@ -50,6 +50,17 @@ generateReportsData = async (req,res) => {
                 return subscriberService.computeTotalSubscribersReport(rawDataSet, params);
             else if (params.sub_type === 'active_inactive')
                 return subscriberService.computeActiveSubscribersReport(rawDataSet, params);
+            else if (params.sub_type === 'successful')
+                if (params.successful === 'source_wise')
+                    return subscriptionService.sourceWiseSubscriptionReport(rawDataSet, params);
+                else if (params.successful === 'package_wise')
+                    return transactionService.computeTransactionsPackageWiseReport(rawDataSet, params);
+                else if (params.successful === 'paywall_wise')
+                    return transactionService.computeTransactionsPaywallWiseReport(rawDataSet, params);
+                else if (params.successful === 'operator_wise')
+                    return transactionService.computeTransactionsOperatorWiseReport(rawDataSet, params);
+                else if (params.successful === 'price_wise')
+                    return transactionService.computeTransactionsPriceWiseWiseReport(rawDataSet, params);
         }
         else if (params.type === 'subscriptions'){
             if (params.sub_type === 'successful'){
@@ -68,7 +79,7 @@ generateReportsData = async (req,res) => {
                 else if (params.successful === 'operator_wise'){
 
                     return transactionService.computeTransactionsOperatorWiseReport(rawDataSet, params);
-                    return subscriptionService.affliateMidWiseSubscriptionReport(rawDataSet, params);
+                    // return subscriptionService.affliateMidWiseSubscriptionReport(rawDataSet, params);
                 }
                 else if (params.successful === 'price_wise'){
                     return transactionService.computeTransactionsPriceWiseWiseReport(rawDataSet, params);
