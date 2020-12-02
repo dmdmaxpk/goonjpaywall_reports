@@ -80,13 +80,13 @@ function computeTransactionsData(transactionRawData, fromDate) {
 
         //Package wise subscriptions
         if(rawData.package_id === 'QDfC')
-            avgTransactionsObj.package.dailyLive = avgTransactionsObj.package.dailyLive + 1;
+            avgTransactionsObj.package.dailyLive = rawData.avg;
         else if(rawData.package_id === 'QDfG')
-            avgTransactionsObj.package.weeklyLive = avgTransactionsObj.package.weeklyLive + 1;
+            avgTransactionsObj.package.weeklyLive = rawData.avg;
         else if(rawData.package_id === 'QDfH')
-            avgTransactionsObj.package.dailyComedy = avgTransactionsObj.package.dailyComedy + 1;
+            avgTransactionsObj.package.dailyComedy = rawData.avg;
         else if(rawData.package_id === 'QDfI')
-            avgTransactionsObj.package.weeklyComedy = avgTransactionsObj.package.weeklyComedy + 1;
+            avgTransactionsObj.package.weeklyComedy = rawData.avg;
     }
 
     avgTransactionsObj.billing_dtm = fromDate;
