@@ -24,7 +24,7 @@ computeTransactionsAvgReports = async(req, res) => {
 
         // Now compute and store data in DB
         if (transactionRawData.length > 0){
-            computedData = computeTransactionsData(transactionRawData);
+            computedData = computeTransactionsData(transactionRawData, fromDate);
             insertNewRecord(computedData.avgTransactions, fromDate);
         }
 
@@ -55,20 +55,45 @@ computeTransactionsAvgReports = async(req, res) => {
     });
 };
 
-function computeTransactionsData(transactionRawData) {
+function computeTransactionsData(transactionRawData, fromDate) {
 
     console.log('transactionRawData: ', transactionRawData);
-    console.log('transactionRawData.avg: ', transactionRawData.avg);
 
-    let avgTransactions = [];
-    let avgTransactionsObj = {avg_transactions: 0, billing_dtm: '', billing_dtm_hours: ''};
-    avgTransactionsObj.avg_transactions = transactionRawData.avg;
-    avgTransactionsObj.billing_dtm = transactionRawData.billing_dtm;
-    avgTransactionsObj.billing_dtm_hours = helper.setDate(new Date(transactionRawData.billing_dtm), null, 0, 0, 0);
+    let rawData, avgTransactions = [];
+    let avgTransactionsObj = {
+        package: {
+            dailyLive: 0,
+            weeklyLive: 0,
+            dailyComedy: 0,
+            weeklyComedy: 0
+        },
+        billing_dtm: '',
+        billing_dtm_hours: ''
+    };
+
+    console.log('transactionRawData.length: ', transactionRawData.length);
+
+    for (let i = 0 ; i < transactionRawData.length; i++){
+        rawData = transactionRawData[i];
+        console.log('rawData: ', rawData);
+        console.log('rawData.package_id: ', rawData.package_id);
+
+        //Package wise subscriptions
+        if(rawData.package_id === 'QDfC')
+            avgTransactionsObj.package.dailyLive = avgTransactionsObj.package.dailyLive + 1;
+        else if(rawData.package_id === 'QDfG')
+            avgTransactionsObj.package.weeklyLive = avgTransactionsObj.package.weeklyLive + 1;
+        else if(rawData.package_id === 'QDfH')
+            avgTransactionsObj.package.dailyComedy = avgTransactionsObj.package.dailyComedy + 1;
+        else if(rawData.package_id === 'QDfI')
+            avgTransactionsObj.package.weeklyComedy = avgTransactionsObj.package.weeklyComedy + 1;
+    }
+
+    avgTransactionsObj.billing_dtm = fromDate;
+    avgTransactionsObj.billing_dtm_hours = helper.setDate(new Date(fromDate), null, 0, 0, 0);
 
     console.log('avgTransactionsObj: ', avgTransactionsObj);
     avgTransactions.push(avgTransactionsObj);
-
     return {avgTransactions: avgTransactions};
 }
 

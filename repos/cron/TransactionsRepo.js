@@ -14,26 +14,20 @@ class TransactionsRepo {
                             ]
                         }},
                         { $project: {
-                            price: "$price",
-                            user_id: "$user_id",
-                            day: { "$dayOfMonth" : "$billing_dtm"},
-                            month: { "$month" : "$billing_dtm" },
-                            year:{ "$year": "$billing_dtm" }
-                        }},
-                        { $project: {
                             user_id: "$user_id",
                             price: "$price",
-                            billing_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
+                            package_id: "$package_id"
                         }},
                         { $group: {
-                            _id: { user_id: "$user_id", billing_dtm: "$billing_dtm"}, "count":{$sum: "$price"}
+                            _id: { user_id: "$user_id", package_id: "$package_id"}, "count":{$sum: "$price"}
                         }},
                         {$group: {
-                            _id: "$_id.billing_dtm", avg: {$avg: "$count"}
+                            _id: {package_id: "$_id.package_id"},
+                            count:{$avg: "$count"},
                         }},
                         { $project: {
-                            billing_dtm: "$_id",
-                            avg: "$total",
+                            package_id: "$_id.package_id",
+                            avg:"$count",
                             _id: 0
                         }}
                     ], { allowDiskUse: true }).toArray(function(err, items) {
