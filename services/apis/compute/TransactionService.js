@@ -71,7 +71,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                         monthlyDataObj.weeklyComedy = monthlyDataObj.weeklyComedy / 30;
                         monthlyDataObj.from_date = month_from_date;
                         monthlyDataObj.to_date = outerObj.date;
-                        monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                        // monthWiseTotalCount.push(_.clone(monthlyDataObj));
                         monthlyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0});
                         month_from_date = null;
                         monthDayCount = 0;
@@ -87,7 +87,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                         weeklyDataObj.weeklyComedy = weeklyDataObj.weeklyComedy / 7;
                         weeklyDataObj.from_date = week_from_date;
                         weeklyDataObj.to_date = outerObj.date;
-                        weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                        // weekWiseTotalCount.push(_.clone(weeklyDataObj));
                         weeklyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0});
                         week_from_date = null;
                         weekDayCount = 0;
@@ -101,7 +101,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
             }
         }
 
-        console.log('rawDataSet.length: ', rawDataSet.length);
+        console.log('rawDataSet.length: ', rawDataSet.length, weekDayCount, monthDayCount);
 
         //Insert last data in week array that is less then one week data
         if (week_from_date !== null){
@@ -113,7 +113,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
             weeklyDataObj.weeklyComedy = weeklyDataObj.weeklyComedy / weekDayCount;
             weeklyDataObj.from_date = week_from_date;
             weeklyDataObj.to_date = outerObj.date;
-            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+            // weekWiseTotalCount.push(_.clone(weeklyDataObj));
         }
 
         //Insert last data in month array that is less then one month data
@@ -126,7 +126,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
             monthlyDataObj.weeklyComedy = monthlyDataObj.weeklyComedy / monthDayCount;
             monthlyDataObj.from_date = month_from_date;
             monthlyDataObj.to_date = outerObj.date;
-            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+            // monthWiseTotalCount.push(_.clone(monthlyDataObj));
         }
 
         // Total Count Data
@@ -140,7 +140,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
         dataObj.weeklyComedy = dataObj.weeklyComedy / rawDataSet.length;
         dataObj.from_date = params.from_date;
         dataObj.to_date = params.to_date;
-        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+        return reportsTransformer.transformTheData(1, true, {}, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
         return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
