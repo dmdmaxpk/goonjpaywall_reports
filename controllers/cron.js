@@ -7,7 +7,8 @@ const CallbackSendService = require('../services/cron/compute/CallbackSendServic
 const RevenueNetAdditionService = require('../services/cron/compute/RevenueNetAdditionService');
 const ChargeDetailsRevenueServices = require('../services/cron/compute/ChargeDetailsRevenueServices');
 const ChargeDetailsSourceWiseServices = require('../services/cron/compute/ChargeDetailsSourceWiseServices');
-const TransactionsBillingHistoryService = require('../services/cron/compute/TransactionsBillingHistoryService');
+const TransactionsAvgService = require('../services/cron/compute/TransactionsAvgService');
+const TransactionsAvgPerCostumerService = require('../services/cron/compute/TransactionsAvgPerCostumerService');
 const SubscriberSubscriptionsReports = require('../services/cron/compute/SubscriberSubscriptionsReports');
 const SubscriberTransactionsReports = require('../services/cron/compute/SubscriberTransactionsReports');
 const AffiliateSubscriptionsService = require('../services/cron/compute/AffiliateDataFromSubscriptionsService');
@@ -85,7 +86,12 @@ exports.computeRevenueNetAdditionReports = async (req,res) =>  {
 };
 
 exports.computeTransactionsAvgReports = async (req,res) =>  {
-    TransactionsBillingHistoryService.computeTransactionsAvgReports(req,res);
+    TransactionsAvgService.computeTransactionsAvgReports(req,res);
+    res.send("computeTransactionsReports - Executed\n");
+};
+
+exports.computeTransactionsAvgPerCostumerReports = async (req,res) =>  {
+    TransactionsAvgPerCostumerService.computeTransactionsAvgPerCostumerReports(req,res);
     res.send("computeTransactionsReports - Executed\n");
 };
 
