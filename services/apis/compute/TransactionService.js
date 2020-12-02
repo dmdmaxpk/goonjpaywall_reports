@@ -64,10 +64,10 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
 
                     // reset start_date for both month & week so can update with latest one
                     if (week_from_date === null)
-                        week_from_date = innerObj.billing_dtm;
+                        week_from_date = packageObj.billing_dtm;
 
                     if (month_from_date === null)
-                        month_from_date = innerObj.billing_dtm;
+                        month_from_date = packageObj.billing_dtm;
 
                     monthNo = new Date(outerObj.date).getMonth() + 1;
                     dayNo = new Date(outerObj.date).getDate();
