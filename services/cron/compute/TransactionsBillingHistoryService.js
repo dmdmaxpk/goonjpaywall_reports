@@ -62,6 +62,8 @@ function computeTransactionsData(transactionRawData) {
     avgTransactionsObj.avg_transactions = transactionRawData.avg;
     avgTransactionsObj.billing_dtm = transactionRawData.billing_dtm;
     avgTransactionsObj.billing_dtm_hours = helper.setDate(new Date(transactionRawData.billing_dtm), null, 0, 0, 0);
+
+    console.log('avgTransactionsObj: ', avgTransactionsObj);
     avgTransactions.push(avgTransactionsObj);
 
     return {avgTransactions: avgTransactions};
