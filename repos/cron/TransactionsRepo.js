@@ -1,6 +1,6 @@
 
 class TransactionsRepo {
-    async getTransactionsAvgByDateRange (req, from, to, skip, limit) {
+    async getTransactionsAvgByDateRange (req, from, to) {
         return new Promise((resolve, reject) => {
             console.log('getTransactionsAvgByDateRange: ', from, to);
             req.db.collection('billinghistories', function (err, collection) {
@@ -35,9 +35,7 @@ class TransactionsRepo {
                             billing_dtm: "$_id",
                             avg: "$total",
                             _id: 0
-                        }},
-                        { $skip: skip },
-                        { $limit: limit }
+                        }}
                     ], { allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getTransactionsAvgByDateRange - err 2: ', err.message);
