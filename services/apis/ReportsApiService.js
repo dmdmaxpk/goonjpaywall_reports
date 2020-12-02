@@ -184,7 +184,10 @@ generateReportsData = async (req,res) => {
                 return netAdditionService.computeNetAdditionsReport(rawDataSet, params);
         }
         else if (params.type === 'transactions'){
-            if (params.sub_type === 'successful'){
+            if (params.sub_type === 'avg_transactions'){
+                return transactionService.computeAvgTransactionsReport(rawDataSet, params);
+            }
+            else if (params.sub_type === 'successful'){
                 if (params.successful === 'source_wise')
                     return transactionService.computeTransactionsSourceWiseReport(rawDataSet, params);
                 else if(params.successful === 'package_wise')
