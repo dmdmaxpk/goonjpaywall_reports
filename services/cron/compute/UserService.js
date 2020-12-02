@@ -4,7 +4,7 @@ const userRepo = container.resolve('userRepository');
 const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, finalList = [];
+let dateData, fromDate, toDate, day, month, finalList = [];
 computeUserReports = async(req, res) => {
     console.log('computeUserReports: ');
 

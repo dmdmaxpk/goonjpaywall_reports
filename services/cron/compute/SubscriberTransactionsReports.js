@@ -4,7 +4,7 @@ const billingHistoryRepo = container.resolve('billingHistoryRepository');
 const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
-let fromHours, toHours, fromDate, toDate, day, month, finalList = [];
+let dateData, fromHours, toHours, fromDate, toDate, day, month, finalList = [];
 computeSubscriberTransactionsReports = async(req, res) => {
     console.log('computeSubscriberTransactionsReports: ');
 

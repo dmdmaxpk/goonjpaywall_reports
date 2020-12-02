@@ -3,7 +3,7 @@ const reportsRepo = require('../../../repos/apis/ReportsRepo');
 const subscriberRepo = container.resolve('subscriberRepository');
 const helper = require('../../../helper/helper');
 
-let fromDate, toDate, day, month, finalList = [];
+let dateData, fromDate, toDate, day, month, finalList = [];
 
 computeSubscriberReports = async(req, res) => {
     console.log('computeSubscriberReports');

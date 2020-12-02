@@ -15,24 +15,26 @@ class TransactionsRepo {
                         }},
                         { $project: {
                             subscriber_id: "$subscriber_id",
-                            price: "$price",
-                            billing_dtm: "$billing_dtm"
-                        }},
-                        { $group: {
-                            _id: "$subscriber_id",
-                            data: { $push:  { price: "$price", billing_dtm: "$billing_dtm" }}
+                            day: { "$dayOfMonth" : "$billing_dtm"},
+                            month: { "$month" : "$billing_dtm" },
+                            year:{ "$year": "$billing_dtm" }
                         }},
                         { $project: {
-                            subscriber_id: "$_id",
-                            transactions: "$data",
-                            size: { $size:"$data" },
+                            subscriber_id: "$subscriber_id",
+                            billing_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
                         }},
-                        {$match: { size: {$gt: 0}  }},
-                        {$project: {
+                        { $group: {
+                            _id: {billing_dtm: "$billing_dtm", subscriber_id: "$subscriber_id"},
+                            count: {$sum: 1}
+                        }},
+                        { $group: {
+                            _id: {billing_dtm: "$_id.billing_dtm"},
+                            transactions: { $push:  { subscriber_id: "$_id.subscriber_id", count: "$count" }}
+                        }},
+                        { $project: {
                             _id: 0,
-                            subscriber_id: 1,
-                            transactions: 1,
-                            size: 1,
+                            billing_dtm: { '$dateToString' : { date: "$_id.billing_dtm", 'timezone' : "Asia/Karachi" } },
+                            transactions: "$transactions"
                         }},
                         { $skip: skip },
                         { $limit: limit }

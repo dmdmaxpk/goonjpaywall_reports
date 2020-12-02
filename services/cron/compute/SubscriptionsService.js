@@ -5,7 +5,7 @@ const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, finalData, subscriptionsFinalList = [], subscribersFinalList = [];
+let dateData, fromDate, toDate, day, month, finalData, subscriptionsFinalList = [], subscribersFinalList = [];
 let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeDailySubscriptionReports = async(req, res) => {
     console.log('computeDailySubscriptionReports');

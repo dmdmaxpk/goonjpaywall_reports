@@ -259,7 +259,7 @@ class SubscriptionRepository {
                             affiliate_mid: "$affiliate_mid"
                         }},
                         { $group:{
-                            _id: {billing_dtm: "$billing_dtm", status: "$status", package_id: "$package_id", affiliate: "$affiliate", affiliate_mid: "$affiliate_mid"},
+                            _id: {billing_dtm: "$billing_dtm", status: "$status", package_id: "$package_id", affiliate: "$affiliate", affiliate_mid : "$affiliate_mid"},
                             count: {$sum: 1}
                         }},
                         { $group:{

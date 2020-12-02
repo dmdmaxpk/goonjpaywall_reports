@@ -6,7 +6,7 @@ const  _ = require('lodash');
 
 computeAffiliateReports = async(req, res) => {
     console.log('computeAffiliateReports: ');
-    let fromDate, toDate, day, month, computedData = [];
+    let dateData, fromDate, toDate, day, month, computedData = [];
 
     /*
     * Compute date and time for data fetching from db
@@ -59,7 +59,7 @@ computeAffiliateReports = async(req, res) => {
 };
 computeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
     console.log('computeAffiliateMidsFromSubscriptionsReports: ');
-    let fromDate, toDate, day, month, affiliateMidsData = [];
+    let dateData, fromDate, toDate, day, month, affiliateMidsData = [];
 
     /*
     * Compute date and time for data fetching from db
@@ -113,7 +113,7 @@ computeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
 promiseBasedComputeAffiliateReports = async(req, res) => {
     console.log('promiseBasedComputeAffiliateReports: ');
     return new Promise(async (resolve, reject) => {
-        let fromDate, toDate, computedData = [];
+        let dateData, fromDate, toDate, computedData = [];
 
         /*
         * Compute date and time for data fetching from db
@@ -146,7 +146,7 @@ promiseBasedComputeAffiliateReports = async(req, res) => {
 promiseBasedComputeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
     console.log('promiseBasedComputeAffiliateMidsFromSubscriptionsReports: ');
     return new Promise(async (resolve, reject) => {
-        let fromDate, toDate, affiliateMidsData = [];
+        let dateData, fromDate, toDate, affiliateMidsData = [];
 
         /*
         * Compute date and time for data fetching from db
