@@ -87,12 +87,12 @@ exports.computeRevenueNetAdditionReports = async (req,res) =>  {
 
 exports.computeTransactionsAvgReports = async (req,res) =>  {
     TransactionsAvgService.computeTransactionsAvgReports(req,res);
-    res.send("computeTransactionsReports - Executed\n");
+    res.send("computeTransactionsAvgReports - Executed\n");
 };
 
 exports.computeTransactionsAvgPerCostumerReports = async (req,res) =>  {
-    TransactionsAvgPerCostumerService.computeTransactionsAvgPerCostumerReports(req,res);
-    res.send("computeTransactionsReports - Executed\n");
+    TransactionsAvgPerCostumerService.computeTransactionsAvgPerCustomerReports(req,res);
+    res.send("computeTransactionsAvgPerCustomerReports - Executed\n");
 };
 
 exports.computeHelogsReports = async (req,res) =>  {
