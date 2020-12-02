@@ -53,15 +53,6 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                         monthlyDataObj.weeklyComedy = monthlyDataObj.weeklyComedy + innerObj.weeklyComedy;
                     }
 
-                    // Hourly Bases Data
-                    // hourlyBasisTotalCount.push({
-                    //     dailyLive: innerObj.dailyLive,
-                    //     weeklyLive: innerObj.weeklyLive,
-                    //     dailyComedy: innerObj.dailyComedy,
-                    //     weeklyComedy: innerObj.weeklyComedy,
-                    //     date: innerObj.billing_dtm_hours
-                    // });
-
                     // reset start_date for both month & week so can update with latest one
                     if (week_from_date === null)
                         week_from_date = packageObj.billing_dtm;
@@ -73,7 +64,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                     dayNo = new Date(outerObj.date).getDate();
 
                     // Monthly Data Count
-                    if (Number(dayNo) === Number(helper.getDaysInMonth(monthNo))) {
+                    if (Number(i)+1 === Number(helper.getDaysInMonth(monthNo))) {
                         monthlyDataObj.from_date = month_from_date;
                         monthlyDataObj.to_date = outerObj.date;
                         monthWiseTotalCount.push(_.clone(monthlyDataObj));
@@ -82,7 +73,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                     }
 
                     // Weekly Data Count
-                    if (Number(dayNo) % 7 === 0) {
+                    if (Number(i)+1 % 7 === 0) {
                         weeklyDataObj.from_date = week_from_date;
                         weeklyDataObj.to_date = outerObj.date;
                         weekWiseTotalCount.push(_.clone(weeklyDataObj));
