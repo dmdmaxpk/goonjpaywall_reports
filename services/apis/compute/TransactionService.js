@@ -140,7 +140,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
         dataObj.weeklyComedy = dataObj.weeklyComedy / rawDataSet.length;
         dataObj.from_date = params.from_date;
         dataObj.to_date = params.to_date;
-        return reportsTransformer.transformTheData(1, true, {}, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+        return reportsTransformer.transformTheData(1, true, [], hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
         return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
