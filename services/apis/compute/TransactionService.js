@@ -8,7 +8,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
     console.log('computeAvgTransactionsSizeReport');
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
-    let outerObj, innerObj, transactions, avgTransactions, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let outerObj, innerObj, transactions, avgTransactions, packageObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
     let dataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
     let dayDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
     let weeklyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
@@ -19,9 +19,15 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
             outerObj = rawDataSet[i];
             if (outerObj.transactions){
                 transactions = outerObj.transactions;
+                console.log('transactions.avgTransactions: ', transactions.avgTransactions);
+
                 if (transactions.avgTransactions) {
                     avgTransactions = transactions.avgTransactions;
-                    innerObj = avgTransactions[0];
+                    packageObj = avgTransactions[0];
+                    console.log('packageObj: ', packageObj);
+
+                    innerObj = packageObj.package;
+                    console.log('innerObj.dailyLive: ', innerObj.dailyLive);
                     if (innerObj.dailyLive) {
                         dataObj.dailyLive = dataObj.dailyLive + innerObj.dailyLive;
                         dayDataObj.dailyLive = dayDataObj.dailyLive + innerObj.dailyLive;
