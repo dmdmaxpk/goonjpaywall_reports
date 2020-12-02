@@ -74,7 +74,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                     }
 
                     // Weekly Data Count
-                    console.log('Weekly Data Count: ', Number(i)+1);
+                    console.log('Weekly Data Count: ', Number(i)+1, Number(i)+1 % 7, Number(i)+1 % 7 === 0);
 
                     if (Number(i)+1 % 7 === 0) {
                         console.log('Weekly Data Count - yes: ', Number(i)+1);
