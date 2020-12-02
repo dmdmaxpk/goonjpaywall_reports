@@ -14,28 +14,27 @@ class TransactionsRepo {
                             ]
                         }},
                         { $project: {
-                            subscriber_id: "$subscriber_id",
+                            price: "$price",
+                            user_id: "$user_id",
                             day: { "$dayOfMonth" : "$billing_dtm"},
                             month: { "$month" : "$billing_dtm" },
                             year:{ "$year": "$billing_dtm" }
                         }},
                         { $project: {
-                            subscriber_id: "$subscriber_id",
+                            user_id: "$user_id",
+                            price: "$price",
                             billing_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
                         }},
                         { $group: {
-                            _id: {billing_dtm: "$billing_dtm", subscriber_id: "$subscriber_id"},
-                            count: {$sum: 1}
+                            _id: { user_id: "$user_id", billing_dtm: "$billing_dtm"}, "count":{$sum: "$price"}
                         }},
-                        { $group: {
-                            _id: {billing_dtm: "$_id.billing_dtm"},
-                            transactions: {$sum: "$count"},
-                            transactions: { $push:  { subscriber_id: "$_id.subscriber_id", count: "$count" }}
+                        {$group: {
+                            _id: "$_id.billing_dtm", avg: {$avg: "$count"}
                         }},
                         { $project: {
-                            _id: 0,
-                            billing_dtm: { '$dateToString' : { date: "$_id.billing_dtm", 'timezone' : "Asia/Karachi" } },
-                            size: { $size:"$transactions" }
+                            billing_dtm: "$_id",
+                            avg: "$total",
+                            _id: 0
                         }},
                         { $skip: skip },
                         { $limit: limit }
