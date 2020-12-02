@@ -54,13 +54,13 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                     }
 
                     // Hourly Bases Data
-                    hourlyBasisTotalCount.push({
-                        dailyLive: innerObj.dailyLive,
-                        weeklyLive: innerObj.weeklyLive,
-                        dailyComedy: innerObj.dailyComedy,
-                        weeklyComedy: innerObj.weeklyComedy,
-                        date: innerObj.billing_dtm_hours
-                    });
+                    // hourlyBasisTotalCount.push({
+                    //     dailyLive: innerObj.dailyLive,
+                    //     weeklyLive: innerObj.weeklyLive,
+                    //     dailyComedy: innerObj.dailyComedy,
+                    //     weeklyComedy: innerObj.weeklyComedy,
+                    //     date: innerObj.billing_dtm_hours
+                    // });
 
                     // reset start_date for both month & week so can update with latest one
                     if (week_from_date === null)
