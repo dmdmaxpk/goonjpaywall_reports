@@ -4,11 +4,11 @@ const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
 // Transactions Compute Functions
-computeAvgTransactionsReport = async (rawDataSet, params) =>{
-    console.log('computeTransactionsPackageWiseReport');
+computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
+    console.log('computeAvgTransactionsSizeReport');
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
-    let outerObj, innerObj, transactions, avgTransactions, packageObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let outerObj, innerObj, transactions, avgTransactions, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
     let dataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
     let dayDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
     let weeklyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
@@ -1856,7 +1856,7 @@ function cloneRevenueBillingStatusWiseObj(){
 }
 
 module.exports = {
-    computeAvgTransactionsReport: computeAvgTransactionsReport,
+    computeAvgTransactionsSizeReport: computeAvgTransactionsSizeReport,
     computeTransactionsSourceWiseReport: computeTransactionsSourceWiseReport,
     computeTransactionsPackageWiseReport: computeTransactionsPackageWiseReport,
     computeTransactionsPaywallWiseReport: computeTransactionsPaywallWiseReport,

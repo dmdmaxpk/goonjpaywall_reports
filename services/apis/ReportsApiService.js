@@ -185,7 +185,7 @@ generateReportsData = async (req,res) => {
         }
         else if (params.type === 'transactions'){
             if (params.sub_type === 'avg_transactions'){
-                return transactionService.computeAvgTransactionsReport(rawDataSet, params);
+                return transactionService.computeAvgTransactionsSizeReport(rawDataSet, params);
             }
             else if (params.sub_type === 'successful'){
                 if (params.successful === 'source_wise')
