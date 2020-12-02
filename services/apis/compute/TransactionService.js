@@ -8,6 +8,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
     console.log('computeAvgTransactionsSizeReport');
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let weekDayCount = 0, monthDayCount = 0;
     let outerObj, innerObj, transactions, avgTransactions, packageObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
     let dataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
     let dayDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
@@ -55,12 +56,14 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                     if (month_from_date === null)
                         month_from_date = packageObj.billing_dtm;
 
+                    weekDayCount = weekDayCount + 1;
+                    monthDayCount = monthDayCount + 1;
                     monthNo = new Date(outerObj.date).getMonth() + 1;
                     dayNo = new Date(outerObj.date).getDate();
 
                     // Monthly Data Count
-                    if (Number(i)+1 === Number(helper.getDaysInMonth(monthNo))) {
-                        console.log('Monthly Data Count: ', Number(i)+1, Number(helper.getDaysInMonth(monthNo)));
+                    if ((Number(i)+1) === Number(helper.getDaysInMonth(monthNo))) {
+                        console.log('Monthly Data Count: ', (Number(i)+1), Number(helper.getDaysInMonth(monthNo)));
 
                         monthlyDataObj.dailyLive = monthlyDataObj.dailyLive / 30;
                         monthlyDataObj.weeklyLive = monthlyDataObj.weeklyLive / 30;
@@ -71,12 +74,11 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                         monthWiseTotalCount.push(_.clone(monthlyDataObj));
                         monthlyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0});
                         month_from_date = null;
+                        monthDayCount = 0;
                     }
 
                     // Weekly Data Count
-                    console.log('Weekly Data Count: ', Number(i)+1, (Number(i)+1) % 7, (Number(i)+1) % 7 === 0);
-
-                    if (Number(i+1) % 7 === 0) {
+                    if ((Number(i)+1) % 7 === 0) {
                         console.log('Weekly Data Count - yes: ', Number(i)+1);
 
                         weeklyDataObj.dailyLive = weeklyDataObj.dailyLive / 7;
@@ -88,6 +90,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                         weekWiseTotalCount.push(_.clone(weeklyDataObj));
                         weeklyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0});
                         week_from_date = null;
+                        weekDayCount = 0;
                     }
 
                     // Day Wise Date Count
@@ -104,10 +107,10 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
         if (week_from_date !== null){
             console.log('Insert last data in week: ', rawDataSet.length);
 
-            weeklyDataObj.dailyLive = weeklyDataObj.dailyLive / rawDataSet.length;
-            weeklyDataObj.weeklyLive = weeklyDataObj.weeklyLive / rawDataSet.length;
-            weeklyDataObj.dailyComedy = weeklyDataObj.dailyComedy / rawDataSet.length;
-            weeklyDataObj.weeklyComedy = weeklyDataObj.weeklyComedy / rawDataSet.length;
+            weeklyDataObj.dailyLive = weeklyDataObj.dailyLive / weekDayCount;
+            weeklyDataObj.weeklyLive = weeklyDataObj.weeklyLive / weekDayCount;
+            weeklyDataObj.dailyComedy = weeklyDataObj.dailyComedy / weekDayCount;
+            weeklyDataObj.weeklyComedy = weeklyDataObj.weeklyComedy / weekDayCount;
             weeklyDataObj.from_date = week_from_date;
             weeklyDataObj.to_date = outerObj.date;
             weekWiseTotalCount.push(_.clone(weeklyDataObj));
@@ -117,10 +120,10 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
         if (month_from_date !== null){
             console.log('Insert last data in month: ', rawDataSet.length);
 
-            monthlyDataObj.dailyLive = monthlyDataObj.dailyLive / rawDataSet.length;
-            monthlyDataObj.weeklyLive = monthlyDataObj.weeklyLive / rawDataSet.length;
-            monthlyDataObj.dailyComedy = monthlyDataObj.dailyComedy / rawDataSet.length;
-            monthlyDataObj.weeklyComedy = monthlyDataObj.weeklyComedy / rawDataSet.length;
+            monthlyDataObj.dailyLive = monthlyDataObj.dailyLive / monthDayCount;
+            monthlyDataObj.weeklyLive = monthlyDataObj.weeklyLive / monthDayCount;
+            monthlyDataObj.dailyComedy = monthlyDataObj.dailyComedy / monthDayCount;
+            monthlyDataObj.weeklyComedy = monthlyDataObj.weeklyComedy / monthDayCount;
             monthlyDataObj.from_date = month_from_date;
             monthlyDataObj.to_date = outerObj.date;
             monthWiseTotalCount.push(_.clone(monthlyDataObj));
