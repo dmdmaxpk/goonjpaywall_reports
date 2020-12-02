@@ -19,15 +19,10 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
             outerObj = rawDataSet[i];
             if (outerObj.transactions){
                 transactions = outerObj.transactions;
-                console.log('transactions.avgTransactions: ', transactions.avgTransactions);
-
                 if (transactions.avgTransactions) {
                     avgTransactions = transactions.avgTransactions;
                     packageObj = avgTransactions[0];
-                    console.log('packageObj: ', packageObj);
-
                     innerObj = packageObj.package;
-                    console.log('innerObj.dailyLive: ', innerObj.dailyLive);
                     if (innerObj.dailyLive) {
                         dataObj.dailyLive = dataObj.dailyLive + innerObj.dailyLive;
                         dayDataObj.dailyLive = dayDataObj.dailyLive + innerObj.dailyLive;
@@ -65,6 +60,8 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
 
                     // Monthly Data Count
                     if (Number(i)+1 === Number(helper.getDaysInMonth(monthNo))) {
+                        console.log('Monthly Data Count: ', Number(i)+1, Number(helper.getDaysInMonth(monthNo)));
+
                         monthlyDataObj.dailyLive = monthlyDataObj.dailyLive / 30;
                         monthlyDataObj.weeklyLive = monthlyDataObj.weeklyLive / 30;
                         monthlyDataObj.dailyComedy = monthlyDataObj.dailyComedy / 30;
@@ -78,6 +75,8 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
 
                     // Weekly Data Count
                     if (Number(i)+1 % 7 === 0) {
+                        console.log('Weekly Data Count: ', Number(i)+1);
+
                         weeklyDataObj.dailyLive = weeklyDataObj.dailyLive / 7;
                         weeklyDataObj.weeklyLive = weeklyDataObj.weeklyLive / 7;
                         weeklyDataObj.dailyComedy = weeklyDataObj.dailyComedy / 7;
@@ -97,8 +96,12 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
             }
         }
 
+        console.log('rawDataSet.length: ', rawDataSet.length);
+
         //Insert last data in week array that is less then one week data
         if (week_from_date !== null){
+            console.log('Insert last data in week: ', rawDataSet.length);
+
             weeklyDataObj.dailyLive = weeklyDataObj.dailyLive / rawDataSet.length;
             weeklyDataObj.weeklyLive = weeklyDataObj.weeklyLive / rawDataSet.length;
             weeklyDataObj.dailyComedy = weeklyDataObj.dailyComedy / rawDataSet.length;
@@ -110,6 +113,8 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
 
         //Insert last data in month array that is less then one month data
         if (month_from_date !== null){
+            console.log('Insert last data in month: ', rawDataSet.length);
+
             monthlyDataObj.dailyLive = monthlyDataObj.dailyLive / rawDataSet.length;
             monthlyDataObj.weeklyLive = monthlyDataObj.weeklyLive / rawDataSet.length;
             monthlyDataObj.dailyComedy = monthlyDataObj.dailyComedy / rawDataSet.length;
@@ -120,6 +125,8 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
         }
 
         // Total Count Data
+        console.log('Total Count Data: ', rawDataSet.length);
+
         // date range (start-date, end-date)
         dataObj = _.clone(dataObj);
         dataObj.dailyLive = dataObj.dailyLive / rawDataSet.length;
