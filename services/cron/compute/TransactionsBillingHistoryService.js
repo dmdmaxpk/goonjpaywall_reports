@@ -57,6 +57,9 @@ computeTransactionsAvgReports = async(req, res) => {
 
 function computeTransactionsData(transactionRawData) {
 
+    console.log('transactionRawData: ', transactionRawData);
+    console.log('transactionRawData.avg: ', transactionRawData.avg);
+
     let avgTransactions = [];
     let avgTransactionsObj = {avg_transactions: 0, billing_dtm: '', billing_dtm_hours: ''};
     avgTransactionsObj.avg_transactions = transactionRawData.avg;
