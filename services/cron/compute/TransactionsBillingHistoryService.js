@@ -97,41 +97,13 @@ function computeTransactionsData(transactionRawData, fromDate) {
         // Calculate average transaction rate
         uniqueSubscribers = uniqueSubscribers + 1;
         totalTransactions = totalTransactions + rawData.size;
-
-        if (rawData.transactions.length > 0){
-            for (let j= 0 ; j < rawData.transactions.length; j ++){
-                outerObj = rawData.transactions[j];
-
-                //get totalPrice to compute avg price
-                totalPrice = totalPrice + outerObj['price'];
-
-                //script to get transaction's count per subscriber with in given datetime stemp
-                outer_added_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
-                if (dateInMili !== outer_added_dtm) {
-                    for (let k = 0; k < rawData.transactions.length; k++) {
-
-                        innerObj = rawData.transactions[k];
-                        inner_added_dtm = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
-                        if (outer_added_dtm === inner_added_dtm) {
-                            dateInMili = inner_added_dtm;
-
-                            transactionsCountObj.total = transactionsCountObj.total + 1;
-                        }
-                    }
-                }
-            }
-
-            transactionsCount.push(transactionsCountObj);
-        }
     }
 
     transactionObj.totalTransactions = totalTransactions;
     transactionObj.uniqueSubscribers = uniqueSubscribers;
-    transactionObj.totalPrice = totalPrice;
-    transactionObj.avg_value = ( totalPrice > 0  && totalTransactions> 0 )? totalTransactions / totalPrice : 0;
     transactionObj.avg_transactions = ( uniqueSubscribers > 0 && totalTransactions> 0 )? totalTransactions / uniqueSubscribers : 0;
-    transactionObj.added_dtm = fromDate;
-    transactionObj.added_dtm_hours = helper.setDate(new Date(fromDate), null, 0, 0, 0);
+    transactionObj.billing_dtm = fromDate;
+    transactionObj.billing_dtm_hours = helper.setDate(new Date(fromDate), null, 0, 0, 0);
     transactionList.push(transactionObj);
 
     return {transactionList: transactionList, transactionsCount: transactionsCount};

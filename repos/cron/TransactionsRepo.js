@@ -29,12 +29,13 @@ class TransactionsRepo {
                         }},
                         { $group: {
                             _id: {billing_dtm: "$_id.billing_dtm"},
+                            transactions: {$sum: "$count"},
                             transactions: { $push:  { subscriber_id: "$_id.subscriber_id", count: "$count" }}
                         }},
                         { $project: {
                             _id: 0,
                             billing_dtm: { '$dateToString' : { date: "$_id.billing_dtm", 'timezone' : "Asia/Karachi" } },
-                            transactions: "$transactions"
+                            size: { $size:"$transactions" }
                         }},
                         { $skip: skip },
                         { $limit: limit }

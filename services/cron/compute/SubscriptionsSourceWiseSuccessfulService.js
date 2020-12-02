@@ -228,13 +228,19 @@ async function insertNewRecord(subscriptionList, dateString, mode) {
             console.log('mode: ', mode);
 
             if (mode === 0){
-                if (result.subscriptions)
-                    result.subscriptions.sourceWise = subscriptionList;
+                if (result.subscriptions){
+                    if (Array.isArray(result.subscriptions)){
+                        result.subscriptions = {sourceWise: ''};
+                        result.subscriptions.sourceWise = subscriptionList;
+                    }
+                    else{
+                        result.subscriptions.sourceWise = subscriptionList;
+                    }
+                }
                 else{
                     result.subscriptions = {sourceWise: ''};
                     result.subscriptions.sourceWise = subscriptionList;
                 }
-
             }
             else{
                 if (result.subscriptions)
