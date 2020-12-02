@@ -74,8 +74,10 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                     }
 
                     // Weekly Data Count
+                    console.log('Weekly Data Count: ', Number(i)+1);
+
                     if (Number(i)+1 % 7 === 0) {
-                        console.log('Weekly Data Count: ', Number(i)+1);
+                        console.log('Weekly Data Count - yes: ', Number(i)+1);
 
                         weeklyDataObj.dailyLive = weeklyDataObj.dailyLive / 7;
                         weeklyDataObj.weeklyLive = weeklyDataObj.weeklyLive / 7;
