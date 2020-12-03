@@ -250,7 +250,7 @@ class Helper {
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }
 
-    static computeNextMonthDateWithLocalTime(req, sDay, sMonth){
+    static computeNextMonthDateWithLocalTime(req, sMonth){
 
         let fromDate, toDate, month, daysInMonth;
 
@@ -271,23 +271,23 @@ class Helper {
 
     static computeNextWeekDateWithLocalTime(req, sDay, sMonth){
 
-        let fromDate, toDate, day, month, daysInMonth, dayAdd;
+        let fromDate, toDate, fromDay, toDay, month, daysInMonth, dayAdd;
 
-        day = req.day ? req.day : sDay;
-        day = day > 9 ? day : '0'+Number(day);
-        req.day = day;
+        fromDay = req.fromDay ? req.fromDay : sDay;
+        fromDay = fromDay > 9 ? fromDay : '0'+Number(fromDay);
+        req.fromDay = fromDay;
 
         month = req.month ? req.month : sMonth;
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
+        fromDate  = new Date('2020-'+month+'-'+fromDay+'T00:00:00.000Z');
         console.log('computeNextDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
-        if(day === 28 ){
+        if(fromDay === 28 ){
             daysInMonth = this.getDaysInMonth();
-            dayAdd = daysInMonth - day;
+            dayAdd = daysInMonth - fromDay;
         }
         else
             dayAdd = 7;
@@ -295,7 +295,10 @@ class Helper {
         toDate.setDate(toDate.getDate() + dayAdd);
         console.log('computeNextDate - toDate : ', toDate, dayAdd);
 
-        return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
+        toDay = fromDay + dayAdd;
+        toDay = toDay > 9 ? toDay : '0'+Number(toDay);
+        req.toDay = toDay;
+        return {req: req, fromDay: fromDay, toDay: toDay, month: month, fromDate: fromDate, toDate: toDate};
     }
 
     static computeNextEightHoursDate(req, sDay, sMonth){

@@ -3,17 +3,16 @@ const reportsRepo = require('../../../repos/apis/ReportsRepo');
 const transactionsRepo = container.resolve('transactionsRepo');
 const helper = require('../../../helper/helper');
 
-let dateData, daysInMonth, fromDate, toDate, day, month, computedData;
+let dateData, fromDate, toDate, month, computedData;
 computeTransactionsAvgPerCustomerReports = async(req, res) => {
     console.log('computeTransactionsAvgPerCustomerReports');
 
     /*
     * Compute date and time for data fetching from db
-    * Script will execute to fetch data as per day
+    * Script will execute to fetch data as per month
     * */
-    dateData = helper.computeNextWeekDateWithLocalTime(req, 14, 10);
+    dateData = helper.computeNextMonthDateWithLocalTime(req, 11);
     req = dateData.req;
-    day = dateData.day;
     month = dateData.month;
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
@@ -28,38 +27,16 @@ computeTransactionsAvgPerCustomerReports = async(req, res) => {
             insertNewRecord(computedData.avgTransactionsPerCustomer, fromDate);
         }
 
-        // Get compute data for next time slot
-        console.log("Number(req.day): ", Number(req.day));
-        if(Number(req.day) === 28 ){
-            console.log("Number(req.day) === 28");
-            daysInMonth = helper.getDaysInMonth(month);
-            req.day = Number(req.day) + (Number(daysInMonth) - Number(req.day));
-        }
-        else{
-            console.log("Number(req.day) < 28");
-            req.day = Number(req.day) + 7;
-        }
+        console.log('computeTransactionsAvgPerCustomerReports -> month : ', helper.getDaysInMonth(month));
+        req.month = Number(req.month) + 1;
+        console.log('computeTransactionsAvgPerCustomerReports -> month : ', month, req.month, new Date().getMonth());
 
-        console.log('computeTransactionsAvgPerCustomerReports -> day : ', day, req.day, helper.getDaysInMonth(month));
-
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
-                computeTransactionsAvgPerCustomerReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeTransactionsAvgPerCustomerReports(req, res);
+        if (req.month <= helper.getTodayMonthNo()){
+            console.log('computeTransactionsAvgPerCustomerReports - yes', req.month, helper.getTodayMonthNo());
+            computeTransactionsAvgPerCustomerReports(req, res);
         }
-        else{
-            req.day = 7;
-            req.month = Number(req.month) + 1;
-            console.log('computeTransactionsAvgPerCustomerReports -> month : ', month, req.month, new Date().getMonth());
-
-            if (req.month <= helper.getTodayMonthNo())
-                computeTransactionsAvgPerCustomerReports(req, res);
-        }
-
-        if (helper.isToday(fromDate)){
+        else {
             console.log('computeTransactionsAvgPerCustomerReports - data compute - done');
-            delete req.day;
             delete req.month;
         }
     });
@@ -67,7 +44,7 @@ computeTransactionsAvgPerCustomerReports = async(req, res) => {
 
 function computeTransactionsData(transactionRawData, fromDate, toDate) {
 
-    console.log('transactionRawData: ', transactionRawData);
+    // console.log('transactionRawData: ', transactionRawData);
 
     let rawData, avgTransactionsPerCustomer = [];
     let avgTransactionsObj = {
@@ -83,12 +60,12 @@ function computeTransactionsData(transactionRawData, fromDate, toDate) {
         billing_dtm_to_hours: ''
     };
 
-    console.log('transactionRawData.length: ', transactionRawData.length);
+    // console.log('transactionRawData.length: ', transactionRawData.length);
 
     for (let i = 0 ; i < transactionRawData.length; i++){
         rawData = transactionRawData[i];
-        console.log('rawData: ', rawData);
-        console.log('rawData.package_id: ', rawData.package_id);
+        // console.log('rawData: ', rawData);
+        // console.log('rawData.package_id: ', rawData.package_id);
 
         //Package wise subscriptions
         if(rawData.package_id === 'QDfC')
