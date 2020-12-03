@@ -271,7 +271,7 @@ class Helper {
 
     static computeNextWeekDateWithLocalTime(req, sDay, sMonth){
 
-        let fromDate, toDate, day, month;
+        let fromDate, toDate, day, month, daysInMonth, dayAdd;
 
         day = req.day ? req.day : sDay;
         day = day > 9 ? day : '0'+Number(day);
@@ -285,8 +285,15 @@ class Helper {
         console.log('computeNextDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
-        toDate.setDate(toDate.getDate() + 1);
-        console.log('computeNextDate - toDate : ', toDate);
+        if(day === 28 ){
+            daysInMonth = this.getDaysInMonth();
+            dayAdd = daysInMonth - day;
+        }
+        else
+            dayAdd = 7;
+
+        toDate.setDate(toDate.getDate() + dayAdd);
+        console.log('computeNextDate - toDate : ', toDate, dayAdd);
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }
