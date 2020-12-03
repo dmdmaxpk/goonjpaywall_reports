@@ -31,7 +31,7 @@ computeTransactionsAvgPerCustomerReports = async(req, res) => {
         req.month = Number(req.month) + 1;
         console.log('computeTransactionsAvgPerCustomerReports -> month : ', month, req.month, new Date().getMonth());
 
-        if (req.month <= helper.getTodayMonthNo()){
+        if (req.month < helper.getTodayMonthNo()){
             console.log('computeTransactionsAvgPerCustomerReports - yes', req.month, helper.getTodayMonthNo());
             computeTransactionsAvgPerCustomerReports(req, res);
         }

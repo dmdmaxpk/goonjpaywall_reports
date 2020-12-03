@@ -146,6 +146,46 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
+computeAvgTransactionsPerCustomerReport = async (rawDataSet, params) =>{
+    console.log('computeAvgTransactionsPerCustomerReport');
+
+    let outerObj, innerObj, transactions, avgTransactionsPerCustomer, packageObj, dataObj;
+    let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let monthlyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
+
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+            if (outerObj.transactions){
+                transactions = outerObj.transactions;
+                if (transactions.avgTransactionsPerCustomer) {
+                    avgTransactionsPerCustomer = transactions.avgTransactionsPerCustomer;
+                    packageObj = avgTransactionsPerCustomer[0];
+                    innerObj = packageObj.package;
+                    if (innerObj.dailyLive)
+                        monthlyDataObj.dailyLive = monthlyDataObj.dailyLive + innerObj.dailyLive;
+                    if (innerObj.weeklyLive)
+                        monthlyDataObj.weeklyLive = monthlyDataObj.weeklyLive + innerObj.weeklyLive;
+                    if (innerObj.dailyComedy)
+                        monthlyDataObj.dailyComedy = monthlyDataObj.dailyComedy + innerObj.dailyComedy;
+                    if (innerObj.weeklyComedy)
+                        monthlyDataObj.weeklyComedy = monthlyDataObj.weeklyComedy + innerObj.weeklyComedy;
+
+                    monthlyDataObj.from_date = innerObj.billing_dtm_from;
+                    monthlyDataObj.to_date = innerObj.billing_dtm_to;
+                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                    monthlyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0});
+                }
+            }
+        }
+
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
+    }
+};
+
 computeTransactionsSourceWiseReport = async (rawDataSet, params) =>{
     console.log('computeTransactionsSourceWiseReport');
 
@@ -1887,6 +1927,7 @@ function cloneRevenueBillingStatusWiseObj(){
 
 module.exports = {
     computeAvgTransactionsSizeReport: computeAvgTransactionsSizeReport,
+    computeAvgTransactionsPerCustomerReport: computeAvgTransactionsPerCustomerReport,
     computeTransactionsSourceWiseReport: computeTransactionsSourceWiseReport,
     computeTransactionsPackageWiseReport: computeTransactionsPackageWiseReport,
     computeTransactionsPaywallWiseReport: computeTransactionsPaywallWiseReport,
