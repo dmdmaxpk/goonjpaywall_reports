@@ -41,6 +41,35 @@ computeTransactionsAvgReports = async(req, res) => {
         }
     });
 };
+promiseBasedComputeTransactionsAvgReports = async(req, res) => {
+    console.log('promiseBasedComputeTransactionsAvgReports');
+    return new Promise(async (resolve, reject) => {
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data as per day
+        * */
+        dateData = helper.computeLastMonthDateWithLocalTime(req);
+        req = dateData.req;
+        month = dateData.month;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        console.log('computeTransactionsAvgReports: ', fromDate, toDate);
+        await transactionsRepo.getTransactionsAvgByDateRange(req, fromDate, toDate).then(async function (transactionRawData) {
+            console.log('transactionRawData 1 : ', transactionRawData.length);
+
+            // Now compute and store data in DB
+            if (transactionRawData.length > 0){
+                computedData = computeTransactionsData(transactionRawData, fromDate);
+                insertNewRecord(computedData.avgTransactions, fromDate);
+            }
+
+            console.log('computeTransactionsAvgReports - data compute - done');
+            delete req.month;
+            resolve(0);
+        });
+    });
+};
 
 function computeTransactionsData(transactionRawData, fromDate) {
 
@@ -109,4 +138,5 @@ function insertNewRecord(avgTransactions, dateString) {
 
 module.exports = {
     computeTransactionsAvgReports: computeTransactionsAvgReports,
+    promiseBasedComputeTransactionsAvgReports: promiseBasedComputeTransactionsAvgReports,
 };

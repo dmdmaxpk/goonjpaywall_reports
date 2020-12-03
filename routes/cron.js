@@ -61,10 +61,10 @@ router.route('/compute-subscriber-transaction-reports')
     .get(connection.connect, controller.computeSubscriberTransactionsReports);
 
 router.route('/compute-transactions-avg-reports')
-    .get(connection.connect, controller.computeTransactionsAvgReports);
+    .get(connection.connect, controller.promiseBasedComputeTransactionsAvgReports);
 
 router.route('/compute-transactions-avg-per-customer-reports')
-    .get(connection.connect, controller.computeTransactionsAvgPerCostumerReports);
+    .get(connection.connect, controller.promiseBasedComputeTransactionsAvgPerCustomerReports);
 
 router.route('/cron-compute-daily-data-reports')
     .get(connection.connect, controller.cronComputeDailyDataReports); //**
