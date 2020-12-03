@@ -43,30 +43,14 @@ computeTransactionsAvgPerCustomerReports = async(req, res) => {
 };
 
 function computeTransactionsData(transactionRawData, fromDate, toDate) {
-
-    // console.log('transactionRawData: ', transactionRawData);
-
     let rawData, avgTransactionsPerCustomer = [];
     let avgTransactionsObj = {
-        package: {
-            dailyLive: 0,
-            weeklyLive: 0,
-            dailyComedy: 0,
-            weeklyComedy: 0
-        },
-        billing_dtm_from: '',
-        billing_dtm_from_hours: '',
-        billing_dtm_to: '',
-        billing_dtm_to_hours: ''
+        package: { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 },
+        month: ''
     };
-
-    // console.log('transactionRawData.length: ', transactionRawData.length);
 
     for (let i = 0 ; i < transactionRawData.length; i++){
         rawData = transactionRawData[i];
-        // console.log('rawData: ', rawData);
-        // console.log('rawData.package_id: ', rawData.package_id);
-
         //Package wise subscriptions
         if(rawData.package_id === 'QDfC')
             avgTransactionsObj.package.dailyLive = rawData.avg;
@@ -78,11 +62,7 @@ function computeTransactionsData(transactionRawData, fromDate, toDate) {
             avgTransactionsObj.package.weeklyComedy = rawData.avg;
     }
 
-    avgTransactionsObj.billing_dtm_from = fromDate;
-    avgTransactionsObj.billing_dtm_from_hours = helper.setDate(new Date(fromDate), null, 0, 0, 0);
-
-    avgTransactionsObj.billing_dtm_to = toDate;
-    avgTransactionsObj.billing_dtm_to_hours = helper.setDate(new Date(toDate), null, 0, 0, 0);
+    avgTransactionsObj.month = fromDate;
 
     console.log('avgTransactionsObj: ', avgTransactionsObj);
     avgTransactionsPerCustomer.push(avgTransactionsObj);

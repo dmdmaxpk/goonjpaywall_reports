@@ -3,7 +3,7 @@ const reportsRepo = require('../../../repos/apis/ReportsRepo');
 const transactionsRepo = container.resolve('transactionsRepo');
 const helper = require('../../../helper/helper');
 
-let dateData, fromDate, toDate, day, month, computedData;
+let dateData, fromDate, toDate, month, computedData;
 computeTransactionsAvgReports = async(req, res) => {
     console.log('computeTransactionsAvgReports');
 
@@ -11,9 +11,8 @@ computeTransactionsAvgReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 15, 10);
+    dateData = helper.computeNextMonthDateWithLocalTime(req, 11);
     req = dateData.req;
-    day = dateData.day;
     month = dateData.month;
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
@@ -28,28 +27,16 @@ computeTransactionsAvgReports = async(req, res) => {
             insertNewRecord(computedData.avgTransactions, fromDate);
         }
 
-        // Get compute data for next time slot
-        req.day = Number(req.day) + 1;
-        console.log('computeTransactionsAvgReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        console.log('computeTransactionsAvgReports -> month : ', helper.getDaysInMonth(month));
+        req.month = Number(req.month) + 1;
+        console.log('computeTransactionsAvgReports -> month : ', month, req.month, new Date().getMonth());
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
-                computeTransactionsAvgReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeTransactionsAvgReports(req, res);
+        if (req.month < helper.getTodayMonthNo()){
+            console.log('computeTransactionsAvgReports - yes', req.month, helper.getTodayMonthNo());
+            computeTransactionsAvgReports(req, res);
         }
-        else{
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('computeTransactionsAvgReports -> month : ', month, req.month, new Date().getMonth());
-
-            if (req.month <= helper.getTodayMonthNo())
-                computeTransactionsAvgReports(req, res);
-        }
-
-        if (helper.isToday(fromDate)){
+        else {
             console.log('computeTransactionsAvgReports - data compute - done');
-            delete req.day;
             delete req.month;
         }
     });
@@ -61,14 +48,8 @@ function computeTransactionsData(transactionRawData, fromDate) {
 
     let rawData, avgTransactions = [];
     let avgTransactionsObj = {
-        package: {
-            dailyLive: 0,
-            weeklyLive: 0,
-            dailyComedy: 0,
-            weeklyComedy: 0
-        },
-        billing_dtm: '',
-        billing_dtm_hours: ''
+        package: { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 },
+        month: ''
     };
 
     console.log('transactionRawData.length: ', transactionRawData.length);
@@ -89,8 +70,7 @@ function computeTransactionsData(transactionRawData, fromDate) {
             avgTransactionsObj.package.weeklyComedy = rawData.avg;
     }
 
-    avgTransactionsObj.billing_dtm = fromDate;
-    avgTransactionsObj.billing_dtm_hours = helper.setDate(new Date(fromDate), null, 0, 0, 0);
+    avgTransactionsObj.month = fromDate;
 
     console.log('avgTransactionsObj: ', avgTransactionsObj);
     avgTransactions.push(avgTransactionsObj);
