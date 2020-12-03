@@ -16,8 +16,8 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
             outerObj = rawDataSet[i];
             if (outerObj.transactions){
                 transactions = outerObj.transactions;
-                if (transactions.avgTransactionsPerCustomer) {
-                    avgTransactions = transactions.avgTransactionsPerCustomer;
+                if (transactions.avgTransactions) {
+                    avgTransactions = transactions.avgTransactions;
                     packageObj = avgTransactions[0];
                     innerObj = packageObj.package;
                     if (innerObj.dailyLive)
