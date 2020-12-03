@@ -9,7 +9,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
 
     let outerObj, innerObj, transactions, avgTransactions, packageObj, dataObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let monthlyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
+    let monthlyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, month: '' };
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -29,10 +29,9 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                     if (innerObj.weeklyComedy)
                         monthlyDataObj.weeklyComedy = monthlyDataObj.weeklyComedy + innerObj.weeklyComedy;
 
-                    monthlyDataObj.from_date = innerObj.month;
-                    monthlyDataObj.to_date = innerObj.month;
+                    monthlyDataObj.month = innerObj.month;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0});
+                    monthlyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, month: ''});
                 }
             }
         }
@@ -48,7 +47,7 @@ computeAvgTransactionsPerCustomerReport = async (rawDataSet, params) =>{
 
     let outerObj, innerObj, transactions, avgTransactionsPerCustomer, packageObj, dataObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let monthlyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 };
+    let monthlyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, month: '' };
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -68,10 +67,9 @@ computeAvgTransactionsPerCustomerReport = async (rawDataSet, params) =>{
                     if (innerObj.weeklyComedy)
                         monthlyDataObj.weeklyComedy = monthlyDataObj.weeklyComedy + innerObj.weeklyComedy;
 
-                    monthlyDataObj.from_date = innerObj.month;
-                    monthlyDataObj.to_date = innerObj.month;
+                    monthlyDataObj.month = innerObj.month;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0});
+                    monthlyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, month: ''});
                 }
             }
         }
