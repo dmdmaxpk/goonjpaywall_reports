@@ -13,23 +13,10 @@ class TransactionsRepo {
                                 {billing_dtm:{$lte:new Date(to)}}
                             ]
                         }},
-                        { $project: {
-                            user_id: "$user_id",
-                            price: "$price",
-                            package_id: "$package_id"
-                        }},
-                        { $group: {
-                            _id: { user_id: "$user_id", package_id: "$package_id"}, "count":{$sum: "$price"}
-                        }},
-                        {$group: {
-                            _id: {package_id: "$_id.package_id"},
-                            count:{$avg: "$count"},
-                        }},
-                        { $project: {
-                            package_id: "$_id.package_id",
-                            avg:"$count",
-                            _id: 0
-                        }}
+                        {	$group:{
+                                _id: "$package_id", avg: {$avg: "$price"}
+                            }
+                        },
                     ], { allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getTransactionsAvgByDateRange - err 2: ', err.message);

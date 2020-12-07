@@ -20,19 +20,8 @@ generateReportsData = async (params) => {
     return await Report.find( { $and:[{date:{$gte:new Date(params.from_date)}}, {date:{$lte:new Date(params.to_date)}}] });
 };
 
-generateReportsDataWithDates = async (dateArr) => {
-    console.log('generateReportsDataWithDates: ', dateArr);
-    return await Report.aggregate([
-        { $match:{
-                date: { $in: dateArr }
-            }
-        }
-    ])
-};
-
 module.exports = {
     generateReportsData: generateReportsData,
-    generateReportsDataWithDates: generateReportsDataWithDates,
     getReportByDateString: getReportByDateString,
     createReport: createReport,
     updateReport: updateReport

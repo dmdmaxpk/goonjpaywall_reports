@@ -29,7 +29,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                     if (innerObj.weeklyComedy)
                         monthlyDataObj.weeklyComedy = monthlyDataObj.weeklyComedy + innerObj.weeklyComedy;
 
-                    monthlyDataObj.month = outerObj.date;
+                    monthlyDataObj.date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
                     monthlyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, month: ''});
                 }
@@ -67,8 +67,7 @@ computeAvgTransactionsPerCustomerReport = async (rawDataSet, params) =>{
                     if (innerObj.weeklyComedy)
                         monthlyDataObj.weeklyComedy = monthlyDataObj.weeklyComedy + innerObj.weeklyComedy;
 
-                    console.log('date: ', outerObj.date);
-                    monthlyDataObj.month = outerObj.date;
+                    monthlyDataObj.date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
                     monthlyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, month: ''});
                 }
