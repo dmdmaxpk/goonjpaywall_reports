@@ -86,16 +86,16 @@ function computeTransactionsData(transactionRawData, fromDate) {
     for (let i = 0 ; i < transactionRawData.length; i++){
         rawData = transactionRawData[i];
         console.log('rawData: ', rawData);
-        console.log('rawData.package_id: ', rawData.package_id);
+        console.log('rawData.package_id: ', rawData._id);
 
         //Package wise subscriptions
-        if(rawData.package_id === 'QDfC')
+        if(rawData._id === 'QDfC')
             avgTransactionsObj.package.dailyLive = rawData.avg;
-        else if(rawData.package_id === 'QDfG')
+        else if(rawData._id === 'QDfG')
             avgTransactionsObj.package.weeklyLive = rawData.avg;
-        else if(rawData.package_id === 'QDfH')
+        else if(rawData._id === 'QDfH')
             avgTransactionsObj.package.dailyComedy = rawData.avg;
-        else if(rawData.package_id === 'QDfI')
+        else if(rawData._id === 'QDfI')
             avgTransactionsObj.package.weeklyComedy = rawData.avg;
     }
 
