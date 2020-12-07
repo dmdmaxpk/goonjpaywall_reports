@@ -9,7 +9,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
 
     let outerObj, innerObj, transactions, avgTransactions, packageObj, dataObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let monthlyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, month: '' };
+    let monthlyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, from_date: '', to_date: '' };
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -29,9 +29,10 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
                     if (innerObj.weeklyComedy)
                         monthlyDataObj.weeklyComedy = monthlyDataObj.weeklyComedy + innerObj.weeklyComedy;
 
-                    monthlyDataObj.date = outerObj.date;
+                    monthlyDataObj.from_date = outerObj.date;
+                    monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, month: ''});
+                    monthlyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, from_date: '', to_date: ''});
                 }
             }
         }
@@ -45,9 +46,9 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
 computeAvgTransactionsPerCustomerReport = async (rawDataSet, params) =>{
     console.log('computeAvgTransactionsPerCustomerReport');
 
-    let outerObj, innerObj, transactions, avgTransactionsPerCustomer, packageObj, dataObj;
+    let outerObj, innerObj, transactions, avgTransactionsPerCustomer, total, dataObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let monthlyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, month: '' };
+    let monthlyDataObj = { avgTransactionsPerCustomer: 0, from_date: '', to_date: '' };
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -56,20 +57,13 @@ computeAvgTransactionsPerCustomerReport = async (rawDataSet, params) =>{
                 transactions = outerObj.transactions;
                 if (transactions.avgTransactionsPerCustomer) {
                     avgTransactionsPerCustomer = transactions.avgTransactionsPerCustomer;
-                    packageObj = avgTransactionsPerCustomer[0];
-                    innerObj = packageObj.package;
-                    if (innerObj.dailyLive)
-                        monthlyDataObj.dailyLive = monthlyDataObj.dailyLive + innerObj.dailyLive;
-                    if (innerObj.weeklyLive)
-                        monthlyDataObj.weeklyLive = monthlyDataObj.weeklyLive + innerObj.weeklyLive;
-                    if (innerObj.dailyComedy)
-                        monthlyDataObj.dailyComedy = monthlyDataObj.dailyComedy + innerObj.dailyComedy;
-                    if (innerObj.weeklyComedy)
-                        monthlyDataObj.weeklyComedy = monthlyDataObj.weeklyComedy + innerObj.weeklyComedy;
+                    total = avgTransactionsPerCustomer[0];
+                    monthlyDataObj.avgTransactionsPerCustomer = total;
 
-                    monthlyDataObj.date = outerObj.date;
+                    monthlyDataObj.from_date = outerObj.date;
+                    monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, month: ''});
+                    monthlyDataObj = _.clone({avgTransactionsPerCustomer: 0, from_date: '', to_date: ''});
                 }
             }
         }
