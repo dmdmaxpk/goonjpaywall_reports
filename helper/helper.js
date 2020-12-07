@@ -285,6 +285,8 @@ class Helper {
         toDate  = new Date(_.clone(fromDate));
         daysInMonth = this.getDaysInMonth(month)
         toDate.setDate(toDate.getDate() + daysInMonth - 1);
+        toDate.setHours(23, 59, 59);
+
         console.log('computeNextDate - toDate : ', toDate);
 
         return {req: req, month: month, fromDate: fromDate, toDate: toDate};
