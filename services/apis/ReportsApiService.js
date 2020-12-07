@@ -24,12 +24,12 @@ generateReportsData = async (req,res) => {
             rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
         else if(params.sub_type === 'avg_transactions' || params.sub_type === 'avg_transactions_per_customer'){
 
-            console.log('params.from_date: ', params.from_date);
+            console.log('params.from_date: ', new Date(params.from_date));
 
-            params.from_date = new Date(params.from_date);
-            params.to_date = new Date(params.to_date);
-            params.from_date = params.from_date.setDate(1);
-            params.to_date = params.to_date.setDate(1);
+            let from_date = new Date(params.from_date);
+            let to_date = new Date(params.to_date);
+            params.from_date = from_date.setDate(1);
+            params.to_date = to_date.setDate(1);
 
             console.log('params.from_date: ', params.from_date);
             console.log('params.to_date: ', params.to_date);
