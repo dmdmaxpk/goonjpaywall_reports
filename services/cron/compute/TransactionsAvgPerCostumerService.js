@@ -75,21 +75,14 @@ promiseBasedComputeTransactionsAvgPerCustomerReports = async(req, res) => {
 function computeTransactionsData(transactionRawData, fromDate) {
     let rawData, avgTransactionsPerCustomer = [];
     let avgTransactionsObj = {
-        package: { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0 },
+        total: 0,
         month: ''
     };
 
     for (let i = 0 ; i < transactionRawData.length; i++){
         rawData = transactionRawData[i];
         //Package wise subscriptions
-        if(rawData.package_id === 'QDfC')
-            avgTransactionsObj.package.dailyLive = rawData.avg;
-        else if(rawData.package_id === 'QDfG')
-            avgTransactionsObj.package.weeklyLive = rawData.avg;
-        else if(rawData.package_id === 'QDfH')
-            avgTransactionsObj.package.dailyComedy = rawData.avg;
-        else if(rawData.package_id === 'QDfI')
-            avgTransactionsObj.package.weeklyComedy = rawData.avg;
+        avgTransactionsObj.total = rawData.total;
     }
 
     avgTransactionsObj.month = fromDate;
