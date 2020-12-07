@@ -1,6 +1,5 @@
 const config = require('../config');
 const  _ = require('lodash');
-const moment = require('moment-timezone');
 
 //Helper class - define all basic functions
 class Helper {

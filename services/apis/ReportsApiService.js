@@ -16,13 +16,19 @@ const trialService = require("./compute/TrialService");
 const usersService = require("./compute/UsersService");
 const affiliateService = require("./compute/AffiliateService");
 
-const helper = require("../../helper/helper");
-
 generateReportsData = async (req,res) => {
     try {
         let params = req.query, rawDataSet;
         if (params.type === 'affiliate')
             rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
+        else if(params.type === 'avg_transactions' || params.type === 'avg_transactions_per_customer'){
+            params.from_date = new Date(params.from_date).setHours(00, 00, 00);
+            params.to_date = new Date(params.to_date).setHours(00, 00, 00);
+
+            console.log('params.from_date: ', params.from_date);
+            console.log('params.to_date: ', params.to_date);
+            rawDataSet = await reportsRepo.generateReportsData(params);
+        }
         else
             rawDataSet = await reportsRepo.generateReportsData(params);
 
@@ -190,7 +196,7 @@ generateReportsData = async (req,res) => {
                 return transactionService.computeAvgTransactionsPerCustomerReport(rawDataSet, params);
             else if (params.sub_type === 'successful'){
                 if (params.successful === 'source_wise')
-                    return transactionService.computeTransactionsSourceWiseReport(rawDataSet, params);
+                    return subscriptionService.sourceWiseSubscriptionReport(rawDataSet, params);
                 else if(params.successful === 'package_wise')
                     return transactionService.computeTransactionsPackageWiseReport(rawDataSet, params);
                 else if(params.successful === 'paywall_wise')
