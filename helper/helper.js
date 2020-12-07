@@ -106,8 +106,8 @@ class Helper {
     static getDatesArr(from, to) {
         console.log('getDatesArr')
 
-        from = moment(new Date(from)).date(1).format('YYYY-MM-DD');
-        to = moment(new Date(to)).date(1).format('YYYY-MM-DD');
+        from = moment(new Date(from)).date(1);
+        to = moment(new Date(to)).date(1);
 
         console.log('from: ', from);
         console.log('to: ', to);
