@@ -111,10 +111,11 @@ class Helper {
 
         console.log('from: ', from);
         console.log('to: ', to);
-        var dates=[], dt = new Date(from);
-        for(; dt <= to; dt.setDate(dt.getDate()+1)){
+        let dates=[];
+        for(let dt = new Date(from); dt <= to; dt.setDate(dt.getDate()+1)){
+            console.log('in loop: ');
 
-            if(dt.getDate() == 1){
+            if(dt.getDate() === 1){
                 console.log('======', dt.getDate());
                 dates.push(new Date(dt));
             }
