@@ -57,11 +57,11 @@ computeAvgTransactionsPerCustomerReport = async (rawDataSet, params) =>{
                 transactions = outerObj.transactions;
                 if (transactions.avgTransactionsPerCustomer) {
                     avgTransactionsPerCustomer = transactions.avgTransactionsPerCustomer;
-                    total = avgTransactionsPerCustomer[0];
-                    monthlyDataObj.avgTransactionsPerCustomer = total;
+                    innerObj = avgTransactionsPerCustomer[0];
+                    monthlyDataObj.avgTransactionsPerCustomer = innerObj.total;
 
-                    monthlyDataObj.from_date = outerObj.date;
-                    monthlyDataObj.to_date = outerObj.date;
+                    monthlyDataObj.from_date = innerObj.month;
+                    monthlyDataObj.to_date = innerObj.month;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
                     monthlyDataObj = _.clone({avgTransactionsPerCustomer: 0, from_date: '', to_date: ''});
                 }
