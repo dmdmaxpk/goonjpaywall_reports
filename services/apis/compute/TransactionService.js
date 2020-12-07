@@ -11,6 +11,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
     let monthlyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, month: '' };
 
+    console.log('rawDataSet.length: ', rawDataSet.length);
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];

@@ -31,7 +31,7 @@ generateReportsData = async (req,res) => {
             console.log('params.from_date: ', params.from_date);
             console.log('params.to_date: ', params.to_date);
 
-            rawDataSet = await reportsRepo.generateReportsData(params);
+            rawDataSet = await reportsRepo.generateReportsDataWithDates(params);
         }
         else
             rawDataSet = await reportsRepo.generateReportsData(params);
