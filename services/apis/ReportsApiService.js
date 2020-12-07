@@ -19,9 +19,15 @@ const affiliateService = require("./compute/AffiliateService");
 generateReportsData = async (req,res) => {
     try {
         let params = req.query, rawDataSet;
+
+        console.log('params.type: ', params.type);
+
         if (params.type === 'affiliate')
             rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
         else if(params.type === 'avg_transactions' || params.type === 'avg_transactions_per_customer'){
+
+            console.log('params.type === \'avg_transactions\' || params.type === \'avg_transactions_per_customer\': ');
+
             params.from_date = new Date(params.from_date).setHours(00, 00, 00);
             params.to_date = new Date(params.to_date).setHours(00, 00, 00);
 
