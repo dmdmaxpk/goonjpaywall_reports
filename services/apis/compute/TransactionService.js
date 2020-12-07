@@ -16,7 +16,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
             outerObj = rawDataSet[i];
             if (outerObj.transactions){
                 transactions = outerObj.transactions;
-                if (transactions.avgTransactions && ( transactions.date === params.from_date || transactions.date === params.to_date )) {
+                if (transactions.avgTransactions) {
 
                     console.log('=============');
                     avgTransactions = transactions.avgTransactions;
