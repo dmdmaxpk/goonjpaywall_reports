@@ -17,6 +17,7 @@ const usersService = require("./compute/UsersService");
 const affiliateService = require("./compute/AffiliateService");
 
 var moment = require('moment');
+
 generateReportsData = async (req,res) => {
     try {
         let params = req.query, rawDataSet;
