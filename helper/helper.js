@@ -114,7 +114,7 @@ class Helper {
 
             if(dt.getDate() === 1){
                 console.log('======', dt.getDate());
-                dates.push(new Date(dt));
+                dates.push(new ISODate(dt));
             }
         }
         console.log('dates: ', dates);
