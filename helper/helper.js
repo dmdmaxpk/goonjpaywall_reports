@@ -1,5 +1,6 @@
 const config = require('../config');
 const  _ = require('lodash');
+const moment = require('moment');
 
 //Helper class - define all basic functions
 class Helper {
@@ -100,6 +101,27 @@ class Helper {
 
     static getTodayMonthNo() {
         return new Date().getMonth() + 1;
+    }
+
+    static getDatesArr(from, to) {
+        console.log('getDatesArr')
+
+        from = moment(new Date(from)).date(1).format('YYYY-MM-DD');
+        to = moment(new Date(to)).date(1).format('YYYY-MM-DD');
+
+        console.log('from: ', from);
+        console.log('to: ', to);
+        var dates=[], dt = new Date(from);
+        for(; dt <= to; dt.setDate(dt.getDate()+1)){
+
+            if(dt.getDate() == 1){
+                console.log('======', dt.getDate());
+                dates.push(new Date(dt));
+            }
+        }
+        console.log('dates: ', dates);
+
+        return dates;
     }
 
     static splitHoursFromISODate(dateString){

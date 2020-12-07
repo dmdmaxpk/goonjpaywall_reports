@@ -11,24 +11,15 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
     let monthlyDataObj = { dailyLive: 0, weeklyLive: 0, dailyComedy: 0, weeklyComedy: 0, month: '' };
 
-    console.log('rawDataSet.length: ', rawDataSet.length);
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
-            console.log('outerObj.transactions: ');
-
             if (outerObj.transactions){
                 transactions = outerObj.transactions;
-                console.log('transactions: ');
-
                 if (transactions.avgTransactions) {
                     avgTransactions = transactions.avgTransactions;
-                    console.log('avgTransactions: ');
-
                     packageObj = avgTransactions[0];
                     innerObj = packageObj.package;
-                    console.log('innerObj: ', innerObj);
-
                     if (innerObj.dailyLive)
                         monthlyDataObj.dailyLive = monthlyDataObj.dailyLive + innerObj.dailyLive;
                     if (innerObj.weeklyLive)
