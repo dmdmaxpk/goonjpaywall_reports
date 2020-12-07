@@ -108,16 +108,13 @@ class Helper {
 
         from = moment(new Date(from)).date(1);
         to = moment(new Date(to)).date(1);
-
-        console.log('from: ', from);
-        console.log('to: ', to);
         let dates=[];
         for(let dt = new Date(from); dt <= to; dt.setDate(dt.getDate()+1)){
             console.log('in loop: ');
 
             if(dt.getDate() === 1){
                 console.log('======', dt.getDate());
-                dates.push(new Date(dt));
+                dates.push(dt);
             }
         }
         console.log('dates: ', dates);
