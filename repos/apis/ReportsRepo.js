@@ -24,7 +24,6 @@ generateReportsDataWithDates = async (params) => {
     console.log('generateReportsDataWithDates: ', params.from_date, params.to_date);
     return await Report.aggregate([
         { $match:{
-
                 date: { $in: [ new Date(params.from_date), new Date(params.to_date) ] }
             }
         }
