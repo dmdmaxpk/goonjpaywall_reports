@@ -46,7 +46,7 @@ computeAvgTransactionsSizeReport = async (rawDataSet, params) =>{
 computeAvgTransactionsPerCustomerReport = async (rawDataSet, params) =>{
     console.log('computeAvgTransactionsPerCustomerReport');
 
-    let outerObj, innerObj, transactions, avgTransactionsPerCustomer, total, dataObj;
+    let outerObj, innerObj, transactions, avgTransactionsPerCustomer, dataObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
     let monthlyDataObj = { avgTransactionsPerCustomer: 0, from_date: '', to_date: '' };
 

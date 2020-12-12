@@ -187,11 +187,12 @@ promiseBasedComputeChargeDetailsReports = async(req, res) => {
 
 function computeChargeDetailData(chargeDetails) {
 
-    let dateInMili, outer_billing_dtm, inner_billing_dtm, outerObj, innerObj, price;
+    let outer_billing_dtm, inner_billing_dtm, outerObj, innerObj, price;
     let chargeDetailObj, newObjReturningUsers, uniquePayingUserObj, billingStatusNewObj, fullAndPartialCharging, micro_charge;
     let chargeDetailList = [], billingHistoryArr = [], returningUserListArr = [], fullAndPartialChargeListArr = [],
         uniquePayingUsers = [];
 
+    let thisHour, check, hoursArr = [];
     for (let j=0; j < chargeDetails.length; j++) {
 
         outerObj = chargeDetails[j];
@@ -203,8 +204,13 @@ function computeChargeDetailData(chargeDetails) {
         uniquePayingUserObj = _.clone(cloneUniquePayingUsersObj());
 
         outer_billing_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
+        thisHour = new Date(outerObj.billing_dtm).getUTCHours();
+        check = hoursArr.includes(thisHour);
 
-        if (dateInMili !== outer_billing_dtm){
+        if (!check) {
+            hoursArr.push(thisHour);
+            console.log('hoursArr: ', hoursArr.length);
+
             for (let k=0; k < chargeDetails.length; k++) {
 
                 innerObj = chargeDetails[k];
@@ -213,7 +219,6 @@ function computeChargeDetailData(chargeDetails) {
                 if (outer_billing_dtm === inner_billing_dtm){
                     price = innerObj.price - (innerObj.discount ? innerObj.discount : 0);
                     micro_charge = innerObj.micro_charge === false ? false : true;
-                    dateInMili = inner_billing_dtm;
 
                     //Package wise Charge Details
                     if(innerObj.package === 'QDfC'){

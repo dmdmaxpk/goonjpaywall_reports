@@ -170,9 +170,10 @@ promiseBasedComputeChargeDetailsReports = async(req, res) => {
 
 function computeChargeDetailSourceWiseData(chargeDetails) {
 
-    let dateInMili, outer_added_dtm, inner_added_dtm, outerObj, innerObj, price, micro_charge;
+    let outer_added_dtm, inner_added_dtm, outerObj, innerObj, price, micro_charge;
     let chargeDetailSourceWiseObj, transactionsSourceWiseObj;
     let chargeDetailSourceWiseList = [], transactionsSourceWiseList = [];
+    let thisHour, check, hoursArr = [];
 
     for (let j=0; j < chargeDetails.length; j++) {
 
@@ -180,10 +181,14 @@ function computeChargeDetailSourceWiseData(chargeDetails) {
 
         chargeDetailSourceWiseObj = _.clone(cloneChargeDetailSourceWiseObj());
         transactionsSourceWiseObj = _.clone(cloneTransactionSourceWiseObj());
-
         outer_added_dtm = helper.setDate(new Date(outerObj.added_dtm), null, 0, 0, 0).getTime();
+        thisHour = new Date(outerObj.added_dtm).getUTCHours();
+        check = hoursArr.includes(thisHour);
 
-        if (dateInMili !== outer_added_dtm){
+        if (!check) {
+            hoursArr.push(thisHour);
+            console.log('hoursArr: ', hoursArr.length);
+
             for (let k=0; k < chargeDetails.length; k++) {
 
                 innerObj = chargeDetails[k];
@@ -192,7 +197,6 @@ function computeChargeDetailSourceWiseData(chargeDetails) {
                 if (outer_added_dtm === inner_added_dtm){
                     micro_charge = innerObj.micro_charge === false ? false : true;
                     price = innerObj.price - (innerObj.discount ? innerObj.discount : 0);
-                    dateInMili = inner_added_dtm;
 
                     //Source wise Charge Details
                     if (innerObj.source === 'app'){

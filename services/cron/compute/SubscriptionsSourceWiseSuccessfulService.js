@@ -167,7 +167,7 @@ promiseBasedSubscriptionsSourceWiseSuccessfulReports = async(req, res) => {
 function computeSubscriptionsSourceWiseSuccessfulData(data) {
 
     let outerObj, innerObj, subscriptionObj, outer_billing_dtm, inner_billing_dtm;
-    let check, subscriptionList = [], hoursArr = [];
+    let check, thisHour, subscriptionList = [], hoursArr = [];
 
     for (let j=0; j < data.length; j++) {
 
