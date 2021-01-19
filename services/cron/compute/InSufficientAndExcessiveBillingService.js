@@ -26,7 +26,7 @@ computeInsufficientBalanceReports = async(req, res) => {
         if (insufficientBalance.length > 0){
             console.log('insufficientBalance - length: ', insufficientBalance.length);
 
-            await insertInsufficientBalanceNewRecord(insufficientBalance[0].count, fromDate);
+            await insertInsufficientBalanceNewRecord(insufficientBalance[0], fromDate);
         }
 
         // Get compute data for next time slot
@@ -77,7 +77,7 @@ promiseBasedComputeInsufficientBalanceReports = async(req, res) => {
 
         if (insufficientBalance.length > 0){
             console.log('insufficientBalance - length: ', insufficientBalance.length);
-            await insertInsufficientBalanceNewRecord(insufficientBalance[0].count, fromDate);
+            await insertInsufficientBalanceNewRecord(insufficientBalance[0], fromDate);
         }
     });
 
