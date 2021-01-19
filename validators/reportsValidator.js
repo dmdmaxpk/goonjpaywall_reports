@@ -79,6 +79,11 @@ class ReportsValidator{
                 break;
             case 'insufficient_balance':
                 this.checkDateIsNull(params, "Insufficient Balance");
+
+                break;
+            case 'excessive_billing':
+                this.checkDateIsNull(params, "Excessive Billing");
+
                 break;
             case 'transactions':
                 this.checkDateIsNull(params, "Get Transactions");

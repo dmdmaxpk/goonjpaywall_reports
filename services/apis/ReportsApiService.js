@@ -11,6 +11,7 @@ const revenueService = require("./compute/RevenueService");
 const subscriberService = require("./compute/SubscriberService");
 const subscriptionService = require("./compute/SubscriptionService");
 const SubscriptionsFromBillingService = require("./compute/SubscriptionsFromBillingService");
+const InsufficientAndExcessiveBillingService = require("./compute/InsufficientAndExcessiveBillingService");
 const transactionService = require("./compute/TransactionService");
 const trialService = require("./compute/TrialService");
 const usersService = require("./compute/UsersService");
@@ -166,7 +167,10 @@ generateReportsData = async (req,res) => {
                 return subscriptionService.computeUnSubscriptionsSourceWiseReport(rawDataSet, params);
         }
         else if (params.type === 'insufficient_balance') {
-            return subscriptionService.computeUnSubscriptionsSourceWiseReport(rawDataSet, params);
+            return InsufficientAndExcessiveBillingService.computeInsufficientBalanceReport(rawDataSet, params);
+        }
+        else if (params.type === 'excessive_billing') {
+            return InsufficientAndExcessiveBillingService.computeExcessiveBillingReport(rawDataSet, params);
         }
         else if (params.type === 'charge_details') {
             if (params.sub_type === 'source_wise')
