@@ -179,16 +179,21 @@ function insertInsufficientBalanceNewRecord(insufficientBalance, dateString) {
 
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0) {
+            console.log('if - insufficientBalance: ', insufficientBalance);
+
             result = result[0];
             result.insufficient_balance = insufficientBalance;
 
+            console.log('result.insufficient_balance: ', result.insufficient_balance);
             reportsRepo.updateReport(result, result._id);
         }
-        else
+        else{
+            console.log('else - insufficientBalance: ', insufficientBalance);
             reportsRepo.createReport({
                 insufficient_balance: insufficientBalance,
                 date: dateString
             });
+        }
     });
 }
 function insertAffiliateMidsNewRecord(affiliateMidsData, dateString) {
