@@ -22,7 +22,10 @@ router.route('/compute-callback-send-reports')
     .get(connection.connect, controller.computeCallbackSendReports); //**
 
 router.route('/compute-insufficient-balance-reports')
-    .get(connection.connect, controller.promiseBasedComputeInsufficientBalanceReports); //**
+    .get(connection.connect, controller.computeInsufficientBalanceReports); //**
+
+router.route('/compute-excessive-billing-reports')
+    .get(connection.connect, controller.computeExcessiveBillingReports); //**
 
 router.route('/compute-revenue-net-addition-reports')
     .get(connection.connect, controller.computeRevenueNetAdditionReports); //**

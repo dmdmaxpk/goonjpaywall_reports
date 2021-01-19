@@ -12,7 +12,7 @@ computeInsufficientBalanceReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 17, 12);
+    dateData = helper.computeNextDate(req, 1, 12);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -57,93 +57,10 @@ computeInsufficientBalanceReports = async(req, res) => {
 };
 
 promiseBasedComputeInsufficientBalanceReports = async(req, res) => {
-    console.log('promiseBasedComputeInsufficientBalanceReports: ');
-    let dateData, fromDate, toDate, day, month;
-
-    /*
-    * Compute date and time for data fetching from db
-    * Script will execute to fetch data as per day
-    * */
-    dateData = helper.computeNextDate(req, 17, 1);
-    req = dateData.req;
-    day = dateData.day;
-    month = dateData.month;
-    fromDate = dateData.fromDate;
-    toDate = dateData.toDate;
-
-    console.log('promiseBasedComputeInsufficientBalanceReports: ', fromDate, toDate);
-    await billingHistoryRepo.getInsufficientBalanceByDateRange(req, fromDate, toDate).then(async function (insufficientBalance) {
-        console.log('insufficientBalance: ', insufficientBalance);
-
-        if (insufficientBalance.length > 0){
-            console.log('insufficientBalance - length: ', insufficientBalance.length);
-            await insertInsufficientBalanceNewRecord(insufficientBalance[0], fromDate);
-        }
-    });
-
-    // Get compute data for next time slot
-    req.day = Number(req.day) + 1;
-    console.log('promiseBasedComputeInsufficientBalanceReports -> day : ', day, req.day, helper.getDaysInMonth(month));
-
-    if (req.day <= helper.getDaysInMonth(month)){
-        if (month < helper.getTodayMonthNo())
-            promiseBasedComputeInsufficientBalanceReports(req, res);
-        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-            promiseBasedComputeInsufficientBalanceReports(req, res);
-    }
-    else{
-        req.day = 1;
-        req.month = Number(req.month) + 1;
-        console.log('promiseBasedComputeInsufficientBalanceReports -> month : ', month, req.month, new Date().getMonth());
-
-        if (req.month <= helper.getTodayMonthNo())
-            promiseBasedComputeInsufficientBalanceReports(req, res);
-    }
-
-    if (helper.isToday(fromDate)){
-        console.log('promiseBasedComputeInsufficientBalanceReports - data compute - done');
-        delete req.day;
-        delete req.month;
-    }
-};
-
-promiseBasedComputeAffiliateReports = async(req, res) => {
-    console.log('promiseBasedComputeAffiliateReports: ');
     return new Promise(async (resolve, reject) => {
-        let dateData, fromDate, toDate, computedData = [];
+        let dateData, fromDate, toDate;
 
-        /*
-        * Compute date and time for data fetching from db
-        * Script will execute to fetch data as per day
-        * */
-        dateData = helper.computeTodayDate(req);
-        req = dateData.req;
-        fromDate = dateData.fromDate;
-        toDate = dateData.toDate;
-
-        console.log('computeInsufficientBalanceReports: ', fromDate, toDate);
-        await billingHistoryRepo.getAffiliateDataByDateRange(req, fromDate, toDate).then(async function (subscriptions) {
-            console.log('subscription: ', subscriptions.length);
-
-            if (subscriptions.length > 0){
-                computedData = computeInsufficientBalanceData(subscriptions);
-                //affiliateWise, statusWise, packageWise, sourceWise
-                await insertInsufficientBalanceNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, fromDate);
-            }
-        });
-
-        if (helper.isToday(fromDate)){
-            console.log('promiseBasedComputeAffiliateReports - data compute - done');
-            delete req.day;
-            delete req.month;
-        }
-        resolve(0);
-    });
-};
-promiseBasedComputeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
-    console.log('promiseBasedComputeAffiliateMidsFromSubscriptionsReports: ');
-    return new Promise(async (resolve, reject) => {
-        let dateData, fromDate, toDate, affiliateMidsData = [];
+        console.log('promiseBasedComputeInsufficientBalanceReports: ');
 
         /*
         * Compute date and time for data fetching from db
@@ -155,17 +72,103 @@ promiseBasedComputeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
         toDate = dateData.toDate;
 
         console.log('promiseBasedComputeInsufficientBalanceReports: ', fromDate, toDate);
-        await billingHistoryRepo.getAffiliateMidFromSubscriptionsByDateRange(req, fromDate, toDate).then(async function (affiliateMids) {
-            console.log('affiliateMids: ', affiliateMids.length);
+        await billingHistoryRepo.getInsufficientBalanceByDateRange(req, fromDate, toDate).then(async function (insufficientBalance) {
+            console.log('insufficientBalance: ', insufficientBalance);
 
-            if (affiliateMids.length > 0){
-                affiliateMidsData = computeAffiliateMidsData(affiliateMids);
-                await insertAffiliateMidsNewRecord(affiliateMidsData, fromDate);
+            if (insufficientBalance.length > 0){
+                console.log('promiseBasedComputeInsufficientBalanceReports - length: ', insufficientBalance.length);
+                await insertInsufficientBalanceNewRecord(insufficientBalance[0], fromDate);
+            }
+        });
+
+
+        if (helper.isToday(fromDate)){
+            console.log('promiseBasedComputeInsufficientBalanceReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+        resolve(0);
+    });
+};
+
+computeExcessiveBillingReports = async(req, res) => {
+    console.log('computeExcessiveBillingReports: ');
+    let dateData, fromDate, toDate, day, month;
+
+    /*
+    * Compute date and time for data fetching from db
+    * Script will execute to fetch data as per day
+    * */
+    dateData = helper.computeNextDate(req, 1, 12);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
+
+    console.log('computeExcessiveBillingReports: ', fromDate, toDate);
+    await billingHistoryRepo.getExcessiveBillingCountByDateRange(req, fromDate, toDate).then(async function (excessiveBillingCount) {
+        console.log('excessiveBillingCount: ', excessiveBillingCount.length);
+
+        if (excessiveBillingCount.length > 0){
+            console.log('excessiveBillingCount - length: ', excessiveBillingCount.length);
+
+            await insertExcessiveBillingNewRecord(excessiveBillingCount[0], fromDate);
+        }
+
+        // Get compute data for next time slot
+        req.day = Number(req.day) + 1;
+        console.log('computeExcessiveBillingReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+
+        if (req.day <= helper.getDaysInMonth(month)){
+            if (month < helper.getTodayMonthNo())
+                computeExcessiveBillingReports(req, res);
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+                computeExcessiveBillingReports(req, res);
+        }
+        else{
+            req.day = 1;
+            req.month = Number(req.month) + 1;
+            console.log('computeExcessiveBillingReports -> month : ', month, req.month, new Date().getMonth());
+
+            if (req.month <= helper.getTodayMonthNo())
+                computeExcessiveBillingReports(req, res);
+        }
+
+        if (helper.isToday(fromDate)){
+            console.log('computeExcessiveBillingReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+    });
+};
+promiseBasedComputeExcessiveBillingReports = async(req, res) => {
+    console.log('promiseBasedComputeExcessiveBillingReports: ');
+    return new Promise(async (resolve, reject) => {
+        let dateData, fromDate, toDate;
+
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data as per day
+        * */
+        dateData = helper.computeTodayDate(req);
+        req = dateData.req;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        console.log('promiseBasedComputeExcessiveBillingReports: ', fromDate, toDate);
+        await billingHistoryRepo.getExcessiveBillingCountByDateRange(req, fromDate, toDate).then(async function (excessiveBillingCount) {
+            console.log('excessiveBillingCount: ', excessiveBillingCount.length);
+
+            if (excessiveBillingCount.length > 0){
+                console.log('excessiveBillingCount - length: ', excessiveBillingCount.length);
+
+                await insertExcessiveBillingNewRecord(excessiveBillingCount[0], fromDate);
             }
         });
 
         if (helper.isToday(fromDate)){
-            console.log('promiseBasedComputeAffiliateMidsFromSubscriptionsReports - data compute - done');
+            console.log('promiseBasedComputeExcessiveBillingReports - data compute - done');
             delete req.day;
             delete req.month;
         }
@@ -197,21 +200,21 @@ function insertInsufficientBalanceNewRecord(insufficientBalance, dateString) {
         }
     });
 }
-function insertAffiliateMidsNewRecord(affiliateMidsData, dateString) {
+function insertExcessiveBillingNewRecord(excessiveBillingCount, dateString) {
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
-    console.log('=>=>=>=>=>=>=> insertAffiliateMidsNewRecord', dateString);
+    console.log('=>=>=>=>=>=>=> insertExcessiveBillingNewRecord', dateString);
 
     reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0) {
             result = result[0];
-            result.subscriptions = affiliateMidsData;
+            result.excessive_billing = excessiveBillingCount;
 
             reportsRepo.updateReport(result, result._id);
         }
         else
             reportsRepo.createReport({
-                subscriptions: affiliateMidsData,
+                excessive_billing: excessiveBillingCount,
                 date: dateString
             });
     });
@@ -221,6 +224,6 @@ module.exports = {
     computeInsufficientBalanceReports: computeInsufficientBalanceReports,
     promiseBasedComputeInsufficientBalanceReports: promiseBasedComputeInsufficientBalanceReports,
 
-    promiseBasedComputeAffiliateReports: promiseBasedComputeAffiliateReports,
-    promiseBasedComputeAffiliateMidsFromSubscriptionsReports: promiseBasedComputeAffiliateMidsFromSubscriptionsReports
+    computeExcessiveBillingReports: computeExcessiveBillingReports,
+    promiseBasedComputeExcessiveBillingReports: promiseBasedComputeExcessiveBillingReports
 };

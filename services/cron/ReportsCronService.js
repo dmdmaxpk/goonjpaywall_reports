@@ -64,8 +64,12 @@ cronComputeDailyDataReports = async (req, res) => {
     await AffiliateSubscriptionsService.promiseBasedComputeAffiliateMidsFromSubscriptionsReports(req,res);
 
     // compute Insufficient Balance
-    helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeInsufficientBalanceReports');
-    await InSufficientAndExcessiveBillingService.promiseBasedComputeInsufficientBalanceReports(req,res);
+    // helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeInsufficientBalanceReports');
+    // await InSufficientAndExcessiveBillingService.promiseBasedComputeInsufficientBalanceReports(req,res);
+
+    // compute Excessive Billing
+    // helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeExcessiveBillingReports');
+    // await InSufficientAndExcessiveBillingService.promiseBasedComputeExcessiveBillingReports(req,res);
 
     // compute Affiliate - Affiliate report Data
     helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports');

@@ -72,9 +72,14 @@ exports.computeCallbackSendReports = async (req,res) =>  {
     res.send("computeCallbackSendReports - Executed\n");
 };
 
-exports.promiseBasedComputeInsufficientBalanceReports = async (req,res) =>  {
-    InSufficientAndExcessiveBillingService.promiseBasedComputeInsufficientBalanceReports(req,res);
-    res.send("promiseBasedComputeInsufficientBalanceReports - Executed\n");
+exports.computeInsufficientBalanceReports = async (req,res) =>  {
+    InSufficientAndExcessiveBillingService.computeInsufficientBalanceReports(req,res);
+    res.send("computeInsufficientBalanceReports - Executed\n");
+};
+
+exports.computeExcessiveBillingReports = async (req,res) =>  {
+    InSufficientAndExcessiveBillingService.computeExcessiveBillingReports(req,res);
+    res.send("computeExcessiveBillingReports - Executed\n");
 };
 
 exports.computeChargeDetailsReports = async (req,res) =>  {
