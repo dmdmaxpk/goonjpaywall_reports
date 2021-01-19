@@ -12,6 +12,7 @@ const TransactionsAvgPerCostumerService = require('../services/cron/compute/Tran
 const SubscriberSubscriptionsReports = require('../services/cron/compute/SubscriberSubscriptionsReports');
 const SubscriberTransactionsReports = require('../services/cron/compute/SubscriberTransactionsReports');
 const AffiliateSubscriptionsService = require('../services/cron/compute/AffiliateDataFromSubscriptionsService');
+const InSufficientAndExcessiveBillingService = require('../services/cron/compute/InSufficientAndExcessiveBillingService');
 
 const BillingHistorySuccessfulService = require('../services/cron/compute/BillingHistorySuccessfulService');
 const SubscriptionsSourceWiseSuccessfulService = require('../services/cron/compute/SubscriptionsSourceWiseSuccessfulService');
@@ -69,6 +70,11 @@ exports.computeBillingHistorySuccessfulReports = async (req,res) =>  {
 exports.computeCallbackSendReports = async (req,res) =>  {
     CallbackSendService.computeCallbackSendReports(req,res);
     res.send("computeCallbackSendReports - Executed\n");
+};
+
+exports.promiseBasedComputeInsufficientBalanceReports = async (req,res) =>  {
+    InSufficientAndExcessiveBillingService.promiseBasedComputeInsufficientBalanceReports(req,res);
+    res.send("promiseBasedComputeInsufficientBalanceReports - Executed\n");
 };
 
 exports.computeChargeDetailsReports = async (req,res) =>  {

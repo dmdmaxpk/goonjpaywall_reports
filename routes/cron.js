@@ -21,6 +21,9 @@ router.route('/compute-subscription-source-wise-reports')
 router.route('/compute-callback-send-reports')
     .get(connection.connect, controller.computeCallbackSendReports); //**
 
+router.route('/compute-insufficient-balance-reports')
+    .get(connection.connect, controller.promiseBasedComputeInsufficientBalanceReports); //**
+
 router.route('/compute-revenue-net-addition-reports')
     .get(connection.connect, controller.computeRevenueNetAdditionReports); //**
 

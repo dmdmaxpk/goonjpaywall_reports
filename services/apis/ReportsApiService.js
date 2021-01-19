@@ -165,6 +165,9 @@ generateReportsData = async (req,res) => {
             if (params.sub_type === 'source_wise')
                 return subscriptionService.computeUnSubscriptionsSourceWiseReport(rawDataSet, params);
         }
+        else if (params.type === 'insufficient_balance') {
+            return subscriptionService.computeUnSubscriptionsSourceWiseReport(rawDataSet, params);
+        }
         else if (params.type === 'charge_details') {
             if (params.sub_type === 'source_wise')
                 return chargeDetailService.computeChargeDetailsSourceWiseReport(rawDataSet, params);

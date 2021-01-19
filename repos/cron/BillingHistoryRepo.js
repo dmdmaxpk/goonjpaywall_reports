@@ -161,6 +161,29 @@ class BillingHistoryRepository {
         });
     }
 
+    async getInsufficientBalanceByDateRange(req, from, to) {
+        return new Promise((resolve, reject) => {
+            console.log('getInsufficientBalanceByDateRange: ', from, to);
+            req.db.collection('billinghistories', function (err, collection) {
+                if (!err) {
+                    collection.aggregate([
+                        {
+                            $match:{
+                                "operator_response.errorMessage": "The account balance is insufficient.",
+                                $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+                            }},
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
+                        if(err){
+                            console.log('getInsufficientBalanceByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            });
+        });
+    }
+
     async getChargeDetailsByDateRange (req, from, to, skip, limit){
         return new Promise((resolve, reject) => {
             console.log('getChargeDetailsByDateRange: ', from, to, skip, limit);

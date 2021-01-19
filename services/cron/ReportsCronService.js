@@ -13,6 +13,7 @@ const SubscriberTransactionsReports = require('./compute/SubscriberTransactionsR
 const AffiliateSubscriptionsService = require('./compute/AffiliateDataFromSubscriptionsService');
 const BillingHistorySuccessfulService = require('./compute/BillingHistorySuccessfulService');
 const SubscriptionsSourceWiseSuccessfulService = require('./compute/SubscriptionsSourceWiseSuccessfulService');
+const InSufficientAndExcessiveBillingService = require('./compute/InSufficientAndExcessiveBillingService');
 
 const HelogsService = require('./compute/HelogsService');
 const LogsService = require('./compute/LogsService');
@@ -61,6 +62,10 @@ cronComputeDailyDataReports = async (req, res) => {
     // compute Affiliate - Affiliate Mids report Data
     helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateMidsFromSubscriptionsReports');
     await AffiliateSubscriptionsService.promiseBasedComputeAffiliateMidsFromSubscriptionsReports(req,res);
+
+    // compute Insufficient Balance
+    helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeInsufficientBalanceReports');
+    await InSufficientAndExcessiveBillingService.promiseBasedComputeInsufficientBalanceReports(req,res);
 
     // compute Affiliate - Affiliate report Data
     helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports');
