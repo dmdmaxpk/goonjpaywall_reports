@@ -23,7 +23,10 @@ computeInsufficientBalanceReports = async(req, res) => {
     await billingHistoryRepo.getInsufficientBalanceByDateRange(req, fromDate, toDate).then(async function (insufficientBalance) {
         console.log('insufficientBalance: ', insufficientBalance);
 
-        await insertInsufficientBalanceNewRecord(insufficientBalance, fromDate);
+        if (insufficientBalance.length > 0){
+            insufficientBalance = insufficientBalance.count;
+            await insertInsufficientBalanceNewRecord(insufficientBalance, fromDate);
+        }
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
@@ -71,7 +74,10 @@ promiseBasedComputeInsufficientBalanceReports = async(req, res) => {
     await billingHistoryRepo.getInsufficientBalanceByDateRange(req, fromDate, toDate).then(async function (insufficientBalance) {
         console.log('insufficientBalance: ', insufficientBalance);
 
-        // await insertInsufficientBalanceNewRecord(insufficientBalance, fromDate);
+        if (insufficientBalance.length > 0){
+            insufficientBalance = insufficientBalance.count;
+            await insertInsufficientBalanceNewRecord(insufficientBalance, fromDate);
+        }
     });
 
     // Get compute data for next time slot
