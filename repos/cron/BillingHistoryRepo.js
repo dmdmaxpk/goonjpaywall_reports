@@ -167,11 +167,11 @@ class BillingHistoryRepository {
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
-                        {
-                            $match:{
-                                "operator_response.errorMessage": "The account balance is insufficient.",
-                                $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
-                            }},
+                        { $match:{
+                            "operator_response.errorMessage": "The account balance is insufficient.",
+                            $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+                        }},
+                        { $count: "count"}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getInsufficientBalanceByDateRange - err: ', err.message);
