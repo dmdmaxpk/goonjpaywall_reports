@@ -104,7 +104,7 @@ class Helper {
     }
 
     static getDaysInMonth(month) {
-        return new Date(2020, month, 0).getDate();
+        return new Date(2021, month, 0).getDate();
     }
 
     static getTodayDayNo() {
@@ -167,7 +167,7 @@ class Helper {
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
+        fromDate  = new Date('2021-'+month+'-'+day+'T00:00:00.000Z');
         fromDate = this.setDateWithTimezone(fromDate, 'in');
         console.log('computeTodayDate - fromDate : ', fromDate);
 
@@ -193,7 +193,7 @@ class Helper {
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
+        fromDate  = new Date('2021-'+month+'-'+day+'T00:00:00.000Z');
         console.log('computeTodayDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
@@ -246,7 +246,7 @@ class Helper {
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
+        fromDate  = new Date('2021-'+month+'-'+day+'T00:00:00.000Z');
         fromDate = this.setDateWithTimezone(fromDate, 'in');
         console.log('computeNextDate - fromDate : ', fromDate);
 
@@ -271,7 +271,7 @@ class Helper {
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
+        fromDate  = new Date('2021-'+month+'-'+day+'T00:00:00.000Z');
         console.log('computeNextDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
@@ -291,7 +291,7 @@ class Helper {
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
-        fromDate  = new Date('2020-'+month+'-01T00:00:00.000Z');
+        fromDate  = new Date('2021-'+month+'-01T00:00:00.000Z');
         console.log('computeNextDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
@@ -312,7 +312,7 @@ class Helper {
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
-        fromDate  = new Date('2020-'+month+'-01T00:00:00.000Z');
+        fromDate  = new Date('2021-'+month+'-01T00:00:00.000Z');
         console.log('computeNextDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
