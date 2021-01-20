@@ -1,10 +1,8 @@
 const container = require("../../../configurations/container");
 const reportsRepo = require('../../../repos/apis/ReportsRepo');
 const billingHistoryRepo = container.resolve('billingHistoryRepository');
-let helper = require('../../../helper/helper');
+const helper = require('../../../helper/helper');
 const  _ = require('lodash');
-
-helper = new helper();
 
 computeInsufficientBalanceReports = async(req, res) => {
     console.log('computeInsufficientBalanceReports: ');
