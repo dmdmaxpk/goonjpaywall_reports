@@ -6,6 +6,9 @@ const moment = require('moment');
 class Helper {
 
     constructor() {
+        let d = new Date();
+        d.setFullYear(2020);
+        this.date = d;
         this.db = undefined;
     }
 
@@ -74,7 +77,7 @@ class Helper {
         someDate = new Date( someDate.setDate(someDate.getDate() + 1));
         someDate = new Date( this.setDateWithTimezone(someDate, 'in'));
 
-        var today = new Date();
+        var today = this.date;
         return someDate.getDate() == today.getDate() &&
             someDate.getMonth() == today.getMonth() &&
             someDate.getFullYear() == today.getFullYear()
@@ -96,11 +99,15 @@ class Helper {
     }
 
     static getTodayDayNo() {
-        return new Date().getDate();
+        console.log('getTodayDayNo', this.date);
+
+        return this.date.getDate();
     }
 
     static getTodayMonthNo() {
-        return new Date().getMonth() + 1;
+        console.log('getTodayMonthNo', this.date);
+
+        return this.date.getMonth() + 1;
     }
 
     static getDatesArr(from, to) {
@@ -144,7 +151,7 @@ class Helper {
 
     static computeTodayDate(req){
         let date, fromDate, toDate, day, month;
-        date = new Date();
+        date = this.date;
         date.setDate(date.getDate() - 1);
 
         day =  date.getDate();
@@ -170,7 +177,7 @@ class Helper {
 
     static computeTodayDateWithLocalTime(req){
         let date, fromDate, toDate, day, month;
-        date = new Date();
+        date = this.date;
         date.setDate(date.getDate() - 1);
 
         day =  date.getDate();
@@ -195,7 +202,7 @@ class Helper {
 
         let fromDate, toDate, day, month, fromHours, toHours;
 
-        fromDate  = new Date();
+        fromDate  = this.date;
         fromDate.setHours(0, 0, 0);
         fromDate = this.setDateWithTimezone(fromDate, 'in');
 
@@ -272,7 +279,7 @@ class Helper {
     static computeLastMonthDateWithLocalTime(req){
 
         let fromDate, toDate, month, daysInMonth;
-        let date = new Date();
+        let date = this.date;
         let sMonth =  date.getMonth();
 
         month = req.month ? req.month : sMonth;

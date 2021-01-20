@@ -31,7 +31,7 @@ computeInsufficientBalanceReports = async(req, res) => {
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeInsufficientBalanceReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        console.log('computeInsufficientBalanceReports -> day : ', day, req.day, month, helper.getDaysInMonth(month));
 
         if (req.day <= helper.getDaysInMonth(month)){
             if (month < helper.getTodayMonthNo())
@@ -200,20 +200,20 @@ async function insertInsufficientBalanceNewRecord(insufficientBalance, dateStrin
         }
     });
 }
-function insertExcessiveBillingNewRecord(excessiveBillingCount, dateString) {
+async function insertExcessiveBillingNewRecord(excessiveBillingCount, dateString) {
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     console.log('=>=>=>=>=>=>=> insertExcessiveBillingNewRecord', dateString);
 
-    reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
+    await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0) {
             result = result[0];
             result.excessive_billing = excessiveBillingCount;
 
-            reportsRepo.updateReport(result, result._id);
+            await reportsRepo.updateReport(result, result._id);
         }
         else
-            reportsRepo.createReport({
+            await reportsRepo.createReport({
                 excessive_billing: excessiveBillingCount,
                 date: dateString
             });
