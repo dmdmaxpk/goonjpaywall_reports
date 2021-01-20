@@ -12,7 +12,7 @@ computeInsufficientBalanceReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 1, 12);
+    dateData = helper.computeNextDateWithLocalTime(req, 1, 12);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -34,20 +34,28 @@ computeInsufficientBalanceReports = async(req, res) => {
         console.log('computeInsufficientBalanceReports -> day : ', day, req.day, month, helper.getDaysInMonth(month));
 
         if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
+            if (month < helper.getTodayMonthNo()){
+                console.log('1: ');
                 computeInsufficientBalanceReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+            }
+            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo()){
+                console.log('2: ');
                 computeInsufficientBalanceReports(req, res);
-            else if(helper.yearsDifferenceWise)
+            }
+            else if(helper.yearsDifferenceWise){
+                console.log('3: ');
                 computeInsufficientBalanceReports(req, res);
+            }
         }
         else{
             req.day = 1;
             req.month = Number(req.month) + 1;
             console.log('computeInsufficientBalanceReports -> month : ', month, req.month, new Date().getMonth());
 
-            if (req.month <= helper.getTodayMonthNo())
+            if (req.month <= helper.getTodayMonthNo()){
+                console.log('4: ');
                 computeInsufficientBalanceReports(req, res);
+            }
         }
 
         if (helper.isToday(fromDate)){
@@ -68,7 +76,7 @@ promiseBasedComputeInsufficientBalanceReports = async(req, res) => {
         * Compute date and time for data fetching from db
         * Script will execute to fetch data as per day
         * */
-        dateData = helper.computeTodayDate(req);
+        dateData = helper.computeTodayDateWithLocalTime(req);
         req = dateData.req;
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
@@ -101,7 +109,7 @@ computeExcessiveBillingReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 1, 12);
+    dateData = helper.computeNextDateWithLocalTime(req, 1, 12);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -126,6 +134,8 @@ computeExcessiveBillingReports = async(req, res) => {
             if (month < helper.getTodayMonthNo())
                 computeExcessiveBillingReports(req, res);
             else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+                computeExcessiveBillingReports(req, res);
+            else if(helper.yearsDifferenceWise)
                 computeExcessiveBillingReports(req, res);
         }
         else{
@@ -153,7 +163,7 @@ promiseBasedComputeExcessiveBillingReports = async(req, res) => {
         * Compute date and time for data fetching from db
         * Script will execute to fetch data as per day
         * */
-        dateData = helper.computeTodayDate(req);
+        dateData = helper.computeTodayDateWithLocalTime(req);
         req = dateData.req;
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
