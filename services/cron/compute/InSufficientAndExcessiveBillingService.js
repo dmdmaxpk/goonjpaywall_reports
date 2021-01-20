@@ -38,6 +38,8 @@ computeInsufficientBalanceReports = async(req, res) => {
                 computeInsufficientBalanceReports(req, res);
             else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
                 computeInsufficientBalanceReports(req, res);
+            else if(helper.yearsDifferenceWise)
+                computeInsufficientBalanceReports(req, res);
         }
         else{
             req.day = 1;

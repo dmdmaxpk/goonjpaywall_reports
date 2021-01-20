@@ -7,7 +7,6 @@ class Helper {
 
     constructor() {
         this.db = undefined;
-        this.date = undefined;
     }
 
     static getDBInstance(){
@@ -20,13 +19,6 @@ class Helper {
 
     static sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    static setYear() {
-        let d = new Date();
-        d.setFullYear(2020);
-        this.date = d;
-        console.log('d:::::::::::::::::: ', this.date);
     }
 
     static sixLinesConsoleLog(message){
@@ -57,6 +49,18 @@ class Helper {
     ) ;
     }
 
+    static yearsDifferenceWise(date){
+        let todayDate = new Date()
+        let year = date.getFullYear();
+        let todayYear = todayDate.getFullYear();
+
+        console.log('yearsDifferenceWise: ', year, todayYear);
+        if (todayYear > year)
+            return false;
+        else
+            return true;
+    }
+
     static checkDataExist(dataArr, date, type){
         let obj, index = -1;
         for(let i = 0; i < dataArr.length; i++) {
@@ -82,8 +86,7 @@ class Helper {
         someDate = new Date( someDate.setDate(someDate.getDate() + 1));
         someDate = new Date( this.setDateWithTimezone(someDate, 'in'));
 
-        this.setYear();
-        var today = this.date;
+        var today = new Date();
         return someDate.getDate() == today.getDate() &&
             someDate.getMonth() == today.getMonth() &&
             someDate.getFullYear() == today.getFullYear()
@@ -105,15 +108,11 @@ class Helper {
     }
 
     static getTodayDayNo() {
-        this.setYear();
-        console.log('getTodayDayNo', this.date);
-        return this.date.getDate();
+        return new Date().getDate();
     }
 
     static getTodayMonthNo() {
-        this.setYear();
-        console.log('getTodayMonthNo', this.date);
-        return this.date.getMonth() + 1;
+        return new Date().getMonth() + 1;
     }
 
     static getDatesArr(from, to) {
@@ -157,8 +156,7 @@ class Helper {
 
     static computeTodayDate(req){
         let date, fromDate, toDate, day, month;
-        this.setYear();
-        date = this.date;
+        date = new Date();
         date.setDate(date.getDate() - 1);
 
         day =  date.getDate();
@@ -184,8 +182,7 @@ class Helper {
 
     static computeTodayDateWithLocalTime(req){
         let date, fromDate, toDate, day, month;
-        this.setYear();
-        date = this.date;
+        date = new Date();
         date.setDate(date.getDate() - 1);
 
         day =  date.getDate();
@@ -210,8 +207,7 @@ class Helper {
 
         let fromDate, toDate, day, month, fromHours, toHours;
 
-        this.setYear();
-        fromDate  = this.date;
+        fromDate  = new Date();
         fromDate.setHours(0, 0, 0);
         fromDate = this.setDateWithTimezone(fromDate, 'in');
 
@@ -288,8 +284,7 @@ class Helper {
     static computeLastMonthDateWithLocalTime(req){
 
         let fromDate, toDate, month, daysInMonth;
-        this.setYear();
-        let date = this.date;
+        let date = new Date();
         let sMonth =  date.getMonth();
 
         month = req.month ? req.month : sMonth;
@@ -340,7 +335,7 @@ class Helper {
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
-        fromDate  = new Date('2020-'+month+'-'+fromDay+'T00:00:00.000Z');
+        fromDate  = new Date('2021-'+month+'-'+fromDay+'T00:00:00.000Z');
         console.log('computeNextDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
@@ -380,10 +375,10 @@ class Helper {
         toHours = toHours > 9 ? toHours : '0'+Number(toHours);
         req.toHours = toHours;
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T'+(fromHours)+':00:00.000Z');
+        fromDate  = new Date('2021-'+month+'-'+day+'T'+(fromHours)+':00:00.000Z');
         fromDate = this.setDateWithTimezone(fromDate, 'in');
 
-        toDate  = new Date('2020-'+month+'-'+day+'T'+(toHours)+':59:59.000Z');
+        toDate  = new Date('2021-'+month+'-'+day+'T'+(toHours)+':59:59.000Z');
         toDate = this.setDateWithTimezone(toDate, 'in');
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate, fromHours: fromHours, toHours: toHours};
