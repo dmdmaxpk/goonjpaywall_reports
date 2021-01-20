@@ -11,9 +11,6 @@ require('./models/AffiliateReport');
 
 // Connection to Database
 const config = require('./config');
-let helper = require('./helper/helper');
-helper = new helper();
-
 mongoose.connect(config.mongoDB['goonj_paywall_reports']);
 mongoose.connection.on('error', err => console.error(`Error: ${err.message}`));
 

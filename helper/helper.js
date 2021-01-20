@@ -6,11 +6,8 @@ const moment = require('moment');
 class Helper {
 
     constructor() {
-        let d = new Date();
-        d.setFullYear(2020);
-        console.log('d:::::::::::::::::: ', d);
-        this.date = d;
         this.db = undefined;
+        this.date = undefined;
     }
 
     static getDBInstance(){
@@ -23,6 +20,13 @@ class Helper {
 
     static sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    static setYear() {
+        let d = new Date();
+        d.setFullYear(2020);
+        this.date = d;
+        console.log('d:::::::::::::::::: ', this.date);
     }
 
     static sixLinesConsoleLog(message){
@@ -78,6 +82,7 @@ class Helper {
         someDate = new Date( someDate.setDate(someDate.getDate() + 1));
         someDate = new Date( this.setDateWithTimezone(someDate, 'in'));
 
+        this.setYear();
         var today = this.date;
         return someDate.getDate() == today.getDate() &&
             someDate.getMonth() == today.getMonth() &&
@@ -100,14 +105,14 @@ class Helper {
     }
 
     static getTodayDayNo() {
+        this.setYear();
         console.log('getTodayDayNo', this.date);
-
         return this.date.getDate();
     }
 
     static getTodayMonthNo() {
+        this.setYear();
         console.log('getTodayMonthNo', this.date);
-
         return this.date.getMonth() + 1;
     }
 
@@ -152,6 +157,7 @@ class Helper {
 
     static computeTodayDate(req){
         let date, fromDate, toDate, day, month;
+        this.setYear();
         date = this.date;
         date.setDate(date.getDate() - 1);
 
@@ -178,6 +184,7 @@ class Helper {
 
     static computeTodayDateWithLocalTime(req){
         let date, fromDate, toDate, day, month;
+        this.setYear();
         date = this.date;
         date.setDate(date.getDate() - 1);
 
@@ -203,6 +210,7 @@ class Helper {
 
         let fromDate, toDate, day, month, fromHours, toHours;
 
+        this.setYear();
         fromDate  = this.date;
         fromDate.setHours(0, 0, 0);
         fromDate = this.setDateWithTimezone(fromDate, 'in');
@@ -280,6 +288,7 @@ class Helper {
     static computeLastMonthDateWithLocalTime(req){
 
         let fromDate, toDate, month, daysInMonth;
+        this.setYear();
         let date = this.date;
         let sMonth =  date.getMonth();
 
