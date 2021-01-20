@@ -166,11 +166,11 @@ generateReportsData = async (req,res) => {
             if (params.sub_type === 'source_wise')
                 return subscriptionService.computeUnSubscriptionsSourceWiseReport(rawDataSet, params);
         }
-        else if (params.type === 'insufficient_balance') {
-            return InsufficientAndExcessiveBillingService.computeInsufficientBalanceReport(rawDataSet, params);
-        }
-        else if (params.type === 'excessive_billing') {
-            return InsufficientAndExcessiveBillingService.computeExcessiveBillingReport(rawDataSet, params);
+        else if (params.type === 'others') {
+            if (params.sub_type === 'insufficient_balance')
+                return InsufficientAndExcessiveBillingService.computeInsufficientBalanceReport(rawDataSet, params);
+            else if (params.sub_type === 'excessive_billing')
+                return InsufficientAndExcessiveBillingService.computeExcessiveBillingReport(rawDataSet, params);
         }
         else if (params.type === 'charge_details') {
             if (params.sub_type === 'source_wise')

@@ -6,7 +6,7 @@ const  _ = require('lodash');
 
 computeInsufficientBalanceReports = async(req, res) => {
     console.log('computeInsufficientBalanceReports: ');
-    let dateData, fromDate, toDate, day, month, computedData = [];
+    let dateData, fromDate, toDate, day, month;
 
     /*
     * Compute date and time for data fetching from db

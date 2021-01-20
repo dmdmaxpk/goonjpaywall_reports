@@ -77,12 +77,9 @@ class ReportsValidator{
                 this.checkSubTypeIsNull(params.sub_type, "Net Additions", ['source_wise', 'package_wise', 'operator_wise', 'paywall_wise', 'net_additions_overall']);
 
                 break;
-            case 'insufficient_balance':
-                this.checkDateIsNull(params, "Insufficient Balance");
-
-                break;
-            case 'excessive_billing':
-                this.checkDateIsNull(params, "Excessive Billing");
+            case 'others':
+                this.checkDateIsNull(params, "Others");
+                this.checkSubTypeIsNull(params.sub_type, "Others", ['insufficient_balance', 'excessive_billing']);
 
                 break;
             case 'transactions':

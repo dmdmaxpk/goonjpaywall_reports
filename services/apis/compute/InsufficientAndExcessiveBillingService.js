@@ -8,7 +8,7 @@ computeInsufficientBalanceReport = async (rawDataSet, params) =>{
     console.log('computeInsufficientBalanceReport');
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
-    let outerObj, innerObj, subscribers;
+    let outerObj, innerObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
     let dataObj = {total: 0};
     let dayDataObj = {total: 0};
@@ -20,18 +20,10 @@ computeInsufficientBalanceReport = async (rawDataSet, params) =>{
             outerObj = rawDataSet[i];
             if (outerObj.insufficient_balance){
                 innerObj = outerObj.insufficient_balance;
-                if (innerObj.count){
-                    dataObj.total = dataObj.total + innerObj.count;
-                    dayDataObj.total = dayDataObj.total + innerObj.count;
-                    weeklyDataObj.total = weeklyDataObj.total + innerObj.count;
-                    monthlyDataObj.total = monthlyDataObj.total + innerObj.count;
-                }
-
-                // Hourly Bases Data
-                // hourlyBasisTotalCount.push({
-                //     total: innerObj.total,
-                //     date: innerObj.added_dtm_hours
-                // });
+                dataObj.total = dataObj.total + innerObj.count;
+                dayDataObj.total = dayDataObj.total + innerObj.count;
+                weeklyDataObj.total = weeklyDataObj.total + innerObj.count;
+                monthlyDataObj.total = monthlyDataObj.total + innerObj.count;
 
                 // reset start_date for both month & week so can update with latest one
                 if (week_from_date === null)
@@ -92,78 +84,60 @@ computeInsufficientBalanceReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
+
 computeExcessiveBillingReport = async (rawDataSet, params) =>{
     console.log('computeExcessiveBillingReport');
 
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
-    let outerObj, innerObj, subscribers, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {totalActive: 0, totalInactive: 0};
-    let dayDataObj = {totalActive: 0, totalInactive: 0};
-    let weeklyDataObj = {totalActive: 0, totalInactive: 0};
-    let monthlyDataObj = {totalActive: 0, totalInactive: 0};
+    let outerObj, innerObj;
+    let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = {total: 0};
+    let dayDataObj = {total: 0};
+    let weeklyDataObj = {total: 0};
+    let monthlyDataObj = {total: 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
-            if (outerObj.subscribers) {
-                subscribers = outerObj.subscribers;
-                if (subscribers.activeInActive){
-                    for (let j=0; j<subscribers.activeInActive.length; j++){
-                        innerObj = subscribers.activeInActive[j];
-                        if (innerObj.active){
-                            dataObj.totalActive = dataObj.totalActive + innerObj.active;
-                            dayDataObj.totalActive = dayDataObj.totalActive + innerObj.active;
-                            weeklyDataObj.totalActive = weeklyDataObj.totalActive + innerObj.active;
-                            monthlyDataObj.totalActive = monthlyDataObj.totalActive + innerObj.active;
-                        }
-                        if (innerObj.nonActive){
-                            dataObj.totalInactive = dataObj.totalInactive + innerObj.nonActive;
-                            dayDataObj.totalInactive = dayDataObj.totalInactive + innerObj.nonActive;
-                            weeklyDataObj.totalInactive = weeklyDataObj.totalInactive + innerObj.nonActive;
-                            monthlyDataObj.totalInactive = monthlyDataObj.totalInactive + innerObj.nonActive;
-                        }
+            if (outerObj.excessive_billing){
+                innerObj = outerObj.excessive_billing;
+                dataObj.total = dataObj.total + innerObj.count;
+                dayDataObj.total = dayDataObj.total + innerObj.count;
+                weeklyDataObj.total = weeklyDataObj.total + innerObj.count;
+                monthlyDataObj.total = monthlyDataObj.total + innerObj.count;
 
-                        // Hourly Bases Data
-                        hourlyBasisTotalCount.push({
-                            totalActive: innerObj.active,
-                            totalInactive: innerObj.nonActive,
-                            date: innerObj.added_dtm_hours
-                        });
+                // reset start_date for both month & week so can update with latest one
+                if (week_from_date === null)
+                    week_from_date = innerObj.added_dtm;
 
-                        // reset start_date for both month & week so can update with latest one
-                        if (week_from_date === null)
-                            week_from_date = innerObj.added_dtm;
+                if (month_from_date === null)
+                    month_from_date = innerObj.added_dtm;
 
-                        if (month_from_date === null)
-                            month_from_date = innerObj.added_dtm;
-                    }
+                monthNo = new Date(outerObj.date).getMonth() + 1;
+                dayNo = new Date(outerObj.date).getDate();
 
-                    monthNo = new Date(outerObj.date).getMonth() + 1;
-                    dayNo = new Date(outerObj.date).getDate();
-
-                    // Monthly Data Count
-                    if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
-                        monthlyDataObj.from_date = month_from_date;
-                        monthlyDataObj.to_date = outerObj.date;
-                        monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                        monthlyDataObj = _.clone({totalActive: 0, totalInactive: 0});
-                        month_from_date = null;
-                    }
-
-                    // Weekly Data Count
-                    if (Number(dayNo) % 7 === 0){
-                        weeklyDataObj.from_date = week_from_date;
-                        weeklyDataObj.to_date = outerObj.date;
-                        weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                        weeklyDataObj = _.clone({totalActive: 0, totalInactive: 0});
-                        week_from_date = null;
-                    }
-
-                    // Day Wise Date Count
-                    dayDataObj.date = outerObj.date;
-                    dayWiseTotalCount.push(_.clone(dayDataObj));
-                    dayDataObj = _.clone({totalActive: 0, totalInactive: 0});
+                // Monthly Data Count
+                if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
+                    monthlyDataObj.from_date = month_from_date;
+                    monthlyDataObj.to_date = outerObj.date;
+                    monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                    monthlyDataObj = _.clone({total: 0});
+                    month_from_date = null;
                 }
+
+                // Weekly Data Count
+                if (Number(dayNo) % 7 === 0){
+                    weeklyDataObj.from_date = week_from_date;
+                    weeklyDataObj.to_date = outerObj.date;
+                    weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                    weeklyDataObj = _.clone({total: 0});
+                    week_from_date = null;
+                }
+
+                // Day Wise Date Count
+                dayDataObj.date = outerObj.date;
+                dayWiseTotalCount.push(_.clone(dayDataObj));
+                dayDataObj = _.clone({total: 0});
             }
         }
 
