@@ -176,12 +176,12 @@ promiseBasedComputeExcessiveBillingReports = async(req, res) => {
     });
 };
 
-function insertInsufficientBalanceNewRecord(insufficientBalance, dateString) {
+async function insertInsufficientBalanceNewRecord(insufficientBalance, dateString) {
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     console.log('=>=>=>=>=>=>=> insertInsufficientBalanceNewRecord', dateString);
 
-    reportsRepo.getReportByDateString(dateString.toString()).then(function (result) {
+    await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0) {
             console.log('if - insufficientBalance: ', insufficientBalance);
 
@@ -189,11 +189,11 @@ function insertInsufficientBalanceNewRecord(insufficientBalance, dateString) {
             result.insufficient_balance = insufficientBalance;
 
             console.log('result.insufficient_balance: ', result.insufficient_balance);
-            reportsRepo.updateReport(result, result._id);
+            await reportsRepo.updateReport(result, result._id);
         }
         else{
             console.log('else - insufficientBalance: ', insufficientBalance);
-            reportsRepo.createReport({
+            await reportsRepo.createReport({
                 insufficient_balance: insufficientBalance,
                 date: dateString
             });
