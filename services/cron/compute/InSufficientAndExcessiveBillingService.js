@@ -217,6 +217,8 @@ async function insertExcessiveBillingNewRecord(excessiveBillingCount, dateString
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     console.log('=>=>=>=>=>=>=> insertExcessiveBillingNewRecord', dateString);
 
+    console.log('excessiveBillingCount: ', excessiveBillingCount);
+
     await reportsRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0) {
             result = result[0];
