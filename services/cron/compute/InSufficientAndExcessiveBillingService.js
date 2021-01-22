@@ -23,11 +23,13 @@ computeInsufficientBalanceReports = async(req, res) => {
     await billingHistoryRepo.getInsufficientBalanceByDateRange(req, fromDate, toDate).then(async function (insufficientBalance) {
         console.log('insufficientBalance: ', insufficientBalance);
 
-        if (insufficientBalance.length > 0){
-            console.log('insufficientBalance - length: ', insufficientBalance.length);
+        if (insufficientBalance.length > 0)
+            insufficientBalance = insufficientBalance[0];
+        else
+            insufficientBalance.count = 0;
 
-            await insertInsufficientBalanceNewRecord(insufficientBalance[0], fromDate);
-        }
+        console.log('insufficientBalance - 1: ', insufficientBalance);
+        await insertInsufficientBalanceNewRecord(insufficientBalance, fromDate);
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
@@ -85,10 +87,13 @@ promiseBasedComputeInsufficientBalanceReports = async(req, res) => {
         await billingHistoryRepo.getInsufficientBalanceByDateRange(req, fromDate, toDate).then(async function (insufficientBalance) {
             console.log('insufficientBalance: ', insufficientBalance);
 
-            if (insufficientBalance.length > 0){
-                console.log('promiseBasedComputeInsufficientBalanceReports - length: ', insufficientBalance.length);
-                await insertInsufficientBalanceNewRecord(insufficientBalance[0], fromDate);
-            }
+            if (insufficientBalance.length > 0)
+                insufficientBalance = insufficientBalance[0];
+            else
+                insufficientBalance.count = 0;
+
+            console.log('insufficientBalance - 1: ', insufficientBalance);
+            await insertInsufficientBalanceNewRecord(insufficientBalance, fromDate);
         });
 
 
@@ -120,11 +125,13 @@ computeExcessiveBillingReports = async(req, res) => {
     await billingHistoryRepo.getExcessiveBillingCountByDateRange(req, fromDate, toDate).then(async function (excessiveBillingCount) {
         console.log('excessiveBillingCount: ', excessiveBillingCount.length);
 
-        if (excessiveBillingCount.length > 0){
-            console.log('excessiveBillingCount - length: ', excessiveBillingCount.length);
+        if (excessiveBillingCount.length > 0)
+            excessiveBillingCount = excessiveBillingCount[0];
+        else
+            excessiveBillingCount.count = 0;
 
-            await insertExcessiveBillingNewRecord(excessiveBillingCount[0], fromDate);
-        }
+        console.log('excessiveBillingCount - 1: ', excessiveBillingCount);
+        await insertExcessiveBillingNewRecord(excessiveBillingCount, fromDate);
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
@@ -172,11 +179,13 @@ promiseBasedComputeExcessiveBillingReports = async(req, res) => {
         await billingHistoryRepo.getExcessiveBillingCountByDateRange(req, fromDate, toDate).then(async function (excessiveBillingCount) {
             console.log('excessiveBillingCount: ', excessiveBillingCount.length);
 
-            if (excessiveBillingCount.length > 0){
-                console.log('excessiveBillingCount - length: ', excessiveBillingCount.length);
+            if (excessiveBillingCount.length > 0)
+                excessiveBillingCount = excessiveBillingCount[0];
+            else
+                excessiveBillingCount.count = 0;
 
-                await insertExcessiveBillingNewRecord(excessiveBillingCount[0], fromDate);
-            }
+            console.log('excessiveBillingCount - 1: ', excessiveBillingCount);
+            await insertExcessiveBillingNewRecord(excessiveBillingCount, fromDate);
         });
 
         if (helper.isToday(fromDate)){
