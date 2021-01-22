@@ -78,7 +78,7 @@ exports.computeInsufficientBalanceReports = async (req,res) =>  {
 };
 
 exports.computeExcessiveBillingReports = async (req,res) =>  {
-    InSufficientAndExcessiveBillingService.computeExcessiveBillingReports(req,res);
+    InSufficientAndExcessiveBillingService.promiseBasedComputeExcessiveBillingReports(req,res);
     res.send("computeExcessiveBillingReports - Executed\n");
 };
 
