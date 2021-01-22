@@ -25,8 +25,10 @@ computeInsufficientBalanceReports = async(req, res) => {
 
         if (insufficientBalance.length > 0)
             insufficientBalance = insufficientBalance[0];
-        else
+        else{
+            insufficientBalance = {};
             insufficientBalance.count = 0;
+        }
 
         console.log('insufficientBalance - 1: ', insufficientBalance);
         await insertInsufficientBalanceNewRecord(insufficientBalance, fromDate);
@@ -89,8 +91,10 @@ promiseBasedComputeInsufficientBalanceReports = async(req, res) => {
 
             if (insufficientBalance.length > 0)
                 insufficientBalance = insufficientBalance[0];
-            else
+            else{
+                insufficientBalance = {};
                 insufficientBalance.count = 0;
+            }
 
             console.log('insufficientBalance - 1: ', insufficientBalance);
             await insertInsufficientBalanceNewRecord(insufficientBalance, fromDate);
@@ -127,8 +131,10 @@ computeExcessiveBillingReports = async(req, res) => {
 
         if (excessiveBillingCount.length > 0)
             excessiveBillingCount = excessiveBillingCount[0];
-        else
+        else{
+            excessiveBillingCount = {};
             excessiveBillingCount.count = 0;
+        }
 
         console.log('excessiveBillingCount - 1: ', excessiveBillingCount);
         await insertExcessiveBillingNewRecord(excessiveBillingCount, fromDate);
@@ -181,8 +187,10 @@ promiseBasedComputeExcessiveBillingReports = async(req, res) => {
 
             if (excessiveBillingCount.length > 0)
                 excessiveBillingCount = excessiveBillingCount[0];
-            else
+            else{
+                excessiveBillingCount = {};
                 excessiveBillingCount.count = 0;
+            }
 
             console.log('excessiveBillingCount - 1: ', excessiveBillingCount);
             await insertExcessiveBillingNewRecord(excessiveBillingCount, fromDate);
