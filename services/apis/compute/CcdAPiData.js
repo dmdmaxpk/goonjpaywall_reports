@@ -11,6 +11,8 @@ getCcdApiData = async(req, res) => {
     req = dateData.req;
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
+    console.log('getCcdApiData: ', req.db);
+
     console.log('getCcdApiData: ', req.method, dateData);
     await ccdApiDataRepo.getDataFromLogger(req, fromDate, toDate).then(async function (logData) {
         console.log('api data: ', logData.length);

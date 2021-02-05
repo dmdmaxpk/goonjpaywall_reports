@@ -29,8 +29,6 @@ generateReportsData = async (req,res) => {
         if (params.type === 'ccd_api_data'){
 
             req.db = helper.getDBInstance();
-            console.log("generateReportsData", req.db);
-
             rawDataSet = await ccdAPiData.getCcdApiData(req, res);
             console.log("rawDataSet", rawDataSet);
 

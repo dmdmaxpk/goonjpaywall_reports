@@ -119,14 +119,9 @@ class Helper {
 
         let month = req.month;
         let fromDate  = new Date('2021-'+month+'-01T00:00:00.000Z');
-        console.log('computeDateFromMonth - fromDate : ', fromDate);
 
         let toDate  = new Date(_.clone(fromDate));
-        toDate.setHours(23);
-        toDate.setMinutes(59)
-        toDate.setSeconds(59)
-
-        console.log('computeDateFromMonth - toDate : ', toDate);
+        toDate.setHours(23, 59, 59);
 
         return {req: req, fromDate: fromDate, toDate: toDate};
     }
