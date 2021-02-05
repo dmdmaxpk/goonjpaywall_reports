@@ -26,14 +26,8 @@ generateReportsData = async (req,res) => {
     try {
         let params = req.query, rawDataSet;
 
-        if (params.type === 'ccd_api_data'){
-
-            req.db = helper.getDBInstance();
-            rawDataSet = await ccdAPiData.getCcdApiData(req, res);
-            console.log("rawDataSet", rawDataSet);
-
-            return rawDataSet;
-        }
+        if (params.type === 'ccd_api_data')
+            return await ccdAPiData.getCcdApiData(req, res);
 
         if (params.type === 'affiliate')
             rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
