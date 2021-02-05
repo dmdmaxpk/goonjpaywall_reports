@@ -18,6 +18,7 @@ const usersService = require("./compute/UsersService");
 const affiliateService = require("./compute/AffiliateService");
 const ccdAPiData = require("./compute/CcdAPiData");
 const connection = require('../../middlewares/connection');
+const helper = require('../../helper/helper');
 
 var moment = require('moment');
 
@@ -26,6 +27,10 @@ generateReportsData = async (req,res) => {
         let params = req.query, rawDataSet;
 
         if (params.type === 'ccd_api_data'){
+
+            req.db = helper.getDBInstance();
+            console.log("generateReportsData", req.db);
+
             rawDataSet = await ccdAPiData.getCcdApiData(params);
             console.log("rawDataSet", rawDataSet);
 

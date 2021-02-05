@@ -11,7 +11,6 @@ let connect = async (req, res, next) => {
         connectType = 'goonjpaywall';
 
     console.log('connectionType: ', connectType);
-
     if (!helper.getDBInstance())
         await updateConnection(req, res, next, connectType);
     else{
@@ -35,6 +34,9 @@ let updateConnection = async (req, res, next, connectType) => {
                 console.log('connectType: ', connectType);
                 req.db = await client.db(connectType);
                 await helper.setDBInstance(req.db);
+
+                console.log('req.db: ', req.db);
+
                 if (next !== null)
                     resolve(next());
                 else{
