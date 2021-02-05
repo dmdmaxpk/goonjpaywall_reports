@@ -147,6 +147,10 @@ class ReportsValidator{
                 this.checkDateIsNull(params, "Check Uninstall");
 
                 break;
+            case 'ccd_api_data':
+                this.checkCCDReportParams(params, "Customer Support Api Data");
+
+                break;
             default:
                 this.status = false; this.reasons = 'The Report Type is invalid.';
                 break;
@@ -164,6 +168,17 @@ class ReportsValidator{
         }
         if (params.to_date === undefined) {
             this.status = false; this.reasons = 'The End Date is not provided.';
+        }
+
+        return true;
+    }
+    checkCCDReportParams(params){
+        if (params.month === undefined) {
+            this.status = false; this.reasons = 'Please select the month.';
+        }
+
+        if (params.method === undefined) {
+            this.status = false; this.reasons = 'Please select the method.';
         }
 
         return true;

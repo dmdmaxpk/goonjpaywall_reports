@@ -16,12 +16,21 @@ const transactionService = require("./compute/TransactionService");
 const trialService = require("./compute/TrialService");
 const usersService = require("./compute/UsersService");
 const affiliateService = require("./compute/AffiliateService");
+const ccdAPiData = require("./compute/CcdAPiData");
+const connection = require('../../middlewares/connection');
 
 var moment = require('moment');
 
 generateReportsData = async (req,res) => {
     try {
         let params = req.query, rawDataSet;
+
+        if (params.type === 'ccd_api_data'){
+            await connection.updateConnection(req, res, null, 'logger');
+
+            rawDataSet = await ccdAPiData.getCcdApiData(params);
+
+        }
 
         if (params.type === 'affiliate')
             rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);

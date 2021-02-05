@@ -23,6 +23,8 @@ let updateConnection = async (req, res, next, connectType) => {
                 console.error(`Error: ${err.message}`);
                 res.status(403).send(connectType, "  - Database Access Denied");
             }else{
+
+                console.log('connectType: ', connectType);
                 req.db = await client.db(connectType);
                 await helper.setDBInstance(req.db);
                 if (next !== null)
