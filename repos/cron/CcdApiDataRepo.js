@@ -17,8 +17,6 @@ class CcdApiDataRepo {
             console.log('match: ', match);
             console.log('date range: ', from, to);
 
-            console.log('req.db: ', req.db);
-
             req.db.collection('logs', function (err, collection) {
                 if (!err) {
                     collection.aggregate([

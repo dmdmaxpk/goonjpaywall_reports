@@ -115,15 +115,15 @@ class Helper {
         return new Date().getMonth() + 1;
     }
 
-    static computeDateFromMonth(req) {
+    static computeDateFromMonth(query) {
 
-        let month = req.month;
+        let month = query.month;
         let fromDate  = new Date('2021-'+month+'-01T00:00:00.000Z');
 
         let toDate  = new Date(_.clone(fromDate));
         toDate.setHours(23, 59, 59);
 
-        return {req: req, fromDate: fromDate, toDate: toDate};
+        return {fromDate: fromDate, toDate: toDate};
     }
 
     static getDatesArr(from, to) {

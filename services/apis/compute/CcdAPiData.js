@@ -4,11 +4,10 @@ const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
 getCcdApiData = async(req, res) => {
-    console.log('getCcdApiData: ', req);
+    console.log('getCcdApiData: ');
     let dateData, fromDate, toDate, computedData = [];
 
-    dateData = helper.computeDateFromMonth(req);
-    req = dateData.req;
+    dateData = helper.computeDateFromMonth(req.query);
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
