@@ -3,7 +3,15 @@ const config = require('./../config');
 const helper = require('./../helper/helper');
 
 let connect = async (req, res, next) => {
-    let connectType = req.url.includes('logger') ? 'logger' : 'goonjpaywall';
+
+    let connectType = '';
+    if (req.url.includes('logger') || req.url.includes('ccd'))
+        connectType = 'logger';
+    else
+        connectType = 'goonjpaywall';
+
+    console.log('connectionType: ', connectType);
+
     if (!helper.getDBInstance())
         await updateConnection(req, res, next, connectType);
     else{

@@ -26,10 +26,10 @@ generateReportsData = async (req,res) => {
         let params = req.query, rawDataSet;
 
         if (params.type === 'ccd_api_data'){
-            await connection.updateConnection(req, res, null, 'logger');
-
             rawDataSet = await ccdAPiData.getCcdApiData(params);
+            console.log("rawDataSet", rawDataSet);
 
+            return rawDataSet;
         }
 
         if (params.type === 'affiliate')
