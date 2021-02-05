@@ -31,7 +31,7 @@ generateReportsData = async (req,res) => {
             req.db = helper.getDBInstance();
             console.log("generateReportsData", req.db);
 
-            rawDataSet = await ccdAPiData.getCcdApiData(params);
+            rawDataSet = await ccdAPiData.getCcdApiData(req, res);
             console.log("rawDataSet", rawDataSet);
 
             return rawDataSet;
