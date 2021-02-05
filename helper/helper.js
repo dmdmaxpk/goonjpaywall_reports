@@ -121,6 +121,9 @@ class Helper {
         let fromDate  = new Date('2021-'+month+'-01T00:00:00.000Z');
 
         let toDate  = new Date(_.clone(fromDate));
+        let days = this.getDaysInMonth(month);
+
+        toDate.setDate(days);
         toDate.setHours(23, 59, 59);
 
         return {fromDate: fromDate, toDate: toDate};
