@@ -22,6 +22,7 @@ getCcdApiData = async(req, res) => {
 
                 console.log('history: ', history);
 
+                newObj.id = history._id;
                 newObj.service = 'Goonj';
                 newObj.channel = 'IVR';
                 newObj.msisdn = history.req_body.msisdn;

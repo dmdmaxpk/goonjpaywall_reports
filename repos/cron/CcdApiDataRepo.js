@@ -23,6 +23,7 @@ class CcdApiDataRepo {
                     collection.aggregate([
                         { $match: match},
                         {$project: {
+                                _id:"$_id",
                                 res_body:"$res_body",
                                 req_body:"$req_body",
                                 added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } },
