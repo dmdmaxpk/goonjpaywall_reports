@@ -31,7 +31,7 @@ getCcdApiData = async(req, res) => {
                 console.log('history.res_body.code: ', history.res_body.code);
                 if (history.res_body.code === 0){
                     newObj.service_status_responce = 'Active';
-                    newObj.service_deactivation_responce = 'Yes';
+                    newObj.service_deactivation = 'Yes';
 
 
                     let data = history.res_body.data;
@@ -48,7 +48,7 @@ getCcdApiData = async(req, res) => {
                 }
                 else{
                     newObj.service_status_responce = 'Inactive';
-                    newObj.service_deactivation_responce = 'No';
+                    newObj.service_deactivation = 'No';
                 }
 
                 newObj.added_dtm = history.added_dtm;
