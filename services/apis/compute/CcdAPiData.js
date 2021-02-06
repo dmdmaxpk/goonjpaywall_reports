@@ -1,7 +1,8 @@
 const container = require("../../../configurations/container");
 const ccdApiDataRepo = container.resolve('ccdApiDataRepo');
 const helper = require('../../../helper/helper');
-const  _ = require('lodash');
+const _ = require('lodash');
+const moment = require('moment');
 
 getCcdApiData = async(req, res) => {
     console.log('getCcdApiData: ');
@@ -28,35 +29,31 @@ getCcdApiData = async(req, res) => {
                 newObj.channel = 'IVR';
                 newObj.msisdn = history.req_body.msisdn;
 
-                console.log('history.res_body.code: ', history.res_body.code);
                 if (history.res_body.code === 0){
                     newObj.service_status_responce = 'Active';
                     newObj.service_deactivation = 'Yes';
 
-
                     let data = history.res_body.data;
                     let expiry = data.expiry;
 
-                    console.log('expiry: ', expiry);
-
-                    if (expiry.length === 0){
+                    if (expiry.length === 0)
                         newObj.service_deactivation_responce = 'Success';
-                    }
-                    else{
+                    else
                         newObj.service_deactivation_responce = 'Failure';
-                    }
                 }
                 else{
+                    newObj.service_deactivation_responce = 'Failure';
                     newObj.service_status_responce = 'Inactive';
                     newObj.service_deactivation = 'No';
                 }
+
+                let added_dtm = moment(history.added_dtm, "DD MM YYYY hh:mm:ss");
+                console.log('added_dtm: ', added_dtm);
 
                 let parts = history.added_dtm.slice(0, -1).split('T');
                 let dateComponent = parts[0];
                 let timeComponent = parts[1];
 
-                console.log('dateComponent: ', dateComponent);
-                console.log('timeComponent: ', timeComponent);
                 newObj.added_dtm = dateComponent + '  ' + timeComponent;
 
                 console.log('newObj: ', newObj);
