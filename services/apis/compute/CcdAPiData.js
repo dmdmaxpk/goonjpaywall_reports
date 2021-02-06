@@ -23,7 +23,7 @@ getCcdApiData = async(req, res) => {
                 console.log('history: ', history);
 
                 newObj = {};
-                newObj.id = history._id;
+                newObj.id = Math.random().toString(36).slice(2);
                 newObj.service = 'Goonj';
                 newObj.channel = 'IVR';
                 newObj.msisdn = history.req_body.msisdn;
@@ -51,7 +51,13 @@ getCcdApiData = async(req, res) => {
                     newObj.service_deactivation = 'No';
                 }
 
-                newObj.added_dtm = history.added_dtm;
+                let parts = history.added_dtm.slice(0, -1).split('T');
+                let dateComponent = parts[0];
+                let timeComponent = parts[1];
+
+                console.log('dateComponent: ', dateComponent);
+                console.log('timeComponent: ', timeComponent);
+                newObj.added_dtm = dateComponent + '  ' + timeComponent;
 
                 console.log('newObj: ', newObj);
                 computedData.push(newObj)
