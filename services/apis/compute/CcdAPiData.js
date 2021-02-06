@@ -47,14 +47,7 @@ getCcdApiData = async(req, res) => {
                     newObj.service_deactivation = 'No';
                 }
 
-                let added_dtm = moment(history.added_dtm, "DD MM YYYY hh:mm:ss");
-                console.log('added_dtm: ', added_dtm);
-
-                let parts = history.added_dtm.slice(0, -1).split('T');
-                let dateComponent = parts[0];
-                let timeComponent = parts[1];
-
-                newObj.added_dtm = dateComponent + '  ' + timeComponent;
+                newObj.added_dtm = moment(history.added_dtm).format("ddd, MMM Do YYY, h:mm a");;
 
                 console.log('newObj: ', newObj);
                 computedData.push(newObj)
