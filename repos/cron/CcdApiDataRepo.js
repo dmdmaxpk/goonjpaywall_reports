@@ -12,8 +12,10 @@ class CcdApiDataRepo {
 
             console.log('msisdn: ', msisdn);
 
-            if (msisdn)
+            if (msisdn){
+                match.req_body = {};
                 match.req_body.msisdn = msisdn;
+            }
 
             console.log('match: ', match);
             console.log('date range: ', from, to);
