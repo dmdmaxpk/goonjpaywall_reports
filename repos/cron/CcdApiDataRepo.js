@@ -11,7 +11,6 @@ class CcdApiDataRepo {
             console.log('msisdn: ', query.msisdn);
 
             if (query.msisdn){
-                match.req_body = {};
                 match['req_body.msisdn'] = query.msisdn;
                 // match.req_body.msisdn = query.msisdn;
             }
