@@ -21,8 +21,6 @@ getCcdApiData = async(req, res) => {
             for (let j = 0; j < logData.length; j++) {
                 history = logData[j];
 
-                console.log('history: ', history);
-
                 newObj = {};
                 newObj.id = Math.random().toString(36).slice(2);
                 newObj.service = 'Goonj';
@@ -55,13 +53,11 @@ getCcdApiData = async(req, res) => {
                 }
 
                 newObj.added_dtm = moment(history.added_dtm).format("ddd, MMM Do YYY, h:mm a");;
-
-                console.log('newObj: ', newObj);
                 computedData.push(newObj)
             }
         }
 
-        res.send({status: true, computedData: computedData});
+        return {status: true, computedData: computedData};
     });
 };
 
