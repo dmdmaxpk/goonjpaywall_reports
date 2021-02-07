@@ -29,17 +29,24 @@ getCcdApiData = async(req, res) => {
                 newObj.channel = 'IVR';
                 newObj.msisdn = history.req_body.msisdn;
 
-                if (history.res_body.code === 0){
-                    newObj.service_status_responce = 'Active';
-                    newObj.service_deactivation = 'Yes';
+                if (history.res_body){
+                    if (history.res_body.code === 0){
+                        newObj.service_status_responce = 'Active';
+                        newObj.service_deactivation = 'Yes';
 
-                    let data = history.res_body.data;
-                    let expiry = data.expiry;
+                        let data = history.res_body.data;
+                        let expiry = data.expiry;
 
-                    if (expiry.length === 0)
-                        newObj.service_deactivation_responce = 'Success';
-                    else
+                        if (expiry.length === 0)
+                            newObj.service_deactivation_responce = 'Success';
+                        else
+                            newObj.service_deactivation_responce = 'Failure';
+                    }
+                    else{
                         newObj.service_deactivation_responce = 'Failure';
+                        newObj.service_status_responce = 'Inactive';
+                        newObj.service_deactivation = 'No';
+                    }
                 }
                 else{
                     newObj.service_deactivation_responce = 'Failure';
