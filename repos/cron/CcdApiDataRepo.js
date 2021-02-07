@@ -8,16 +8,10 @@ class CcdApiDataRepo {
                 $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
             }
 
-            console.log('msisdn: ', query.msisdn);
-
-            if (query.msisdn){
+            if (query.msisdn)
                 match['req_body.msisdn'] = query.msisdn;
-                // match.req_body.msisdn = query.msisdn;
-            }
 
             console.log('match: ', match);
-            console.log('date range: ', from, to);
-
             req.db.collection('logs', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
