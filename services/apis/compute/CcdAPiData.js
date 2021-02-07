@@ -58,7 +58,7 @@ getCcdApiData = async(req, res) => {
         }
 
         let responseObj = {status: true, computedData: computedData};
-        console.log('responseObj: ');
+        console.log('responseObj: ', responseObj);
 
         return responseObj;
     });
