@@ -5,11 +5,8 @@ const reportsApiService = require('../services/apis/ReportsApiService');
 exports.getReports = async (req,res) => {
     try {
         let response = await reportsValidator.validateParams(req.query, res);
-        if (response.status){
-            let getReportsResult = await reportsApiService.generateReportsData(req, res);
-            console.log('getReportsResult: ', getReportsResult);
-            res.send( getReportsResult );
-        }
+        if (response.status)
+            return await reportsApiService.generateReportsData(req, res);
         else
             res.send({ 'status': response.status, 'message': response.reasons });
     }catch (e) {
