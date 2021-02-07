@@ -7,7 +7,7 @@ exports.getReports = async (req,res) => {
         let response = await reportsValidator.validateParams(req.query, res);
         if (response.status){
             let getReportsResult = await reportsApiService.generateReportsData(req, res);
-            console.log('getReportsResult: ');
+            console.log('getReportsResult: ', getReportsResult);
             res.send( getReportsResult );
         }
         else
