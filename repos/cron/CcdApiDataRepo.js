@@ -3,18 +3,17 @@ class CcdApiDataRepo {
     async getDataFromLogger (req, from, to) {
         return new Promise((resolve, reject) => {
             let query = req.query;
-            let method = query.method;
-            let msisdn = query.msisdn;
             let match = {
-                method: method,
+                method: query.method,
                 $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
             }
 
-            console.log('msisdn: ', msisdn);
+            console.log('msisdn: ', query.msisdn);
 
-            if (msisdn){
+            if (query.msisdn){
                 match.req_body = {};
-                match.req_body.msisdn = msisdn;
+                match['req_body.msisdn'] = query.msisdn;
+                // match.req_body.msisdn = query.msisdn;
             }
 
             console.log('match: ', match);
