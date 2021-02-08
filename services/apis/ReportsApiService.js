@@ -29,7 +29,7 @@ generateReportsData = async (req,res) => {
         if (params.type === 'ccd_api_data'){
             let generateReportsDataRes = await ccdAPiData.getCcdApiData(req, res);
 
-            console.log('generateReportsDataRes================== ');
+            console.log('generateReportsDataRes================== ', generateReportsDataRes);
             return generateReportsDataRes;
         }
 
