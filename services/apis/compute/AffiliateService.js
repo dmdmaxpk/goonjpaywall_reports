@@ -19,6 +19,8 @@ computeAffiliateReport = async (rawDataSet, params) =>{
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
 
+            console.log('outerObj');
+
             //get Affiliate mids total count HE wise
             if (outerObj.helogs) {
                 innerObj = outerObj.helogs[0];
