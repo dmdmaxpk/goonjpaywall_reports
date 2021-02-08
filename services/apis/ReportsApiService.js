@@ -29,8 +29,10 @@ generateReportsData = async (req,res) => {
         if (params.type === 'ccd_api_data')
             return await ccdAPiData.getCcdApiData(req, res);
 
-        if (params.type === 'affiliate')
+        if (params.type === 'affiliate'){
+            console.log('generateReportsData');
             rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
+        }
         else if(params.sub_type === 'avg_transactions' || params.sub_type === 'avg_transactions_per_customer'){
             params.to_date = moment(new Date(params.to_date)).date(1).format('YYYY-MM-DD');
             params.from_date = params.to_date;
@@ -38,6 +40,8 @@ generateReportsData = async (req,res) => {
         }
         else
             rawDataSet = await reportsRepo.generateReportsData(params);
+
+        console.log('rawDataSet: ', rawDataSet);
 
         if (params.type === 'users') {
             if (params.sub_type === 'active_inactive')
