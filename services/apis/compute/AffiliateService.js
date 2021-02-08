@@ -158,7 +158,7 @@ computeAffiliateReport = async (rawDataSet, params) =>{
         dataObj = _.clone(dataObj);
         dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
 
-        console.log('dataObj: ', dataObj.length);
+        console.log('dataObj: ', dataObj);
 
         return reportsTransformer.transformTheData(2, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
