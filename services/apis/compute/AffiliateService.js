@@ -19,9 +19,6 @@ computeAffiliateReport = async (rawDataSet, params) =>{
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
 
-            console.log('outerObj');
-
-
             //get Affiliate mids total count HE wise
             if (outerObj.helogs) {
                 innerObj = outerObj.helogs[0];
@@ -157,8 +154,6 @@ computeAffiliateReport = async (rawDataSet, params) =>{
         // add date range (start-date, end-date)
         dataObj = _.clone(dataObj);
         dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
-
-        console.log('dataObj: ', dataObj);
 
         return reportsTransformer.transformTheData(2, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }

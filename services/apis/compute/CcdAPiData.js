@@ -57,8 +57,8 @@ getCcdApiData = async(req, res) => {
             }
         }
 
-        res.send({status: true, computedData: computedData});
-        return true;
+        // res.send({status: true, computedData: computedData});
+        return {status: true, computedData: computedData};
     });
 };
 

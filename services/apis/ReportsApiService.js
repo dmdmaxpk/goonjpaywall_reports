@@ -29,8 +29,9 @@ generateReportsData = async (req,res) => {
         if (params.type === 'ccd_api_data')
             return await ccdAPiData.getCcdApiData(req, res);
 
+        console.log('generateReportsData');
+
         if (params.type === 'affiliate'){
-            console.log('generateReportsData');
             rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
         }
         else if(params.sub_type === 'avg_transactions' || params.sub_type === 'avg_transactions_per_customer'){
