@@ -52,7 +52,14 @@ getCcdApiData = async(req, res) => {
                     newObj.service_deactivation = 'No';
                 }
 
-                newObj.added_dtm = moment(history.added_dtm).format("ddd, MMM Do YYY, h:mm a");;
+                newObj.api_type = history.method;
+
+                if (history.method === 'ccd_details')
+                    newObj.api_type = 'Details';
+                else
+                    newObj.api_type = 'Unsub';
+
+                newObj.added_dtm = moment(history.added_dtm).format("ddd, MMM Do YYY, h:mm a");
                 computedData.push(newObj)
             }
         }
