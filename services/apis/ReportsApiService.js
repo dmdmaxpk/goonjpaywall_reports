@@ -26,8 +26,12 @@ generateReportsData = async (req,res) => {
     try {
         let params = req.query, rawDataSet;
 
-        if (params.type === 'ccd_api_data')
-            return await ccdAPiData.getCcdApiData(req, res);
+        if (params.type === 'ccd_api_data'){
+            let generateReportsDataRes = await ccdAPiData.getCcdApiData(req, res);
+
+            console.log('generateReportsDataRes================== ');
+            return generateReportsDataRes;
+        }
 
         console.log('generateReportsData');
 
@@ -41,8 +45,6 @@ generateReportsData = async (req,res) => {
         }
         else
             rawDataSet = await reportsRepo.generateReportsData(params);
-
-        console.log('rawDataSet: ', rawDataSet);
 
         if (params.type === 'users') {
             if (params.sub_type === 'active_inactive')
@@ -262,8 +264,6 @@ generateReportsData = async (req,res) => {
             }
         }
         else if (params.type === 'affiliate'){
-            console.log('params.type: ');
-
             if (params.sub_type === 'affiliate')
                 return affiliateService.computeAffiliateReport(rawDataSet, params);
             else if (params.sub_type === 'helogs')
