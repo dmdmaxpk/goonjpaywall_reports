@@ -54,6 +54,7 @@ getCcdApiData = async(req, res) => {
 
                 newObj.api_type = history.method;
 
+                console.log('history.method: ', history.method);
                 if (history.method === 'ccd_details')
                     newObj.api_type = 'Details';
                 else
