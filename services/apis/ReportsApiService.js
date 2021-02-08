@@ -41,7 +41,7 @@ generateReportsData = async (req,res) => {
         else
             rawDataSet = await reportsRepo.generateReportsData(params);
 
-        console.log('rawDataSet: ', rawDataSet);
+        console.log('rawDataSet: ', rawDataSet.length);
 
         if (params.type === 'users') {
             if (params.sub_type === 'active_inactive')
@@ -261,6 +261,8 @@ generateReportsData = async (req,res) => {
             }
         }
         else if (params.type === 'affiliate'){
+            console.log('params.type: ');
+
             if (params.sub_type === 'affiliate')
                 return affiliateService.computeAffiliateReport(rawDataSet, params);
             else if (params.sub_type === 'helogs')
