@@ -3,13 +3,15 @@ class CcdApiDataRepo {
     async getDataFromLogger (req, from, to) {
         return new Promise((resolve, reject) => {
             let query = req.query;
+
             let match = {
-                method: query.method,
                 $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
             }
-
             if (query.msisdn)
                 match['req_body.msisdn'] = query.msisdn;
+
+            if (query.method)
+                match.method = query.method;
 
             console.log('match: ', match);
             req.db.collection('logs', function (err, collection) {
