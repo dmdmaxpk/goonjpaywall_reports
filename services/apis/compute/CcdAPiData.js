@@ -28,7 +28,7 @@ getCcdApiData = async(req, res) => {
                 newObj.msisdn = history.req_body.msisdn;
 
                 if (history.res_body){
-                    newObj.api_service_response = history.res_body;
+                    newObj.api_service_response = JSON.stringify(history.res_body);
                     if (history.res_body.message === 'Requested subscriptions has unsubscribed!')
                         newObj.service_deactivation = 'Yes';
                     else
