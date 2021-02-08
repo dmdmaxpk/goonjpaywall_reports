@@ -10,7 +10,7 @@ class CcdApiDataRepo {
             if (query.msisdn)
                 match['req_body.msisdn'] = query.msisdn;
 
-            if (query.method)
+            if (query.method !== 'both')
                 match.method = query.method;
 
             console.log('match: ', match);
