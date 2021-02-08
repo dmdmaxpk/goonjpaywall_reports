@@ -41,7 +41,7 @@ generateReportsData = async (req,res) => {
         else
             rawDataSet = await reportsRepo.generateReportsData(params);
 
-        console.log('rawDataSet: ', rawDataSet.length);
+        console.log('rawDataSet: ', rawDataSet);
 
         if (params.type === 'users') {
             if (params.sub_type === 'active_inactive')
