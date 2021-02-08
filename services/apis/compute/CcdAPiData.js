@@ -28,32 +28,16 @@ getCcdApiData = async(req, res) => {
                 newObj.msisdn = history.req_body.msisdn;
 
                 if (history.res_body){
-                    if (history.res_body.code === 0){
-                        newObj.service_status_responce = 'Active';
+                    newObj.api_service_response = history.res_body;
+                    if (history.res_body.message === 'Requested subscriptions has unsubscribed!')
                         newObj.service_deactivation = 'Yes';
-
-                        let data = history.res_body.data;
-                        let expiry = data.expiry;
-
-                        if (expiry.length === 0)
-                            newObj.service_deactivation_responce = 'Success';
-                        else
-                            newObj.service_deactivation_responce = 'Failure';
-                    }
-                    else{
-                        newObj.service_deactivation_responce = 'Failure';
-                        newObj.service_status_responce = 'Inactive';
+                    else
                         newObj.service_deactivation = 'No';
-                    }
                 }
                 else{
-                    newObj.service_deactivation_responce = 'Failure';
-                    newObj.service_status_responce = 'Inactive';
+                    newObj.api_service_response = 'Null';
                     newObj.service_deactivation = 'No';
                 }
-
-                newObj.api_type = history.method;
-
 
                 if (history.method === 'ccd_details')
                     newObj.api_type = 'Details';
