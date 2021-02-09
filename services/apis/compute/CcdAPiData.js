@@ -28,15 +28,14 @@ getCcdApiData = async(req, res) => {
                 newObj.msisdn = history.req_body.msisdn;
 
                 if (history.res_body){
-                    let res_body = history.res_body;
-                    console.log('res_body: ', res_body);
+                    delete history.res_body.code;
+                    delete history.res_body.gw_transaction_id;
+                    if (history.res_body.data){
+                        if (history.res_body.data.expiry.length === 0)
+                            delete history.res_body.data.expiry;
+                    }
+                    newObj.api_service_response = JSON.stringify(history.res_body);
 
-                    delete res_body.code;
-                    delete res_body.gw_transaction_id;
-
-                    console.log('res_body - 1: ', res_body);
-
-                    newObj.api_service_response = JSON.stringify(res_body);
                     if (history.res_body.message === 'Requested subscriptions has unsubscribed!')
                         newObj.service_deactivation = 'Yes';
                     else
