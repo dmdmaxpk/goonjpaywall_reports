@@ -28,6 +28,9 @@ getCcdApiData = async(req, res) => {
                 newObj.msisdn = history.req_body.msisdn;
 
                 if (history.res_body){
+
+                    delete history.res_body.code;
+                    delete history.res_body.gw_transaction_id;
                     newObj.api_service_response = JSON.stringify(history.res_body);
 
                     if (history.res_body.message === 'Requested subscriptions has unsubscribed!')
