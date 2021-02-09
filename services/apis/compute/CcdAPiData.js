@@ -16,7 +16,7 @@ getCcdApiData = async(req, res) => {
     await ccdApiDataRepo.getDataFromLogger(req, fromDate, toDate).then(async function (logData) {
         console.log('api data: ', logData.length);
 
-        let history = {}, newObj = {};
+        let history = {}, newObj = {}, subscriptions, expiry, i;
         if (logData.length > 0){
             for (let j = 0; j < logData.length; j++) {
                 history = logData[j];
@@ -28,12 +28,6 @@ getCcdApiData = async(req, res) => {
                 newObj.msisdn = history.req_body.msisdn;
 
                 if (history.res_body){
-                    delete history.res_body.code;
-                    delete history.res_body.gw_transaction_id;
-                    if (history.res_body.data){
-                        if (history.res_body.data.expiry.length === 0)
-                            delete history.res_body.data.expiry;
-                    }
                     newObj.api_service_response = JSON.stringify(history.res_body);
 
                     if (history.res_body.message === 'Requested subscriptions has unsubscribed!')
