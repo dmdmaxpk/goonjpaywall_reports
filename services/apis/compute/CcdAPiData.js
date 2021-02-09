@@ -16,44 +16,7 @@ getCcdApiData = async(req, res) => {
     await ccdApiDataRepo.getDataFromLogger(req, fromDate, toDate).then(async function (logData) {
         console.log('api data: ', logData.length);
 
-        let history = {}, newObj = {};
-        if (logData.length > 0){
-            for (let j = 0; j < logData.length; j++) {
-                history = logData[j];
-
-                newObj = {};
-                newObj.id = Math.random().toString(36).slice(2);
-                newObj.service = 'Goonj';
-                newObj.channel = 'IVR';
-                newObj.msisdn = history.req_body.msisdn;
-
-                if (history.res_body){
-
-                    delete history.res_body.code;
-                    delete history.res_body.gw_transaction_id;
-                    newObj.api_service_response = JSON.stringify(history.res_body);
-
-                    if (history.res_body.message === 'Requested subscriptions has unsubscribed!')
-                        newObj.service_deactivation = 'Yes';
-                    else
-                        newObj.service_deactivation = 'No';
-                }
-                else{
-                    newObj.api_service_response = 'Null';
-                    newObj.service_deactivation = 'No';
-                }
-
-                if (history.method === 'ccd_details')
-                    newObj.api_type = 'Details';
-                else
-                    newObj.api_type = 'Unsub';
-
-                newObj.added_dtm = moment(history.added_dtm).format("ddd, MMM Do YYY, h:mm a");
-                computedData.push(newObj)
-            }
-        }
-
-        res.send({status: true, computedData: computedData});
+        res.send({status: true, computedData: logData});
         return true;
     });
 };
