@@ -35,7 +35,7 @@ getCcdApiData = async(req, res) => {
                     if (res_body.gw_transaction_id)
                         delete res_body.gw_transaction_id;
 
-                    newObj.api_service_response = JSON.stringify(history.res_body);
+                    newObj.api_service_response = JSON.stringify(res_body);
                     if (history.res_body.message === 'Requested subscriptions has unsubscribed!')
                         newObj.service_deactivation = 'Yes';
                     else
