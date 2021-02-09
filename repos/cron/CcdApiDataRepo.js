@@ -26,7 +26,7 @@ class CcdApiDataRepo {
                                 added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } },
                             }
                         },
-                        { $limit: 3},
+                        { $limit: 100},
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getDataFromLogger - err: ', err.message);

@@ -16,7 +16,7 @@ getCcdApiData = async(req, res) => {
     await ccdApiDataRepo.getDataFromLogger(req, fromDate, toDate).then(async function (logData) {
         console.log('api data: ', logData.length);
 
-        let history = {}, newObj = {}, subscriptions, expiry, i;
+        let history = {}, newObj = {};
         if (logData.length > 0){
             for (let j = 0; j < logData.length; j++) {
                 history = logData[j];
