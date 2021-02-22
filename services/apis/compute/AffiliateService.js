@@ -168,10 +168,10 @@ computeHelogsDataReport = async (rawDataSet, params) =>{
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -221,6 +221,12 @@ computeHelogsDataReport = async (rawDataSet, params) =>{
                     weeklyDataObj.gdn2 = weeklyDataObj.gdn2 + innerObj.gdn2;
                     monthlyDataObj.gdn2 = monthlyDataObj.gdn2 + innerObj.gdn2;
                 }
+                if (innerObj.gdn3){
+                    dataObj.gdn3 = dataObj.gdn3 + innerObj.gdn3;
+                    dayDataObj.gdn3 = dayDataObj.gdn3 + innerObj.gdn3;
+                    weeklyDataObj.gdn3 = weeklyDataObj.gdn3 + innerObj.gdn3;
+                    monthlyDataObj.gdn3 = monthlyDataObj.gdn3 + innerObj.gdn3;
+                }
 
                 // reset start_date for both month & week so can update with latest one
                 if (week_from_date === null)
@@ -237,7 +243,7 @@ computeHelogsDataReport = async (rawDataSet, params) =>{
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     month_from_date = null;
                 }
 
@@ -246,14 +252,14 @@ computeHelogsDataReport = async (rawDataSet, params) =>{
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
             }
         }
 
@@ -288,10 +294,10 @@ computeUniqueSuccessHeWiseReport = async (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -341,6 +347,12 @@ computeUniqueSuccessHeWiseReport = async (rawDataSet, params) => {
                     weeklyDataObj.gdn2 = weeklyDataObj.gdn2 + innerObj.gdn2;
                     monthlyDataObj.gdn2 = monthlyDataObj.gdn2 + innerObj.gdn2;
                 }
+                if (innerObj.gdn3){
+                    dataObj.gdn3 = dataObj.gdn3 + innerObj.gdn3;
+                    dayDataObj.gdn3 = dayDataObj.gdn3 + innerObj.gdn3;
+                    weeklyDataObj.gdn3 = weeklyDataObj.gdn3 + innerObj.gdn3;
+                    monthlyDataObj.gdn3 = monthlyDataObj.gdn3 + innerObj.gdn3;
+                }
 
                 // reset start_date for both month & week so can update with latest one
                 if (week_from_date === null)
@@ -357,7 +369,7 @@ computeUniqueSuccessHeWiseReport = async (rawDataSet, params) => {
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     month_from_date = null;
                 }
 
@@ -366,14 +378,14 @@ computeUniqueSuccessHeWiseReport = async (rawDataSet, params) => {
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
             }
         }
 
@@ -408,7 +420,7 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, statusWise, packageWise, sourceWise, computedData;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let midsObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let midsObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
     let sourceObj = {HE: _.clone(midsObj), affiliate_web: _.clone(midsObj)};
     let packageOBj = {liveDaily: _.clone(sourceObj), liveWeekly: _.clone(sourceObj)};
 
@@ -618,7 +630,7 @@ computeAffiliateDataSourceWiseReport = async (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, sourceWise, computedData;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
     let dataObj = {HE: _.clone(mids), affiliate_web: _.clone(mids)};
     let dayDataObj = {HE: _.clone(mids), affiliate_web: _.clone(mids)};
     let weeklyDataObj = {HE: _.clone(mids), affiliate_web: _.clone(mids)};
@@ -712,7 +724,7 @@ computeAffiliateDataPackageWiseReport = async (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, packageWise, computedData;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
     let dataObj = {liveDaily: _.clone(mids), liveWeekly: _.clone(mids)};
     let dayDataObj = {liveDaily: _.clone(mids), liveWeekly: _.clone(mids)};
     let weeklyDataObj = {liveDaily: _.clone(mids), liveWeekly: _.clone(mids)};
@@ -806,7 +818,7 @@ computeAffiliateDataStatusWiseReport = async (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, statusWise, computedData;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
     let dataObj = {success: _.clone(mids), trial: _.clone(mids), callback_sent: _.clone(mids)};
     let dayDataObj = {success: _.clone(mids), trial: _.clone(mids), callback_sent: _.clone(mids)};
     let weeklyDataObj = {success: _.clone(mids), trial: _.clone(mids), callback_sent: _.clone(mids)};
@@ -908,10 +920,10 @@ computePageViewDataReport = async  (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -961,6 +973,12 @@ computePageViewDataReport = async  (rawDataSet, params) => {
                     weeklyDataObj.gdn2 = weeklyDataObj.gdn2 + innerObj.gdn2;
                     monthlyDataObj.gdn2 = monthlyDataObj.gdn2 + innerObj.gdn2;
                 }
+                if (innerObj.gdn3){
+                    dataObj.gdn3 = dataObj.gdn3 + innerObj.gdn3;
+                    dayDataObj.gdn3 = dayDataObj.gdn3 + innerObj.gdn3;
+                    weeklyDataObj.gdn3 = weeklyDataObj.gdn3 + innerObj.gdn3;
+                    monthlyDataObj.gdn3 = monthlyDataObj.gdn3 + innerObj.gdn3;
+                }
 
                 // reset start_date for both month & week so can update with latest one
                 if (week_from_date === null)
@@ -977,7 +995,7 @@ computePageViewDataReport = async  (rawDataSet, params) => {
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     month_from_date = null;
                 }
 
@@ -986,14 +1004,14 @@ computePageViewDataReport = async  (rawDataSet, params) => {
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
             }
         }
 
@@ -1028,10 +1046,10 @@ computeSubscribeClickDataReport = async  (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -1081,6 +1099,12 @@ computeSubscribeClickDataReport = async  (rawDataSet, params) => {
                     weeklyDataObj.gdn2 = weeklyDataObj.gdn2 + innerObj.gdn2;
                     monthlyDataObj.gdn2 = monthlyDataObj.gdn2 + innerObj.gdn2;
                 }
+                if (innerObj.gdn3){
+                    dataObj.gdn3 = dataObj.gdn3 + innerObj.gdn3;
+                    dayDataObj.gdn3 = dayDataObj.gdn3 + innerObj.gdn3;
+                    weeklyDataObj.gdn3 = weeklyDataObj.gdn3 + innerObj.gdn3;
+                    monthlyDataObj.gdn3 = monthlyDataObj.gdn3 + innerObj.gdn3;
+                }
 
                 // reset start_date for both month & week so can update with latest one
                 if (week_from_date === null)
@@ -1097,7 +1121,7 @@ computeSubscribeClickDataReport = async  (rawDataSet, params) => {
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     month_from_date = null;
                 }
 
@@ -1106,14 +1130,14 @@ computeSubscribeClickDataReport = async  (rawDataSet, params) => {
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
             }
         }
 
@@ -1148,10 +1172,10 @@ computeSubscriptionsMidDataReport = async (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -1201,6 +1225,12 @@ computeSubscriptionsMidDataReport = async (rawDataSet, params) => {
                     weeklyDataObj.gdn2 = weeklyDataObj.gdn2 + innerObj.gdn2;
                     monthlyDataObj.gdn2 = monthlyDataObj.gdn2 + innerObj.gdn2;
                 }
+                if (innerObj.gdn3){
+                    dataObj.gdn3 = dataObj.gdn3 + innerObj.gdn3;
+                    dayDataObj.gdn3 = dayDataObj.gdn3 + innerObj.gdn3;
+                    weeklyDataObj.gdn3 = weeklyDataObj.gdn3 + innerObj.gdn3;
+                    monthlyDataObj.gdn3 = monthlyDataObj.gdn3 + innerObj.gdn3;
+                }
 
                 // reset start_date for both month & week so can update with latest one
                 if (week_from_date === null)
@@ -1217,7 +1247,7 @@ computeSubscriptionsMidDataReport = async (rawDataSet, params) => {
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     month_from_date = null;
                 }
 
@@ -1226,14 +1256,14 @@ computeSubscriptionsMidDataReport = async (rawDataSet, params) => {
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
             }
         }
 
@@ -1305,6 +1335,12 @@ function computeAffiliateHeData(part, innerObj, dataObj, dayDataObj, weeklyDataO
         weeklyDataObj[part]['gdn2'] = weeklyDataObj[part]['gdn2'] + innerObj.gdn2;
         monthlyDataObj[part]['gdn2'] = monthlyDataObj[part]['gdn2'] + innerObj.gdn2;
     }
+    if (innerObj.gdn3){
+        dataObj[part]['gdn3'] = dataObj[part]['gdn3'] + innerObj.gdn3;
+        dayDataObj[part]['gdn3'] = dayDataObj[part]['gdn3'] + innerObj.gdn3;
+        weeklyDataObj[part]['gdn3'] = weeklyDataObj[part]['gdn3'] + innerObj.gdn3;
+        monthlyDataObj[part]['gdn3'] = monthlyDataObj[part]['gdn3'] + innerObj.gdn3;
+    }
 
     return {dataObj: dataObj, dayDataObj: dayDataObj, weeklyDataObj: weeklyDataObj, monthlyDataObj: monthlyDataObj}
 }
@@ -1351,11 +1387,17 @@ function computeAffiliateWiseData(statusWise, packageWise, sourceWise, innerObj,
         weeklyDataObj[statusWise][packageWise][sourceWise]['gdn2'] = weeklyDataObj[statusWise][packageWise][sourceWise]['gdn2'] + innerObj.gdn2;
         monthlyDataObj[statusWise][packageWise][sourceWise]['gdn2'] = monthlyDataObj[statusWise][packageWise][sourceWise]['gdn2'] + innerObj.gdn2;
     }
+    if (innerObj.gdn3){
+        dataObj[statusWise][packageWise][sourceWise]['gdn3'] = dataObj[statusWise][packageWise][sourceWise]['gdn3'] + innerObj.gdn3;
+        dayDataObj[statusWise][packageWise][sourceWise]['gdn3'] = dayDataObj[statusWise][packageWise][sourceWise]['gdn3'] + innerObj.gdn3;
+        weeklyDataObj[statusWise][packageWise][sourceWise]['gdn3'] = weeklyDataObj[statusWise][packageWise][sourceWise]['gdn3'] + innerObj.gdn3;
+        monthlyDataObj[statusWise][packageWise][sourceWise]['gdn3'] = monthlyDataObj[statusWise][packageWise][sourceWise]['gdn3'] + innerObj.gdn3;
+    }
 
     return {dataObj: dataObj, dayDataObj: dayDataObj, weeklyDataObj: weeklyDataObj, monthlyDataObj: monthlyDataObj}
 }
 function cloneAffiliateObj (){
-    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
     return {
         HE: _.clone(mids),
         uniqueSuccessHe:  _.clone(mids),

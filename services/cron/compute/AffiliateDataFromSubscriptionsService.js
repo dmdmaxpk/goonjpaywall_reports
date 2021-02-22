@@ -250,7 +250,7 @@ function computeAffiliateData(subscriptionsRawData) {
 }
 function computeAffiliateMidsData(affiliateMidsData) {
 
-    let rawData, innerObj, affiliateMidsObj = { aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0, '1569': 0, '1': 0, 'null': 0 },
+    let rawData, innerObj, affiliateMidsObj = { aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, gdn3: 0, goonj: 0, '1569': 0, '1': 0, 'null': 0 },
         affiliateMids = [];
     for (let i=0; i < affiliateMidsData.length; i++) {
         rawData = affiliateMidsData[i];
@@ -267,6 +267,8 @@ function computeAffiliateMidsData(affiliateMidsData) {
                 affiliateMidsObj.gdn = affiliateMidsObj.gdn + innerObj.count;
             else if(innerObj.affiliate_mid === 'gdn2')
                 affiliateMidsObj.gdn2 = affiliateMidsObj.gdn2 + innerObj.count;
+            else if(innerObj.affiliate_mid === 'gdn3')
+                affiliateMidsObj.gdn3 = affiliateMidsObj.gdn3 + innerObj.count;
             else if(innerObj.affiliate_mid === 'goonj')
                 affiliateMidsObj.goonj = affiliateMidsObj.goonj + innerObj.count;
             else if(innerObj.affiliate_mid === '1569')
@@ -354,6 +356,8 @@ function affliateWiseMidsCount(history, billing_status, package_id, affiliate, d
         dataObj[status][package_id][affiliate]['gdn'] = dataObj[status][package_id][affiliate]['gdn'] + history.count;
     else if (history.affiliate_mid === 'gdn2')
         dataObj[status][package_id][affiliate]['gdn2'] = dataObj[status][package_id][affiliate]['gdn2'] + history.count;
+    else if (history.affiliate_mid === 'gdn3')
+        dataObj[status][package_id][affiliate]['gdn3'] = dataObj[status][package_id][affiliate]['gdn3'] + history.count;
     else if (history.affiliate_mid === 'goonj')
         dataObj[status][package_id][affiliate]['goonj'] = dataObj[status][package_id][affiliate]['goonj'] + history.count;
 
@@ -374,6 +378,8 @@ function packageWiseMidsCount(history, wise, dataObj) {
         dataObj[wise]['gdn'] = dataObj[wise]['gdn'] + history.count;
     else if (history.affiliate_mid === 'gdn2' && history.status === 'Success')
         dataObj[wise]['gdn2'] = dataObj[wise]['gdn2'] + history.count;
+    else if (history.affiliate_mid === 'gdn3' && history.status === 'Success')
+        dataObj[wise]['gdn3'] = dataObj[wise]['gdn3'] + history.count;
     else if (history.affiliate_mid === '1' && history.status === 'Success')
         dataObj[wise]['1'] = dataObj[wise]['1'] + history.count;
 
@@ -393,6 +399,8 @@ function wiseMidsCount(history, wise, dataObj) {
         dataObj[wise]['gdn'] = dataObj[wise]['gdn'] + history.count;
     else if (history.affiliate_mid === 'gdn2')
         dataObj[wise]['gdn2'] = dataObj[wise]['gdn2'] + history.count;
+    else if (history.affiliate_mid === 'gdn3')
+        dataObj[wise]['gdn3'] = dataObj[wise]['gdn3'] + history.count;
     else if (history.affiliate_mid === 'goonj')
         dataObj[wise]['goonj'] = dataObj[wise]['goonj'] + history.count;
 
@@ -400,7 +408,7 @@ function wiseMidsCount(history, wise, dataObj) {
 }
 
 function cloneAffiliateWiseObj() {
-    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
+    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, gdn3: 0, goonj: 0 };
     let affiliate = {
         QDfC: { HE: _.clone(mids), affiliate_web: _.clone(mids) },
         QDfG: { HE: _.clone(mids), affiliate_web: _.clone(mids) }
@@ -414,7 +422,7 @@ function cloneAffiliateWiseObj() {
     }
 }
 function cloneStatusWiseObj() {
-    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
+    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, gdn3: 0, goonj: 0 };
     return {
         success: _.clone(mids),
         trial: _.clone(mids),
@@ -424,7 +432,7 @@ function cloneStatusWiseObj() {
     }
 }
 function clonePackageWiseObj() {
-    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
+    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, gdn3: 0, goonj: 0 };
     return {
         QDfC: _.clone(mids),
         QDfG: _.clone(mids),
@@ -433,7 +441,7 @@ function clonePackageWiseObj() {
     }
 }
 function cloneSourceWiseObj() {
-    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, goonj: 0 };
+    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, gdn3: 0, goonj: 0 };
     return {
         HE: _.clone(mids),
         affiliate_web: _.clone(mids),
