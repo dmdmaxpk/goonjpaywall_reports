@@ -6,7 +6,7 @@ const moment = require('moment');
 
 getCcdApiData = async(req, res) => {
     console.log('getCcdApiData: ');
-    let dateData, fromDate, toDate, computedData = [];
+    let dateData, fromDate, toDate;
 
     dateData = helper.computeDateFromMonth(req.query);
     fromDate = dateData.fromDate;

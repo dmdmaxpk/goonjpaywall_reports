@@ -16,24 +16,27 @@ class CcdApiDataRepo {
             console.log('match: ', match);
             req.db.collection('logs', function (err, collection) {
                 if (!err) {
-                    collection.aggregate([
-                        { $match: match},
-                        {$project: {
-                                _id:"$_id",
-                                method:"$method",
-                                res_body:"$res_body",
-                                req_body:"$req_body",
-                                added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } },
-                            }
-                        },
-                    ],{ allowDiskUse: true }).toArray(function(err, items) {
-                        if(err){
-                            console.log('getDataFromLogger - err: ', err.message);
-                            resolve([]);
-                        }
-                        resolve(items);
-                    });
+                    resolve([]);
                 }
+
+                collection.aggregate([
+                    { $match: match},
+                    {$project: {
+                            _id:"$_id",
+                            method:"$method",
+                            res_body:"$res_body",
+                            req_body:"$req_body",
+                            added_dtm: { '$dateToString' : { date: "$added_dtm", 'timezone' : "Asia/Karachi" } },
+                        }
+                    },
+                ],{ allowDiskUse: true }).toArray(function(err, items) {
+                    if(err){
+                        console.log('getDataFromLogger - err: ', err.message);
+                        resolve([]);
+                    }
+                    resolve(items);
+                });
+
             });
         });
     }

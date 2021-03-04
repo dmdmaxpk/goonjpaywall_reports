@@ -117,14 +117,27 @@ class Helper {
 
     static computeDateFromMonth(query) {
 
+        let day = query.day;
         let month = query.month;
-        let fromDate  = new Date('2021-'+month+'-01T00:00:00.000Z');
+        let fromDate, toDate, days;
 
-        let toDate  = new Date(_.clone(fromDate));
-        let days = this.getDaysInMonth(month);
+        console.log('day: ', day);
 
-        toDate.setDate(days);
-        toDate.setHours(23, 59, 59);
+        if (day === 'chunk_1'){
+            fromDate  = new Date('2021-'+month+'-01T00:00:00.000Z');
+            toDate  = new Date(_.clone(fromDate));
+
+            toDate.setDate(15);
+            toDate.setHours(23, 59, 59);
+        }
+        else{
+            fromDate  = new Date('2021-'+month+'-16T00:00:00.000Z');
+            toDate  = new Date(_.clone(fromDate));
+            days = this.getDaysInMonth(month);
+
+            toDate.setDate(days);
+            toDate.setHours(23, 59, 59);
+        }
 
         return {fromDate: fromDate, toDate: toDate};
     }
