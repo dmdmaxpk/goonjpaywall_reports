@@ -7,10 +7,9 @@ getChurnByDateString = async (dateString) => {
 };
 
 createChrunReport = async (data) => {
-    console.log('ChurnRep =======');
-
-    let ChurnReport = new ChurnReport(data);
-    return await ChurnReport.save();
+    console.log('createChrunReport =======');
+    let churnReport = new ChurnReport(data);
+    return await churnReport.save();
 };
 
 updateChurnReport = async (data, id) => {
