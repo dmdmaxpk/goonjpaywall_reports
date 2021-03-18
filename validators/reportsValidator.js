@@ -130,9 +130,9 @@ class ReportsValidator{
                 this.checkSubTypeIsNull(params.sub_type, "Visitors", ['app', 'web']);
 
                 break;
-            case 'avg_churn':
+            case 'churn':
                 this.checkDateIsNull(params);
-                this.checkSubTypeIsNotArray(params, "Get Average Churn");
+                this.checkSubTypeIsNotArray(params, "Get Churn");
 
                 break;
             case 'share_msisdn':

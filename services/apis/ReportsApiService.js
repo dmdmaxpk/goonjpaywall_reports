@@ -1,6 +1,7 @@
 const container = require("../../configurations/container");
 const reportsRepo = require('../../repos/apis/ReportsRepo');
 const affiliateRepo = require('../../repos/apis/AffiliateRepo');
+const churnRepo = require('../../repos/apis/ChurnRepo');
 const subscriberReportsRepo = require('../../repos/apis/SubscriberReportsRepo');
 const reportsTransformer = container.resolve('reportsTransformer');
 
@@ -17,6 +18,7 @@ const trialService = require("./compute/TrialService");
 const usersService = require("./compute/UsersService");
 const affiliateService = require("./compute/AffiliateService");
 const ccdAPiData = require("./compute/CcdAPiData");
+const churnService = require("./compute/ChurnService");
 const connection = require('../../middlewares/connection');
 const helper = require('../../helper/helper');
 
@@ -31,6 +33,9 @@ generateReportsData = async (req,res) => {
 
         if (params.type === 'affiliate'){
             rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
+        }
+        else if (params.type === 'churn'){
+            rawDataSet = await churnRepo.generateChurnReportsData(params);
         }
         else if(params.sub_type === 'avg_transactions' || params.sub_type === 'avg_transactions_per_customer'){
             params.to_date = moment(new Date(params.to_date)).date(1).format('YYYY-MM-DD');
@@ -280,6 +285,10 @@ generateReportsData = async (req,res) => {
                 else if (params.subscriptions === 'status_wise')
                     return affiliateService.computeAffiliateDataStatusWiseReport(rawDataSet, params);
             }
+        }
+        else if (params.type === 'churn'){
+            if (params.sub_type === 'churn')
+                return churnService.computeChurnReport(rawDataSet, params);
         }
     }catch (e) {
         return reportsTransformer.transformErrorCatchData(false, e.message);
