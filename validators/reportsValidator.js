@@ -132,7 +132,7 @@ class ReportsValidator{
                 break;
             case 'churn':
                 this.checkDateIsNull(params);
-                this.checkSubTypeIsNull(params, "Get Churn", ['churn']);
+                this.checkSubTypeIsNull(params.sub_type, "Get Churn", ['churn']);
 
                 break;
             case 'share_msisdn':
@@ -183,7 +183,6 @@ class ReportsValidator{
 
         return true;
     }
-
     checkDateIsNotArray(params, reportType){
 
         if (Array.isArray(params.from_date)) {
@@ -202,14 +201,12 @@ class ReportsValidator{
             this.status = false; this.reasons = 'The Report "'+reportType+'", its End Date is invalid.';
         }
     }
-
     checkSubTypeIsNull(subType, reportType, subTypes){
         if (!subTypes.includes(subType)) {
             this.status = false; this.reasons = 'The Report "'+reportType+'", its Sub Type is invalid.';
         }
         return true;
     }
-
     checkSubTypeIsNotArray(params, reportType){
         if (Array.isArray(params.sub_type)) {
             if (params.sub_type.length == 0){
