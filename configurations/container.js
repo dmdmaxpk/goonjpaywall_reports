@@ -11,6 +11,7 @@ const LogsRepo = require('../repos/cron/LogsRepo');
 const SubscriberRepository = require('../repos/cron/SubscriberRepo');
 const TransactionsRepo = require('../repos/cron/TransactionsRepo');
 const CcdApiDataRepo = require('../repos/cron/CcdApiDataRepo');
+const ChurnRepository = require('../repos/cron/ChurnRepo');
 
 //Validators
 const ReportsValidator = require('../validators/reportsValidator');
@@ -28,6 +29,7 @@ container.register({
     subscriberRepository: awilix.asClass(SubscriberRepository).singleton(),
     transactionsRepo: awilix.asClass(TransactionsRepo).singleton(),
     ccdApiDataRepo: awilix.asClass(CcdApiDataRepo).singleton(),
+    churnRepo: awilix.asClass(ChurnRepository).singleton(),
 
     //Validators
     reportsValidator: awilix.asClass(ReportsValidator).singleton(),

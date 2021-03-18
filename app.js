@@ -8,6 +8,7 @@ const cors = require('cors');
 require('./models/Report');
 require('./models/SubscriberReport');
 require('./models/AffiliateReport');
+require('./models/ChurnReport');
 
 // Connection to Database
 const config = require('./config');

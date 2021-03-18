@@ -72,6 +72,9 @@ router.route('/compute-transactions-avg-reports')
 router.route('/compute-transactions-avg-per-customer-reports')
     .get(connection.connect, controller.promiseBasedComputeTransactionsAvgPerCustomerReports);
 
+router.route('/compute-churn-reports')
+    .get(connection.connect, controller.computeChurnReports);
+
 router.route('/cron-compute-daily-data-reports')
     .get(connection.connect, controller.cronComputeDailyDataReports); //**
 

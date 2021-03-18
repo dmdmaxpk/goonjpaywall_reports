@@ -1,5 +1,4 @@
 const container = require("../../../configurations/container");
-const ccdApiDataRepo = container.resolve('ccdApiDataRepo');
 const helper = require('../../../helper/helper');
 const _ = require('lodash');
 const moment = require('moment');

@@ -20,6 +20,8 @@ const SubscriptionsSourceWiseSuccessfulService = require('../services/cron/compu
 const HelogsService = require('../services/cron/compute/HelogsService');
 const LogsService = require('../services/cron/compute/LogsService');
 
+const ChurnService = require('../services/cron/compute/ChurnService');
+
 const ReportsCronService = require('../services/cron/ReportsCronService');
 
 exports.computeUserReports = async (req,res) =>  {
@@ -134,6 +136,11 @@ exports.computeAffiliateReports = async (req,res) =>  {
 exports.computeAffiliateMidsFromSubscriptionsReports = async (req,res) =>  {
     AffiliateSubscriptionsService.computeAffiliateMidsFromSubscriptionsReports(req,res);
     res.send("computeAffiliateMidsFromSubscriptionsReports - Executed\n");
+};
+
+exports.computeChurnReports = async (req,res) =>  {
+    ChurnService.computeChurnReports(req,res);
+    res.send("computeChurnReports - Executed\n");
 };
 
 exports.cronComputeDailyDataReports = async (req,res) =>  {
