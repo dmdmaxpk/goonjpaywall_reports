@@ -95,17 +95,13 @@ promiseBasedComputeChurnReports = async(req, res) => {
 };
 
 function computeChurnData(records) {
-    console.log('computeChurnData: ', records);
-
     let newObj = {}, success = 0, expired = 0, finalList = [];
     for (const record of records) {
         if (record._id === 'Success'){
-            console.log('success------- ');
             success = record.count;
             newObj.success = record.count;
         }
         if (record._id === 'expired'){
-            console.log('expired------- ');
             expired = record.count;
             newObj.expired = record.count;
         }
