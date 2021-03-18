@@ -132,7 +132,7 @@ class ReportsValidator{
                 break;
             case 'churn':
                 this.checkDateIsNull(params);
-                this.checkSubTypeIsNull(params, "Get Churn");
+                this.checkSubTypeIsNull(params, "Get Churn", ['churn']);
 
                 break;
             case 'share_msisdn':
