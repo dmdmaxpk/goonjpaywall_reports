@@ -34,15 +34,20 @@ computeChurnReports = async(req, res) => {
 
     // Get compute data for next time slot
     req.day = Number(req.day) + 1;
-    console.log('getChurnByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
+    console.log('getChurnByDateRange -> day : ', day, req.day, month, helper.getDaysInMonth(month));
 
     if (req.day <= helper.getDaysInMonth(month)){
+        console.log('if - 1: ', month, helper.getTodayMonthNo());
+        console.log('if - 2: ', req.day, helper.getTodayDayNo());
+
         if (month < helper.getTodayMonthNo())
             computeChurnReports(req, res);
         else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
             computeChurnReports(req, res);
     }
     else{
+        console.log('else - 1: ', req.month, helper.getTodayMonthNo());
+
         req.day = 1;
         req.month = Number(req.month) + 1;
         console.log('getChurnByDateRange -> month : ', month, req.month, new Date().getMonth());

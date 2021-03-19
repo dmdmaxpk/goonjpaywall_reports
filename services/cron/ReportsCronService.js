@@ -104,8 +104,8 @@ cronComputeDailyDataReports = async (req, res) => {
     helper.threeLinesConsoleLog('BillingHistoryService - promiseBasedComputeBillingHistoryReports');
     // await BillingHistoryService.promiseBasedComputeBillingHistoryReports(req,res);
 
-    // helper.threeLinesConsoleLog('ChurnService - promiseBasedComputeChurnReports');
-    // await ChurnService.promiseBasedComputeChurnReports(req,res);
+    helper.threeLinesConsoleLog('ChurnService - promiseBasedComputeChurnReports');
+    await ChurnService.promiseBasedComputeChurnReports(req,res);
 
     helper.oneLineConsoleLog('Cron - Yesterday Data is computed successfully.');
 };
