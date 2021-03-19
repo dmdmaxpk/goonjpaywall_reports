@@ -34,17 +34,17 @@ computeChurnReports = async(req, res) => {
 
     // Get compute data for next time slot
     req.day = Number(req.day) + 1;
-    console.log('getChurnByDateRange -> day : ', day, req.day, month, helper.getDaysInMonth(month));
+    console.log('getChurnByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-    if (req.day <= helper.getDaysInMonth(month)){
-        console.log('if - 1: ', month, helper.getTodayMonthNo(), ' - ', month < helper.getTodayMonthNo());
-        console.log('if - 2: ', req.day, helper.getTodayDayNo(), ' - ', month === helper.getTodayMonthNo(),  req.day <= helper.getTodayDayNo());
+    if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+        console.log('if - 1: ', Number(month), Number(helper.getTodayMonthNo()), ' - ', Number(month) < Number(helper.getTodayMonthNo()));
+        console.log('if - 2: ', Number(req.day), Number(helper.getTodayDayNo()), ' - ', Number(month) === Number(helper.getTodayMonthNo()),  Number(req.day) <= Number(helper.getTodayDayNo()));
 
-        if (month < helper.getTodayMonthNo()){
+        if (Number(month) < Number(helper.getTodayMonthNo())){
             console.log('if-----: ');
             computeChurnReports(req, res);
         }
-        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo()){
+        else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo())){
             console.log('else if-----: ');
             computeChurnReports(req, res);
         }
@@ -54,9 +54,9 @@ computeChurnReports = async(req, res) => {
 
         req.day = 1;
         req.month = Number(req.month) + 1;
-        console.log('getChurnByDateRange -> month : ', month, req.month, new Date().getMonth());
+        console.log('getChurnByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-        if (req.month <= helper.getTodayMonthNo())
+        if (Number(req.month) <= Number(helper.getTodayMonthNo()))
             computeChurnReports(req, res);
     }
 
