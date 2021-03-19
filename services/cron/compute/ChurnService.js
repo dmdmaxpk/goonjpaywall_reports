@@ -37,13 +37,17 @@ computeChurnReports = async(req, res) => {
     console.log('getChurnByDateRange -> day : ', day, req.day, month, helper.getDaysInMonth(month));
 
     if (req.day <= helper.getDaysInMonth(month)){
-        console.log('if - 1: ', month, helper.getTodayMonthNo());
-        console.log('if - 2: ', req.day, helper.getTodayDayNo());
+        console.log('if - 1: ', month, helper.getTodayMonthNo(), ' - ', month < helper.getTodayMonthNo());
+        console.log('if - 2: ', req.day, helper.getTodayDayNo(), ' - ', month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo());
 
-        if (month < helper.getTodayMonthNo())
+        if (month < helper.getTodayMonthNo()){
+            console.log('if-----: ');
             computeChurnReports(req, res);
-        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+        }
+        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo()){
+            console.log('else if-----: ');
             computeChurnReports(req, res);
+        }
     }
     else{
         console.log('else - 1: ', req.month, helper.getTodayMonthNo());
