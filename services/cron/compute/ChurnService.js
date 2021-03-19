@@ -38,7 +38,7 @@ computeChurnReports = async(req, res) => {
 
     if (req.day <= helper.getDaysInMonth(month)){
         console.log('if - 1: ', month, helper.getTodayMonthNo(), ' - ', month < helper.getTodayMonthNo());
-        console.log('if - 2: ', req.day, helper.getTodayDayNo(), ' - ', month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo());
+        console.log('if - 2: ', req.day, helper.getTodayDayNo(), ' - ', month === helper.getTodayMonthNo(),  req.day <= helper.getTodayDayNo());
 
         if (month < helper.getTodayMonthNo()){
             console.log('if-----: ');
