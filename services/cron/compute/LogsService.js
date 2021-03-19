@@ -32,20 +32,22 @@ computeLogsPageViewReports = async(req, res) => {
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeLogsPageViewReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        console.log('getLogsPageViewByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
+        if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+            if (Number(month) < Number(helper.getTodayMonthNo()))
                 computeLogsPageViewReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+            else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
                 computeLogsPageViewReports(req, res);
         }
         else{
+            console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('computeLogsPageViewReports -> month : ', month, req.month, new Date().getMonth());
+            console.log('getLogsPageViewByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-            if (req.month <= helper.getTodayMonthNo())
+            if (Number(req.month) <= Number(helper.getTodayMonthNo()))
                 computeLogsPageViewReports(req, res);
         }
 
@@ -84,20 +86,22 @@ computeLogsSubscribeClicksReports = async(req, res) => {
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeLogsSubscribeClicksReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        console.log('getLogsSubscribeClicksByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
+        if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+            if (Number(month) < Number(helper.getTodayMonthNo()))
                 computeLogsSubscribeClicksReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+            else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
                 computeLogsSubscribeClicksReports(req, res);
         }
         else{
+            console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('computeLogsSubscribeClicksReports -> month : ', month, req.month, new Date().getMonth());
+            console.log('getLogsSubscribeClicksByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-            if (req.month <= helper.getTodayMonthNo())
+            if (Number(req.month) <= Number(helper.getTodayMonthNo()))
                 computeLogsSubscribeClicksReports(req, res);
         }
 

@@ -71,22 +71,22 @@ computeRevenueNetAdditionReports = async(req, res) => {
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeRevenueNetAdditionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        console.log('getNetAdditionByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            console.log('IF');
-            if (month < helper.getTodayMonthNo())
+        if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+            if (Number(month) < Number(helper.getTodayMonthNo()))
                 computeRevenueNetAdditionReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+            else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
                 computeRevenueNetAdditionReports(req, res);
         }
         else{
-            console.log('ELSE');
+            console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('computeRevenueNetAdditionReports -> month : ', month, req.month, new Date().getMonth());
+            console.log('getNetAdditionByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-            if (req.month <= helper.getTodayMonthNo())
+            if (Number(req.month) <= Number(helper.getTodayMonthNo()))
                 computeRevenueNetAdditionReports(req, res);
         }
 

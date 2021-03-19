@@ -73,20 +73,22 @@ computeBillingHistorySuccessfulReports = async(req, res) => {
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeBillingHistorySuccessfulReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        console.log('getBillingHistorySuccessfulByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
+        if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+            if (Number(month) < Number(helper.getTodayMonthNo()))
                 computeBillingHistorySuccessfulReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+            else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
                 computeBillingHistorySuccessfulReports(req, res);
         }
         else{
+            console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('computeBillingHistorySuccessfulReports -> month : ', month, req.month, new Date().getMonth());
+            console.log('getBillingHistorySuccessfulByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-            if (req.month <= helper.getTodayMonthNo())
+            if (Number(req.month) <= Number(helper.getTodayMonthNo()))
                 computeBillingHistorySuccessfulReports(req, res);
         }
 

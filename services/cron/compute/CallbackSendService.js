@@ -67,22 +67,22 @@ computeCallbackSendReports = async(req, res) => {
 
     // Get compute data for next time slot
     req.day = Number(req.day) + 1;
-    console.log('computeCallbackSendReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+    console.log('getCallbackSendByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-    if (req.day <= helper.getDaysInMonth(month)){
-        console.log('IF');
-        if (month < helper.getTodayMonthNo())
+    if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+        if (Number(month) < Number(helper.getTodayMonthNo()))
             computeCallbackSendReports(req, res);
-        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+        else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
             computeCallbackSendReports(req, res);
     }
     else{
-        console.log('ELSE');
+        console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
         req.day = 1;
         req.month = Number(req.month) + 1;
-        console.log('computeCallbackSendReports -> month : ', month, req.month, new Date().getMonth());
+        console.log('getCallbackSendByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-        if (req.month <= helper.getTodayMonthNo())
+        if (Number(req.month) <= Number(helper.getTodayMonthNo()))
             computeCallbackSendReports(req, res);
     }
 

@@ -35,32 +35,29 @@ computeInsufficientBalanceReports = async(req, res) => {
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeInsufficientBalanceReports -> day : ', day, req.day, month, helper.getDaysInMonth(month));
+        console.log('getInsufficientBalanceByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo()){
-                console.log('1: ');
+        if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+            if (Number(month) < Number(helper.getTodayMonthNo()))
                 computeInsufficientBalanceReports(req, res);
-            }
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo()){
-                console.log('2: ');
+            else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
                 computeInsufficientBalanceReports(req, res);
-            }
-            else if(helper.yearsDifferenceWise){
-                console.log('3: ');
-                computeInsufficientBalanceReports(req, res);
-            }
         }
         else{
+            console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('computeInsufficientBalanceReports -> month : ', month, req.month, new Date().getMonth());
+            console.log('getInsufficientBalanceByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-            if (req.month <= helper.getTodayMonthNo()){
-                console.log('4: ');
+            if (Number(req.month) <= Number(helper.getTodayMonthNo()))
                 computeInsufficientBalanceReports(req, res);
-            }
         }
+
+        // else if(helper.yearsDifferenceWise){
+        //     console.log('3: ');
+        //     computeInsufficientBalanceReports(req, res);
+        // }
 
         if (helper.isToday(fromDate)){
             console.log('computeInsufficientBalanceReports - data compute - done');
@@ -141,24 +138,27 @@ computeExcessiveBillingReports = async(req, res) => {
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeExcessiveBillingReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        console.log('getExcessiveBillingCountByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
+        if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+            if (Number(month) < Number(helper.getTodayMonthNo()))
                 computeExcessiveBillingReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeExcessiveBillingReports(req, res);
-            else if(helper.yearsDifferenceWise)
+            else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
                 computeExcessiveBillingReports(req, res);
         }
         else{
+            console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('computeExcessiveBillingReports -> month : ', month, req.month, new Date().getMonth());
+            console.log('getExcessiveBillingCountByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-            if (req.month <= helper.getTodayMonthNo())
+            if (Number(req.month) <= Number(helper.getTodayMonthNo()))
                 computeExcessiveBillingReports(req, res);
         }
+
+        // else if(helper.yearsDifferenceWise)
+        //     computeExcessiveBillingReports(req, res);
 
         if (helper.isToday(fromDate)){
             console.log('computeExcessiveBillingReports - data compute - done');
