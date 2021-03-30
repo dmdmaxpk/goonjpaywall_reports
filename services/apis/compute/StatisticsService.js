@@ -205,16 +205,16 @@ computeUnsubscribedReport = async (rawDataSet, params) =>{
             if (outerObj.churn){
                 for (let j=0; j<outerObj.churn.length; j++) {
                     innerObj = outerObj.churn[j];
-                    if (innerObj.success) {
-                        dataObj.expired = dataObj.expired + innerObj.success;
-                        dayDataObj.expired = dayDataObj.expired + innerObj.success;
-                        weeklyDataObj.expired = weeklyDataObj.expired + innerObj.success;
-                        monthlyDataObj.expired = monthlyDataObj.expired + innerObj.success;
+                    if (innerObj.expired) {
+                        dataObj.expired = dataObj.expired + innerObj.expired;
+                        dayDataObj.expired = dayDataObj.expired + innerObj.expired;
+                        weeklyDataObj.expired = weeklyDataObj.expired + innerObj.expired;
+                        monthlyDataObj.expired = monthlyDataObj.expired + innerObj.expired;
                     }
 
                     // Hourly Bases Data
                     // hourlyBasisTotalCount.push({
-                    //     expired: innerObj.success
+                    //     expired: innerObj.expired
                     // });
 
                     // reset start_date for both month & week so can update with latest one

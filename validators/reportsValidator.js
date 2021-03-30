@@ -77,11 +77,6 @@ class ReportsValidator{
                 this.checkSubTypeIsNull(params.sub_type, "Net Additions", ['source_wise', 'package_wise', 'operator_wise', 'paywall_wise', 'net_additions_overall']);
 
                 break;
-            case 'others':
-                this.checkDateIsNull(params, "Others");
-                this.checkSubTypeIsNull(params.sub_type, "Others Statistics", ['request_count', 'successful_charge', 'unsubscribed', 'insufficient_balance', 'insufficient_balance', 'excessive_billing']);
-
-                break;
             case 'transactions':
                 this.checkDateIsNull(params, "Get Transactions");
                 this.checkSubTypeIsNull(params.sub_type, "Transactions", ['avg_transactions', 'avg_transactions_per_customer', 'successful', 'trialed', 'graced']);
@@ -133,6 +128,12 @@ class ReportsValidator{
             case 'churn':
                 this.checkDateIsNull(params);
                 this.checkSubTypeIsNull(params.sub_type, "Get Churn", ['churn']);
+
+                break;
+
+            case 'others':
+                this.checkDateIsNull(params, "Others");
+                this.checkSubTypeIsNull(params.sub_type, "Others Statistics", ['request_count', 'successful_charge', 'unsubscribed', 'insufficient_balance', 'excessive_billing']);
 
                 break;
             case 'share_msisdn':
