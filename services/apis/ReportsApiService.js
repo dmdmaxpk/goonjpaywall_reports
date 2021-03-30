@@ -32,16 +32,20 @@ generateReportsData = async (req,res) => {
         if (params.type === 'ccd_api_data')
             return await ccdAPiData.getCcdApiData(req, res);
 
-        if (params.type === 'affiliate'){
+        if (params.type === 'affiliate')
             rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
-        }
-        else if (params.type === 'churn' || params.type === 'statistics'){
+        else if (params.type === 'churn')
             rawDataSet = await churnRepo.generateChurnReportsData(params);
-        }
         else if(params.sub_type === 'avg_transactions' || params.sub_type === 'avg_transactions_per_customer'){
             params.to_date = moment(new Date(params.to_date)).date(1).format('YYYY-MM-DD');
             params.from_date = params.to_date;
             rawDataSet = await reportsRepo.generateReportsData(params);
+        }
+        else if (params.type === 'others'){
+            if (params.sub_type === 'request_count' || params.sub_type === 'successful_charge' || params.sub_type === 'unsubscribed')
+                rawDataSet = await churnRepo.generateChurnReportsData(params);
+            else
+                rawDataSet = await reportsRepo.generateReportsData(params);
         }
         else
             rawDataSet = await reportsRepo.generateReportsData(params);
@@ -180,7 +184,13 @@ generateReportsData = async (req,res) => {
                 return subscriptionService.computeUnSubscriptionsSourceWiseReport(rawDataSet, params);
         }
         else if (params.type === 'others') {
-            if (params.sub_type === 'insufficient_balance')
+            if (params.sub_type === 'request_count')
+                return statisticsService.computeRequestCountReport(rawDataSet, params);
+            else if (params.sub_type === 'successful_charge')
+                return statisticsService.computeSuccessfulChargeReport(rawDataSet, params);
+            else if (params.sub_type === 'unsubscribed')
+                return statisticsService.computeUnsubscribedReport(rawDataSet, params);
+            else if (params.sub_type === 'insufficient_balance')
                 return InsufficientAndExcessiveBillingService.computeInsufficientBalanceReport(rawDataSet, params);
             else if (params.sub_type === 'excessive_billing')
                 return InsufficientAndExcessiveBillingService.computeExcessiveBillingReport(rawDataSet, params);
@@ -290,10 +300,6 @@ generateReportsData = async (req,res) => {
         else if (params.type === 'churn'){
             if (params.sub_type === 'churn')
                 return churnService.computeChurnReport(rawDataSet, params);
-        }
-        else if (params.type === 'statistics'){
-            if (params.sub_type === 'request_count')
-                return statisticsService.computeRequestCountReport(rawDataSet, params);
         }
     }catch (e) {
         return reportsTransformer.transformErrorCatchData(false, e.message);
