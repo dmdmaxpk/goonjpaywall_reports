@@ -19,6 +19,7 @@ const usersService = require("./compute/UsersService");
 const affiliateService = require("./compute/AffiliateService");
 const ccdAPiData = require("./compute/CcdAPiData");
 const churnService = require("./compute/ChurnService");
+const statisticsService = require("./compute/StatisticsService");
 const connection = require('../../middlewares/connection');
 const helper = require('../../helper/helper');
 
@@ -34,7 +35,7 @@ generateReportsData = async (req,res) => {
         if (params.type === 'affiliate'){
             rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
         }
-        else if (params.type === 'churn'){
+        else if (params.type === 'churn' || params.type === 'statistics'){
             rawDataSet = await churnRepo.generateChurnReportsData(params);
         }
         else if(params.sub_type === 'avg_transactions' || params.sub_type === 'avg_transactions_per_customer'){
@@ -289,6 +290,10 @@ generateReportsData = async (req,res) => {
         else if (params.type === 'churn'){
             if (params.sub_type === 'churn')
                 return churnService.computeChurnReport(rawDataSet, params);
+        }
+        else if (params.type === 'statistics'){
+            if (params.sub_type === 'request_count')
+                return statisticsService.computeRequestCountReport(rawDataSet, params);
         }
     }catch (e) {
         return reportsTransformer.transformErrorCatchData(false, e.message);

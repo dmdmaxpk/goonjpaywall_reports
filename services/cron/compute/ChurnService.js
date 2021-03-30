@@ -74,7 +74,7 @@ promiseBasedComputeChurnReports = async(req, res) => {
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
 
-        console.log('computeChurnReports: ', fromDate, toDate);
+        console.log('promiseBasedComputeChurnReports: ', fromDate, toDate);
         await churnRepo.getChurnByDateRange(req, fromDate, toDate).then(async function (churn) {
             console.log('churn.length: ', churn.length);
 

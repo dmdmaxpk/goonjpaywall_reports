@@ -21,6 +21,7 @@ const HelogsService = require('../services/cron/compute/HelogsService');
 const LogsService = require('../services/cron/compute/LogsService');
 
 const ChurnService = require('../services/cron/compute/ChurnService');
+const StatisticsService = require('../services/cron/compute/StatisticsService');
 
 const ReportsCronService = require('../services/cron/ReportsCronService');
 
@@ -141,6 +142,11 @@ exports.computeAffiliateMidsFromSubscriptionsReports = async (req,res) =>  {
 exports.computeChurnReports = async (req,res) =>  {
     ChurnService.computeChurnReports(req,res);
     res.send("computeChurnReports - Executed\n");
+};
+
+exports.computeRequestCountReports = async (req,res) =>  {
+    StatisticsService.computeRequestCountReports(req,res);
+    res.send("computeRequestCountReports - Executed\n");
 };
 
 exports.cronComputeDailyDataReports = async (req,res) =>  {

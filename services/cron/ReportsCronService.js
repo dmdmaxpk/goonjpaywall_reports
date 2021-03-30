@@ -15,6 +15,7 @@ const BillingHistorySuccessfulService = require('./compute/BillingHistorySuccess
 const SubscriptionsSourceWiseSuccessfulService = require('./compute/SubscriptionsSourceWiseSuccessfulService');
 const InSufficientAndExcessiveBillingService = require('./compute/InSufficientAndExcessiveBillingService');
 const ChurnService = require('./compute/ChurnService');
+const StatisticsService = require('./compute/StatisticsService');
 
 const HelogsService = require('./compute/HelogsService');
 const LogsService = require('./compute/LogsService');
@@ -106,6 +107,9 @@ cronComputeDailyDataReports = async (req, res) => {
 
     helper.threeLinesConsoleLog('ChurnService - promiseBasedComputeChurnReports');
     await ChurnService.promiseBasedComputeChurnReports(req,res);
+
+    helper.threeLinesConsoleLog('StatisticsService - promiseBasedComputeRequestCountReports');
+    await StatisticsService.promiseBasedComputeRequestCountReports(req,res);
 
     helper.oneLineConsoleLog('Cron - Yesterday Data is computed successfully.');
 };

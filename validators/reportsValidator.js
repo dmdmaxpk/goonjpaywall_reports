@@ -135,6 +135,11 @@ class ReportsValidator{
                 this.checkSubTypeIsNull(params.sub_type, "Get Churn", ['churn']);
 
                 break;
+            case 'statistics':
+                this.checkDateIsNull(params);
+                this.checkSubTypeIsNull(params.sub_type, "Get Statistics", ['request_count']);
+
+                break;
             case 'share_msisdn':
                 this.checkDateIsNull(params, "Share MSISDN");
                 this.checkSubTypeIsNull(params.sub_type, "Share MSISDN", ['unSubscribed', 'subscribed', 'deactivated', 'inactive', 'chargeFailed']);
