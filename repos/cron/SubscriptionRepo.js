@@ -226,8 +226,8 @@ class SubscriptionRepository {
                                                 {$in: ["$billing_status",
                                                     [ "Success", "trial", "Affiliate callback sent" ]
                                                 ]},
-                                                {$gt: ["$billing_dtm", new Date(from)]},
-                                                {$lt: ["$billing_dtm", new Date(to)]}
+                                                {$gt: ["$billing_dtm", new Date("2021-04-19T00:00:00.000Z")]},
+                                                {$lt: ["$billing_dtm", new Date("2021-04-19T23:59:59.000Z")]}
                                             ]}
                                         }
                                     }],
