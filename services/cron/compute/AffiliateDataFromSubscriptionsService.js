@@ -124,12 +124,15 @@ promiseBasedComputeAffiliateReports = async(req, res) => {
         * Script will execute to fetch data as per day
         * */
         dateData = helper.computeTodayDate(req);
+        dateData = helper.computeTodayDateWithLocalTime(req);
         req = dateData.req;
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
 
-        console.log('computeAffiliateReports: ', fromDate, toDate);
-        await subscriptionRepo.getAffiliateDataByDateRange(req, fromDate, toDate).then(async function (subscriptions) {
+        let dateDataForBillingH = helper.computeTodayDateWithLocalTime(req);
+
+        console.log('computeAffiliateReports: ', fromDate, toDate, dateDataForBillingH.fromDate, dateDataForBillingH.toDate);
+        await subscriptionRepo.getAffiliateDataByDateRange(req, fromDate, toDate, dateDataForBillingH.fromDate, dateDataForBillingH.toDate).then(async function (subscriptions) {
             console.log('subscription: ', subscriptions.length);
 
             if (subscriptions.length > 0){
