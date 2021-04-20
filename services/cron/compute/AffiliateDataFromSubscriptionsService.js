@@ -124,7 +124,6 @@ promiseBasedComputeAffiliateReports = async(req, res) => {
         * Script will execute to fetch data as per day
         * */
         dateData = helper.computeTodayDate(req);
-        dateData = helper.computeTodayDateWithLocalTime(req);
         req = dateData.req;
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;

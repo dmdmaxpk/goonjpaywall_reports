@@ -201,7 +201,7 @@ class SubscriptionRepository {
         });
     }
 
-    async getAffiliateDataByDateRange (req, from, to, BHfrom, BHto){
+    async getAffiliateDataByDateRange (req, from, to, BHFrom, BHTo){
         return new Promise((resolve, reject) => {
             console.log('getAffiliateDataByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {
@@ -226,8 +226,8 @@ class SubscriptionRepository {
                                                 {$in: ["$billing_status",
                                                     [ "Success", "trial", "Affiliate callback sent" ]
                                                 ]},
-                                                {$gt: ["$billing_dtm", new Date(BHfrom)]},
-                                                {$lt: ["$billing_dtm", new Date(BHto)]}
+                                                {$gt: ["$billing_dtm", new Date(BHFrom)]},
+                                                {$lt: ["$billing_dtm", new Date(BHTo)]}
                                             ]}
                                         }
                                     }],
