@@ -130,7 +130,7 @@ exports.computeLogsSubscribeClicksReports = async (req,res) =>  {
 };
 
 exports.computeAffiliateReports = async (req,res) =>  {
-    AffiliateSubscriptionsService.computeAffiliateReports(req,res);
+    AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res);
     res.send("computeAffiliateReports - Executed\n");
 };
 
