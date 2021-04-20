@@ -306,6 +306,8 @@ function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, dat
             result.packageWise = packageWise;
             result.sourceWise = sourceWise;
 
+            console.log('=>=>=>=>=>=>=> insertNewRecord - packageWise', packageWise);
+
             affiliateRepo.updateReport(result, result._id);
         }
         else
