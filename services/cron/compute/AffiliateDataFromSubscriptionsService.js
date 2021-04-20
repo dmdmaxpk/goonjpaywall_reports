@@ -308,8 +308,6 @@ function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, dat
             result.packageWise = packageWise;
             result.sourceWise = sourceWise;
 
-            console.log('=>=>=>=>=>=>=> insertNewRecord - packageWise', packageWise);
-
             affiliateRepo.updateReport(result, result._id);
         }
         else
@@ -379,13 +377,8 @@ function packageWiseMidsCount(history, wise, dataObj) {
         dataObj[wise]['aff3'] = dataObj[wise]['aff3'] + history.count;
     else if (history.affiliate_mid === 'aff3a' && history.status === 'Affiliate callback sent')
         dataObj[wise]['aff3a'] = dataObj[wise]['aff3a'] + history.count;
-    else if (history.affiliate_mid === 'goonj' && history.status === 'Affiliate callback sent'){
-
-        console.log('packageWiseMidsCount - ', dataObj[wise]['goonj'], history.count);
+    else if (history.affiliate_mid === 'goonj' && history.status === 'Affiliate callback sent')
         dataObj[wise]['goonj'] = dataObj[wise]['goonj'] + history.count;
-        console.log('packageWiseMidsCount - ', dataObj[wise]['goonj']);
-
-    }
 
     else if (history.affiliate_mid === 'gdn' && history.status === 'Success')
         dataObj[wise]['gdn'] = dataObj[wise]['gdn'] + history.count;
