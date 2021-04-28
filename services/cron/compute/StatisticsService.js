@@ -114,7 +114,7 @@ computeDailyBaseChargeReports = async(req, res) => {
     await statisticsRepo.getRequestCountByDateRange(req, fromDate, toDate).then(async function (dailyBaseCharge) {
         console.log('dailyBaseCharge: ', dailyBaseCharge);
 
-        if (dailyBaseCharge) await insertDailyBaseChargeNewRecord(dailyBaseCharge, fromDate);
+        if (dailyBaseCharge.length > 0) await insertDailyBaseChargeNewRecord(dailyBaseCharge[0], fromDate);
     });
 
     // Get compute data for next time slot
@@ -163,7 +163,7 @@ promiseBasedComputeDailyBaseChargeReports = async(req, res) => {
         await statisticsRepo.getDailyBaseChargeByDateRange(req, fromDate, toDate).then(async function (dailyBaseCharge) {
             console.log('dailyBaseCharge.length: ', dailyBaseCharge.length);
 
-            if (dailyBaseCharge) await insertDailyBaseChargeNewRecord(dailyBaseCharge, fromDate);
+            if (dailyBaseCharge.length) await insertDailyBaseChargeNewRecord(dailyBaseCharge[0], fromDate);
         });
 
         if (helper.isToday(fromDate)){
