@@ -224,6 +224,7 @@ async function insertDailyBaseChargeNewRecord(data, dateString) {
         if (result.length > 0) {
             result = result[0];
             result.baseCharge = data.count;
+            console.log('result.baseCharge: ', result.baseCharge)
             await ChurnRepoAPi.updateChurnReport(result, result._id);
         }
         else
