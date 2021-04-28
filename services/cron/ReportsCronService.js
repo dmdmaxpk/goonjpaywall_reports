@@ -1,15 +1,9 @@
 const UserService = require('./compute/UserService');
 const SubscriberService = require('./compute/SubscriberService');
-const SubscriptionService = require('./compute/SubscriptionsService');
-const SubscriptionFromBillingService = require('./compute/SubscriptionFromBillingService');
-const BillingHistoryService = require('./compute/BillingHistoryService');
 const CallbackSendService = require('./compute/CallbackSendService');
 const RevenueNetAdditionService = require('./compute/RevenueNetAdditionService');
 const ChargeDetailsRevenueServices = require('./compute/ChargeDetailsRevenueServices');
 const ChargeDetailsSourceWiseServices = require('./compute/ChargeDetailsSourceWiseServices');
-const TransactionsBillingHistoryService = require('./compute/TransactionsAvgService');
-const SubscriberSubscriptionsReports = require('./compute/SubscriberSubscriptionsReports');
-const SubscriberTransactionsReports = require('./compute/SubscriberTransactionsReports');
 const AffiliateSubscriptionsService = require('./compute/AffiliateDataFromSubscriptionsService');
 const BillingHistorySuccessfulService = require('./compute/BillingHistorySuccessfulService');
 const SubscriptionsSourceWiseSuccessfulService = require('./compute/SubscriptionsSourceWiseSuccessfulService');
@@ -110,6 +104,9 @@ cronComputeDailyDataReports = async (req, res) => {
 
     helper.threeLinesConsoleLog('StatisticsService - promiseBasedComputeRequestCountReports');
     await StatisticsService.promiseBasedComputeRequestCountReports(req,res);
+
+    helper.threeLinesConsoleLog('StatisticsService - promiseBasedComputeDailyBaseChargeReports');
+    await StatisticsService.promiseBasedComputeDailyBaseChargeReports(req,res);
 
     helper.oneLineConsoleLog('Cron - Yesterday Data is computed successfully.');
 };

@@ -83,12 +83,91 @@ promiseBasedComputeRequestCountReports = async(req, res) => {
 
                 console.log('finalList.length : ', finalList.length);
                 if (finalList.length > 0)
-                    await insertNewRecord(finalList, fromDate);
+                    await insertDailyBaseChargeNewRecord(finalList, fromDate);
             }
         });
 
         if (helper.isToday(fromDate)){
             console.log('promiseBasedComputeRequestCountReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+        resolve(0);
+    });
+};
+
+computeDailyBaseChargeReports = async(req, res) => {
+    console.log('computeDailyBaseChargeReports: ');
+
+    /*
+    * Compute date and time for data fetching from db
+    * Script will execute to fetch data as per day
+    * */
+    dateData = helper.computeNextDateWithLocalTime(req, 1, 1);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
+
+    console.log('computeDailyBaseChargeReports: ', fromDate, toDate);
+    await statisticsRepo.getRequestCountByDateRange(req, fromDate, toDate).then(async function (dailyBaseCharge) {
+        console.log('dailyBaseCharge: ', dailyBaseCharge);
+
+        if (dailyBaseCharge) await insertDailyBaseChargeNewRecord(dailyBaseCharge, fromDate);
+    });
+
+    // Get compute data for next time slot
+    req.day = Number(req.day) + 1;
+    console.log('computeNextDateWithLocalTime -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
+
+    if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+        if (Number(month) < Number(helper.getTodayMonthNo()))
+            computeDailyBaseChargeReports(req, res);
+        else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
+            computeDailyBaseChargeReports(req, res);
+    }
+    else{
+        console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
+        req.day = 1;
+        req.month = Number(req.month) + 1;
+        console.log('computeNextDateWithLocalTime -> month : ', Number(month), Number(req.month), new Date().getMonth());
+
+        if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+            computeDailyBaseChargeReports(req, res);
+    }
+
+    if (helper.isToday(fromDate)){
+        console.log('computeDailyBaseChargeReports - data compute - done');
+        delete req.day;
+        delete req.month;
+    }
+};
+promiseBasedComputeDailyBaseChargeReports = async(req, res) => {
+    console.log('promiseBasedComputeDailyBaseChargeReports: ');
+    return new Promise(async (resolve, reject) => {
+
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data for today
+        * */
+        dateData = helper.computeTodayDateWithLocalTime(req);
+        req = dateData.req;
+        day = dateData.day;
+        month = dateData.month;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        console.log('promiseBasedComputeDailyBaseChargeReports: ', fromDate, toDate);
+        await statisticsRepo.getDailyBaseChargeByDateRange(req, fromDate, toDate).then(async function (dailyBaseCharge) {
+            console.log('dailyBaseCharge.length: ', dailyBaseCharge.length);
+
+            if (dailyBaseCharge) await insertDailyBaseChargeNewRecord(dailyBaseCharge, fromDate);
+        });
+
+        if (helper.isToday(fromDate)){
+            console.log('promiseBasedComputeDailyBaseChargeReports - data compute - done');
             delete req.day;
             delete req.month;
         }
@@ -135,8 +214,28 @@ async function insertNewRecord(data, dateString) {
     });
 }
 
+async function insertDailyBaseChargeNewRecord(data, dateString) {
+    console.log('=>=>=>=>=>=>=> insertDailyBaseChargeNewRecord', dateString);
+
+    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
+
+    await ChurnRepoAPi.getChurnByDateString(dateString.toString()).then(async function (result) {
+        if (result.length > 0) {
+            result = result[0];
+            result.baseCharge = data.count;
+            await ChurnRepoAPi.updateChurnReport(result, result._id);
+        }
+        else
+            await ChurnRepoAPi.createChrunReport({requestCount: data, date: dateString});
+    });
+}
+
 
 module.exports = {
     computeRequestCountReports: computeRequestCountReports,
     promiseBasedComputeRequestCountReports: promiseBasedComputeRequestCountReports,
+
+    computeDailyBaseChargeReports: computeDailyBaseChargeReports,
+    promiseBasedComputeDailyBaseChargeReports: promiseBasedComputeDailyBaseChargeReports,
 };

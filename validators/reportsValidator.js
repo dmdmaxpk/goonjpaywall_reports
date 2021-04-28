@@ -133,7 +133,7 @@ class ReportsValidator{
 
             case 'others':
                 this.checkDateIsNull(params, "Others");
-                this.checkSubTypeIsNull(params.sub_type, "Others Statistics", ['request_count', 'successful_charge', 'unsubscribed', 'insufficient_balance', 'excessive_billing']);
+                this.checkSubTypeIsNull(params.sub_type, "Others Statistics", ['daily_base', 'request_count', 'successful_charge', 'unsubscribed', 'insufficient_balance', 'excessive_billing']);
 
                 break;
             case 'share_msisdn':

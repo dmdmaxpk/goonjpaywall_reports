@@ -149,6 +149,11 @@ exports.computeRequestCountReports = async (req,res) =>  {
     res.send("computeRequestCountReports - Executed\n");
 };
 
+exports.computeDailyBaseChargeReports = async (req,res) =>  {
+    StatisticsService.promiseBasedComputeDailyBaseChargeReports(req,res);
+    res.send("computeDailyBaseChargeReports - Executed\n");
+};
+
 exports.cronComputeDailyDataReports = async (req,res) =>  {
     ReportsCronService.cronComputeDailyDataReports(req,res);
     res.send("cronComputeDailyDataReports - in progress\n");
