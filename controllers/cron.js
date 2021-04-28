@@ -150,7 +150,7 @@ exports.computeRequestCountReports = async (req,res) =>  {
 };
 
 exports.computeDailyBaseChargeReports = async (req,res) =>  {
-    StatisticsService.promiseBasedComputeDailyBaseChargeReports(req,res);
+    StatisticsService.computeDailyBaseChargeReports(req,res);
     res.send("computeDailyBaseChargeReports - Executed\n");
 };
 
