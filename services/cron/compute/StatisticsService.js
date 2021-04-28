@@ -220,6 +220,8 @@ async function insertDailyBaseChargeNewRecord(data, dateString) {
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
+    console.log('data: ', data)
+
     await ChurnRepoAPi.getChurnByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0) {
             result = result[0];
