@@ -2,7 +2,6 @@ const container = require("../../configurations/container");
 const reportsRepo = require('../../repos/apis/ReportsRepo');
 const affiliateRepo = require('../../repos/apis/AffiliateRepo');
 const churnRepo = require('../../repos/apis/ChurnRepo');
-const subscriberReportsRepo = require('../../repos/apis/SubscriberReportsRepo');
 const reportsTransformer = container.resolve('reportsTransformer');
 
 // Import Compute Files to access its factory functions
@@ -20,8 +19,6 @@ const affiliateService = require("./compute/AffiliateService");
 const ccdAPiData = require("./compute/CcdAPiData");
 const churnService = require("./compute/ChurnService");
 const statisticsService = require("./compute/StatisticsService");
-const connection = require('../../middlewares/connection');
-const helper = require('../../helper/helper');
 
 var moment = require('moment');
 
@@ -42,7 +39,7 @@ generateReportsData = async (req,res) => {
             rawDataSet = await reportsRepo.generateReportsData(params);
         }
         else if (params.type === 'others'){
-            if (params.sub_type === 'request_count' || params.sub_type === 'successful_charge' || params.sub_type === 'unsubscribed')
+            if (params.sub_type === 'daily_base' || params.sub_type === 'request_count' || params.sub_type === 'successful_charge' || params.sub_type === 'unsubscribed')
                 rawDataSet = await churnRepo.generateChurnReportsData(params);
             else
                 rawDataSet = await reportsRepo.generateReportsData(params);
@@ -184,7 +181,9 @@ generateReportsData = async (req,res) => {
                 return subscriptionService.computeUnSubscriptionsSourceWiseReport(rawDataSet, params);
         }
         else if (params.type === 'others') {
-            if (params.sub_type === 'request_count')
+            if (params.sub_type === 'daily_base')
+                return statisticsService.computeDailyBaseChargeReport(rawDataSet, params);
+            else if (params.sub_type === 'request_count')
                 return statisticsService.computeRequestCountReport(rawDataSet, params);
             else if (params.sub_type === 'successful_charge')
                 return statisticsService.computeSuccessfulChargeReport(rawDataSet, params);
