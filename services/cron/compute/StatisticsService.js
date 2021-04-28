@@ -111,7 +111,7 @@ computeDailyBaseChargeReports = async(req, res) => {
     toDate = dateData.toDate;
 
     console.log('computeDailyBaseChargeReports: ', fromDate, toDate);
-    await statisticsRepo.getRequestCountByDateRange(req, fromDate, toDate).then(async function (dailyBaseCharge) {
+    await statisticsRepo.getDailyBaseChargeByDateRange(req, fromDate, toDate).then(async function (dailyBaseCharge) {
         console.log('dailyBaseCharge: ', dailyBaseCharge);
 
         if (dailyBaseCharge.length > 0) await insertDailyBaseChargeNewRecord(dailyBaseCharge[0], fromDate);
