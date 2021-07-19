@@ -203,7 +203,7 @@ class SubscriptionRepository {
 
     async getAffiliateDataByDateRange (req, from, to, BHFrom, BHTo){
         return new Promise((resolve, reject) => {
-            console.log('getAffiliateDataByDateRange: ', from, to);
+            console.log('getAffiliateDataByDateRange: ', from, to, BHFrom, BHTo);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
