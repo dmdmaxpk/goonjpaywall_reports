@@ -1294,52 +1294,52 @@ computeSubscriptionsMidDataReport = async (rawDataSet, params) => {
 
 function computeAffiliateHeData(part, innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj) {
     if (innerObj['1']){
-        dataObj[part]['1'] = dataObj[part]['1'] + innerObj['1'];
-        dayDataObj[part]['1'] = dayDataObj[part]['1'] + innerObj['1'];
-        weeklyDataObj[part]['1'] = weeklyDataObj[part]['1'] + innerObj['1'];
-        monthlyDataObj[part]['1'] = monthlyDataObj[part]['1'] + innerObj['1'];
+        dataObj[part]['1'] = _.clone(dataObj[part]['1'] + innerObj['1']);
+        dayDataObj[part]['1'] = _.clone(dayDataObj[part]['1'] + innerObj['1']);
+        weeklyDataObj[part]['1'] = _.clone(weeklyDataObj[part]['1'] + innerObj['1']);
+        monthlyDataObj[part]['1'] = _.clone(monthlyDataObj[part]['1'] + innerObj['1']);
     }
     if (innerObj['1569']){
-        dataObj[part]['1569'] = dataObj[part]['1569'] + innerObj['1569'];
-        dayDataObj[part]['1569'] = dayDataObj[part]['1569'] + innerObj['1569'];
-        weeklyDataObj[part]['1569'] = weeklyDataObj[part]['1569'] + innerObj['1569'];
-        monthlyDataObj[part]['1569'] = monthlyDataObj[part]['1569'] + innerObj['1569'];
+        dataObj[part]['1569'] = _.clone(dataObj[part]['1569'] + innerObj['1569']);
+        dayDataObj[part]['1569'] = _.clone(dayDataObj[part]['1569'] + innerObj['1569']);
+        weeklyDataObj[part]['1569'] = _.clone(weeklyDataObj[part]['1569'] + innerObj['1569']);
+        monthlyDataObj[part]['1569'] = _.clone(monthlyDataObj[part]['1569'] + innerObj['1569']);
     }
     if (innerObj.aff3){
-        dataObj[part]['aff3'] = dataObj[part]['aff3'] + innerObj.aff3;
-        dayDataObj[part]['aff3'] = dayDataObj[part]['aff3'] + innerObj.aff3;
-        weeklyDataObj[part]['aff3'] = weeklyDataObj[part]['aff3'] + innerObj.aff3;
-        monthlyDataObj[part]['aff3'] = monthlyDataObj[part]['aff3'] + innerObj.aff3;
+        dataObj[part]['aff3'] = _.clone(dataObj[part]['aff3'] + innerObj.aff3);
+        dayDataObj[part]['aff3'] = _.clone(dayDataObj[part]['aff3'] + innerObj.aff3);
+        weeklyDataObj[part]['aff3'] = _.clone(weeklyDataObj[part]['aff3'] + innerObj.aff3);
+        monthlyDataObj[part]['aff3'] = _.clone(monthlyDataObj[part]['aff3'] + innerObj.aff3);
     }
     if (innerObj.aff3a){
-        dataObj[part]['aff3a'] = dataObj[part]['aff3a'] + innerObj.aff3a;
-        dayDataObj[part]['aff3a'] = dayDataObj[part]['aff3a'] + innerObj.aff3a;
-        weeklyDataObj[part]['aff3a'] = weeklyDataObj[part]['aff3a'] + innerObj.aff3a;
-        monthlyDataObj[part]['aff3a'] = monthlyDataObj[part]['aff3a'] + innerObj.aff3a;
+        dataObj[part]['aff3a'] = _.clone(dataObj[part]['aff3a'] + innerObj.aff3a);
+        dayDataObj[part]['aff3a'] = _.clone(dayDataObj[part]['aff3a'] + innerObj.aff3a);
+        weeklyDataObj[part]['aff3a'] = _.clone(weeklyDataObj[part]['aff3a'] + innerObj.aff3a);
+        monthlyDataObj[part]['aff3a'] = _.clone(monthlyDataObj[part]['aff3a'] + innerObj.aff3a);
     }
     if (innerObj.goonj){
-        dataObj[part]['goonj'] = dataObj[part]['goonj'] + innerObj.goonj;
-        dayDataObj[part]['goonj'] = dayDataObj[part]['goonj'] + innerObj.goonj;
-        weeklyDataObj[part]['goonj'] = weeklyDataObj[part]['goonj'] + innerObj.goonj;
-        monthlyDataObj[part]['goonj'] = monthlyDataObj[part]['goonj'] + innerObj.goonj;
+        dataObj[part]['goonj'] = _.clone(dataObj[part]['goonj'] + innerObj.goonj);
+        dayDataObj[part]['goonj'] = _.clone(dayDataObj[part]['goonj'] + innerObj.goonj);
+        weeklyDataObj[part]['goonj'] = _.clone(weeklyDataObj[part]['goonj'] + innerObj.goonj);
+        monthlyDataObj[part]['goonj'] = _.clone(monthlyDataObj[part]['goonj'] + innerObj.goonj);
     }
     if (innerObj.gdn){
-        dataObj[part]['gdn'] = dataObj[part]['gdn'] + innerObj.gdn;
-        dayDataObj[part]['gdn'] = dayDataObj[part]['gdn'] + innerObj.gdn;
-        weeklyDataObj[part]['gdn'] = weeklyDataObj[part]['gdn'] + innerObj.gdn;
-        monthlyDataObj[part]['gdn'] = monthlyDataObj[part]['gdn'] + innerObj.gdn;
+        dataObj[part]['gdn'] = _.clone(dataObj[part]['gdn'] + innerObj.gdn);
+        dayDataObj[part]['gdn'] = _.clone(dayDataObj[part]['gdn'] + innerObj.gdn);
+        weeklyDataObj[part]['gdn'] = _.clone(weeklyDataObj[part]['gdn'] + innerObj.gdn);
+        monthlyDataObj[part]['gdn'] = _.clone(monthlyDataObj[part]['gdn'] + innerObj.gdn);
     }
     if (innerObj.gdn2){
-        dataObj[part]['gdn2'] = dataObj[part]['gdn2'] + innerObj.gdn2;
-        dayDataObj[part]['gdn2'] = dayDataObj[part]['gdn2'] + innerObj.gdn2;
-        weeklyDataObj[part]['gdn2'] = weeklyDataObj[part]['gdn2'] + innerObj.gdn2;
-        monthlyDataObj[part]['gdn2'] = monthlyDataObj[part]['gdn2'] + innerObj.gdn2;
+        dataObj[part]['gdn2'] = _.clone(dataObj[part]['gdn2'] + innerObj.gdn2);
+        dayDataObj[part]['gdn2'] = _.clone(dayDataObj[part]['gdn2'] + innerObj.gdn2);
+        weeklyDataObj[part]['gdn2'] = _.clone(weeklyDataObj[part]['gdn2'] + innerObj.gdn2);
+        monthlyDataObj[part]['gdn2'] = _.clone(monthlyDataObj[part]['gdn2'] + innerObj.gdn2);
     }
     if (innerObj.gdn3){
-        dataObj[part]['gdn3'] = dataObj[part]['gdn3'] + innerObj.gdn3;
-        dayDataObj[part]['gdn3'] = dayDataObj[part]['gdn3'] + innerObj.gdn3;
-        weeklyDataObj[part]['gdn3'] = weeklyDataObj[part]['gdn3'] + innerObj.gdn3;
-        monthlyDataObj[part]['gdn3'] = monthlyDataObj[part]['gdn3'] + innerObj.gdn3;
+        dataObj[part]['gdn3'] = _.clone(dataObj[part]['gdn3'] + innerObj.gdn3);
+        dayDataObj[part]['gdn3'] = _.clone(dayDataObj[part]['gdn3'] + innerObj.gdn3);
+        weeklyDataObj[part]['gdn3'] = _.clone(weeklyDataObj[part]['gdn3'] + innerObj.gdn3);
+        monthlyDataObj[part]['gdn3'] = _.clone(monthlyDataObj[part]['gdn3'] + innerObj.gdn3);
     }
 
     return {dataObj: dataObj, dayDataObj: dayDataObj, weeklyDataObj: weeklyDataObj, monthlyDataObj: monthlyDataObj}
