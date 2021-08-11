@@ -12,10 +12,18 @@ class ReportsValidator{
         switch(params.type.trim()) {
             case 'users':
                 this.checkDateIsNull(params);
-                this.checkSubTypeIsNull(params.sub_type, "Get Users", ['active_inactive', 'full_and_partial_charged', 'returning_user', 'accessing_service', 'unique_paying', 'user_billed']);
+                this.checkSubTypeIsNull(params.sub_type, "Get Users", ['active_inactive', 'full_and_partial_charged', 'returning_user', 'accessing_service', 'user_billed']);
 
                 if (params.sub_type === 'user_billed')
                     this.checkSubTypeIsNull(params.user_billed, "Get Billed User", ['package_wise', 'paywall_wise', 'operator_wise']);
+
+                break;
+            case 'paying':
+                this.checkDateIsNull(params);
+                this.checkSubTypeIsNull(params.sub_type, "Paying Users", ['unique_paying']);
+
+                if (params.sub_type === 'unique_paying')
+                    this.checkSubTypeIsNull(params.unique_paying, "Get Unique Paying Users", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise']);
 
                 break;
             case 'subscribers':

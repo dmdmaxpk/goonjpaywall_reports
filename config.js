@@ -6,8 +6,8 @@ let config = {
         port: '3006',
         mongoDB: {
             logger: 'mongodb://localhost:27017',
-            goonjpaywall: 'mongodb://localhost:27017',
-            goonj_paywall_reports: 'mongodb://10.0.1.76:27017/goonj_paywall_reports'
+            goonjpaywall: 'mongodb://10.0.1.76:27017',
+            goonj_paywall_reports: 'mongodb://localhost:27017/goonj_paywall_reports'
         },
         cron_db_query_data_limit: cron_db_query_data_limit
     },

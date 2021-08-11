@@ -333,6 +333,86 @@ class SubscriptionRepository {
             });
         });
     }
+
+    async getNewPayingUsersByDateRange (req, from, to) {
+        return new Promise((resolve, reject) => {
+            console.log('getNewPayingUsersByDateRange: ', from, to);
+            req.db.collection('subscriptions', function (err, collection) {
+                if (!err) {
+                    collection.aggregate([
+                        {
+                            $match:{
+                                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                            }
+                        },
+                        {$project:{
+                                source: "$source",
+                                operator: "$operator",
+                                paywall: "$paywall_id",
+                                package: "$subscribed_package_id",
+                                added_dtm: "$added_dtm"
+                            }},
+                        { $lookup:{
+                                from: "billinghistories",
+                                let: {subscriber_id: "$subscriber_id"},
+                                pipeline:[
+                                    { $match: {
+                                            $expr: {
+                                                $and:[
+                                                    {$eq: ["$subscriber_id", "$$subscriber_id"]},
+                                                    {$eq: ["$billing_status", "Success"]},
+                                                    {$and: [
+                                                            {$gte: ["$billing_dtm", new Date(to)]},
+                                                            {$lte: ["$billing_dtm", new Date(from)]}
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        }},
+                                    { $project:{
+                                            _id: 0,
+                                            price: "$price",
+                                        }}
+                                ],
+                                as: "billing"
+                            }},
+                        {
+                            $unwind: "$billing"
+                        },
+                        { $project:{
+                                source: "$source",
+                                paywall: "$paywall",
+                                package: "$package",
+                                operator: "$operator",
+                                added_dtm: "$added_dtm"
+                            }},
+                        { $project:{
+                                source: "$source",
+                                paywall: "$paywall",
+                                package: "$package",
+                                operator: "$operator",
+                                day: { "$dayOfMonth" : "$added_dtm"},
+                                month: { "$month" : "$added_dtm" },
+                                year:{ "$year": "$added_dtm" }
+                            }},
+                        { $project:{
+                                source: "$source",
+                                paywall: "$paywall",
+                                package: "$package",
+                                operator: "$operator",
+                                added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
+                            }}
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
+                        if(err){
+                            console.log('getAffiliateMidFromSubscriptionsByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            });
+        });
+    }
 }
 
 module.exports = SubscriptionRepository;

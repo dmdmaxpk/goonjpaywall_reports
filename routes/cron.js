@@ -81,6 +81,9 @@ router.route('/compute-request-count-reports')
 router.route('/compute-daily-base-charge-reports')
     .get(connection.connect, controller.computeDailyBaseChargeReports);
 
+router.route('/compute-revenue-from-new-user-report')
+    .get(connection.connect, controller.computerevenueFromNewUserReports);
+
 router.route('/cron-compute-daily-data-reports')
     .get(connection.connect, controller.cronComputeDailyDataReports); //**
 

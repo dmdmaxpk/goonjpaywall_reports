@@ -9,6 +9,7 @@ let connect = async (req, res, next) => {
     else
         connectType = 'goonjpaywall';
 
+    console.log('connectType: ', connectType);
     if (!helper.getDBInstance())
         await updateConnection(req, res, next, connectType);
     else{

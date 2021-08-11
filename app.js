@@ -9,6 +9,7 @@ require('./models/Report');
 require('./models/SubscriberReport');
 require('./models/AffiliateReport');
 require('./models/ChurnReport');
+require('./models/PayingUser');
 
 // Connection to Database
 const config = require('./config');
