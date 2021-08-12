@@ -291,6 +291,7 @@ computePayingUserSessionsReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
+
     console.log('computePayingUserSessionsReports: ', fromDate, toDate);
     await subscriptionRepository.getPayingUserSessionsByDateRange(req, fromDate, toDate).then(async function (userSessions) {
         console.log('userSessions.length: ', userSessions);
