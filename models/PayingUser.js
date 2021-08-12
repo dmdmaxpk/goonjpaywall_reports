@@ -4,7 +4,11 @@ const {Schema} = mongoose;
 
 const payingUser = new Schema({
     _id: { type: ShortId, len: 4, retries: 4 },
-    paying: {type: Object , default: undefined},
+    newPaying: {type: Object , default: undefined},
+    totalPaying: {type: Object , default: undefined},
+    userEngagement: {type: Object , default: undefined},
+    userSessions: {type: Object , default: undefined},
+    watchTime: {type: Object , default: undefined},
     date: { type: Date, default: Date.now }
 }, { strict: true });
 

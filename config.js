@@ -6,6 +6,7 @@ let config = {
         port: '3006',
         mongoDB: {
             logger: 'mongodb://localhost:27017',
+            streamlogs: 'mongodb://10.0.1.70:27017',
             goonjpaywall: 'mongodb://10.0.1.76:27017',
             goonj_paywall_reports: 'mongodb://localhost:27017/goonj_paywall_reports'
         },
@@ -15,6 +16,7 @@ let config = {
         port: '3006',
         mongoDB: {
             logger: 'mongodb://mongodb:27017',
+            streamlogs: 'mongodb://mongodb:27017',
             goonjpaywall: 'mongodb://mongodb:27017',
             goonj_paywall_reports: 'mongodb://mongodb:27017/goonj_paywall_reports'
         },
