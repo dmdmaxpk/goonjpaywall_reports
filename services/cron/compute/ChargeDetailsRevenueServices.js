@@ -36,7 +36,7 @@ computeChargeDetailsReports = async(req, res) => {
             let skip = 0;
 
             //Loop over no.of chunks
-            for (i = 0 ; i < totalChunks; i++){
+            for (let i = 0 ; i < totalChunks; i++){
                 await billingHistoryRepo.getChargeDetailsByDateRange(req, fromDate, toDate, skip, limit).then(async function (chargeDetails) {
                     console.log('chargeDetails: ', chargeDetails.length);
 

@@ -354,29 +354,29 @@ class SubscriptionRepository {
                             added_dtm: "$added_dtm"
                         }},
                         { $lookup:{
-                                from: "billinghistories",
-                                let: {subscriber_id: "$subscriber_id"},
-                                pipeline:[
-                                    { $match: {
-                                        $expr: {
-                                            $and:[
-                                                {$eq: ["$subscriber_id", "$$subscriber_id" ]},
-                                                {$eq: ["$billing_status", "Success"]},
-                                                {$and: [
-                                                        {$gte: ["$billing_dtm", new Date(from)]},
-                                                        {$lt: ["$billing_dtm", new Date(to)]}
-                                                    ]
-                                                }
-                                            ]
-                                        }
-                                    }},
-                                    { $project:{
-                                        _id: 0,
-                                        price: "$price",
-                                    }}
-                                ],
-                                as: "billing"
-                            }},
+                            from: "billinghistories",
+                            let: {subscriber_id: "$subscriber_id"},
+                            pipeline:[
+                                { $match: {
+                                    $expr: {
+                                        $and:[
+                                            {$eq: ["$subscriber_id", "$$subscriber_id" ]},
+                                            {$eq: ["$billing_status", "Success"]},
+                                            {$and: [
+                                                    {$gte: ["$billing_dtm", new Date(from)]},
+                                                    {$lt: ["$billing_dtm", new Date(to)]}
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }},
+                                { $project:{
+                                    _id: 0,
+                                    price: "$price",
+                                }}
+                            ],
+                            as: "billing"
+                        }},
                         {
                             $unwind: "$billing"
                         },
@@ -418,9 +418,9 @@ class SubscriptionRepository {
         });
     }
 
-    async getTotalPayingUsersByDateRange (req, from, to) {
+    async getTotalPayingUsersByDateRange (req, from, to, skip, limit) {
         return new Promise((resolve, reject) => {
-            console.log('getTotalPayingUsersByDateRange: ', from, to);
+            console.log('getTotalPayingUsersByDateRange: ', from, to, skip, limit);
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
@@ -484,7 +484,9 @@ class SubscriptionRepository {
                             price: "$price",
                             operator: "$operator",
                             added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }}
-                        }}
+                        }},
+                        { $skip: skip },
+                        { $limit: limit }
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getTotalPayingUsersByDateRange - err: ', err.message);
@@ -563,8 +565,7 @@ class SubscriptionRepository {
                             source: "$subscription.source",
                             paywall: "$subscription.paywall",
                             package: "$subscription.package"
-                        }},
-
+                        }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getPayingUserEngagementByDateRange - err: ', err.message);
@@ -577,9 +578,9 @@ class SubscriptionRepository {
         });
     }
 
-    async getPayingUserSessionsByDateRange (req, from, to) {
+    async getPayingUserSessionsByDateRange (req, from, to, skip, limit) {
         return new Promise((resolve, reject) => {
-            console.log('getPayingUserSessionsByDateRange: ', from, to);
+            console.log('getPayingUserSessionsByDateRange: ', from, to, skip, limit);
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
@@ -624,7 +625,9 @@ class SubscriptionRepository {
                             session: "$_id",
                             sessionSum: "$sessionSum",
                             sessionTurns: "$sessionTurns",
-                        }}
+                        }},
+                        { $skip: skip },
+                        { $limit: limit }
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getPayingUserSessionsByDateRange - err: ', err.message);
