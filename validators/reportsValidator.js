@@ -1,11 +1,8 @@
-
 class ReportsValidator{
-
     reset(){
         this.status = true;
         this.reasons = ''
     }
-
     validateParams(params){
         this.reset();
         console.log('params: ', params);
@@ -18,12 +15,30 @@ class ReportsValidator{
                     this.checkSubTypeIsNull(params.user_billed, "Get Billed User", ['package_wise', 'paywall_wise', 'operator_wise']);
 
                 break;
-            case 'paying':
+            case 'paying_user':
                 this.checkDateIsNull(params);
-                this.checkSubTypeIsNull(params.sub_type, "Paying Users", ['unique_paying']);
+                this.checkSubTypeIsNull(params.sub_type, "Paying Users", ['new', 'all', 'engagement', 'session_time', 'watch_time']);
 
-                if (params.sub_type === 'unique_paying')
-                    this.checkSubTypeIsNull(params.unique_paying, "Get Unique Paying Users", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise']);
+                if (params.sub_type === 'new' || params.sub_type === 'all' || params.sub_type === 'engagement'){
+                    let subType = params.sub_type;
+                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Report", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise']);
+                }
+                if (params.sub_type === 'session_time'){
+                    let subType = params.sub_type;
+                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Session Time Report", ['zero_fifteen', 'fifteen_thirty', 'thirty_sixty', 'more_then_60', 'and_all']);
+                }
+                if (params.sub_type === 'watch_time'){
+                    let subType = params.sub_type;
+                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Watch Time Report", ['one_three', 'four_ten', 'more_then_ten', 'and_all']);
+                }
+
+                break;
+            case 'paying_user_revenue':
+                this.checkDateIsNull(params);
+                this.checkSubTypeIsNull(params.sub_type, "Paying Users", ['new', 'all', 'engagement', 'session_time', 'watch_time']);
+
+                if (params.sub_type === 'new' || params.sub_type === 'all' || params.sub_type === 'engagement')
+                    this.checkSubTypeIsNull(params[sub_type], "Get Paying Users Report", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise']);
 
                 break;
             case 'subscribers':
@@ -138,7 +153,6 @@ class ReportsValidator{
                 this.checkSubTypeIsNull(params.sub_type, "Get Churn", ['churn']);
 
                 break;
-
             case 'others':
                 this.checkDateIsNull(params, "Others");
                 this.checkSubTypeIsNull(params.sub_type, "Others Statistics", ['daily_base', 'request_count', 'successful_charge', 'unsubscribed', 'insufficient_balance', 'excessive_billing']);
@@ -211,6 +225,8 @@ class ReportsValidator{
         }
     }
     checkSubTypeIsNull(subType, reportType, subTypes){
+        console.log('subType: ', subType);
+        console.log('subTypes: ', subTypes);
         if (!subTypes.includes(subType)) {
             this.status = false; this.reasons = 'The Report "'+reportType+'", its Sub Type is invalid.';
         }

@@ -2,6 +2,7 @@ const container = require("../../configurations/container");
 const reportsRepo = require('../../repos/apis/ReportsRepo');
 const affiliateRepo = require('../../repos/apis/AffiliateRepo');
 const churnRepo = require('../../repos/apis/ChurnRepo');
+const payingUsersRepo = require('../../repos/apis/PayingUsersRepo');
 const reportsTransformer = container.resolve('reportsTransformer');
 
 // Import Compute Files to access its factory functions
@@ -18,6 +19,7 @@ const usersService = require("./compute/UsersService");
 const affiliateService = require("./compute/AffiliateService");
 const ccdAPiData = require("./compute/CcdAPiData");
 const churnService = require("./compute/ChurnService");
+const payingUsersService = require("./compute/PayingUsersService");
 const statisticsService = require("./compute/StatisticsService");
 
 var moment = require('moment');
@@ -38,6 +40,8 @@ generateReportsData = async (req,res) => {
             params.from_date = params.to_date;
             rawDataSet = await reportsRepo.generateReportsData(params);
         }
+        else if (params.type === 'paying_user')
+            rawDataSet = await payingUsersRepo.generateReportsData(params);
         else if (params.type === 'others'){
             if (params.sub_type === 'daily_base' || params.sub_type === 'request_count' || params.sub_type === 'successful_charge' || params.sub_type === 'unsubscribed')
                 rawDataSet = await churnRepo.generateChurnReportsData(params);
@@ -65,6 +69,46 @@ generateReportsData = async (req,res) => {
                     return usersService.computeUserBilledPaywallWiseReport(rawDataSet, params);
                 else if (params.user_billed === 'operator_wise')
                     return usersService.computeUserBilledOperatorWiseReport(rawDataSet, params);
+        }
+        else if(params.type === 'paying_user'){
+            let uType = '', subType = '', reportType = params.response_type === 'total_count' ? 'count' : 'revenue';
+            if (params.sub_type === 'new' || params.sub_type === 'all' || params.sub_type === 'engagement'){
+                if (params.sub_type === 'new') { uType = 'newPaying'; subType = params['new'] }
+                else if (params.sub_type === 'all') { uType = 'totalPaying'; subType = params['all'] }
+                else if (params.sub_type === 'engagement') { uType = 'userEngagement'; subType = params['engagement'] }
+
+                if (subType === 'source_wise')
+                    return payingUsersService.computePayingUsersCountSourceWiseReport(rawDataSet, params, uType, reportType);
+                else if (subType === 'package_wise')
+                    return payingUsersService.computePayingUsersCountPackageWiseReport(rawDataSet, params, uType, reportType);
+                else if (subType === 'paywall_wise')
+                    return payingUsersService.computePayingUsersCountPaywallWiseReport(rawDataSet, params, uType, reportType);
+                else if (subType === 'operator_wise')
+                    return payingUsersService.computePayingUsersCountOperatorWiseWiseReport(rawDataSet, params, uType, reportType);
+                else{
+                    return reportsTransformer.transformErrorCatchData(false, 'Invalid Sub Type, please check.');
+                }
+            }
+            else if(params.sub_type === 'session_time'){
+
+                if (params.session_time === 'zero_fifteen') {uType = 'zero_fifteen';}
+                else if (params.session_time === 'sixteen_thirty') {uType = 'sixteen_thirty';}
+                else if (params.session_time === 'thiryOne_sixsty') {uType = 'thiryOne_sixsty';}
+                else if (params.session_time === 'more_then_60') {uType = 'more_then_60';}
+                else if (params.session_time === 'and_all') {uType = 'and_all';}
+
+                return payingUsersService.computePayingUsersSessionsTimeReport(rawDataSet, params, uType);
+            }
+            else if(params.sub_type === 'watch_time'){
+
+                if (params.watch_time === 'one_three') {uType = 'one_three';}
+                else if (params.watch_time === 'four_ten') {uType = 'four_ten';}
+                else if (params.watch_time === 'more_then_ten') {uType = 'more_then_ten';}
+                else if (params.watch_time === 'and_all') {uType = 'and_all';}
+
+                console.log('uType: ', uType);
+                return payingUsersService.computePayingUsersWatchTimeReport(rawDataSet, params, uType);
+            }
         }
         else if (params.type === 'subscribers'){
             if (params.sub_type === 'total')

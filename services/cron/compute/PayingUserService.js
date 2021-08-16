@@ -14,7 +14,7 @@ computeNewPayingUsersReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 1, 7);
+    dateData = helper.computeNextDateWithLocalTime(req, 2, 7);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -106,7 +106,7 @@ computeTotalPayingUsersReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 1, 7);
+    dateData = helper.computeNextDateWithLocalTime(req, 2, 7);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -781,8 +781,8 @@ function computePayingUserWatchTimeData(userWatchTime, dateString) {
     newObj5.avg = Number(newObj5.turn) > 0 ? Number(newObj5.sum) / Number(newObj5.turn) : 0;
 
     finalObj.zero_fifteen = _.cloneDeep(newObj1);
-    finalObj.sixteen_thirty = _.cloneDeep(newObj2);
-    finalObj.thiryOne_sixsty = _.cloneDeep(newObj3);
+    finalObj.fifteen_thirty = _.cloneDeep(newObj2);
+    finalObj.thirty_sixty = _.cloneDeep(newObj3);
     finalObj.more_then_60 = _.cloneDeep(newObj4);
     finalObj.and_all = _.cloneDeep(newObj5);
 
