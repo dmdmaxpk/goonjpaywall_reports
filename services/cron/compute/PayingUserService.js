@@ -14,7 +14,7 @@ computeNewPayingUsersReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 2, 7);
+    dateData = helper.computeNextDateWithLocalTime(req, 1, 6);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -106,7 +106,7 @@ computeTotalPayingUsersReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 2, 7);
+    dateData = helper.computeNextDateWithLocalTime(req, 1, 6);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -255,7 +255,7 @@ computePayingUserEngagementReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 1, 7);
+    dateData = helper.computeNextDateWithLocalTime(req, 1, 6);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -346,7 +346,7 @@ computePayingUserSessionsReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 1, 7);
+    dateData = helper.computeNextDateWithLocalTime(req, 1, 6);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -488,7 +488,7 @@ computePayingUserWatchTimeReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 1, 7);
+    dateData = helper.computeNextDateWithLocalTime(req, 1, 6);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
