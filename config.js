@@ -31,8 +31,9 @@ let config = {
 
 console.log("======", env);
 
-if (env === 'development') config = config.development;
-if (env === 'staging') config = config.staging;
-if (env === 'production') config = config.production;
+config = config.development;
+// if (env === 'development') config = config.development;
+// if (env === 'staging') config = config.staging;
+// if (env === 'production') config = config.production;
 
 module.exports = config;
