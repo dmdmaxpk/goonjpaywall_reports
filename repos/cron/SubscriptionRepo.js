@@ -334,6 +334,12 @@ class SubscriptionRepository {
         });
     }
 
+
+
+
+
+
+
     async getNewPayingUsersByDateRange (req, from, to) {
         return new Promise((resolve, reject) => {
             console.log('getNewPayingUsersByDateRange: ', from, to);
@@ -361,12 +367,7 @@ class SubscriptionRepository {
                                     $expr: {
                                         $and:[
                                             {$eq: ["$subscriber_id", "$$subscriber_id" ]},
-                                            {$eq: ["$billing_status", "Success"]},
-                                            {$and: [
-                                                    {$gte: ["$billing_dtm", new Date(from)]},
-                                                    {$lt: ["$billing_dtm", new Date(to)]}
-                                                ]
-                                            }
+                                            {$eq: ["$billing_status", "Success"]}
                                         ]
                                     }
                                 }},
@@ -418,78 +419,78 @@ class SubscriptionRepository {
         });
     }
 
-    async getTotalPayingUsersByDateRange (req, from, to, skip, limit) {
+    async getTotalPayingUsersDailyBasisByDateRange (req, from, to, skip, limit) {
         return new Promise((resolve, reject) => {
-            console.log('getTotalPayingUsersByDateRange: ', from, to, skip, limit);
+            console.log('getTotalPayingUsersDailyBasisByDateRange: ', from, to, skip, limit);
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
                         { $match:{
-                            "billing_status": "Success",
-                            $and:[
-                                {"billing_dtm":{$gte: new Date(from)}},
-                                {"billing_dtm":{$lt: new Date(to)}}
-                            ]
-                        }},
+                                "billing_status": "Success",
+                                $and:[
+                                    {"billing_dtm":{$gte: new Date(from)}},
+                                    {"billing_dtm":{$lt: new Date(to)}}
+                                ]
+                            }},
                         {$project:{
-                            price: "$price",
-                            subscriber_id: "$subscriber_id",
-                            billing_dtm: "$billing_dtm"
-                        }},
+                                price: "$price",
+                                subscriber_id: "$subscriber_id",
+                                billing_dtm: "$billing_dtm"
+                            }},
                         { $lookup:{
-                            from: "subscriptions",
-                            let: {subscriber_id: "$subscriber_id"},
-                            pipeline:[
-                                { $match: {
-                                        $expr: {
-                                            $and:[
-                                                {$eq: ["$subscriber_id", "$$subscriber_id" ]},
-                                            ]
-                                        }
-                                    }},
-                                { $project:{
-                                    _id: 0,
-                                    source: "$source",
-                                    paywall: "$paywall_id",
-                                    package: "$subscribed_package_id"
-                                }}
-                            ],
-                            as: "subscription"
-                        }},
+                                from: "subscriptions",
+                                let: {subscriber_id: "$subscriber_id"},
+                                pipeline:[
+                                    { $match: {
+                                            $expr: {
+                                                $and:[
+                                                    {$eq: ["$subscriber_id", "$$subscriber_id" ]},
+                                                ]
+                                            }
+                                        }},
+                                    { $project:{
+                                            _id: 0,
+                                            source: "$source",
+                                            paywall: "$paywall_id",
+                                            package: "$subscribed_package_id"
+                                        }}
+                                ],
+                                as: "subscription"
+                            }},
                         {
                             $unwind: "$subscription"
                         },
                         { $project:{
-                            source: "$subscription.source",
-                            paywall: "$subscription.paywall",
-                            package: "$subscription.package",
-                            price: "$price",
-                            operator: "$operator",
-                            billing_dtm: "$billing_dtm"
-                        }},
+                                source: "$subscription.source",
+                                paywall: "$subscription.paywall",
+                                package: "$subscription.package",
+                                price: "$price",
+                                operator: "$operator",
+                                billing_dtm: "$billing_dtm"
+                            }},
                         { $project:{
-                            source: "$source",
-                            paywall: "$paywall",
-                            package: "$package",
-                            price: "$price",
-                            operator: "$operator",
-                            day: { "$dayOfMonth" : "$billing_dtm"},
-                            month: { "$month" : "$billing_dtm" },
-                            year:{ "$year": "$billing_dtm" }
-                        }},
+                                source: "$source",
+                                paywall: "$paywall",
+                                package: "$package",
+                                price: "$price",
+                                operator: "$operator",
+                                day: { "$dayOfMonth" : "$billing_dtm"},
+                                month: { "$month" : "$billing_dtm" },
+                                year:{ "$year": "$billing_dtm" }
+                            }},
                         { $project:{
-                            source: "$source",
-                            paywall: "$paywall",
-                            package: "$package",
-                            price: "$price",
-                            operator: "$operator",
-                            added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }}
-                        }},
+                                source: "$source",
+                                paywall: "$paywall",
+                                package: "$package",
+                                price: "$price",
+                                operator: "$operator",
+                                added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }}
+                            }},
                         { $skip: skip },
                         { $limit: limit }
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
-                            console.log('getTotalPayingUsersByDateRange - err: ', err.message);
+                            console.log('getTotalPayingUsersDailyBasisByDateRange - err: ', err.message);
                             resolve([]);
                         }
                         resolve(items);
@@ -678,6 +679,121 @@ class SubscriptionRepository {
             });
         });
     }
+
+
+    async getNewPayingUsersMonthlyBasisByDateRange (req, from, to, skip, limit) {
+        return new Promise((resolve, reject) => {
+            console.log('getNewPayingUsersMonthlyBasisByDateRange: ', from, to, skip, limit);
+            req.db.collection('subscriptions', function (err, collection) {
+                if (!err) {
+                    collection.aggregate([
+                        { $match:{
+                            "billing_status": "Success",
+                            $and:[
+                                {"added_dtm":{$gte: new Date(from)}},
+                                {"added_dtm":{$lt: new Date(to)}}
+                            ]
+                        }},
+                        {$project:{
+                            source: "$source",
+                            subscriber_id: "$subscriber_id",
+                        }},
+                        { $lookup:{
+                            from: "billinghistories",
+                            let: {subscriber_id: "$subscriber_id"},
+                            pipeline:[
+                                { $match: {
+                                    $expr: {
+                                        $and:[
+                                            {$eq: ["$subscriber_id", "$$subscriber_id"]},
+                                            {$eq: ["$billing_status", "Success"]},
+                                        ]
+                                    }
+                                }},
+                            ],
+                            as: "billing"
+                        }},
+                        {$project: {
+                            _id: 0,
+                            source: "$source",
+                            billing_size: {$size: "$billing"}
+                        }},
+                        {$match: {
+                            billing_size: {$gt: 0}
+                        }},
+                        {$group: {
+                            _id: "$source",
+                            count: {$sum: 1}
+                        }}
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
+                        if(err){
+                            console.log('getNewPayingUsersMonthlyBasisByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            });
+        });
+    }
+    async getTotalPayingUsersByDateRange (req, from, to) {
+        return new Promise((resolve, reject) => {
+            console.log('getTotalPayingUsersByDateRange: ', from, to);
+            req.db.collection('billinghistories', function (err, collection) {
+                if (!err) {
+                    collection.aggregate([
+                        { $match:{
+                                "billing_status": "Success",
+                                $and:[
+                                    {"billing_dtm":{$gte: new Date(from)}},
+                                    {"billing_dtm":{$lt: new Date(to)}}
+                                ]
+                            }},
+                        {$group:{
+                                _id: "$subscriber_id",
+                            }},
+                        { $lookup:{
+                                from: "subscriptions",
+                                let: {subscriber_id: "$_id"},
+                                pipeline:[
+                                    { $match: {
+                                            $expr: {
+                                                $and:[
+                                                    {$eq: ["$subscriber_id", "$$subscriber_id" ]},
+                                                ]
+                                            }
+                                        }},
+                                    { $project:{
+                                            _id: 0,
+                                            source: "$source",
+                                            paywall: "$paywall_id",
+                                            package: "$subscribed_package_id"
+                                        }}
+                                ],
+                                as: "subscription"
+                            }},
+                        {
+                            $unwind: "$subscription"
+                        },
+                        { $project:{
+                            source: "$subscription.source"
+                        }},
+                        { $group: {
+                            _id: "$source",
+                            count: {$sum: 1}
+                        }}
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
+                        if(err){
+                            console.log('getTotalPayingUsersByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            });
+        });
+    }
+
 }
 
 module.exports = SubscriptionRepository;

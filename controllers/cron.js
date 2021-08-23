@@ -155,14 +155,20 @@ exports.computeDailyBaseChargeReports = async (req,res) =>  {
     res.send("computeDailyBaseChargeReports - Executed\n");
 };
 
+
+
+
+
+
 exports.computeNewPayingUsersReports = async (req,res) =>  {
     PayingUserService.computeNewPayingUsersReports(req,res);
     res.send("computeNewPayingUsersReports - Executed\n");
 };
 
-exports.computeTotalPayingUsersReports = async (req,res) =>  {
-    PayingUserService.computeTotalPayingUsersReports(req,res);
-    res.send("computeTotalPayingUsersReports - Executed\n");
+
+exports.computeTotalPayingUsersDailyBasisReports = async (req,res) =>  {
+    PayingUserService.computeTotalPayingUsersDailyBasisReports(req,res);
+    res.send("computeTotalPayingUsersDailyBasisReports - Executed\n");
 };
 
 exports.computePayingUserEngagementReports = async (req,res) =>  {
@@ -179,6 +185,27 @@ exports.computePayingUserWatchTimeReports = async (req,res) =>  {
     PayingUserService.computePayingUserWatchTimeReports(req,res);
     res.send("computePayingUserWatchTimeReports - Executed\n");
 };
+
+
+
+
+
+
+
+exports.computeTotalPayingUsersReports = async (req,res) =>  {
+    PayingUserService.computeTotalPayingUsersReports(req,res);
+    res.send("computeTotalPayingUsersReports - Executed\n");
+};
+
+exports.computeNewPayingUsersMonthlyReports = async (req,res) =>  {
+    PayingUserService.computeNewPayingUsersMonthlyReports(req,res);
+    res.send("computeNewPayingUsersMonthlyReports - Executed\n");
+};
+
+
+
+
+
 
 exports.cronComputeDailyDataReports = async (req,res) =>  {
     ReportsCronService.cronComputeDailyDataReports(req,res);

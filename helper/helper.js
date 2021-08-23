@@ -331,6 +331,26 @@ class Helper {
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }
 
+    static computeNextMonthWithLocalTime(req, sMonth){
+
+        let fromDate, toDate, tDays, month;
+
+        month = req.month ? req.month : sMonth;
+        month = month > 9 ? month : '0'+Number(month);
+        req.month = month;
+
+        fromDate  = new Date('2021-'+month+'-01T00:00:00.000Z');
+        console.log('computeNextMonthWithLocalTime - fromDate : ', fromDate);
+
+        tDays = this.getDaysInMonth(month);
+        console.log('computeNextMonthWithLocalTime - tDays : ', tDays);
+
+        toDate  = new Date('2021-'+month+'-'+tDays+'T23:59:59.000Z');
+        console.log('computeNextMonthWithLocalTime - toDate : ', toDate);
+
+        return {req: req, month: month, fromDate: fromDate, toDate: toDate};
+    }
+
     static computeLastMonthDateWithLocalTime(req){
 
         let fromDate, toDate, month, daysInMonth;
@@ -448,6 +468,8 @@ class Helper {
     }
 
     static async getTotalCount (req, from, to, collectionName, query=null) {
+        console.log('getTotalCount - collectionName: ', collectionName);
+
         return await new Promise(async(resolve, reject) => {
             req.db.collection(collectionName, async function (err, collection){
                 if (!err){
@@ -471,7 +493,7 @@ class Helper {
                         }
                     }
                     else{
-                        console.log('getTotalCount - Else case');
+                        console.log('getTotalCount - Else case', query);
 
                         try {
                             await collection.aggregate(query,{ allowDiskUse: true }).toArray(async function(err, count) {

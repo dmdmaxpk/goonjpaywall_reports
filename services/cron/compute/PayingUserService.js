@@ -30,7 +30,7 @@ computeNewPayingUsersReports = async(req, res) => {
             finalDataList = computePayingUsersData(newPayingUsers, finalDataList);
 
             console.log('finalDataList.length : ', finalDataList.length);
-            if (finalDataList.length > 0) await insertNewRecordForNewPayingUsers(finalDataList, fromDate);
+            if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'newPaying');
         }
     });
 
@@ -86,7 +86,7 @@ promiseBasedComputeNewPayingUsersReports = async(req, res) => {
 
                 console.log('finalDataList.length : ', finalDataList.length);
                 if (finalDataList.length > 0)
-                    await insertNewRecordForNewPayingUsers(finalDataList, fromDate);
+                    await insertNewRecord(finalDataList, fromDate, 'newPaying');
             }
         });
 
@@ -99,8 +99,8 @@ promiseBasedComputeNewPayingUsersReports = async(req, res) => {
     });
 };
 
-computeTotalPayingUsersReports = async(req, res) => {
-    console.log('computeTotalPayingUsersReports: ');
+computeTotalPayingUsersDailyBasisReports = async(req, res) => {
+    console.log('computeTotalPayingUsersDailyBasisReports: ');
 
     /*
     * Compute date and time for data fetching from db
@@ -128,8 +128,8 @@ computeTotalPayingUsersReports = async(req, res) => {
 
             //Loop over no.of chunks
             for (let i = 0; i < totalChunks; i++) {
-                console.log('computeTotalPayingUsersReports: ', fromDate, toDate, skip, limit);
-                await subscriptionRepository.getTotalPayingUsersByDateRange(req, fromDate, toDate, skip, limit).then(async function (totalPayingUsers) {
+                console.log('computeTotalPayingUsersDailyBasisReports: ', fromDate, toDate, skip, limit);
+                await subscriptionRepository.getTotalPayingUsersDailyBasisByDateRange(req, fromDate, toDate, skip, limit).then(async function (totalPayingUsers) {
                     console.log('totalPayingUsers.length: ', totalPayingUsers.length);
 
                     //set skip variable to limit data
@@ -142,8 +142,8 @@ computeTotalPayingUsersReports = async(req, res) => {
 
             // fetch last chunk Data from DB
             if (lastLimit > 0){
-                console.log('computeTotalPayingUsersReports: ', fromDate, toDate, skip, lastLimit);
-                await subscriptionRepository.getTotalPayingUsersByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (totalPayingUsers) {
+                console.log('computeTotalPayingUsersDailyBasisReports: ', fromDate, toDate, skip, lastLimit);
+                await subscriptionRepository.getTotalPayingUsersDailyBasisByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (totalPayingUsers) {
                     console.log('totalPayingUsers.length: ', totalPayingUsers.length);
 
                     // Now compute and store data in DB
@@ -152,40 +152,40 @@ computeTotalPayingUsersReports = async(req, res) => {
             }
 
             console.log('finalDataList.length : ', finalDataList.length);
-            if (finalDataList.length > 0) await insertNewRecordForTotalPayingUsers(finalDataList, fromDate);
+            if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPaying');
         }
     });
 
 
     // Get compute data for next time slot
     req.day = Number(req.day) + 1;
-    console.log('computeTotalPayingUsersReports -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
+    console.log('computeTotalPayingUsersDailyBasisReports -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
     if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
         if (Number(month) < Number(helper.getTodayMonthNo()))
-            computeTotalPayingUsersReports(req, res);
+            computeTotalPayingUsersDailyBasisReports(req, res);
         else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
-            computeTotalPayingUsersReports(req, res);
+            computeTotalPayingUsersDailyBasisReports(req, res);
     }
     else{
         console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
 
         req.day = 1;
         req.month = Number(req.month) + 1;
-        console.log('computeTotalPayingUsersReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
+        console.log('computeTotalPayingUsersDailyBasisReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
         if (Number(req.month) <= Number(helper.getTodayMonthNo()))
-            computeTotalPayingUsersReports(req, res);
+            computeTotalPayingUsersDailyBasisReports(req, res);
     }
 
     if (helper.isToday(fromDate)){
-        console.log('computeTotalPayingUsersReports - data compute - done');
+        console.log('computeTotalPayingUsersDailyBasisReports - data compute - done');
         delete req.day;
         delete req.month;
     }
 };
-promiseBasedComputeTotalPayingUsersReports = async(req, res) => {
-    console.log('promiseBasedComputeTotalPayingUsersReports: ');
+promiseBasedComputeTotalPayingUsersDailyBasisReports = async(req, res) => {
+    console.log('promiseBasedComputeTotalPayingUsersDailyBasisReports: ');
     return new Promise(async (resolve, reject) => {
 
         /*
@@ -214,8 +214,8 @@ promiseBasedComputeTotalPayingUsersReports = async(req, res) => {
 
                 //Loop over no.of chunks
                 for (let i = 0; i < totalChunks; i++) {
-                    console.log('promiseBasedComputeTotalPayingUsersReports: ', fromDate, toDate, skip, limit);
-                    await subscriptionRepository.getTotalPayingUsersByDateRange(req, fromDate, toDate, skip, limit).then(async function (totalPayingUsers) {
+                    console.log('promiseBasedComputeTotalPayingUsersDailyBasisReports: ', fromDate, toDate, skip, limit);
+                    await subscriptionRepository.getTotalPayingUsersDailyBasisByDateRange(req, fromDate, toDate, skip, limit).then(async function (totalPayingUsers) {
                         console.log('totalPayingUsers.length: ', totalPayingUsers.length);
 
                         if (totalPayingUsers.length > 0) finalDataList = computePayingUsersData(totalPayingUsers, finalDataList);
@@ -224,8 +224,8 @@ promiseBasedComputeTotalPayingUsersReports = async(req, res) => {
 
                 // fetch last chunk Data from DB
                 if (lastLimit > 0){
-                    console.log('promiseBasedComputeTotalPayingUsersReports: ', fromDate, toDate, skip, lastLimit);
-                    await subscriptionRepository.getTotalPayingUsersByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (totalPayingUsers) {
+                    console.log('promiseBasedComputeTotalPayingUsersDailyBasisReports: ', fromDate, toDate, skip, lastLimit);
+                    await subscriptionRepository.getTotalPayingUsersDailyBasisByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (totalPayingUsers) {
                         console.log('totalPayingUsers.length: ', totalPayingUsers.length);
 
                         // Now compute and store data in DB
@@ -234,13 +234,13 @@ promiseBasedComputeTotalPayingUsersReports = async(req, res) => {
                 }
 
                 console.log('finalDataList.length : ', finalDataList.length);
-                if (finalDataList.length > 0) await insertNewRecordForTotalPayingUsers(finalDataList, fromDate);
+                if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPaying');
             }
         });
 
 
         if (helper.isToday(fromDate)){
-            console.log('promiseBasedComputeTotalPayingUsersReports - data compute - done');
+            console.log('promiseBasedComputeTotalPayingUsersDailyBasisReports - data compute - done');
             delete req.day;
             delete req.month;
         }
@@ -271,7 +271,7 @@ computePayingUserEngagementReports = async(req, res) => {
             finalDataList = computePayingUserEngagementData(userEngagement, fromDate, finalDataList);
 
             console.log('finalDataList.length : ', finalDataList.length);
-            if (finalDataList.length > 0) await insertNewRecordForPayingUserEngagement(finalDataList, fromDate);
+            if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'userEngagement');
         }
     });
 
@@ -326,7 +326,7 @@ promiseBasedComputePayingUserEngagementReports = async(req, res) => {
 
                 console.log('finalDataList.length : ', finalDataList.length);
                 if (finalDataList.length > 0)
-                    await insertNewRecordForPayingUserEngagement(finalDataList, fromDate);
+                    await insertNewRecord(finalDataList, fromDate, 'userEngagement');
             }
         });
 
@@ -387,7 +387,7 @@ computePayingUserSessionsReports = async(req, res) => {
             }
 
             console.log('finalDataList.length : ', finalDataList.length);
-            if (finalDataList.length > 0) await insertNewRecordForPayingUserSessions(finalDataList, fromDate);
+            if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'userSessions');
         }
     });
 
@@ -468,7 +468,7 @@ promiseBasedComputePayingUserSessionsReports = async(req, res) => {
                 }
 
                 console.log('finalDataList.length : ', finalDataList.length);
-                if (finalDataList.length > 0) await insertNewRecordForPayingUserSessions(finalDataList, fromDate);
+                if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'userSessions');
             }
         });
 
@@ -504,7 +504,7 @@ computePayingUserWatchTimeReports = async(req, res) => {
 
             console.log('finalList.length : ', finalList.length);
             if (finalList.length > 0)
-                await insertNewRecordForPayingUserWatchTime(finalList, fromDate);
+                await insertNewRecord(finalList, fromDate, 'watchTime');
         }
     });
 
@@ -558,7 +558,7 @@ promiseBasedComputePayingUserWatchTimeReports = async(req, res) => {
 
                 console.log('finalList.length : ', finalList.length);
                 if (finalList.length > 0)
-                    await insertNewRecordForPayingUserWatchTime(finalList, fromDate);
+                    await insertNewRecord(finalList, fromDate, 'watchTime');
             }
         });
 
@@ -570,6 +570,85 @@ promiseBasedComputePayingUserWatchTimeReports = async(req, res) => {
         resolve(0);
     });
 };
+
+
+computeTotalPayingUsersReports = async(req, res) => {
+    console.log('computeTotalPayingUsersReports: ');
+
+    /*
+    * Compute date and time for data fetching from db
+    * Script will execute to fetch data as per day
+    * */
+    dateData = helper.computeNextMonthWithLocalTime(req,  6);
+    req = dateData.req;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
+    let finalDataList = [];
+
+    console.log('computeTotalPayingUsersReports: ', fromDate, toDate);
+    await subscriptionRepository.getTotalPayingUsersByDateRange(req, fromDate, toDate).then(async function (totalPayingUsers) {
+        console.log('totalPayingUsers.length: ', totalPayingUsers.length);
+
+        // Now compute and store data in DB
+        if (totalPayingUsers.length > 0) finalDataList = _.clone(computePayingUsersMonthlyData(totalPayingUsers, finalDataList));
+
+        if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPayingMonthly');
+    });
+
+
+    // Get compute data for next time slot
+    console.log('computeTotalPayingUsersReports -> day : ', Number(month), Number(helper.getDaysInMonth(month)));
+
+    req.month = Number(req.month) + 1;
+    console.log('computeTotalPayingUsersReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
+
+    if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+        computeTotalPayingUsersReports(req, res);
+    else{
+        console.log('computeTotalPayingUsersReports - data compute - done');
+        delete req.month;
+    }
+};
+computeNewPayingUsersMonthlyReports = async(req, res) => {
+    console.log('computeNewPayingUsersMonthlyReports: ');
+
+    /*
+    * Compute date and time for data fetching from db
+    * Script will execute to fetch data as per day
+    * */
+    dateData = helper.computeNextMonthWithLocalTime(req,  6);
+    req = dateData.req;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
+    let finalDataList = [];
+
+    console.log('computeNewPayingUsersMonthlyReports: ', fromDate, toDate);
+    await subscriptionRepository.getNewPayingUsersMonthlyBasisByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
+        console.log('newPayingUsers.length: ', newPayingUsers.length);
+
+        // Now compute and store data in DB
+        if (newPayingUsers.length > 0) finalDataList = _.clone(computePayingUsersMonthlyData(newPayingUsers, finalDataList));
+
+        if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPayingMonthly');
+    });
+
+
+    // Get compute data for next time slot
+    console.log('computeNewPayingUsersMonthlyReports -> day : ', Number(month), Number(helper.getDaysInMonth(month)));
+
+    req.month = Number(req.month) + 1;
+    console.log('computeNewPayingUsersMonthlyReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
+
+    if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+        computeNewPayingUsersMonthlyReports(req, res);
+    else{
+        console.log('computeNewPayingUsersMonthlyReports - data compute - done');
+        delete req.month;
+    }
+};
+
 
 function computePayingUsersData(payingUsers, finalList) {
     let newObj = finalList.length > 0 ? _.cloneDeep(finalList[0]) : _.cloneDeep(cloneInfoObj());
@@ -643,7 +722,7 @@ function computePayingUsersData(payingUsers, finalList) {
 
 function computePayingUserEngagementData(userEngagement, dateString, finalList) {
     let newObj = finalList.length > 0 ? _.cloneDeep(finalList[0]) : _.cloneDeep(cloneInfoObj());
-    console.log('computePayingUsersData - newObj:', newObj, finalList.length)
+    console.log('computePayingUserEngagementData - newObj:', newObj, finalList.length)
 
     for (const record of userEngagement) {
         if (record.source === 'app')
@@ -793,26 +872,61 @@ function computePayingUserWatchTimeData(userWatchTime, dateString) {
     return [finalObj];
 }
 
-async function insertNewRecordForNewPayingUsers(data, dateString) {
-    console.log('=>=>=>=>=>=>=> insertNewRecordForNewPayingUsers', dateString);
 
-    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
-    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
 
-    await payingUsersRepo.getReportByDateString(dateString.toString()).then(async function (result) {
-        if (result.length > 0) {
-            result = result[0];
-            result.newPaying = data;
 
-            await payingUsersRepo.updateReport(result, result._id);
+function computePayingUsersMonthlyData(payingUsers, finalList) {
+    let newObj = finalList.length > 0 ? _.cloneDeep(finalList[0]) : _.cloneDeep(cloneInfoObj());
+    console.log('computePayingUsersMonthlyData - newObj:', newObj, finalList.length)
+
+    for (const record of payingUsers) {
+        if (record.source === 'app') {
+            newObj.source.app.count = newObj.source.app.count + 1;
+        } else if (record.source === 'web') {
+            newObj.source.web.count = newObj.source.web.count + 1;
+        } else if (record.source === 'HE') {
+            newObj.source.he.count = newObj.source.he.count + 1;
+        } else if (record.source === 'gdn2') {
+            newObj.source.gdn2.count = newObj.source.gdn2.count + 1;
+        } else if (record.source === 'tp-gdn') {
+            newObj.source.tp_gdn.count = newObj.source.tp_gdn.count + 1;
+        } else if (record.source === 'affiliate_web') {
+            newObj.source.affiliate_web.count = newObj.source.affiliate_web.count + 1;
+        } else if(record.source !== 'app' && record.source !== 'web' && record.source !== 'HE' &&
+            record.source !== 'gdn2' && record.source !== 'tp-gdn' && record.source !== 'affiliate_web'){
+            newObj.source.others.count = newObj.source.others.count + 1;
         }
-        else
-            await payingUsersRepo.createReport({newPaying: data, date: dateString});
-    });
+
+        // Package wise computations
+        if (record.package === 'QDfC') {
+            newObj.package.dailyLive.count = newObj.package.dailyLive.count + 1;
+        } else if (record.package === 'QDfG') {
+            newObj.package.weeklyLive.count = newObj.package.weeklyLive.count + 1;
+        } else if (record.package === 'QDfH') {
+            newObj.package.dailyComedy.count = newObj.package.dailyComedy.count + 1;
+        } else if (record.package === 'QDfI') {
+            newObj.package.weeklyComedy.count = newObj.package.weeklyComedy.count + 1;
+        }
+
+        // Paywall wise computations
+        if (record.paywall === 'Dt6Gp70c') {
+            newObj.paywall.comedy.count = newObj.paywall.comedy.count + 1;
+        } else if (record.paywall === 'ghRtjhT7') {
+            newObj.paywall.live.count = newObj.paywall.live.count + 1;
+        }
+
+        newObj.added_dtm = record.added_dtm;
+        newObj.added_dtm_hours = helper.setDate(new Date(record.added_dtm), null, 0, 0, 0);
+    }
+
+    console.log('finalList - newObj:', newObj);
+    return [newObj];
 }
 
-async function insertNewRecordForTotalPayingUsers(data, dateString) {
-    console.log('=>=>=>=>=>=>=> insertNewRecordForTotalPayingUsers', dateString);
+
+
+async function insertNewRecord(data, dateString, fieldName) {
+    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
 
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
@@ -820,66 +934,12 @@ async function insertNewRecordForTotalPayingUsers(data, dateString) {
     await payingUsersRepo.getReportByDateString(dateString.toString()).then(async function (result) {
         if (result.length > 0) {
             result = result[0];
-            result.totalPaying = data;
+            result[fieldName] = data;
 
             await payingUsersRepo.updateReport(result, result._id);
         }
         else
-            await payingUsersRepo.createReport({totalPaying: data, date: dateString});
-    });
-}
-
-async function insertNewRecordForPayingUserEngagement(data, dateString) {
-    console.log('=>=>=>=>=>=>=> insertNewRecordForPayingUserEngagement', dateString);
-
-    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
-    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
-
-    await payingUsersRepo.getReportByDateString(dateString.toString()).then(async function (result) {
-        if (result.length > 0) {
-            result = result[0];
-            result.userEngagement = data;
-
-            await payingUsersRepo.updateReport(result, result._id);
-        }
-        else
-            await payingUsersRepo.createReport({userEngagement: data, date: dateString});
-    });
-}
-
-async function insertNewRecordForPayingUserWatchTime(data, dateString) {
-    console.log('=>=>=>=>=>=>=> insertNewRecordForPayingUserSessions', dateString);
-
-    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
-    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
-
-    await payingUsersRepo.getReportByDateString(dateString.toString()).then(async function (result) {
-        if (result.length > 0) {
-            result = result[0];
-            result.userSessions = data;
-
-            await payingUsersRepo.updateReport(result, result._id);
-        }
-        else
-            await payingUsersRepo.createReport({userSessions: data, date: dateString});
-    });
-}
-
-async function insertNewRecordForPayingUserSessions(data, dateString) {
-    console.log('=>=>=>=>=>=>=> insertNewRecordForPayingUserWatchTime', dateString);
-
-    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
-    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
-
-    await payingUsersRepo.getReportByDateString(dateString.toString()).then(async function (result) {
-        if (result.length > 0) {
-            result = result[0];
-            result.watchTime = data;
-
-            await payingUsersRepo.updateReport(result, result._id);
-        }
-        else
-            await payingUsersRepo.createReport({watchTime: data, date: dateString});
+            await payingUsersRepo.createReport({fieldName: data, date: dateString});
     });
 }
 
@@ -974,8 +1034,8 @@ module.exports = {
     computeNewPayingUsersReports: computeNewPayingUsersReports,
     promiseBasedComputeNewPayingUsersReports: promiseBasedComputeNewPayingUsersReports,
 
-    computeTotalPayingUsersReports: computeTotalPayingUsersReports,
-    promiseBasedComputeTotalPayingUsersReports: promiseBasedComputeTotalPayingUsersReports,
+    computeTotalPayingUsersDailyBasisReports: computeTotalPayingUsersDailyBasisReports,
+    promiseBasedComputeTotalPayingUsersDailyBasisReports: promiseBasedComputeTotalPayingUsersDailyBasisReports,
 
     computePayingUserEngagementReports: computePayingUserEngagementReports,
     promiseBasedComputePayingUserEngagementReports: promiseBasedComputePayingUserEngagementReports,
@@ -985,4 +1045,10 @@ module.exports = {
 
     computePayingUserWatchTimeReports: computePayingUserWatchTimeReports,
     promiseBasedComputePayingUserWatchTimeReports: promiseBasedComputePayingUserWatchTimeReports,
+
+
+
+    computeTotalPayingUsersReports: computeTotalPayingUsersReports,
+    computeNewPayingUsersMonthlyReports: computeNewPayingUsersMonthlyReports,
+
 };

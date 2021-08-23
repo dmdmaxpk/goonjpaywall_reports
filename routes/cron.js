@@ -81,11 +81,14 @@ router.route('/compute-request-count-reports')
 router.route('/compute-daily-base-charge-reports')
     .get(connection.connect, controller.computeDailyBaseChargeReports);
 
+
+
+
 router.route('/compute-new-paying-users-reports')
     .get(connection.connect, controller.computeNewPayingUsersReports);
 
-router.route('/compute-total-paying-users-reports')
-    .get(connection.connect, controller.computeTotalPayingUsersReports);
+router.route('/compute-total-paying-users-daily-basis-reports')
+    .get(connection.connect, controller.computeTotalPayingUsersDailyBasisReports);
 
 router.route('/compute-paying-user-engagement-reports')
     .get(connection.connect, controller.computePayingUserEngagementReports);
@@ -95,6 +98,21 @@ router.route('/compute-paying-user-sessions-reports')
 
 router.route('/compute-paying-user-watch-time-reports')
     .get(connection.connect, controller.computePayingUserWatchTimeReports);
+
+
+
+
+
+router.route('/compute-total-paying-users-reports')
+    .get(connection.connect, controller.computeTotalPayingUsersReports);
+
+router.route('/compute-paying-users-monthly-reports')
+    .get(connection.connect, controller.computeNewPayingUsersMonthlyReports);
+
+
+
+
+
 
 router.route('/cron-compute-daily-data-reports')
     .get(connection.connect, controller.cronComputeDailyDataReports); //**
