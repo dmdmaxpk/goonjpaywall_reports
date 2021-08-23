@@ -33,12 +33,13 @@ let updateConnection = async (req, res, next, connectType) => {
     return new Promise(async (resolve, reject) => {
         console.log('updateConnection - config.mongoDB: ', config.mongoDB[connectType]);
 
-        const conf = {
-            connectTimeoutMS: 10000,
-            socketTimeoutMS: 10000,
-            useUnifiedTopology: true
-        }
-        await MongoClient.connect(config.mongoDB[connectType], conf, function (err, client) {
+        const option = {
+            socketTimeoutMS: 60000,
+            keepAlive: true,
+            reconnectTries: 10
+        };
+
+        await MongoClient.connect(config.mongoDB[connectType], option, function (err, client) {
             console.log('updateConnection - client: ', client);
 
             if(err){
