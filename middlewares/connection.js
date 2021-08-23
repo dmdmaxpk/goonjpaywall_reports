@@ -43,6 +43,8 @@ let updateConnection = async (req, res, next, connectType) => {
                 req.db = await client.db(connectType);
                 await helper.setDBInstance(req.db);
 
+                console.log('updateConnection: ', req.db);
+
                 if (next !== null)
                     resolve(next());
                 else
