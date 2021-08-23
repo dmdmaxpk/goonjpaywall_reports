@@ -25,11 +25,11 @@ class ReportsValidator{
                 }
                 if (params.sub_type === 'session_time'){
                     let subType = params.sub_type;
-                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Session Time Report", ['zero_fifteen', 'fifteen_thirty', 'thirty_sixty', 'more_then_60', 'and_all']);
+                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Session Time Report", ['one_three', 'four_ten', 'more_then_ten', 'and_all']);
                 }
                 if (params.sub_type === 'watch_time'){
                     let subType = params.sub_type;
-                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Watch Time Report", ['one_three', 'four_ten', 'more_then_ten', 'and_all']);
+                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Watch Time Report", ['zero_fifteen', 'fifteen_thirty', 'thirty_sixty', 'more_then_60', 'and_all']);
                 }
 
                 break;
