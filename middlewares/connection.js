@@ -1,4 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
+const mongoose = require('mongoose');
+
 const config = require('./../config');
 const helper = require('./../helper/helper');
 
@@ -11,15 +13,10 @@ let connect = async (req, res, next) => {
     else
         connectType = 'goonjpaywall';
 
-    console.log('connectType: ', connectType, helper.getDBInstance());
-    if (!helper.getDBInstance()){
-        console.log('DB connect if: ');
+    if (!helper.getDBInstance())
         await updateConnection(req, res, next, connectType);
-    }
     else{
         req.db = helper.getDBInstance();
-        console.log('req.db: ', req.db);
-        console.log('connectType: ', connectType);
         console.log('req.db.databaseName: ', req.db.databaseName);
 
         if (req.db.databaseName !== connectType){
@@ -37,19 +34,26 @@ let updateConnection = async (req, res, next, connectType) => {
         console.log('updateConnection - config.mongoDB: ', config.mongoDB[connectType]);
 
         const conf = {
-            connectTimeoutMS: 5000,
-            socketTimeoutMS: 5000,
+            connectTimeoutMS: 10000,
+            socketTimeoutMS: 10000,
             useUnifiedTopology: true
         }
-        await MongoClient.connect(config.mongoDB[connectType], conf, async function (err, client) {
+        mongoose.connect(config.mongoDB[connectType]);
+        mongoose.connection
+            .once('open', () => console.log('Good to go!'))
+            .on('error', (error) => {
+                console.warn('Warning', error);
+            });
+
+        await MongoClient.connect(config.mongoDB[connectType], conf, function (err, client) {
             console.log('updateConnection - client: ', client);
 
             if(err){
                 console.error(`Error: ${err.message}`);
                 res.status(403).send(connectType, "  - Database Access Denied");
             }else{
-                req.db = await client.db(connectType);
-                await helper.setDBInstance(req.db);
+                req.db = client.db(connectType);
+                helper.setDBInstance(req.db);
 
                 console.log('updateConnection - req.db: ', req.db);
 
