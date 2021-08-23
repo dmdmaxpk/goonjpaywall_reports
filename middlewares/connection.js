@@ -34,6 +34,8 @@ let connect = async (req, res, next) => {
 
 let updateConnection = async (req, res, next, connectType) => {
     return new Promise(async (resolve, reject) => {
+        console.log('updateConnection - config.mongoDB: ', config.mongoDB[connectType]);
+
         await MongoClient.connect(config.mongoDB[connectType],  async function (err, client) {
             console.log('updateConnection - client: ', client);
 
