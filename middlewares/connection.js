@@ -11,24 +11,22 @@ let connect = async (req, res, next) => {
     else
         connectType = 'goonjpaywall';
 
-    console.log('connectType: ', connectType);
-    await updateConnection(req, res, next, connectType);
+    console.log('connectType: ', connectType, helper.getDBInstance());
+    if (!helper.getDBInstance())
+        await updateConnection(req, res, next, connectType);
+    else{
+        req.db = helper.getDBInstance();
+        console.log('req.db: ', req.db);
+        console.log('connectType: ', connectType);
+        console.log('req.db.databaseName: ', req.db.databaseName);
 
-    // if (!helper.getDBInstance())
-    //     await updateConnection(req, res, next, connectType);
-    // else{
-    //     req.db = helper.getDBInstance();
-    //     console.log('req.db: ', req.db);
-    //     console.log('connectType: ', connectType);
-    //     console.log('req.db.databaseName: ', req.db.databaseName);
-    //
-    //     if (req.db.databaseName !== connectType){
-    //         console.log('=================: ');
-    //         await updateConnection(req, res, next, connectType);
-    //     }
-    //
-    //     next();
-    // }
+        if (req.db.databaseName !== connectType){
+            console.log('=================: ');
+            await updateConnection(req, res, next, connectType);
+        }
+
+        next();
+    }
 };
 
 
