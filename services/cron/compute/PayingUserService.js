@@ -346,7 +346,7 @@ computePayingUserSessionsReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 1, 6);
+    dateData = helper.computeNextMonthWithLocalTime(req,  6);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -393,29 +393,15 @@ computePayingUserSessionsReports = async(req, res) => {
 
 
     // Get compute data for next time slot
-    req.day = Number(req.day) + 1;
-    console.log('computePayingUserSessionsReports -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
+    console.log('computePayingUserSessionsReports -> month : ', Number(month), Number(helper.getDaysInMonth(month)));
 
-    if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
-        if (Number(month) < Number(helper.getTodayMonthNo()))
-            computePayingUserSessionsReports(req, res);
-        else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
-            computePayingUserSessionsReports(req, res);
-    }
+    req.month = Number(req.month) + 1;
+    console.log('computePayingUserSessionsReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
+
+    if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+        computePayingUserSessionsReports(req, res);
     else{
-        console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
-
-        req.day = 1;
-        req.month = Number(req.month) + 1;
-        console.log('computePayingUserSessionsReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
-
-        if (Number(req.month) <= Number(helper.getTodayMonthNo()))
-            computePayingUserSessionsReports(req, res);
-    }
-
-    if (helper.isToday(fromDate)){
         console.log('computePayingUserSessionsReports - data compute - done');
-        delete req.day;
         delete req.month;
     }
 };
@@ -483,12 +469,11 @@ promiseBasedComputePayingUserSessionsReports = async(req, res) => {
 
 computePayingUserWatchTimeReports = async(req, res) => {
     console.log('computePayingUserWatchTimeReports: ');
-
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 1, 6);
+    dateData = helper.computeNextMonthWithLocalTime(req,  6);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -509,29 +494,15 @@ computePayingUserWatchTimeReports = async(req, res) => {
     });
 
     // Get compute data for next time slot
-    req.day = Number(req.day) + 1;
-    console.log('computePayingUserWatchTimeReports -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
+    console.log('computePayingUserWatchTimeReports -> month : ', Number(month), Number(helper.getDaysInMonth(month)));
 
-    if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
-        if (Number(month) < Number(helper.getTodayMonthNo()))
-            computePayingUserWatchTimeReports(req, res);
-        else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
-            computePayingUserWatchTimeReports(req, res);
-    }
+    req.month = Number(req.month) + 1;
+    console.log('computePayingUserWatchTimeReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
+
+    if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+        computePayingUserWatchTimeReports(req, res);
     else{
-        console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
-
-        req.day = 1;
-        req.month = Number(req.month) + 1;
-        console.log('computePayingUserWatchTimeReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
-
-        if (Number(req.month) <= Number(helper.getTodayMonthNo()))
-            computePayingUserWatchTimeReports(req, res);
-    }
-
-    if (helper.isToday(fromDate)){
         console.log('computePayingUserWatchTimeReports - data compute - done');
-        delete req.day;
         delete req.month;
     }
 };
