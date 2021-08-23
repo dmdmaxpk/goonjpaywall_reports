@@ -38,13 +38,6 @@ let updateConnection = async (req, res, next, connectType) => {
             socketTimeoutMS: 10000,
             useUnifiedTopology: true
         }
-        mongoose.connect(config.mongoDB[connectType]);
-        mongoose.connection
-            .once('open', () => console.log('Good to go!'))
-            .on('error', (error) => {
-                console.warn('Warning', error);
-            });
-
         await MongoClient.connect(config.mongoDB[connectType], conf, function (err, client) {
             console.log('updateConnection - client: ', client);
 
