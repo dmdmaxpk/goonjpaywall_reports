@@ -579,9 +579,9 @@ class SubscriptionRepository {
         });
     }
 
-    async getPayingUserSessionsByDateRange (req, from, to, skip, limit) {
+    async getPayingUserSessionsByDateRange (req, from, to) {
         return new Promise((resolve, reject) => {
-            console.log('getPayingUserSessionsByDateRange: ', from, to, skip, limit);
+            console.log('getPayingUserSessionsByDateRange: ', from, to);
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
@@ -626,9 +626,7 @@ class SubscriptionRepository {
                             session: "$_id",
                             sessionSum: "$sessionSum",
                             sessionTurns: "$sessionTurns",
-                        }},
-                        { $skip: skip },
-                        { $limit: limit }
+                        }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getPayingUserSessionsByDateRange - err: ', err.message);

@@ -354,43 +354,15 @@ computePayingUserSessionsReports = async(req, res) => {
     toDate = dateData.toDate;
     let finalDataList = [];
 
-    query = payingUserSessionsQueryCount(fromDate, toDate);
-    await helper.getTotalCount(req, fromDate, toDate, 'billinghistories', query).then(async function (totalCount) {
-        console.log('totalCount: ', totalCount);
+    console.log('computePayingUserSessionsReports: ', fromDate, toDate);
+    await subscriptionRepository.getPayingUserSessionsByDateRange(req, fromDate, toDate).then(async function (userSessions) {
+        console.log('userSessions.length: ', userSessions);
 
-        if (totalCount > 0) {
-            computeChunks = helper.getChunks(totalCount);
-            totalChunks = computeChunks.chunks;
-            lastLimit = computeChunks.lastChunkCount;
-            console.log('computeChunks: ', computeChunks);
+        if (userSessions.length > 0) finalDataList = computePayingUserSessionsData(userSessions, fromDate, finalDataList);
 
-            let skip = 0;
-
-            //Loop over no.of chunks
-            for (let i = 0; i < totalChunks; i++) {
-                console.log('computePayingUserSessionsReports: ', fromDate, toDate, skip, limit);
-                await subscriptionRepository.getPayingUserSessionsByDateRange(req, fromDate, toDate, skip, limit).then(async function (userSessions) {
-                    console.log('userSessions.length: ', userSessions.length);
-
-                    if (userSessions.length > 0) finalDataList = computePayingUserSessionsData(userSessions, fromDate, finalDataList);
-                });
-            }
-
-            // fetch last chunk Data from DB
-            if (lastLimit > 0){
-                console.log('computePayingUserSessionsReports: ', fromDate, toDate, skip, lastLimit);
-                await subscriptionRepository.getPayingUserSessionsByDateRange(req, fromDate, toDate, skip, lastLimit).then(async function (userSessions) {
-                    console.log('userSessions.length: ', userSessions);
-
-                    if (userSessions.length > 0) finalDataList = computePayingUserSessionsData(userSessions, fromDate, finalDataList);
-                });
-            }
-
-            console.log('finalDataList.length : ', finalDataList.length);
-            if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'userSessions');
-        }
+        console.log('finalDataList.length : ', finalDataList.length);
+        if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'userSessions');
     });
-
 
     // Get compute data for next time slot
     console.log('computePayingUserSessionsReports -> month : ', Number(month), Number(helper.getDaysInMonth(month)));
