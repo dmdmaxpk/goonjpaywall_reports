@@ -346,7 +346,7 @@ computePayingUserSessionsReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextMonthWithLocalTime(req,  6);
+    dateData = helper.computeNextMonthWithLocalTime(req,  7);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -713,17 +713,10 @@ function computePayingUserEngagementData(userEngagement, dateString, finalList) 
 }
 
 function computePayingUserSessionsData(userSessions, dateString, finalList) {
-    let obj, finalObj = {}, newObj1, newObj2, newObj3, newObj4;
+    let finalObj = {}, newObj1, newObj2, newObj3, newObj4;
     let innerObj = {session: 0, sum: 0, turn: 0, avg: 0};
 
-    if (finalList.length > 0){
-        obj = _.cloneDeep(finalList[0]);
-        newObj1 = _.cloneDeep(obj.one_three); newObj2 = _.cloneDeep(obj.four_ten);
-        newObj3 = _.cloneDeep(obj.more_then_ten); newObj4 = _.cloneDeep(obj.and_all);
-    }
-    else{
-        newObj1 = _.cloneDeep(innerObj); newObj2 = _.cloneDeep(innerObj); newObj3 = _.cloneDeep(innerObj); newObj4 = _.cloneDeep(innerObj);
-    }
+    newObj1 = _.cloneDeep(innerObj); newObj2 = _.cloneDeep(innerObj); newObj3 = _.cloneDeep(innerObj); newObj4 = _.cloneDeep(innerObj);
 
     for (const record of userSessions) {
         if (record.session >= 1 && record.session <= 3){
