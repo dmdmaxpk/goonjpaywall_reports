@@ -791,7 +791,6 @@ class SubscriptionRepository {
             });
         });
     }
-
 }
 
 module.exports = SubscriptionRepository;

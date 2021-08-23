@@ -356,7 +356,7 @@ computePayingUserSessionsReports = async(req, res) => {
 
     console.log('computePayingUserSessionsReports: ', fromDate, toDate);
     await subscriptionRepository.getPayingUserSessionsByDateRange(req, fromDate, toDate).then(async function (userSessions) {
-        console.log('userSessions.length: ', userSessions);
+        console.log('userSessions.length: ', userSessions.length);
 
         if (userSessions.length > 0) finalDataList = computePayingUserSessionsData(userSessions, fromDate, finalDataList);
 
@@ -451,6 +451,7 @@ computePayingUserWatchTimeReports = async(req, res) => {
     month = dateData.month;
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
+    finalList = [];
 
     console.log('computePayingUserWatchTimeReports: ', fromDate, toDate);
     await subscriptionRepository.getPayingUserWatchTimeByDateRange(req, fromDate, toDate).then(async function (userWatchTime) {
@@ -460,8 +461,7 @@ computePayingUserWatchTimeReports = async(req, res) => {
             finalList = computePayingUserWatchTimeData(userWatchTime, fromDate);
 
             console.log('finalList.length : ', finalList.length);
-            if (finalList.length > 0)
-                await insertNewRecord(finalList, fromDate, 'watchTime');
+            if (finalList.length > 0) await insertNewRecord(finalList, fromDate, 'watchTime');
         }
     });
 
@@ -491,6 +491,7 @@ promiseBasedComputePayingUserWatchTimeReports = async(req, res) => {
         month = dateData.month;
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
+        finalList = [];
 
         console.log('promiseBasedComputePayingUserWatchTimeReports: ', fromDate, toDate);
         await subscriptionRepository.getPayingUserWatchTimeByDateRange(req, fromDate, toDate).then(async function (userWatchTime) {

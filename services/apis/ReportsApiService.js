@@ -91,19 +91,19 @@ generateReportsData = async (req,res) => {
             }
             else if(params.sub_type === 'session_time'){
 
-                if (params.session_time === 'zero_fifteen') {uType = 'zero_fifteen';}
-                else if (params.session_time === 'sixteen_thirty') {uType = 'sixteen_thirty';}
-                else if (params.session_time === 'thiryOne_sixsty') {uType = 'thiryOne_sixsty';}
-                else if (params.session_time === 'more_then_60') {uType = 'more_then_60';}
-                else if (params.session_time === 'and_all') {uType = 'and_all';}
+                if (params.session_time === 'one_three') {uType = 'one_three';}
+                else if (params.session_time === 'four_ten') {uType = 'four_ten';}
+                else if (params.session_time === 'more_then_ten') {uType = 'more_then_ten';}
+                else if (params.watch_time === 'and_all') {uType = 'and_all';}
 
                 return payingUsersService.computePayingUsersSessionsTimeReport(rawDataSet, params, uType);
             }
             else if(params.sub_type === 'watch_time'){
 
-                if (params.watch_time === 'one_three') {uType = 'one_three';}
-                else if (params.watch_time === 'four_ten') {uType = 'four_ten';}
-                else if (params.watch_time === 'more_then_ten') {uType = 'more_then_ten';}
+                if (params.watch_time === 'zero_fifteen') {uType = 'zero_fifteen';}
+                else if (params.watch_time === 'sixteen_thirty') {uType = 'sixteen_thirty';}
+                else if (params.watch_time === 'thiryOne_sixsty') {uType = 'thiryOne_sixsty';}
+                else if (params.watch_time === 'more_then_60') {uType = 'more_then_60';}
                 else if (params.watch_time === 'and_all') {uType = 'and_all';}
 
                 console.log('uType: ', uType);
