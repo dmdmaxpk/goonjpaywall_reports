@@ -84,7 +84,9 @@ generateReportsData = async (req,res) => {
                 }
             }
             else if(params.sub_type === 'revenue'){
-                uType = 'newPayingRevenue';
+                if (params.sub_type === 'revenue') { uType = 'newPayingRevenue'; subType = params['revenue'] }
+
+                console.log('generateReportsData - subType: ', subType);
                 if (subType === 'source_wise')
                 return payingUsersService.computePayingUsersCountSourceWiseReport(rawDataSet, params, uType);
             else{
