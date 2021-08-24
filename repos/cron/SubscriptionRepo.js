@@ -340,9 +340,9 @@ class SubscriptionRepository {
 
 
 
-    async getNewPayingUsersByDateRange (req, from, to) {
+    async getNewPayingUserRevenueByDateRange (req, from, to) {
         return new Promise((resolve, reject) => {
-            console.log('getNewPayingUsersByDateRange: ', from, to);
+            console.log('getNewPayingUserRevenueByDateRange: ', from, to);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
@@ -353,11 +353,7 @@ class SubscriptionRepository {
                         },
                         {$project:{
                             source: "$source",
-                            operator: "$operator",
-                            paywall: "$paywall_id",
-                            package: "$subscribed_package_id",
-                            subscriber_id: "$subscriber_id",
-                            added_dtm: "$added_dtm"
+                            subscriber_id: "$subscriber_id"
                         }},
                         { $lookup:{
                             from: "billinghistories",
@@ -373,7 +369,7 @@ class SubscriptionRepository {
                                 }},
                                 { $project:{
                                     _id: 0,
-                                    price: "$price",
+                                    price: "$price"
                                 }}
                             ],
                             as: "billing"
@@ -383,33 +379,11 @@ class SubscriptionRepository {
                         },
                         { $project:{
                             source: "$source",
-                            paywall: "$paywall",
-                            package: "$package",
-                            operator: "$operator",
-                            price: "$billing.price",
-                            added_dtm: "$added_dtm"
-                        }},
-                        { $project:{
-                            source: "$source",
-                            paywall: "$paywall",
-                            package: "$package",
-                            operator: "$operator",
-                            price: "$price",
-                            day: { "$dayOfMonth" : "$added_dtm"},
-                            month: { "$month" : "$added_dtm" },
-                            year:{ "$year": "$added_dtm" }
-                        }},
-                        { $project:{
-                            source: "$source",
-                            paywall: "$paywall",
-                            package: "$package",
-                            operator: "$operator",
-                            price: "$price",
-                            added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
+                            price: "$billing.price"
                         }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
-                            console.log('getNewPayingUsersByDateRange - err: ', err.message);
+                            console.log('getNewPayingUserRevenueByDateRange - err: ', err.message);
                             resolve([]);
                         }
                         resolve(items);
@@ -605,7 +579,6 @@ class SubscriptionRepository {
                 if (!err) {
                     collection.aggregate([
                         { $match:{
-                            "billing_status": "Success",
                             $and:[
                                 {"added_dtm":{$gte: new Date(from)}},
                                 {"added_dtm":{$lt: new Date(to)}}

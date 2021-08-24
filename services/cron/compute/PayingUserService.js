@@ -21,11 +21,11 @@ computeNewPayingUsersReports = async(req, res) => {
     let finalDataList = [];
 
     console.log('computeNewPayingUsersReports: ', fromDate, toDate);
-    await subscriptionRepository.getNewPayingUsersByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
+    await subscriptionRepository.getNewPayingUserRevenueByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
         console.log('newPayingUsers.length: ', newPayingUsers.length);
 
         if (newPayingUsers.length > 0){
-            finalDataList = computePayingUsersData(newPayingUsers, finalDataList);
+            finalDataList = computePayingUsersData(newPayingUsers, finalDataList, fromDate);
 
             console.log('finalDataList.length : ', finalDataList.length);
             if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'newPaying');
@@ -49,7 +49,7 @@ computeNewPayingUsersReports = async(req, res) => {
         req.month = Number(req.month) + 1;
         console.log('computeNewPayingUsersReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-        if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+        if (Number(req.month) < Number(helper.getTodayMonthNo()))
             computeNewPayingUsersReports(req, res);
     }
 
@@ -76,11 +76,11 @@ promiseBasedComputeNewPayingUsersReports = async(req, res) => {
         let finalDataList = [];
 
         console.log('promiseBasedComputeNewPayingUsersReports: ', fromDate, toDate);
-        await subscriptionRepository.getNewPayingUsersByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
+        await subscriptionRepository.getNewPayingUserRevenueByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
             console.log('newPayingUsers.length: ', newPayingUsers.length);
 
             if (newPayingUsers.length > 0){
-                finalDataList = computePayingUsersData(newPayingUsers, finalDataList);
+                finalDataList = computePayingUsersData(newPayingUsers, finalDataList, fromDate);
 
                 console.log('finalDataList.length : ', finalDataList.length);
                 if (finalDataList.length > 0)
@@ -88,12 +88,13 @@ promiseBasedComputeNewPayingUsersReports = async(req, res) => {
             }
         });
 
-        if (helper.isToday(fromDate)){
+        if (Number(req.month) < Number(helper.getTodayMonthNo()))
+            promiseBasedComputeNewPayingUsersReports(req, res);
+        else{
             console.log('promiseBasedComputeNewPayingUsersReports - data compute - done');
-            delete req.day;
             delete req.month;
+            resolve(0);
         }
-        resolve(0);
     });
 };
 computeNewPayingUsersMonthlyReports = async(req, res) => {
@@ -207,7 +208,6 @@ promiseBasedComputeTotalPayingUsersReports = async(req, res) => {
     });
 };
 
-
 computePayingUserEngagementReports = async(req, res) => {
     console.log('computePayingUserEngagementReports: ');
 
@@ -298,7 +298,7 @@ computePayingUserSessionsReports = async(req, res) => {
     await subscriptionRepository.getPayingUserSessionsByDateRange(req, fromDate, toDate).then(async function (userSessions) {
         console.log('userSessions.length: ', userSessions.length);
 
-        if (userSessions.length > 0) finalDataList = computePayingUserSessionsData(userSessions, fromDate, finalDataList);
+        if (userSessions.length > 0) finalDataList = computePayingUserSessionsData(userSessions, fromDate);
 
         console.log('finalDataList.length : ', finalDataList.length);
         if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'userSessions');
@@ -335,7 +335,7 @@ promiseBasedComputePayingUserSessionsReports = async(req, res) => {
         await subscriptionRepository.getPayingUserSessionsByDateRange(req, fromDate, toDate).then(async function (userSessions) {
             console.log('userSessions.length: ', userSessions.length);
 
-            if (userSessions.length > 0) finalDataList = computePayingUserSessionsData(userSessions, fromDate, finalDataList);
+            if (userSessions.length > 0) finalDataList = computePayingUserSessionsData(userSessions, fromDate);
 
             console.log('finalDataList.length : ', finalDataList.length);
             if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'userSessions');
@@ -428,77 +428,37 @@ promiseBasedComputePayingUserWatchTimeReports = async(req, res) => {
 };
 
 
-function computePayingUsersData(payingUsers, finalList) {
+function computePayingUsersData(payingUsers, finalList, dateString) {
     let newObj = finalList.length > 0 ? _.cloneDeep(finalList[0]) : _.cloneDeep(cloneInfoObj());
     console.log('computePayingUsersData - newObj:', newObj, finalList.length)
 
     for (const record of payingUsers) {
         if (record.source === 'app') {
-            newObj.source.app.count = newObj.source.app.count + 1;
             newObj.source.app.revenue = newObj.source.app.revenue + record.price;
         } else if (record.source === 'web') {
-            newObj.source.web.count = newObj.source.web.count + 1;
             newObj.source.web.revenue = newObj.source.web.revenue + record.price;
         } else if (record.source === 'HE') {
-            newObj.source.he.count = newObj.source.he.count + 1;
             newObj.source.he.revenue = newObj.source.he.revenue + record.price;
         } else if (record.source === 'gdn2') {
-            newObj.source.gdn2.count = newObj.source.gdn2.count + 1;
             newObj.source.gdn2.revenue = newObj.source.gdn2.revenue + record.price;
         } else if (record.source === 'tp-gdn') {
-            newObj.source.tp_gdn.count = newObj.source.tp_gdn.count + 1;
             newObj.source.tp_gdn.revenue = newObj.source.tp_gdn.revenue + record.price;
         } else if (record.source === 'affiliate_web') {
-            newObj.source.affiliate_web.count = newObj.source.affiliate_web.count + 1;
             newObj.source.affiliate_web.revenue = newObj.source.affiliate_web.revenue + record.price;
         } else if(record.source !== 'app' && record.source !== 'web' && record.source !== 'HE' &&
             record.source !== 'gdn2' && record.source !== 'tp-gdn' && record.source !== 'affiliate_web'){
-            newObj.source.others.count = newObj.source.others.count + 1;
             newObj.source.others.revenue = newObj.source.others.revenue + record.price;
         }
-
-        // Package wise computations
-        if (record.package === 'QDfC') {
-            newObj.package.dailyLive.count = newObj.package.dailyLive.count + 1;
-            newObj.package.dailyLive.revenue = newObj.package.dailyLive.revenue + record.price;
-        } else if (record.package === 'QDfG') {
-            newObj.package.weeklyLive.count = newObj.package.weeklyLive.count + 1;
-            newObj.package.weeklyLive.revenue = newObj.package.weeklyLive.revenue + record.price;
-        } else if (record.package === 'QDfH') {
-            newObj.package.dailyComedy.count = newObj.package.dailyComedy.count + 1;
-            newObj.package.dailyComedy.revenue = newObj.package.dailyComedy.revenue + record.price;
-        } else if (record.package === 'QDfI') {
-            newObj.package.weeklyComedy.count = newObj.package.weeklyComedy.count + 1;
-            newObj.package.weeklyComedy.revenue = newObj.package.weeklyComedy.revenue + record.price;
-        }
-
-        // Paywall wise computations
-        if (record.paywall === 'Dt6Gp70c') {
-            newObj.paywall.comedy.count = newObj.paywall.comedy.count + 1;
-            newObj.paywall.comedy.revenue = newObj.paywall.comedy.revenue + record.price;
-        } else if (record.paywall === 'ghRtjhT7') {
-            newObj.paywall.live.count = newObj.paywall.live.count + 1;
-            newObj.paywall.live.revenue = newObj.paywall.live.revenue + record.price;
-        }
-
-        // Operator wise computations
-        if (record.operator === 'easypaisa') {
-            newObj.operator.easypaisa.count = newObj.operator.easypaisa.count + 1;
-            newObj.operator.easypaisa.revenue = newObj.operator.easypaisa.revenue + record.price;
-        } else if (record.operator === 'telenor' || !record.hasOwnProperty('operator')) {
-            newObj.operator.telenor.count = newObj.operator.telenor.count + 1;
-            newObj.operator.telenor.revenue = newObj.operator.telenor.revenue + record.price;
-        }
-
-        newObj.added_dtm = record.added_dtm;
-        newObj.added_dtm_hours = helper.setDate(new Date(record.added_dtm), null, 0, 0, 0);
     }
+
+    newObj.added_dtm = dateString;
+    newObj.added_dtm_hours = helper.setDate(new Date(dateString), null, 0, 0, 0);
 
     console.log('finalList - newObj:', newObj);
     return [newObj];
 }
 
-function computePayingUserSessionsData(userSessions, dateString, finalList) {
+function computePayingUserSessionsData(userSessions, dateString) {
     let finalObj = {}, newObj1, newObj2, newObj3, newObj4;
     let innerObj = {session: 0, sum: 0, turn: 0, avg: 0};
 
