@@ -132,7 +132,7 @@ computePayingUsersCountSourceWiseReport = async (rawDataSet, params, userType) =
 };
 
 computePayingUsersSessionsTimeReport = async (rawDataSet, params, sessionType) =>{
-    console.log('computePayingUsersSessionsTimeReport');
+    console.log('computePayingUsersSessionsTimeReport', sessionType);
 
     let obj, monthNo, dayNo, week_from_date = null, month_from_date = null, week_days_sum = 0, month_days_sum = 0;
     let outerObj, innerObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
@@ -146,8 +146,11 @@ computePayingUsersSessionsTimeReport = async (rawDataSet, params, sessionType) =
             if (outerObj.userSessions){
                 for (let j=0; j<outerObj.userSessions.length; j++) {
                     innerObj = outerObj.userSessions[j];
+                    console.log('innerObj: ', innerObj);
+
                     if (innerObj[sessionType]) {
                         obj = innerObj[sessionType];
+                        console.log('obj: ', obj);
                         dataObj.session = obj.session;
                         dataObj.sum = dataObj.sum + obj.sum;
                         dataObj.turns = dataObj.turns + obj.turn;

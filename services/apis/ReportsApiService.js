@@ -104,7 +104,7 @@ generateReportsData = async (req,res) => {
 
                 if (params.watch_time === 'zero_fifteen') {uType = 'zero_fifteen';}
                 else if (params.watch_time === 'sixteen_thirty') {uType = 'sixteen_thirty';}
-                else if (params.watch_time === 'thiryOne_sixsty') {uType = 'thiryOne_sixsty';}
+                else if (params.watch_time === 'thirtyOne_sixty') {uType = 'thiryOne_sixsty';}
                 else if (params.watch_time === 'more_then_60') {uType = 'more_then_60';}
                 else if (params.watch_time === 'and_all') {uType = 'and_all';}
 

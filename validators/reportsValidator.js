@@ -29,7 +29,7 @@ class ReportsValidator{
                 }
                 if (params.sub_type === 'watch_time'){
                     let subType = params.sub_type;
-                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Watch Time Report", ['zero_fifteen', 'fifteen_thirty', 'thirty_sixty', 'more_then_60', 'and_all']);
+                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Watch Time Report", ['zero_fifteen', 'sixteen_thirty', 'thirtyOne_sixty', 'more_then_60', 'and_all']);
                 }
 
                 break;
