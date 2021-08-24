@@ -7,7 +7,7 @@ let config = {
         mongoDB: {
             logger: 'mongodb://localhost:27017',
             streamlogs: 'mongodb://10.0.1.70:27017',
-            goonjpaywall: 'mongodb://10.0.1.76:27017',
+            goonjpaywall: 'mongodb://localhost:27017',
             goonj_paywall_reports: 'mongodb://localhost:27017/goonj_paywall_reports'
         },
         cron_db_query_data_limit: cron_db_query_data_limit
