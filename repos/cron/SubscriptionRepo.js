@@ -582,6 +582,7 @@ class SubscriptionRepository {
     async getPayingUserSessionsByDateRange (req, from, to) {
         return new Promise((resolve, reject) => {
             console.log('getPayingUserSessionsByDateRange: ', from, to);
+            console.time('find')
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
@@ -594,8 +595,43 @@ class SubscriptionRepository {
                         }},
                         {$group: {_id: "$user_id" }},
                         {$project: {user_id: "$_id"}},
+                        { $lookup:{
+                            from: "viewlogs",
+                            let: {user_id: "$user_id"},
+                            pipeline:[
+                                {$match: {
+                                    $expr: {
+                                        $and:[
+                                            {$eq: ["$user_id", "$$user_id"]},
+                                            {$and: [
+                                                    {$gte: ["$added_dtm", new Date(from)]},
+                                                    {$lte: ["$added_dtm", new Date(to)]}
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }}
+                            ],
+                            as: "views"
+                        }},
+                        {$project:{
+                            sessions: {$size: "$views"}
+                        }},
+                        {$match: {sessions: {$gt: 0}}},
+                        {$group:{
+                            _id: "$sessions",
+                            sessionSum: { $sum: "$sessions" },
+                            sessionTurns: { $sum: 1 },
+                        }},
+                        {$project: {
+                            session: "$_id",
+                            sessionSum: "$sessionSum",
+                            sessionTurns: "$sessionTurns",
+                        }}
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
 
-                    ],{ allowDiskUse: true }).maxTimeMS(60000).toArray(function(err, items) {
+                        console.log('err: ', err);
+                        console.timeEnd('find');
                         if(err){
                             console.log('getPayingUserSessionsByDateRange - err: ', err.message);
                             resolve([]);
@@ -705,48 +741,69 @@ class SubscriptionRepository {
     async getTotalPayingUsersByDateRange (req, from, to) {
         return new Promise((resolve, reject) => {
             console.log('getTotalPayingUsersByDateRange: ', from, to);
-            req.db.collection('billinghistories', function (err, collection) {
+            req.db.collection('viewlogs', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
-                        { $match:{
-                                "billing_status": "Success",
-                                $and:[
-                                    {"billing_dtm":{$gte: new Date(from)}},
-                                    {"billing_dtm":{$lt: new Date(to)}}
-                                ]
-                            }},
-                        {$group:{
-                                _id: "$subscriber_id",
-                            }},
-                        { $lookup:{
-                                from: "subscriptions",
-                                let: {subscriber_id: "$_id"},
-                                pipeline:[
-                                    { $match: {
-                                            $expr: {
-                                                $and:[
-                                                    {$eq: ["$subscriber_id", "$$subscriber_id" ]},
+                        {$match: {
+                            $and:[
+                                {"added_dtm":{$gte: new Date(from)}},
+                                {"added_dtm":{$lt: new Date(to)}}
+                            ]
+                        }},
+                        {$group: {_id: "$user_id"}},
+                        {$lookup: {
+                            from: "billinghistories",
+                            let: {user_id: "$_id"},
+                            pipeline:[
+                                {$match: {
+                                    $expr: {
+                                        $and:[
+                                            {$eq: ["$user_id", "$$user_id"]},
+                                            {$eq: ["$billing_status", "Success"]},
+                                            {$and: [
+                                                    {$gte: ["$billing_dtm", new Date(from)]},
+                                                    {$lt: ["$billing_dtm", new Date(to)]}
                                                 ]
                                             }
-                                        }},
-                                    { $project:{
-                                            _id: 0,
-                                            source: "$source",
-                                            paywall: "$paywall_id",
-                                            package: "$subscribed_package_id"
-                                        }}
-                                ],
-                                as: "subscription"
-                            }},
+                                        ]
+                                    }
+                                }},
+                                {$project: {
+                                    _id: 1,
+                                    subscriber_id: 1,
+                                }}
+                            ],
+                            as: "billing"
+                        }},
+                        {$unwind: "$billing" },
+                        {$group: {_id: "$billing.subscriber_id"}},
+                        {$lookup: {
+                            from: "subscriptions",
+                            let: {subscriber_id: "$_id"},
+                            pipeline:[
+                                {$match: {
+                                    $expr: {
+                                        $and:[
+                                            {$eq: ["$subscriber_id", "$$subscriber_id"]},
+                                        ]
+                                    }
+                                }},
+                                {$project: {
+                                    _id: 0,
+                                    source: "$source",
+                                    paywall: "$paywall_id",
+                                    package: "$subscribed_package_id"
+                                }}
+                            ],
+                            as: "subscription"
+                        }},
                         {
                             $unwind: "$subscription"
                         },
                         { $project:{
-                            source: "$subscription.source"
-                        }},
-                        { $group: {
-                            _id: "$source",
-                            count: {$sum: 1}
+                            source: "$subscription.source",
+                            paywall: "$subscription.paywall",
+                            package: "$subscription.package"
                         }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){

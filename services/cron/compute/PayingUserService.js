@@ -355,7 +355,7 @@ computePayingUserSessionsReports = async(req, res) => {
     let finalDataList = [];
 
     console.log('computePayingUserSessionsReports: ', fromDate, toDate);
-    await subscriptionRepository.getPayingUserSessionsByDateRange(req, "2021-07-01T00:00:00.000Z", "2021-07-03T00:00:00.000Z").then(async function (userSessions) {
+    await subscriptionRepository.getPayingUserSessionsByDateRange(req, fromDate, toDate).then(async function (userSessions) {
         console.log('userSessions.length: ', userSessions);
 
         if (userSessions.length > 0) finalDataList = computePayingUserSessionsData(userSessions, fromDate, finalDataList);
