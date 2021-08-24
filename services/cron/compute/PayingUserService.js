@@ -12,7 +12,7 @@ computeNewPayingUserRevenueReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextMonthWithLocalTime(req,  6);
+    dateData = helper.computeNextMonthWithLocalTime(req,  7);
     req = dateData.req;
     month = dateData.month;
     fromDate = dateData.fromDate;
@@ -81,43 +81,78 @@ promiseBasedComputeNewPayingUserRevenueReports = async(req, res) => {
         }
     });
 };
-computeNewPayingUsersMonthlyReports = async(req, res) => {
-    console.log('computeNewPayingUsersMonthlyReports: ');
+
+computeNewPayingUsersReports = async(req, res) => {
+    console.log('computeNewPayingUsersReports: ');
 
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextMonthWithLocalTime(req,  6);
+    dateData = helper.computeNextMonthWithLocalTime(req,  7);
     req = dateData.req;
     month = dateData.month;
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
     let finalDataList = [];
 
-    console.log('computeNewPayingUsersMonthlyReports: ', fromDate, toDate);
-    await subscriptionRepository.getNewPayingUsersMonthlyBasisByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
+    console.log('computeNewPayingUsersReports: ', fromDate, toDate);
+    await subscriptionRepository.getNewPayingUsersBasisByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
         console.log('newPayingUsers.length: ', newPayingUsers.length);
 
         // Now compute and store data in DB
-        if (newPayingUsers.length > 0) finalDataList = _.clone(computePayingUsersMonthlyData(newPayingUsers, finalDataList));
+        if (newPayingUsers.length > 0) finalDataList = _.clone(computePayingUsersMonthlyData(newPayingUsers, finalDataList, fromDate));
 
         if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPayingMonthly');
     });
 
 
     // Get compute data for next time slot
-    console.log('computeNewPayingUsersMonthlyReports -> day : ', Number(month), Number(helper.getDaysInMonth(month)));
+    console.log('computeNewPayingUsersReports -> day : ', Number(month), Number(helper.getDaysInMonth(month)));
 
     req.month = Number(req.month) + 1;
-    console.log('computeNewPayingUsersMonthlyReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
+    console.log('computeNewPayingUsersReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
     if (Number(req.month) < Number(helper.getTodayMonthNo()))
-        computeNewPayingUsersMonthlyReports(req, res);
+        computeNewPayingUsersReports(req, res);
     else{
-        console.log('computeNewPayingUsersMonthlyReports - data compute - done');
+        console.log('computeNewPayingUsersReports - data compute - done');
         delete req.month;
     }
+};
+promiseBasedComputeNewPayingUsersReports = async(req, res) => {
+    console.log('promiseBasedComputeNewPayingUsersReports: ');
+    return new Promise(async (resolve, reject) => {
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data for today
+        * */
+        dateData = helper.computeLastMonthDateWithLocalTime(req);
+        req = dateData.req;
+        month = dateData.month;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+        let finalDataList = [];
+
+        console.log('promiseBasedComputeNewPayingUsersReports: ', fromDate, toDate);
+        await subscriptionRepository.getNewPayingUsersBasisByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
+            console.log('newPayingUsers.length: ', newPayingUsers.length);
+
+            // Now compute and store data in DB
+            if (newPayingUsers.length > 0) finalDataList = _.clone(computePayingUsersMonthlyData(newPayingUsers, finalDataList, fromDate));
+
+            if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPayingMonthly');
+        });
+
+
+        if (Number(req.month) < Number(helper.getTodayMonthNo()))
+            promiseBasedComputeNewPayingUsersReports(req, res);
+        else{
+            console.log('promiseBasedComputeNewPayingUsersReports - data compute - done');
+            delete req.month;
+            resolve(0);
+        }
+    });
 };
 
 computeTotalPayingUsersReports = async(req, res) => {
@@ -623,6 +658,6 @@ module.exports = {
     computeTotalPayingUsersReports: computeTotalPayingUsersReports,
     promiseBasedComputeTotalPayingUsersReports: promiseBasedComputeTotalPayingUsersReports,
 
-    computeNewPayingUsersMonthlyReports: computeNewPayingUsersMonthlyReports,
-
+    computeNewPayingUsersReports: computeNewPayingUsersReports,
+    promiseBasedComputeNewPayingUsersReports: promiseBasedComputeNewPayingUsersReports,
 };

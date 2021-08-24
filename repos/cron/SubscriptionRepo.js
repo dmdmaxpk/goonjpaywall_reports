@@ -363,7 +363,12 @@ class SubscriptionRepository {
                                     $expr: {
                                         $and:[
                                             {$eq: ["$subscriber_id", "$$subscriber_id" ]},
-                                            {$eq: ["$billing_status", "Success"]}
+                                            {$eq: ["$billing_status", "Success"]},
+                                            {$and: [
+                                                    {$gte: ["$billing_dtm", new Date(from)]},
+                                                    {$lte: ["$billing_dtm", new Date(to)]}
+                                                ]
+                                            }
                                         ]
                                     }
                                 }},
@@ -576,9 +581,9 @@ class SubscriptionRepository {
     }
 
 
-    async getNewPayingUsersMonthlyBasisByDateRange (req, from, to, skip, limit) {
+    async getNewPayingUsersBasisByDateRange (req, from, to, skip, limit) {
         return new Promise((resolve, reject) => {
-            console.log('getNewPayingUsersMonthlyBasisByDateRange: ', from, to, skip, limit);
+            console.log('getNewPayingUsersBasisByDateRange: ', from, to, skip, limit);
             req.db.collection('subscriptions', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
@@ -618,10 +623,14 @@ class SubscriptionRepository {
                         {$group: {
                             _id: "$source",
                             count: {$sum: 1}
+                        }},
+                        {$project: {
+                            source: "$source",
+                            count: "$count"
                         }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
-                            console.log('getNewPayingUsersMonthlyBasisByDateRange - err: ', err.message);
+                            console.log('getNewPayingUsersBasisByDateRange - err: ', err.message);
                             resolve([]);
                         }
                         resolve(items);
