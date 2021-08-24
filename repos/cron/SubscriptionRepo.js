@@ -377,10 +377,14 @@ class SubscriptionRepository {
                         {
                             $unwind: "$billing"
                         },
+                        { $group:{
+                            _id: "$source",
+                            price: {$sum: "$billing.price"}
+                        }},
                         { $project:{
-                            source: "$source",
-                            price: "$billing.price"
-                        }}
+                            source: "$_id",
+                            price: "$price"
+                        }},
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getNewPayingUserRevenueByDateRange - err: ', err.message);
@@ -641,7 +645,6 @@ class SubscriptionRepository {
                         }},
                         {$group:{
                             _id: "$subscriber_id",
-
                         }},
                         { $lookup:{
                             from: "subscriptions",

@@ -418,20 +418,20 @@ function computePayingUsersData(payingUsers, finalList, dateString) {
 
     for (const record of payingUsers) {
         if (record.source === 'app') {
-            newObj.source.app.revenue = newObj.source.app.revenue + record.price;
+            newObj.source.app.count = newObj.source.app.count + record.price;
         } else if (record.source === 'web') {
-            newObj.source.web.revenue = newObj.source.web.revenue + record.price;
+            newObj.source.web.count = newObj.source.web.count + record.price;
         } else if (record.source === 'HE') {
-            newObj.source.he.revenue = newObj.source.he.revenue + record.price;
+            newObj.source.he.count = newObj.source.he.count + record.price;
         } else if (record.source === 'gdn2') {
-            newObj.source.gdn2.revenue = newObj.source.gdn2.revenue + record.price;
+            newObj.source.gdn2.count = newObj.source.gdn2.count + record.price;
         } else if (record.source === 'tp-gdn') {
-            newObj.source.tp_gdn.revenue = newObj.source.tp_gdn.revenue + record.price;
+            newObj.source.tp_gdn.count = newObj.source.tp_gdn.count + record.price;
         } else if (record.source === 'affiliate_web') {
-            newObj.source.affiliate_web.revenue = newObj.source.affiliate_web.revenue + record.price;
+            newObj.source.affiliate_web.count = newObj.source.affiliate_web.count + record.price;
         } else if(record.source !== 'app' && record.source !== 'web' && record.source !== 'HE' &&
             record.source !== 'gdn2' && record.source !== 'tp-gdn' && record.source !== 'affiliate_web'){
-            newObj.source.others.revenue = newObj.source.others.revenue + record.price;
+            newObj.source.others.count = newObj.source.others.count + record.price;
         }
     }
 
