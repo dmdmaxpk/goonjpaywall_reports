@@ -594,40 +594,8 @@ class SubscriptionRepository {
                         }},
                         {$group: {_id: "$user_id" }},
                         {$project: {user_id: "$_id"}},
-                        { $lookup:{
-                            from: "viewlogs",
-                            let: {user_id: "$user_id"},
-                            pipeline:[
-                                {$match: {
-                                    $expr: {
-                                        $and:[
-                                            {$eq: ["$user_id", "$$user_id"]},
-                                            {$and: [
-                                                    {$gte: ["$added_dtm", new Date(from)]},
-                                                    {$lte: ["$added_dtm", new Date(to)]}
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                }}
-                            ],
-                            as: "views"
-                        }},
-                        {$project:{
-                            sessions: {$size: "$views"}
-                        }},
-                        {$match: {sessions: {$gt: 0}}},
-                        {$group:{
-                            _id: "$sessions",
-                            sessionSum: { $sum: "$sessions" },
-                            sessionTurns: { $sum: 1 },
-                        }},
-                        {$project: {
-                            session: "$_id",
-                            sessionSum: "$sessionSum",
-                            sessionTurns: "$sessionTurns",
-                        }}
-                    ],{ allowDiskUse: true }).toArray(function(err, items) {
+
+                    ],{ allowDiskUse: true }).maxTimeMS(60000).toArray(function(err, items) {
                         if(err){
                             console.log('getPayingUserSessionsByDateRange - err: ', err.message);
                             resolve([]);

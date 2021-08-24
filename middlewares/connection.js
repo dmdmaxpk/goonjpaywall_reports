@@ -34,9 +34,15 @@ let updateConnection = async (req, res, next, connectType) => {
         console.log('updateConnection - config.mongoDB: ', config.mongoDB[connectType]);
 
         const option = {
-            socketTimeoutMS: 60000,
             keepAlive: true,
-            reconnectTries: 10
+            connectTimeoutMS: 60000,
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            poolSize: 10, // Maintain up to 10 socket connections
+            serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+            socketTimeoutMS: 60000, // Close sockets after 45 seconds of inactivity
+            family: 4 // Use IPv4, skip trying IPv6
+
         };
 
         await MongoClient.connect(config.mongoDB[connectType], option, function (err, client) {
