@@ -5,6 +5,7 @@ const {Schema} = mongoose;
 const payingUser = new Schema({
     _id: { type: ShortId, len: 4, retries: 4 },
     newPaying: {type: Object , default: undefined},
+    newPayingRevenue: {type: Object , default: undefined},
     totalPaying: {type: Object , default: undefined},
     totalPayingMonthly: {type: Object , default: undefined},
     userEngagement: {type: Object , default: undefined},
