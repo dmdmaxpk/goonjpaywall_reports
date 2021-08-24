@@ -100,8 +100,8 @@ router.route('/compute-paying-user-watch-time-reports')
 
 
 
-router.route('/compute-new-paying-users-reports')
-    .get(connection.connect, controller.computeNewPayingUsersReports);
+router.route('/compute-new-paying-user-revenue-reports')
+    .get(connection.connect, controller.computeNewPayingUserRevenueReports);
 
 router.route('/compute-paying-users-monthly-reports')
     .get(connection.connect, controller.computeNewPayingUsersMonthlyReports);

@@ -5,22 +5,21 @@ const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
 let dateData, fromDate, toDate, day, month, finalList = [];
-computeNewPayingUsersReports = async(req, res) => {
-    console.log('computeNewPayingUsersReports: ');
+computeNewPayingUserRevenueReports = async(req, res) => {
+    console.log('computeNewPayingUserRevenueReports: ');
 
     /*
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 1, 6);
+    dateData = helper.computeNextMonthWithLocalTime(req,  6);
     req = dateData.req;
-    day = dateData.day;
     month = dateData.month;
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
     let finalDataList = [];
 
-    console.log('computeNewPayingUsersReports: ', fromDate, toDate);
+    console.log('computeNewPayingUserRevenueReports: ', fromDate, toDate);
     await subscriptionRepository.getNewPayingUserRevenueByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
         console.log('newPayingUsers.length: ', newPayingUsers.length);
 
@@ -33,49 +32,34 @@ computeNewPayingUsersReports = async(req, res) => {
     });
 
     // Get compute data for next time slot
-    req.day = Number(req.day) + 1;
-    console.log('computeNewPayingUsersReports -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
+    console.log('computeNewPayingUserRevenueReports -> day : ', Number(month), Number(helper.getDaysInMonth(month)));
 
-    if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
-        if (Number(month) < Number(helper.getTodayMonthNo()))
-            computeNewPayingUsersReports(req, res);
-        else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
-            computeNewPayingUsersReports(req, res);
-    }
+    req.month = Number(req.month) + 1;
+    console.log('computeNewPayingUserRevenueReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
+
+    if (Number(req.month) < Number(helper.getTodayMonthNo()))
+        computeNewPayingUserRevenueReports(req, res);
     else{
-        console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
-
-        req.day = 1;
-        req.month = Number(req.month) + 1;
-        console.log('computeNewPayingUsersReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
-
-        if (Number(req.month) < Number(helper.getTodayMonthNo()))
-            computeNewPayingUsersReports(req, res);
-    }
-
-    if (helper.isToday(fromDate)){
-        console.log('computeNewPayingUsersReports - data compute - done');
-        delete req.day;
+        console.log('computeNewPayingUserRevenueReports - data compute - done');
         delete req.month;
     }
 };
-promiseBasedComputeNewPayingUsersReports = async(req, res) => {
-    console.log('promiseBasedComputeNewPayingUsersReports: ');
+promiseBasedComputeNewPayingUserRevenueReports = async(req, res) => {
+    console.log('promiseBasedComputeNewPayingUserRevenueReports: ');
     return new Promise(async (resolve, reject) => {
 
         /*
         * Compute date and time for data fetching from db
         * Script will execute to fetch data for today
         * */
-        dateData = helper.computeTodayDateWithLocalTime(req);
+        dateData = helper.computeLastMonthDateWithLocalTime(req);
         req = dateData.req;
-        day = dateData.day;
         month = dateData.month;
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
         let finalDataList = [];
 
-        console.log('promiseBasedComputeNewPayingUsersReports: ', fromDate, toDate);
+        console.log('promiseBasedComputeNewPayingUserRevenueReports: ', fromDate, toDate);
         await subscriptionRepository.getNewPayingUserRevenueByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
             console.log('newPayingUsers.length: ', newPayingUsers.length);
 
@@ -89,9 +73,9 @@ promiseBasedComputeNewPayingUsersReports = async(req, res) => {
         });
 
         if (Number(req.month) < Number(helper.getTodayMonthNo()))
-            promiseBasedComputeNewPayingUsersReports(req, res);
+            promiseBasedComputeNewPayingUserRevenueReports(req, res);
         else{
-            console.log('promiseBasedComputeNewPayingUsersReports - data compute - done');
+            console.log('promiseBasedComputeNewPayingUserRevenueReports - data compute - done');
             delete req.month;
             resolve(0);
         }
@@ -128,7 +112,7 @@ computeNewPayingUsersMonthlyReports = async(req, res) => {
     req.month = Number(req.month) + 1;
     console.log('computeNewPayingUsersMonthlyReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-    if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+    if (Number(req.month) < Number(helper.getTodayMonthNo()))
         computeNewPayingUsersMonthlyReports(req, res);
     else{
         console.log('computeNewPayingUsersMonthlyReports - data compute - done');
@@ -167,7 +151,7 @@ computeTotalPayingUsersReports = async(req, res) => {
     req.month = Number(req.month) + 1;
     console.log('computeTotalPayingUsersReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-    if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+    if (Number(req.month) < Number(helper.getTodayMonthNo()))
         computeTotalPayingUsersReports(req, res);
     else{
         console.log('computeTotalPayingUsersReports - data compute - done');
@@ -310,7 +294,7 @@ computePayingUserSessionsReports = async(req, res) => {
     req.month = Number(req.month) + 1;
     console.log('computePayingUserSessionsReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-    if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+    if (Number(req.month) < Number(helper.getTodayMonthNo()))
         computePayingUserSessionsReports(req, res);
     else{
         console.log('computePayingUserSessionsReports - data compute - done');
@@ -341,7 +325,7 @@ promiseBasedComputePayingUserSessionsReports = async(req, res) => {
             if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'userSessions');
         });
 
-        if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+        if (Number(req.month) < Number(helper.getTodayMonthNo()))
             promiseBasedComputePayingUserSessionsReports(req, res);
         else{
             console.log('promiseBasedComputePayingUserSessionsReports - data compute - done');
@@ -383,7 +367,7 @@ computePayingUserWatchTimeReports = async(req, res) => {
     req.month = Number(req.month) + 1;
     console.log('computePayingUserWatchTimeReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-    if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+    if (Number(req.month) < Number(helper.getTodayMonthNo()))
         computePayingUserWatchTimeReports(req, res);
     else{
         console.log('computePayingUserWatchTimeReports - data compute - done');
@@ -417,7 +401,7 @@ promiseBasedComputePayingUserWatchTimeReports = async(req, res) => {
             }
         });
 
-        if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+        if (Number(req.month) < Number(helper.getTodayMonthNo()))
             promiseBasedComputePayingUserWatchTimeReports(req, res);
         else{
             console.log('promiseBasedComputePayingUserWatchTimeReports - data compute - done');
@@ -622,8 +606,8 @@ function cloneInfoObj() {
 }
 
 module.exports = {
-    computeNewPayingUsersReports: computeNewPayingUsersReports,
-    promiseBasedComputeNewPayingUsersReports: promiseBasedComputeNewPayingUsersReports,
+    computeNewPayingUserRevenueReports: computeNewPayingUserRevenueReports,
+    promiseBasedComputeNewPayingUserRevenueReports: promiseBasedComputeNewPayingUserRevenueReports,
 
     computePayingUserEngagementReports: computePayingUserEngagementReports,
     promiseBasedComputePayingUserEngagementReports: promiseBasedComputePayingUserEngagementReports,
