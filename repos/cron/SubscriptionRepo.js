@@ -694,6 +694,10 @@ class SubscriptionRepository {
                         {$group:{
                             _id: "$subscriptions.source",
                             count: {$sum: 1}
+                        }},
+                        { $project:{
+                            source: "$_id",
+                            count: "$count"
                         }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){

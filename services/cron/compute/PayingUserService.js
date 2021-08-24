@@ -600,17 +600,17 @@ function computePayingUsersMonthlyData(payingUsers, finalList, dateString) {
     console.log('computePayingUsersMonthlyData - newObj:', newObj, finalList.length)
 
     for (const record of payingUsers) {
-        if (record.count === 'app') {
+        if (record.source === 'app') {
             newObj.source.app.count = newObj.source.others.count + record.count;
-        } else if (record._id === 'web') {
+        } else if (record.source === 'web') {
             newObj.source.web.count = newObj.source.others.count + record.count;
-        } else if (record._id === 'HE') {
+        } else if (record.source === 'HE') {
             newObj.source.he.count = newObj.source.others.count + record.count;
-        } else if (record._id === 'gdn2') {
+        } else if (record.source === 'gdn2') {
             newObj.source.gdn2.count = newObj.source.others.count + record.count;
-        } else if (record._id === 'tp-gdn') {
+        } else if (record.source === 'tp-gdn') {
             newObj.source.tp_gdn.count = newObj.source.others.count + record.count;
-        } else if (record._id === 'affiliate_web') {
+        } else if (record.source === 'affiliate_web') {
             newObj.source.affiliate_web.count = newObj.source.others.count + record.count;
         } else if(record.source !== 'app' && record.source !== 'web' && record.source !== 'HE' &&
             record.source !== 'gdn2' && record.source !== 'tp-gdn' && record.source !== 'affiliate_web'){
