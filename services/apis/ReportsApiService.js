@@ -86,10 +86,9 @@ generateReportsData = async (req,res) => {
             else if(params.sub_type === 'revenue'){
                 if (params.sub_type === 'revenue') { uType = 'newPayingRevenue'; subType = params['revenue'] }
 
-                console.log('generateReportsData - subType: ', subType);
                 if (subType === 'source_wise')
-                return payingUsersService.computePayingUsersCountSourceWiseReport(rawDataSet, params, uType);
-            else{
+                    return payingUsersService.computePayingUsersCountSourceWiseReport(rawDataSet, params, uType);
+                else{
                     return reportsTransformer.transformErrorCatchData(false, 'Invalid Sub Type, please check.');
                 }
             }

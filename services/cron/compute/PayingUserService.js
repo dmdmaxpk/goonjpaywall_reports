@@ -389,7 +389,7 @@ computePayingUserEngagementReports = async(req, res) => {
     toDate = dateData.toDate;
     let finalDataList = [];
 
-    console.log('computePayingUserEngagementReports: ', '2021-07-01T00:00:00.000Z', '2021-07-02T23:59:59.000Z');
+    console.log('computePayingUserEngagementReports: ', fromDate, toDate);
     await subscriptionRepository.getPayingUserEngagementByDateRange(req, fromDate, toDate).then(async function (userEngagement) {
         console.log('userEngagement.length: ', userEngagement.length);
 
