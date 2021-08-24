@@ -46,7 +46,7 @@ let updateConnection = async (req, res, next, connectType) => {
         };
 
         await MongoClient.connect('mongodb://10.0.1.70:27017', option, function (err, client) {
-            console.log('updateConnection - client: ', client);
+            console.log('updateConnection - client: ', client, err);
 
             if(err){
                 console.error(`Error: ${err.message}`);
