@@ -159,16 +159,9 @@ exports.computeDailyBaseChargeReports = async (req,res) =>  {
 
 
 
-
-exports.computeNewPayingUsersReports = async (req,res) =>  {
-    PayingUserService.computeNewPayingUsersReports(req,res);
-    res.send("computeNewPayingUsersReports - Executed\n");
-};
-
-
-exports.computeTotalPayingUsersDailyBasisReports = async (req,res) =>  {
-    PayingUserService.computeTotalPayingUsersDailyBasisReports(req,res);
-    res.send("computeTotalPayingUsersDailyBasisReports - Executed\n");
+exports.computeTotalPayingUsersReports = async (req,res) =>  {
+    PayingUserService.computeTotalPayingUsersReports(req,res);
+    res.send("computeTotalPayingUsersReports - Executed\n");
 };
 
 exports.computePayingUserEngagementReports = async (req,res) =>  {
@@ -192,9 +185,9 @@ exports.computePayingUserWatchTimeReports = async (req,res) =>  {
 
 
 
-exports.computeTotalPayingUsersReports = async (req,res) =>  {
-    PayingUserService.computeTotalPayingUsersReports(req,res);
-    res.send("computeTotalPayingUsersReports - Executed\n");
+exports.computeNewPayingUsersReports = async (req,res) =>  {
+    PayingUserService.computeNewPayingUsersReports(req,res);
+    res.send("computeNewPayingUsersReports - Executed\n");
 };
 
 exports.computeNewPayingUsersMonthlyReports = async (req,res) =>  {
