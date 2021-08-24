@@ -97,13 +97,13 @@ computeNewPayingUsersReports = async(req, res) => {
     let finalDataList = [];
 
     console.log('computeNewPayingUsersReports: ', fromDate, toDate);
-    await subscriptionRepository.getNewPayingUsersBasisByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
-        console.log('newPayingUsers.length: ', newPayingUsers.length);
+    await subscriptionRepository.getNewPayingUsersByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
+        console.log('newPayingUsers.length: ', newPayingUsers);
 
         // Now compute and store data in DB
         if (newPayingUsers.length > 0) finalDataList = _.clone(computePayingUsersMonthlyData(newPayingUsers, finalDataList, fromDate));
 
-        if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPayingMonthly');
+        if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'newPaying');
     });
 
 
@@ -135,13 +135,13 @@ promiseBasedComputeNewPayingUsersReports = async(req, res) => {
         let finalDataList = [];
 
         console.log('promiseBasedComputeNewPayingUsersReports: ', fromDate, toDate);
-        await subscriptionRepository.getNewPayingUsersBasisByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
+        await subscriptionRepository.getNewPayingUsersByDateRange(req, fromDate, toDate).then(async function (newPayingUsers) {
             console.log('newPayingUsers.length: ', newPayingUsers.length);
 
             // Now compute and store data in DB
             if (newPayingUsers.length > 0) finalDataList = _.clone(computePayingUsersMonthlyData(newPayingUsers, finalDataList, fromDate));
 
-            if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPayingMonthly');
+            if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'newPaying');
         });
 
 

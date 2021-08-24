@@ -71,21 +71,23 @@ generateReportsData = async (req,res) => {
                     return usersService.computeUserBilledOperatorWiseReport(rawDataSet, params);
         }
         else if(params.type === 'paying_user'){
-            let uType = '', subType = '', reportType = params.response_type === 'total_count' ? 'count' : 'revenue';
+            let uType = '', subType = '';
             if (params.sub_type === 'new' || params.sub_type === 'all' || params.sub_type === 'engagement'){
                 if (params.sub_type === 'new') { uType = 'newPaying'; subType = params['new'] }
-                else if (params.sub_type === 'all') { uType = 'totalPaying'; subType = params['all'] }
+                else if (params.sub_type === 'all') { uType = 'totalPayingMonthly'; subType = params['all'] }
                 else if (params.sub_type === 'engagement') { uType = 'userEngagement'; subType = params['engagement'] }
 
                 if (subType === 'source_wise')
-                    return payingUsersService.computePayingUsersCountSourceWiseReport(rawDataSet, params, uType, reportType);
-                else if (subType === 'package_wise')
-                    return payingUsersService.computePayingUsersCountPackageWiseReport(rawDataSet, params, uType, reportType);
-                else if (subType === 'paywall_wise')
-                    return payingUsersService.computePayingUsersCountPaywallWiseReport(rawDataSet, params, uType, reportType);
-                else if (subType === 'operator_wise')
-                    return payingUsersService.computePayingUsersCountOperatorWiseWiseReport(rawDataSet, params, uType, reportType);
+                    return payingUsersService.computePayingUsersCountSourceWiseReport(rawDataSet, params, uType);
                 else{
+                    return reportsTransformer.transformErrorCatchData(false, 'Invalid Sub Type, please check.');
+                }
+            }
+            else if(params.sub_type === 'revenue'){
+                uType = 'newPayingRevenue';
+                if (subType === 'source_wise')
+                return payingUsersService.computePayingUsersCountSourceWiseReport(rawDataSet, params, uType);
+            else{
                     return reportsTransformer.transformErrorCatchData(false, 'Invalid Sub Type, please check.');
                 }
             }

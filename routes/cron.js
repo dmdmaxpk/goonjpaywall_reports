@@ -87,7 +87,7 @@ router.route('/compute-daily-base-charge-reports')
 router.route('/compute-new-paying-user-revenue-reports')
     .get(connection.connect, controller.computeNewPayingUserRevenueReports);
 
-router.route('/compute-paying-users-reports')
+router.route('/compute-new-paying-users-reports')
     .get(connection.connect, controller.computeNewPayingUsersReports);
 
 router.route('/compute-total-paying-users-reports')
