@@ -17,11 +17,11 @@ class ReportsValidator{
                 break;
             case 'paying_user':
                 this.checkDateIsNull(params);
-                this.checkSubTypeIsNull(params.sub_type, "Paying Users", ['new', 'all', 'engagement', 'session_time', 'watch_time']);
+                this.checkSubTypeIsNull(params.sub_type, "Paying Users", ['new', 'all', 'revenue', 'engagement', 'session_time', 'watch_time']);
 
-                if (params.sub_type === 'new' || params.sub_type === 'all' || params.sub_type === 'engagement'){
+                if (params.sub_type === 'new' || params.sub_type === 'all' || params.sub_type === 'revenue' || params.sub_type === 'engagement'){
                     let subType = params.sub_type;
-                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Report", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise']);
+                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Report", ['source_wise']);
                 }
                 if (params.sub_type === 'session_time'){
                     let subType = params.sub_type;
@@ -31,14 +31,6 @@ class ReportsValidator{
                     let subType = params.sub_type;
                     this.checkSubTypeIsNull(params[subType], "Get Paying Users Watch Time Report", ['zero_fifteen', 'fifteen_thirty', 'thirty_sixty', 'more_then_60', 'and_all']);
                 }
-
-                break;
-            case 'paying_user_revenue':
-                this.checkDateIsNull(params);
-                this.checkSubTypeIsNull(params.sub_type, "Paying Users", ['new', 'all', 'engagement', 'session_time', 'watch_time']);
-
-                if (params.sub_type === 'new' || params.sub_type === 'all' || params.sub_type === 'engagement')
-                    this.checkSubTypeIsNull(params[sub_type], "Get Paying Users Report", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise']);
 
                 break;
             case 'subscribers':

@@ -678,8 +678,8 @@ class SubscriptionRepository {
                             $unwind: "$subscription"
                         },
                         { $project:{
-                                source: "$subscription.source",
-                            }}
+                            source: "$subscription.source",
+                        }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getPayingUserEngagementByDateRange - err: ', err.message);

@@ -382,7 +382,7 @@ computePayingUserEngagementReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextMonthWithLocalTime(req,  6);
+    dateData = helper.computeNextMonthWithLocalTime(req,  7);
     req = dateData.req;
     month = dateData.month;
     fromDate = dateData.fromDate;
