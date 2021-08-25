@@ -156,8 +156,7 @@ exports.computeDailyBaseChargeReports = async (req,res) =>  {
 };
 
 
-
-
+// Paying user new reports - monthly reports - section START
 exports.computeNewPayingUserRevenueReports = async (req,res) =>  {
     PayingUserService.computeNewPayingUserRevenueReports(req,res);
     res.send("computeNewPayingUserRevenueReports - Executed\n");
@@ -187,11 +186,14 @@ exports.computePayingUserEngagementReports = async (req,res) =>  {
     PayingUserService.computePayingUserEngagementReports(req,res);
     res.send("computePayingUserEngagementReports - Executed\n");
 };
-
-
+// Paying user new reports - monthly reports - section END
 
 
 exports.cronComputeDailyDataReports = async (req,res) =>  {
     ReportsCronService.cronComputeDailyDataReports(req,res);
     res.send("cronComputeDailyDataReports - in progress\n");
+};
+exports.cronComputeMonthlyDataReports = async (req,res) =>  {
+    ReportsCronService.cronComputeMonthlyDataReports(req,res);
+    res.send("cronComputeMonthlyDataReports - in progress\n");
 };

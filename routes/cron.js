@@ -107,4 +107,7 @@ router.route('/compute-paying-user-engagement-reports')
 router.route('/cron-compute-daily-data-reports')
     .get(connection.connect, controller.cronComputeDailyDataReports); //**
 
+router.route('/cron-compute-monthly-data-reports')
+    .get(connection.connect, controller.cronComputeMonthlyDataReports); //**
+
 module.exports = router;
