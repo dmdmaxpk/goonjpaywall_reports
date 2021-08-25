@@ -626,7 +626,7 @@ class SubscriptionRepository {
                         {$match: {
                                 $and:[
                                     {"added_dtm":{$gte: new Date(from)}},
-                                    {"added_dtm":{$lt: new Date(to)}}
+                                    {"added_dtm":{$lte: new Date(to)}}
                                 ]
                             }},
                         {$group: {_id: "$user_id"}},
@@ -641,7 +641,7 @@ class SubscriptionRepository {
                                                     {$eq: ["$billing_status", "Success"]},
                                                     {$and: [
                                                             {$gte: ["$billing_dtm", new Date(from)]},
-                                                            {$lt: ["$billing_dtm", new Date(to)]}
+                                                            {$lte: ["$billing_dtm", new Date(to)]}
                                                         ]
                                                     }
                                                 ]

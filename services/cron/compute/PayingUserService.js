@@ -176,7 +176,7 @@ computeTotalPayingUsersReports = async(req, res) => {
         // Now compute and store data in DB
         if (totalPayingUsers.length > 0) finalDataList = _.clone(computePayingUsersMonthlyData(totalPayingUsers, finalDataList, fromDate));
 
-        if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPayingMonthly');
+        if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPaying');
     });
 
 
@@ -214,7 +214,7 @@ promiseBasedComputeTotalPayingUsersReports = async(req, res) => {
             // Now compute and store data in DB
             if (totalPayingUsers.length > 0) finalDataList = _.clone(computePayingUsersMonthlyData(totalPayingUsers, finalDataList, fromDate));
 
-            if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPayingMonthly');
+            if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPaying');
         });
 
         if (Number(req.month) < Number(helper.getTodayMonthNo()))
@@ -561,8 +561,8 @@ function computePayingUserWatchTimeData(userWatchTime, dateString) {
     newObj5.avg = Number(newObj5.turn) > 0 ? Number(newObj5.sum) / Number(newObj5.turn) : 0;
 
     finalObj.zero_fifteen = _.cloneDeep(newObj1);
-    finalObj.fifteen_thirty = _.cloneDeep(newObj2);
-    finalObj.thirty_sixty = _.cloneDeep(newObj3);
+    finalObj.sixteen_thirty = _.cloneDeep(newObj2);
+    finalObj.thirtyOne_sixty = _.cloneDeep(newObj3);
     finalObj.more_then_60 = _.cloneDeep(newObj4);
     finalObj.and_all = _.cloneDeep(newObj5);
 

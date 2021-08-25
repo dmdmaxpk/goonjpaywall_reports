@@ -74,7 +74,7 @@ generateReportsData = async (req,res) => {
             let uType = '', subType = '';
             if (params.sub_type === 'new' || params.sub_type === 'all' || params.sub_type === 'engagement'){
                 if (params.sub_type === 'new') { uType = 'newPaying'; subType = params['new'] }
-                else if (params.sub_type === 'all') { uType = 'totalPayingMonthly'; subType = params['all'] }
+                else if (params.sub_type === 'all') { uType = 'totalPaying'; subType = params['all'] }
                 else if (params.sub_type === 'engagement') { uType = 'userEngagement'; subType = params['engagement'] }
 
                 if (subType === 'source_wise')
@@ -104,8 +104,8 @@ generateReportsData = async (req,res) => {
             else if(params.sub_type === 'watch_time'){
 
                 if (params.watch_time === 'zero_fifteen') {uType = 'zero_fifteen';}
-                else if (params.watch_time === 'sixteen_thirty') {uType = 'fifteen_thirty';}
-                else if (params.watch_time === 'thirtyOne_sixty') {uType = 'thirty_sixty';}
+                else if (params.watch_time === 'sixteen_thirty') {uType = 'sixteen_thirty';}
+                else if (params.watch_time === 'thirtyOne_sixty') {uType = 'thirtyOne_sixty';}
                 else if (params.watch_time === 'more_then_60') {uType = 'more_then_60';}
                 else if (params.watch_time === 'and_all') {uType = 'and_all';}
 

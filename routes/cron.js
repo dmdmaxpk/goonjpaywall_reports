@@ -82,8 +82,7 @@ router.route('/compute-daily-base-charge-reports')
     .get(connection.connect, controller.computeDailyBaseChargeReports);
 
 
-
-
+// Controller method for paying user reports - section START
 router.route('/compute-new-paying-user-revenue-reports')
     .get(connection.connect, controller.computeNewPayingUserRevenueReports);
 
@@ -101,7 +100,7 @@ router.route('/compute-paying-user-watch-time-reports')
 
 router.route('/compute-paying-user-engagement-reports')
     .get(connection.connect, controller.computePayingUserEngagementReports);
-
+// Controller method for paying user reports - section END
 
 
 router.route('/cron-compute-daily-data-reports')
