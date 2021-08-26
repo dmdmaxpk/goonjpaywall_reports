@@ -67,6 +67,13 @@ computePayingUsersCountSourceWiseReport = async (rawDataSet, params, userType) =
             }
         }
 
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
         // Total Count Data
         // add date range (start-date, end-date)
         dataObj = _.clone(dataObj);
@@ -124,6 +131,13 @@ computePayingUsersSessionsTimeReport = async (rawDataSet, params, sessionType) =
             }
         }
 
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
         // Total Count Data
         // add date range (start-date, end-date)
         dataObj = _.clone(dataObj);
@@ -179,6 +193,13 @@ computePayingUsersWatchTimeReport = async (rawDataSet, params, sessionType) =>{
                     month_from_date = null;
                 }
             }
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
         }
 
         // Total Count Data
