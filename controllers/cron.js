@@ -190,7 +190,7 @@ exports.computePayingUserEngagementReports = async (req,res) =>  {
 
 
 exports.cronComputeDailyDataReports = async (req,res) =>  {
-    // ReportsCronService.cronComputeDailyDataReports(req,res);
+    ReportsCronService.cronComputeDailyDataReports(req,res);
     res.send("cronComputeDailyDataReports - in progress\n");
 };
 exports.cronComputeMonthlyDataReports = async (req,res) =>  {
