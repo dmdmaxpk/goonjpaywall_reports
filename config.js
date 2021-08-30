@@ -1,9 +1,12 @@
 const env = process.env.NODE_ENV || 'development';
 
+const port = '3006';
+const base_path = 'localhost:'+port;
 const cron_db_query_data_limit = 300000;
 let config = {
     development: {
-        port: '3006',
+        port: port,
+        base_path: base_path,
         mongoDB: {
             logger: 'mongodb://localhost:27017',
             streamlogs: 'mongodb://10.0.1.70:27017',
@@ -13,7 +16,8 @@ let config = {
         cron_db_query_data_limit: cron_db_query_data_limit
     },
     staging: {
-        port: '3006',
+        port: port,
+        base_path: base_path,
         mongoDB: {
             logger: 'mongodb://mongodb:27017',
             streamlogs: 'mongodb://mongodb:27017',
@@ -23,6 +27,7 @@ let config = {
         cron_db_query_data_limit: cron_db_query_data_limit
     },
     production: {
+        base_path: base_path,
         port: process.env.PW_PORT,
         mongoDB: process.env.PW_MONGO_DB_URL,
         cron_db_query_data_limit: cron_db_query_data_limit

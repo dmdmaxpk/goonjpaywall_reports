@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const axios = require('axios');
 
 // Import database models
 require('./models/Report');
@@ -26,6 +27,22 @@ app.use(mongoSanitize());
 
 // Import routes
 app.use('/', require('./routes/index'));
+
+
+var CronJob = require('cron').CronJob;
+var job = new CronJob('5 8 * * *', function() {
+    console.log('paywall daily reporting cron: ' + (new Date()));
+
+    axios.get(config.base_path + "/cron/cron-compute-daily-data-reports")
+    .then(function(response){
+        console.log('paywall daily - response.data: ', response.data);
+    })
+    .catch(function(err){
+        console.log('paywall daily - err: ', err);
+    });
+}, null, true, 'America/Los_Angeles');
+job.start();
+
 
 // Start Server
 let { port } = config;
