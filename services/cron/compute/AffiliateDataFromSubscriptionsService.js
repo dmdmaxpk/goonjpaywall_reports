@@ -377,22 +377,22 @@ function affliateWiseMidsCount(history, billing_status, package_id, affiliate, d
 function packageWiseMidsCount(history, wise, dataObj) {
 
     console.log('history.affiliate_mid: ', history.affiliate_mid, history.status, history.count);
-    if (history.affiliate_mid === '1569' && history.status === 'Affiliate callback sent')
+    if (history.affiliate_mid === '1569' && ( history.status === 'Success' || history.status === 'Affiliate callback sent'))
         dataObj[wise]['1569'] = dataObj[wise]['1569'] + history.count;
-    else if (history.affiliate_mid === 'aff3' && history.status === 'Affiliate callback sent')
+    else if (history.affiliate_mid === 'aff3' && ( history.status === 'Success' || history.status === 'Affiliate callback sent'))
         dataObj[wise]['aff3'] = dataObj[wise]['aff3'] + history.count;
-    else if (history.affiliate_mid === 'aff3a' && history.status === 'Affiliate callback sent')
+    else if (history.affiliate_mid === 'aff3a' && ( history.status === 'Success' || history.status === 'Affiliate callback sent'))
         dataObj[wise]['aff3a'] = dataObj[wise]['aff3a'] + history.count;
-    else if (history.affiliate_mid === 'goonj' && history.status === 'Affiliate callback sent')
+    else if (history.affiliate_mid === 'goonj' && ( history.status === 'Success' || history.status === 'Affiliate callback sent'))
         dataObj[wise]['goonj'] = dataObj[wise]['goonj'] + history.count;
 
-    else if (history.affiliate_mid === 'gdn' && ( history.status === 'Success' || history.status === 'trial' ))
+    else if (history.affiliate_mid === 'gdn' && ( history.status === 'trial' ))
         dataObj[wise]['gdn'] = dataObj[wise]['gdn'] + history.count;
-    else if (history.affiliate_mid === 'gdn2' && ( history.status === 'Success' || history.status === 'trial' ))
+    else if (history.affiliate_mid === 'gdn2' && ( history.status === 'trial' ))
         dataObj[wise]['gdn2'] = dataObj[wise]['gdn2'] + history.count;
-    else if (history.affiliate_mid === 'gdn3' && ( history.status === 'Success' || history.status === 'trial' ))
+    else if (history.affiliate_mid === 'gdn3' && ( history.status === 'trial' ))
         dataObj[wise]['gdn3'] = dataObj[wise]['gdn3'] + history.count;
-    else if (history.affiliate_mid === '1' && ( history.status === 'Success' || history.status === 'trial' ))
+    else if (history.affiliate_mid === '1' && (  history.status === 'trial' ))
         dataObj[wise]['1'] = dataObj[wise]['1'] + history.count;
 
     console.log('dataObj: ', dataObj);
