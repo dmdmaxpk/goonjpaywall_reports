@@ -34,27 +34,27 @@ cronComputeDailyDataReports = async (req, res) => {
 
     // compute Subscriptions report Data
     helper.threeLinesConsoleLog('SubscriptionService - promiseBasedComputeBillingHistorySuccessfulReports');
-    await BillingHistorySuccessfulService.promiseBasedComputeBillingHistorySuccessfulReports(req,res);
+    await BillingHistorySuccessfulService.promiseBasedComputeBillingHistorySuccessfulReports(req,res); // *********
 
     // compute Subscriptions report Data
     helper.threeLinesConsoleLog('SubscriptionsSourceWiseSuccessfulService - promiseBasedSubscriptionsSourceWiseSuccessfulReports');
-    await SubscriptionsSourceWiseSuccessfulService.promiseBasedSubscriptionsSourceWiseSuccessfulReports(req,res);
+    await SubscriptionsSourceWiseSuccessfulService.promiseBasedSubscriptionsSourceWiseSuccessfulReports(req,res); // *********
 
     // compute Callback report Data
     helper.threeLinesConsoleLog('CallbackSendService - promiseBasedComputeCallbackSendReports');
-    await CallbackSendService.promiseBasedComputeCallbackSendReports(req,res);
+    await CallbackSendService.promiseBasedComputeCallbackSendReports(req,res); // *********
 
     // compute Charge Details report Data
     helper.threeLinesConsoleLog('ChargeDetailsRevenueServices - promiseBasedComputeChargeDetailsReports');
-    await ChargeDetailsRevenueServices.promiseBasedComputeChargeDetailsReports(req,res);
+    await ChargeDetailsRevenueServices.promiseBasedComputeChargeDetailsReports(req,res); // *********
 
     // compute Charge Details Source Wise report Data
     helper.threeLinesConsoleLog('ChargeDetailsSourceWiseServices - promiseBasedComputeChargeDetailsReports');
-    await ChargeDetailsSourceWiseServices.promiseBasedComputeChargeDetailsReports(req,res);
+    await ChargeDetailsSourceWiseServices.promiseBasedComputeChargeDetailsReports(req,res); // *********
 
     // compute Net Addition report Data
     helper.threeLinesConsoleLog('RevenueNetAdditionService - promiseBasedComputeRevenueNetAdditionReports');
-    await RevenueNetAdditionService.promiseBasedComputeRevenueNetAdditionReports(req,res);
+    await RevenueNetAdditionService.promiseBasedComputeRevenueNetAdditionReports(req,res); // *********
 
     // compute Affiliate - Affiliate Mids report Data
     helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateMidsFromSubscriptionsReports');
@@ -62,15 +62,15 @@ cronComputeDailyDataReports = async (req, res) => {
 
     // compute Insufficient Balance
     helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeInsufficientBalanceReports');
-    await InSufficientAndExcessiveBillingService.promiseBasedComputeInsufficientBalanceReports(req,res);
+    await InSufficientAndExcessiveBillingService.promiseBasedComputeInsufficientBalanceReports(req,res); // *********
 
     // compute Excessive Billing
     helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeExcessiveBillingReports');
-    await InSufficientAndExcessiveBillingService.promiseBasedComputeExcessiveBillingReports(req,res);
+    await InSufficientAndExcessiveBillingService.promiseBasedComputeExcessiveBillingReports(req,res); // *********
 
     // compute Affiliate - Affiliate report Data
     helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports');
-    await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res);
+    await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res); // *********
 
     // compute Affiliate - Helogs report Data
     // First - create/update connections with logger database
@@ -101,13 +101,13 @@ cronComputeDailyDataReports = async (req, res) => {
     // await BillingHistoryService.promiseBasedComputeBillingHistoryReports(req,res);
 
     helper.threeLinesConsoleLog('ChurnService - promiseBasedComputeChurnReports');
-    await ChurnService.promiseBasedComputeChurnReports(req,res);
+    await ChurnService.promiseBasedComputeChurnReports(req,res); // *********
 
     helper.threeLinesConsoleLog('StatisticsService - promiseBasedComputeRequestCountReports');
-    await StatisticsService.promiseBasedComputeRequestCountReports(req,res);
+    await StatisticsService.promiseBasedComputeRequestCountReports(req,res); // *********
 
     helper.threeLinesConsoleLog('StatisticsService - promiseBasedComputeDailyBaseChargeReports');
-    await StatisticsService.promiseBasedComputeDailyBaseChargeReports(req,res);
+    await StatisticsService.promiseBasedComputeDailyBaseChargeReports(req,res); // *********
 
     helper.oneLineConsoleLog('Cron - Yesterday Data is computed successfully.');
 };
