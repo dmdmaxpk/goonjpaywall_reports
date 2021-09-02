@@ -230,11 +230,11 @@ class Helper {
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }
 
-    static computeTodayDateWithLocalTimeForScript(req){
+    static computeTodayDateWithLocalTimeForScript(req, fromDate1){
         let date, fromDate, toDate, day, month;
-        console.log('computeTodayDateWithLocalTimeForScript - req.fromDate : ', req.fromDate);
+        console.log('computeTodayDateWithLocalTimeForScript - fromDate1 : ', fromDate1);
 
-        date = new Date(req.fromDate);
+        date = new Date(fromDate1);
         console.log('computeTodayDateWithLocalTimeForScript - date : ', date);
 
         date.setDate(date.getDate() - 1);

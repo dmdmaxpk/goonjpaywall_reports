@@ -19,7 +19,7 @@ computeAffiliateReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    let dateDataForBillingH = helper.computeTodayDateWithLocalTimeForScript(req);
+    let dateDataForBillingH = helper.computeTodayDateWithLocalTimeForScript(req, fromDate);
     console.log('dateDataForBillingH: ', dateDataForBillingH);
 
     console.log('computeAffiliateReports: ', fromDate, toDate);
