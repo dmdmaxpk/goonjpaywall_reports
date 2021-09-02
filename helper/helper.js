@@ -245,7 +245,7 @@ class Helper {
         console.log('computeTodayDateWithLocalTimeForScript - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
-        toDate.setDate(toDate.getDate() + 1);
+        toDate.setHours(23, 59, 59);
         console.log('computeTodayDateWithLocalTimeForScript - toDate : ', toDate);
 
         return {fromDate: fromDate, toDate: toDate};
