@@ -230,18 +230,16 @@ class Helper {
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }
 
-    static computeTodayDateWithLocalTimeForScript(req, fromDate1){
+    static computeTodayDateWithLocalTimeForScript(fromDate1){
         let date, fromDate, toDate, day, month;
         console.log('computeTodayDateWithLocalTimeForScript - fromDate1 : ', fromDate1);
 
         date = new Date(fromDate1);
         day =  date.getDate();
         day = day > 9 ? day : '0'+Number(day);
-        req.day = day;
 
         month =  date.getMonth() + 1;
         month = month > 9 ? month : '0'+Number(month);
-        req.month = month;
 
         fromDate  = new Date('2021-'+month+'-'+day+'T00:00:00.000Z');
         console.log('computeTodayDateWithLocalTimeForScript - fromDate : ', fromDate);
@@ -250,7 +248,7 @@ class Helper {
         toDate.setDate(toDate.getDate() + 1);
         console.log('computeTodayDateWithLocalTimeForScript - toDate : ', toDate);
 
-        return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
+        return {fromDate: fromDate, toDate: toDate};
     }
 
     static computeTodayEightHoursDate(req){
@@ -309,6 +307,7 @@ class Helper {
         toDate.setHours(23, 59, 59);
         toDate = this.setDateWithTimezone(toDate, 'in');
         console.log('computeNextDate - toDate : ', toDate);
+        console.log('computeNextDate - req.day : ', req.day);
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }

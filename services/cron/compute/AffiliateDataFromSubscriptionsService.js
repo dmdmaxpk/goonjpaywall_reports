@@ -13,15 +13,13 @@ computeAffiliateReports = async(req, res) => {
     * Script will execute to fetch data as per day
     * */
     dateData = helper.computeNextDate(req, 30, 8);
-    console.log('dateData: ', dateData);
-
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    let dateDataForBillingH = helper.computeTodayDateWithLocalTimeForScript(req, fromDate);
+    let dateDataForBillingH = helper.computeTodayDateWithLocalTimeForScript(fromDate);
 
     // console.log('computeAffiliateReports: ', fromDate, toDate);
     console.log('dateDataForBillingH: ', dateDataForBillingH.fromDate, dateDataForBillingH.toDate);
