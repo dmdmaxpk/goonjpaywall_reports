@@ -12,7 +12,7 @@ computeInsufficientBalanceReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 1, 1);
+    dateData = helper.computeNextDateWithLocalTime(req, 30, 8);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -115,7 +115,7 @@ computeExcessiveBillingReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 14, 1);
+    dateData = helper.computeNextDateWithLocalTime(req, 30, 8);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;

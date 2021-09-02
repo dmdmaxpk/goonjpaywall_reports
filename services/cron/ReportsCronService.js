@@ -34,11 +34,11 @@ cronComputeDailyDataReports = async (req, res) => {
 
     // compute Subscriptions report Data
     helper.threeLinesConsoleLog('SubscriptionService - promiseBasedComputeBillingHistorySuccessfulReports');
-    await BillingHistorySuccessfulService.promiseBasedComputeBillingHistorySuccessfulReports(req,res); // *********
+    await BillingHistorySuccessfulService.promiseBasedComputeBillingHistorySuccessfulReports(req,res);
 
     // compute Subscriptions report Data
     helper.threeLinesConsoleLog('SubscriptionsSourceWiseSuccessfulService - promiseBasedSubscriptionsSourceWiseSuccessfulReports');
-    await SubscriptionsSourceWiseSuccessfulService.promiseBasedSubscriptionsSourceWiseSuccessfulReports(req,res); // *********
+    await SubscriptionsSourceWiseSuccessfulService.promiseBasedSubscriptionsSourceWiseSuccessfulReports(req,res);
 
     // compute Callback report Data
     helper.threeLinesConsoleLog('CallbackSendService - promiseBasedComputeCallbackSendReports');
