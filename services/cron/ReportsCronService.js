@@ -42,11 +42,11 @@ cronComputeDailyDataReports = async (req, res) => {
 
     // compute Callback report Data
     helper.threeLinesConsoleLog('CallbackSendService - promiseBasedComputeCallbackSendReports');
-    await CallbackSendService.promiseBasedComputeCallbackSendReports(req,res); // *********
+    await CallbackSendService.promiseBasedComputeCallbackSendReports(req,res);
 
     // compute Charge Details report Data
     helper.threeLinesConsoleLog('ChargeDetailsRevenueServices - promiseBasedComputeChargeDetailsReports');
-    await ChargeDetailsRevenueServices.promiseBasedComputeChargeDetailsReports(req,res); // *********
+    await ChargeDetailsRevenueServices.promiseBasedComputeChargeDetailsReports(req,res);
 
     // compute Charge Details Source Wise report Data
     helper.threeLinesConsoleLog('ChargeDetailsSourceWiseServices - promiseBasedComputeChargeDetailsReports');
@@ -54,7 +54,7 @@ cronComputeDailyDataReports = async (req, res) => {
 
     // compute Net Addition report Data
     helper.threeLinesConsoleLog('RevenueNetAdditionService - promiseBasedComputeRevenueNetAdditionReports');
-    await RevenueNetAdditionService.promiseBasedComputeRevenueNetAdditionReports(req,res); // *********
+    await RevenueNetAdditionService.promiseBasedComputeRevenueNetAdditionReports(req,res);
 
     // compute Affiliate - Affiliate Mids report Data
     helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateMidsFromSubscriptionsReports');
@@ -62,11 +62,11 @@ cronComputeDailyDataReports = async (req, res) => {
 
     // compute Insufficient Balance
     helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeInsufficientBalanceReports');
-    await InSufficientAndExcessiveBillingService.promiseBasedComputeInsufficientBalanceReports(req,res); // *********
+    await InSufficientAndExcessiveBillingService.promiseBasedComputeInsufficientBalanceReports(req,res);
 
     // compute Excessive Billing
     helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeExcessiveBillingReports');
-    await InSufficientAndExcessiveBillingService.promiseBasedComputeExcessiveBillingReports(req,res); // *********
+    await InSufficientAndExcessiveBillingService.promiseBasedComputeExcessiveBillingReports(req,res);
 
     // compute Affiliate - Affiliate report Data
     helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports');

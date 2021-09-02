@@ -158,26 +158,8 @@ class SubscriptionRepository {
                             }
                         },
                         {
-                            $lookup:{
-                                from: "subscriptions",
-                                let: {user_id: "$user_id"},
-                                pipeline:[
-                                    {
-                                        $match: {
-                                            $expr: {
-                                                $and:[
-                                                    {$eq: ["$user_id", "$$user_id"]},
-                                                ]
-                                            }
-                                        }
-                                    }
-                                ],
-                                as: "subs"
-                            }
-                        },
-                        {
                             $project: {
-                                source: {$ifNull: ['$subs.source', 'app'] },
+                                source: {$ifNull: ['$source', 'app'] },
                                 billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } },
                             }
                         },
