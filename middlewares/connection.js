@@ -49,6 +49,8 @@ let updateConnection = async (req, res, next, connectType) => {
                 res.status(403).send(connectType, "  - Database Access Denied");
             }else{
                 req.db = client.db(connectType);
+                console.log('updateConnection - req.db: ', connectType);
+
                 helper.setDBInstance(req.db);
 
                 if (next !== null)
