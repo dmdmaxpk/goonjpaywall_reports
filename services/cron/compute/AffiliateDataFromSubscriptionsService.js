@@ -19,11 +19,11 @@ computeAffiliateReports = async(req, res) => {
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
 
-    // let dateDataForBillingH = helper.computeTodayDateWithLocalTimeForScript(req, fromDate);
+    let dateDataForBillingH = helper.computeTodayDateWithLocalTimeForScript(req, fromDate);
 
-    console.log('computeAffiliateReports: ', fromDate, toDate);
-    // console.log('dateDataForBillingH: ', dateDataForBillingH.fromDate, dateDataForBillingH.toDate);
-    await subscriptionRepo.getAffiliateDataByDateRange(req, fromDate, toDate, fromDate, toDate).then(async function (subscriptions) {
+    // console.log('computeAffiliateReports: ', fromDate, toDate);
+    console.log('dateDataForBillingH: ', dateDataForBillingH.fromDate, dateDataForBillingH.toDate);
+    await subscriptionRepo.getAffiliateDataByDateRange(req, fromDate, toDate, dateDataForBillingH.fromDate, dateDataForBillingH.toDate).then(async function (subscriptions) {
         console.log('subscription: ', subscriptions);
 
         if (subscriptions.length > 0){
