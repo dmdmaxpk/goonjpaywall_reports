@@ -232,11 +232,8 @@ class Helper {
 
     static computeTodayDateWithLocalTimeForScript(req, fromDate1){
         let date, fromDate, toDate, day, month;
-        console.log('computeTodayDateWithLocalTimeForScript - fromDate1 : ', fromDate1);
 
         date = new Date(fromDate1);
-        console.log('computeTodayDateWithLocalTimeForScript - date : ', date);
-
         day =  date.getDate();
         day = day > 9 ? day : '0'+Number(day);
         req.day = day;
