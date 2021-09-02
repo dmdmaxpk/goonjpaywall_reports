@@ -63,6 +63,7 @@ computeAffiliateReport = async (rawDataSet, params) =>{
             if (outerObj.packageWise) {
                 partKey = outerObj.packageWise[0];
                 innerObj = partKey.QDfC;
+                console.log()
                 computedData = computeAffiliateHeData('liveDaily', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                 dataObj = computedData.dataObj;
                 dayDataObj = computedData.dayDataObj;

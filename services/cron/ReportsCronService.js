@@ -70,7 +70,7 @@ cronComputeDailyDataReports = async (req, res) => {
 
     // compute Affiliate - Affiliate report Data
     helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports');
-    await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res); // *********
+    await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res);
 
     // compute Affiliate - Helogs report Data
     // First - create/update connections with logger database

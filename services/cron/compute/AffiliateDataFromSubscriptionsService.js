@@ -24,7 +24,7 @@ computeAffiliateReports = async(req, res) => {
     // console.log('computeAffiliateReports: ', fromDate, toDate);
     console.log('dateDataForBillingH: ', dateDataForBillingH.fromDate, dateDataForBillingH.toDate);
     await subscriptionRepo.getAffiliateDataByDateRange(req, fromDate, toDate, dateDataForBillingH.fromDate, dateDataForBillingH.toDate).then(async function (subscriptions) {
-        console.log('subscription: ', subscriptions.length);
+        console.log('subscription: ', subscriptions);
 
         if (subscriptions.length > 0){
             computedData = computeAffiliateData(subscriptions);
@@ -133,11 +133,10 @@ promiseBasedComputeAffiliateReports = async(req, res) => {
         fromDate = dateData.fromDate;
         toDate = dateData.toDate;
 
-        // let dateDataForBillingH = helper.computeTodayDateWithLocalTime(req);
+        let dateDataForBillingH = helper.computeTodayDateWithLocalTime(req);
 
-        // console.log('computeAffiliateReports: ', fromDate, toDate, dateDataForBillingH.fromDate, dateDataForBillingH.toDate);
-        console.log('computeAffiliateReports: ', fromDate, toDate);
-        await subscriptionRepo.getAffiliateDataByDateRange(req, fromDate, toDate, fromDate, toDate).then(async function (subscriptions) {
+        console.log('computeAffiliateReports: ', fromDate, toDate, dateDataForBillingH.fromDate, dateDataForBillingH.toDate);
+        await subscriptionRepo.getAffiliateDataByDateRange(req, fromDate, toDate, dateDataForBillingH.fromDate, dateDataForBillingH.toDate).then(async function (subscriptions) {
             console.log('subscription: ', subscriptions.length);
 
             if (subscriptions.length > 0){
