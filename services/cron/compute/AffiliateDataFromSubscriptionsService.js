@@ -13,6 +13,8 @@ computeAffiliateReports = async(req, res) => {
     * Script will execute to fetch data as per day
     * */
     dateData = helper.computeNextDate(req, 30, 8);
+    console.log('dateData: ', dateData);
+
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -24,7 +26,7 @@ computeAffiliateReports = async(req, res) => {
     // console.log('computeAffiliateReports: ', fromDate, toDate);
     console.log('dateDataForBillingH: ', dateDataForBillingH.fromDate, dateDataForBillingH.toDate);
     await subscriptionRepo.getAffiliateDataByDateRange(req, fromDate, toDate, dateDataForBillingH.fromDate, dateDataForBillingH.toDate).then(async function (subscriptions) {
-        console.log('subscription: ', subscriptions);
+        console.log('subscription: ', subscriptions.length);
 
         if (subscriptions.length > 0){
             computedData = computeAffiliateData(subscriptions);
@@ -35,6 +37,8 @@ computeAffiliateReports = async(req, res) => {
         }
 
         // Get compute data for next time slot
+        console.log('req.day: ', req.day);
+
         req.day = Number(req.day) + 1;
         console.log('getAffiliateDataByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
