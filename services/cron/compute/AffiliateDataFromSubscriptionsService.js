@@ -376,6 +376,7 @@ function affliateWiseMidsCount(history, billing_status, package_id, affiliate, d
 }
 function packageWiseMidsCount(history, wise, dataObj) {
 
+    console.log('history.affiliate_mid: ', history.affiliate_mid);
     if (history.affiliate_mid === '1569' && history.status === 'Affiliate callback sent')
         dataObj[wise]['1569'] = dataObj[wise]['1569'] + history.count;
     else if (history.affiliate_mid === 'aff3' && history.status === 'Affiliate callback sent')
@@ -393,6 +394,8 @@ function packageWiseMidsCount(history, wise, dataObj) {
         dataObj[wise]['gdn3'] = dataObj[wise]['gdn3'] + history.count;
     else if (history.affiliate_mid === '1' && history.status === 'Success')
         dataObj[wise]['1'] = dataObj[wise]['1'] + history.count;
+
+    console.log('dataObj: ', dataObj);
 
     return dataObj;
 }
