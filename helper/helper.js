@@ -287,8 +287,12 @@ class Helper {
 
         let fromDate, toDate, day, month;
 
+        console.log('computeNextDate - req.day, sDay : ', req.day, sDay);
+
         day = req.day ? req.day : sDay;
         day = day > 9 ? day : '0'+Number(day);
+        console.log('computeNextDate - day : ', day);
+
         req.day = day;
 
         month = req.month ? req.month : sMonth;
