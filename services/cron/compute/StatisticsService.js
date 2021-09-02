@@ -83,7 +83,7 @@ promiseBasedComputeRequestCountReports = async(req, res) => {
 
                 console.log('finalList.length : ', finalList.length);
                 if (finalList.length > 0)
-                    await insertDailyBaseChargeNewRecord(finalList, fromDate);
+                    await insertNewRecord(finalList, fromDate);
             }
         });
 

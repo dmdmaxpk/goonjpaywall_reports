@@ -16,7 +16,7 @@ class ChurnRepository {
                         }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
-                            console.log('getUsersByDateRange - err: ', err.message);
+                            console.log('getChurnByDateRange - err: ', err.message);
                             resolve([]);
                         }
                         resolve(items);

@@ -244,11 +244,11 @@ class Helper {
         req.month = month;
 
         fromDate  = new Date('2021-'+month+'-'+day+'T00:00:00.000Z');
-        console.log('computeTodayDate - fromDate : ', fromDate);
+        console.log('computeTodayDateWithLocalTimeForScript - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
         toDate.setDate(toDate.getDate() + 1);
-        console.log('computeTodayDate - toDate : ', toDate);
+        console.log('computeTodayDateWithLocalTimeForScript - toDate : ', toDate);
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }
