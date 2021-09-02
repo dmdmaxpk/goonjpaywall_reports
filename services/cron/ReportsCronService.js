@@ -101,7 +101,7 @@ cronComputeDailyDataReports = async (req, res) => {
     // await BillingHistoryService.promiseBasedComputeBillingHistoryReports(req,res);
 
     helper.threeLinesConsoleLog('ChurnService - promiseBasedComputeChurnReports');
-    await ChurnService.promiseBasedComputeChurnReports(req,res); // *********
+    await ChurnService.promiseBasedComputeChurnReports(req,res);
 
     helper.threeLinesConsoleLog('StatisticsService - promiseBasedComputeRequestCountReports');
     await StatisticsService.promiseBasedComputeRequestCountReports(req,res); // *********
