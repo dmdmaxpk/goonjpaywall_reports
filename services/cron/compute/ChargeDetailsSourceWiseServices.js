@@ -393,8 +393,8 @@ function countQuery(from, to){
         {
             $lookup: {
                 from: "billinghistories",
-                localField: "subscriber_id",
-                foreignField: "subscriber_id",
+                localField: "user_id",
+                foreignField: "user_id",
                 as: "histories"
             }
         },

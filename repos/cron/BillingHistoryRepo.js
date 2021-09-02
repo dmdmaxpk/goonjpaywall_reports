@@ -287,7 +287,7 @@ class BillingHistoryRepository {
                                 $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
                         }},
                         { $group: {
-                            _id: "$subscriber_id",
+                            _id: "$user_id",
                             data: { $push:  {
                                 price: "$price",
                                 paywall_id: "$paywall_id",

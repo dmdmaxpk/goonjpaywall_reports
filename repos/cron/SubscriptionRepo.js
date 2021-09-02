@@ -46,8 +46,8 @@ class SubscriptionRepository {
                         {
                             $lookup: {
                                 from: "billinghistories",
-                                localField: "subscriber_id",
-                                foreignField: "subscriber_id",
+                                localField: "user_id",
+                                foreignField: "user_id",
                                 as: "histories"
                             }
                         },
@@ -117,7 +117,7 @@ class SubscriptionRepository {
                                 $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                             }},
                         { $group: {
-                                _id: "$subscriber_id",
+                                _id: "$user_id",
                                 data: { $push:  {
                                         price: "$price",
                                         source: "$source",
@@ -160,13 +160,13 @@ class SubscriptionRepository {
                         {
                             $lookup:{
                                 from: "subscriptions",
-                                let: {subscriber_id: "$subscriber_id"},
+                                let: {user_id: "$user_id"},
                                 pipeline:[
                                     {
                                         $match: {
                                             $expr: {
                                                 $and:[
-                                                    {$eq: ["$subscriber_id", "$$subscriber_id"]},
+                                                    {$eq: ["$user_id", "$$user_id"]},
                                                 ]
                                             }
                                         }
@@ -216,12 +216,12 @@ class SubscriptionRepository {
                         {
                             $lookup: {
                                 from: "billinghistories",
-                                let: {subscriber_id: "$subscriber_id", package_id: "$subscribed_package_id"},
+                                let: {user_id: "$user_id", package_id: "$subscribed_package_id"},
                                 pipeline:[
                                     { $match:
                                         { $expr:
                                             { $and:[
-                                                {$eq: ["$subscriber_id", "$$subscriber_id" ]},
+                                                {$eq: ["$user_id", "$$user_id" ]},
                                                 {$eq: ["$package_id", "$$package_id" ]},
                                                 {$in: ["$billing_status",
                                                     [ "Success", "trial", "Affiliate callback sent" ]
@@ -349,16 +349,16 @@ class SubscriptionRepository {
                         },
                         {$project:{
                             source: "$source",
-                            subscriber_id: "$subscriber_id"
+                            user_id: "$user_id"
                         }},
                         { $lookup:{
                             from: "billinghistories",
-                            let: {subscriber_id: "$subscriber_id"},
+                            let: {user_id: "$user_id"},
                             pipeline:[
                                 { $match: {
                                     $expr: {
                                         $and:[
-                                            {$eq: ["$subscriber_id", "$$subscriber_id" ]},
+                                            {$eq: ["$user_id", "$$user_id" ]},
                                             {$eq: ["$billing_status", "Success"]},
                                             {$and: [
                                                     {$gte: ["$billing_dtm", new Date(from)]},
@@ -412,16 +412,16 @@ class SubscriptionRepository {
                         }},
                         {$project:{
                             source: "$source",
-                            subscriber_id: "$subscriber_id",
+                            user_id: "$user_id",
                         }},
                         { $lookup:{
                             from: "billinghistories",
-                            let: {subscriber_id: "$subscriber_id"},
+                            let: {user_id: "$user_id"},
                             pipeline:[
                                 { $match: {
                                         $expr: {
                                             $and:[
-                                                {$eq: ["$subscriber_id", "$$subscriber_id"]},
+                                                {$eq: ["$user_id", "$$user_id"]},
                                                 {$eq: ["$billing_status", "Success"]},
                                             ]
                                         }
@@ -471,16 +471,16 @@ class SubscriptionRepository {
                                 ]
                             }},
                         {$group:{
-                                _id: "$subscriber_id",
+                                _id: "$user_id",
                             }},
                         { $lookup:{
                                 from: "subscriptions",
-                                let: {subscriber_id: "$_id"},
+                                let: {user_id: "$_id"},
                                 pipeline:[
                                     { $match: {
                                             $expr: {
                                                 $and:[
-                                                    {$eq: ["$subscriber_id", "$$subscriber_id"]}
+                                                    {$eq: ["$user_id", "$$user_id"]}
                                                 ]
                                             }
                                         }},
@@ -649,21 +649,21 @@ class SubscriptionRepository {
                                         }},
                                     {$project: {
                                             _id: 1,
-                                            subscriber_id: 1,
+                                            user_id: 1,
                                         }}
                                 ],
                                 as: "billing"
                             }},
                         {$unwind: "$billing" },
-                        {$group: {_id: "$billing.subscriber_id"}},
+                        {$group: {_id: "$billing.user_id"}},
                         {$lookup: {
                                 from: "subscriptions",
-                                let: {subscriber_id: "$_id"},
+                                let: {user_id: "$_id"},
                                 pipeline:[
                                     {$match: {
                                             $expr: {
                                                 $and:[
-                                                    {$eq: ["$subscriber_id", "$$subscriber_id"]},
+                                                    {$eq: ["$user_id", "$$user_id"]},
                                                 ]
                                             }
                                         }},

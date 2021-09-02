@@ -37,7 +37,7 @@ class StatisticsRepository {
                             $and:[{billing_dtm:{$gt: new Date(from)}}, {billing_dtm:{$lte: new Date(to)}}]
                         }},
                         {$group: {
-                            _id: "$subscriber_id",
+                            _id: "$user_id",
                             count:{$sum: 1}
                         }},
                         {$group: {

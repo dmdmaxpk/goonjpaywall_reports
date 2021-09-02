@@ -288,13 +288,13 @@ function countQuery(from, to){
         {
             $lookup:{
                 from: "subscriptions",
-                let: {subscriber_id: "$subscriber_id"},
+                let: {user_id: "$user_id"},
                 pipeline:[
                     {
                         $match: {
                             $expr: {
                                 $and:[
-                                    {$eq: ["$subscriber_id", "$$subscriber_id"]},
+                                    {$eq: ["$user_id", "$$user_id"]},
                                 ]
                             }
                         }
