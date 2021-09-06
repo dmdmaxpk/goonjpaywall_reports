@@ -30,7 +30,7 @@ app.use('/', require('./routes/index'));
 
 
 var CronJob = require('cron').CronJob;
-var job = new CronJob('1 1 * * *', function() {
+var job = new CronJob('0 9 * * *', function() {
     console.log('paywall daily reporting cron: ' + (new Date()));
 
     axios.get(config.base_path + "/cron/cron-compute-daily-data-reports")
