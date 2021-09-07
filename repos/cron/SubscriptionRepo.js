@@ -637,30 +637,8 @@ class SubscriptionRepository {
                                 as: "billing"
                             }},
                         {$unwind: "$billing" },
-                        {$group: {_id: "$billing.user_id"}},
-                        {$lookup: {
-                                from: "subscriptions",
-                                let: {user_id: "$_id"},
-                                pipeline:[
-                                    {$match: {
-                                            $expr: {
-                                                $and:[
-                                                    {$eq: ["$user_id", "$$user_id"]},
-                                                ]
-                                            }
-                                        }},
-                                    {$project: {
-                                            _id: 0,
-                                            source: "$source",
-                                        }}
-                                ],
-                                as: "subscription"
-                            }},
-                        {
-                            $unwind: "$subscription"
-                        },
                         { $project:{
-                            source: "$subscription.source",
+                            source: "$billing.source",
                         }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
