@@ -97,7 +97,7 @@ generateReportsData = async (req,res) => {
                 if (params.session_time === 'one_three') {uType = 'one_three';}
                 else if (params.session_time === 'four_ten') {uType = 'four_ten';}
                 else if (params.session_time === 'more_then_ten') {uType = 'more_then_ten';}
-                else if (params.watch_time === 'and_all') {uType = 'and_all';}
+                else if (params.session_time === 'and_all') {uType = 'and_all';}
 
                 return payingUsersService.computePayingUsersSessionsTimeReport(rawDataSet, params, uType);
             }

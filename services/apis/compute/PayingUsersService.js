@@ -165,6 +165,8 @@ computePayingUsersWatchTimeReport = async (rawDataSet, params, sessionType) =>{
             if (outerObj.watchTime){
                 for (let j=0; j<outerObj.watchTime.length; j++) {
                     innerObj = outerObj.watchTime[j];
+                    console.log('innerObj: ', innerObj);
+
                     if (innerObj[sessionType]) {
                         obj = innerObj[sessionType];
                         console.log('obj: ', obj);
