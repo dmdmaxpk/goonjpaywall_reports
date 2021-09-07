@@ -72,13 +72,9 @@ promiseBasedComputeNewPayingUserRevenueReports = async(req, res) => {
             }
         });
 
-        if (Number(req.month) < Number(helper.getTodayMonthNo()))
-            promiseBasedComputeNewPayingUserRevenueReports(req, res);
-        else{
-            console.log('promiseBasedComputeNewPayingUserRevenueReports - data compute - done');
-            delete req.month;
-            resolve(0);
-        }
+        console.log('promiseBasedComputeNewPayingUserRevenueReports - data compute - done');
+        delete req.month;
+        resolve(0);
     });
 };
 
@@ -144,14 +140,9 @@ promiseBasedComputeNewPayingUsersReports = async(req, res) => {
             if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'newPaying');
         });
 
-
-        if (Number(req.month) < Number(helper.getTodayMonthNo()))
-            promiseBasedComputeNewPayingUsersReports(req, res);
-        else{
-            console.log('promiseBasedComputeNewPayingUsersReports - data compute - done');
-            delete req.month;
-            resolve(0);
-        }
+        console.log('promiseBasedComputeNewPayingUsersReports - data compute - done');
+        delete req.month;
+        resolve(0);
     });
 };
 
@@ -217,13 +208,9 @@ promiseBasedComputeTotalPayingUsersReports = async(req, res) => {
             if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPaying');
         });
 
-        if (Number(req.month) < Number(helper.getTodayMonthNo()))
-            promiseBasedComputeTotalPayingUsersReports(req, res);
-        else{
-            console.log('promiseBasedComputeTotalPayingUsersReports - data compute - done');
-            delete req.month;
-            resolve(0);
-        }
+        console.log('promiseBasedComputeTotalPayingUsersReports - data compute - done');
+        delete req.month;
+        resolve(0);
     });
 };
 
@@ -289,13 +276,9 @@ promiseBasedComputePayingUserSessionsReports = async(req, res) => {
             if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'userSessions');
         });
 
-        if (Number(req.month) < Number(helper.getTodayMonthNo()))
-            promiseBasedComputePayingUserSessionsReports(req, res);
-        else{
-            console.log('promiseBasedComputePayingUserSessionsReports - data compute - done');
-            delete req.month;
-            resolve(0);
-        }
+        console.log('promiseBasedComputePayingUserSessionsReports - data compute - done');
+        delete req.month;
+        resolve(0);
     });
 };
 
@@ -365,13 +348,9 @@ promiseBasedComputePayingUserWatchTimeReports = async(req, res) => {
             }
         });
 
-        if (Number(req.month) < Number(helper.getTodayMonthNo()))
-            promiseBasedComputePayingUserWatchTimeReports(req, res);
-        else{
-            console.log('promiseBasedComputePayingUserWatchTimeReports - data compute - done');
-            delete req.month;
-            resolve(0);
-        }
+        console.log('promiseBasedComputePayingUserWatchTimeReports - data compute - done');
+        delete req.month;
+        resolve(0);
     });
 };
 
@@ -436,13 +415,9 @@ promiseBasedComputePayingUserEngagementReports = async(req, res) => {
             if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'userEngagement');
         });
 
-        if (Number(req.month) < Number(helper.getTodayMonthNo()))
-            promiseBasedComputePayingUserEngagementReports(req, res);
-        else{
-            console.log('promiseBasedComputePayingUserEngagementReports - data compute - done');
-            delete req.month;
-            resolve(0);
-        }
+        console.log('promiseBasedComputePayingUserEngagementReports - data compute - done');
+        delete req.month;
+        resolve(0);
     });
 };
 
