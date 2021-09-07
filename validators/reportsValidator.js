@@ -170,10 +170,6 @@ class ReportsValidator{
                 this.status = false; this.reasons = 'The Report Type is invalid.';
                 break;
         }
-        let type = params.type ? params.type.trim() : '';
-        console.log('type: ', type);
-
-        console.log('response ', this.status, this.reasons);
         return {status: this.status, reasons: this.reasons};
     }
 
@@ -217,8 +213,6 @@ class ReportsValidator{
         }
     }
     checkSubTypeIsNull(subType, reportType, subTypes){
-        console.log('subType: ', subType);
-        console.log('subTypes: ', subTypes);
         if (!subTypes.includes(subType)) {
             this.status = false; this.reasons = 'The Report "'+reportType+'", its Sub Type is invalid.';
         }

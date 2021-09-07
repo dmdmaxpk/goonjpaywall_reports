@@ -153,7 +153,7 @@ computePayingUsersSessionsTimeReport = async (rawDataSet, params, sessionType) =
 };
 
 computePayingUsersWatchTimeReport = async (rawDataSet, params, sessionType) =>{
-    console.log('computePayingUsersWatchTimeReport');
+    console.log('computePayingUsersWatchTimeReport: ', sessionType);
 
     let obj, monthNo, dayNo, month_from_date = null;
     let outerObj, innerObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
@@ -167,6 +167,7 @@ computePayingUsersWatchTimeReport = async (rawDataSet, params, sessionType) =>{
                     innerObj = outerObj.watchTime[j];
                     if (innerObj[sessionType]) {
                         obj = innerObj[sessionType];
+                        console.log('obj: ', obj);
 
                         dataObj.session = obj.session;
                         dataObj.sum = dataObj.sum + obj.sum;
