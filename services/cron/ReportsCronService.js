@@ -133,12 +133,12 @@ cronComputeMonthlyDataReports = async (req, res) => {
     // await PayingUserService.promiseBasedComputePayingUserSessionsReports(req,res);
 
 
-    // compute msisdn wise data from streamlogs db
-    helper.sixLinesConsoleLog('Database - Connection ( streamlogs )');
-    await connection.updateConnection(req, res, null, 'streamlogs');
-
-    helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputePayingUserWatchTimeReports');
-    await PayingUserService.promiseBasedComputePayingUserWatchTimeReports(req,res);
+    // // compute msisdn wise data from streamlogs db
+    // helper.sixLinesConsoleLog('Database - Connection ( streamlogs )');
+    // await connection.updateConnection(req, res, null, 'streamlogs');
+    //
+    // helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputePayingUserWatchTimeReports');
+    // await PayingUserService.promiseBasedComputePayingUserWatchTimeReports(req,res);
 
 
     // Connect with goonjpaywall db
