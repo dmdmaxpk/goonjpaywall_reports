@@ -5,7 +5,7 @@ const  _ = require('lodash');
 
 // Paying User Compute Functions
 computePayingUsersCountSourceWiseReport = async (rawDataSet, params, userType) =>{
-    console.log('computePayingUsersCountSourceWiseReport');
+    console.log('computePayingUsersCountSourceWiseReport: ', userType);
 
     let sourceWiseObj, monthNo, dayNo, month_from_date = null;
     let outerObj, innerObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
@@ -17,6 +17,7 @@ computePayingUsersCountSourceWiseReport = async (rawDataSet, params, userType) =
             if (outerObj[userType]){
                 for (let j=0; j<outerObj[userType].length; j++) {
                     innerObj = outerObj[userType][j];
+                    console.log('innerObj: ', innerObj);
                     if (innerObj.source) {
                         sourceWiseObj = innerObj.source;
                         if (sourceWiseObj.app) {

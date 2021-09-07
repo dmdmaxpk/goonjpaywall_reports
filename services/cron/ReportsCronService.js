@@ -116,21 +116,21 @@ cronComputeMonthlyDataReports = async (req, res) => {
     console.log('cronComputeMonthlyDataReports');
 
     // First connect with goonjpaywall DB
-    helper.sixLinesConsoleLog('Database - Connection ( goonjpaywall )');
-    await connection.updateConnection(req, res, null, 'goonjpaywall');
-
-    // compute Users report data
-    helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputeNewPayingUserRevenueReports');
-    await PayingUserService.promiseBasedComputeNewPayingUserRevenueReports(req,res);
-
-    helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputeNewPayingUsersReports');
-    await PayingUserService.promiseBasedComputeNewPayingUsersReports(req,res);
-
-    helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputeTotalPayingUsersReports');
-    await PayingUserService.promiseBasedComputeTotalPayingUsersReports(req,res);
-
-    helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputePayingUserSessionsReports');
-    await PayingUserService.promiseBasedComputePayingUserSessionsReports(req,res);
+    // helper.sixLinesConsoleLog('Database - Connection ( goonjpaywall )');
+    // await connection.updateConnection(req, res, null, 'goonjpaywall');
+    //
+    // // compute Users report data
+    // helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputeNewPayingUserRevenueReports');
+    // await PayingUserService.promiseBasedComputeNewPayingUserRevenueReports(req,res);
+    //
+    // helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputeNewPayingUsersReports');
+    // await PayingUserService.promiseBasedComputeNewPayingUsersReports(req,res);
+    //
+    // helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputeTotalPayingUsersReports');
+    // await PayingUserService.promiseBasedComputeTotalPayingUsersReports(req,res);
+    //
+    // helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputePayingUserSessionsReports');
+    // await PayingUserService.promiseBasedComputePayingUserSessionsReports(req,res);
 
 
     // compute msisdn wise data from streamlogs db
