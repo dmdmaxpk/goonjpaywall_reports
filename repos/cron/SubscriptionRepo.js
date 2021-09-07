@@ -606,36 +606,36 @@ class SubscriptionRepository {
                 if (!err) {
                     collection.aggregate([
                         {$match: {
-                                $and:[
-                                    {"added_dtm":{$gte: new Date(from)}},
-                                    {"added_dtm":{$lte: new Date(to)}}
-                                ]
-                            }},
+                            $and:[
+                                {"added_dtm":{$gte: new Date(from)}},
+                                {"added_dtm":{$lte: new Date(to)}}
+                            ]
+                        }},
                         {$group: {_id: "$user_id"}},
                         {$lookup: {
-                                from: "billinghistories",
-                                let: {user_id: "$_id"},
-                                pipeline:[
-                                    {$match: {
-                                            $expr: {
-                                                $and:[
-                                                    {$eq: ["$user_id", "$$user_id"]},
-                                                    {$eq: ["$billing_status", "Success"]},
-                                                    {$and: [
-                                                            {$gte: ["$billing_dtm", new Date(from)]},
-                                                            {$lte: ["$billing_dtm", new Date(to)]}
-                                                        ]
-                                                    }
+                            from: "billinghistories",
+                            let: {user_id: "$_id"},
+                            pipeline:[
+                                {$match: {
+                                    $expr: {
+                                        $and:[
+                                            {$eq: ["$user_id", "$$user_id"]},
+                                            {$eq: ["$billing_status", "Success"]},
+                                            {$and: [
+                                                    {$gte: ["$billing_dtm", new Date(from)]},
+                                                    {$lte: ["$billing_dtm", new Date(to)]}
                                                 ]
                                             }
-                                        }},
-                                    {$project: {
-                                            _id: 1,
-                                            user_id: 1,
-                                        }}
-                                ],
-                                as: "billing"
-                            }},
+                                        ]
+                                    }
+                                }},
+                                {$project: {
+                                    _id: 1,
+                                    source: 1,
+                                }}
+                            ],
+                            as: "billing"
+                        }},
                         {$unwind: "$billing" },
                         { $project:{
                             source: "$billing.source",
