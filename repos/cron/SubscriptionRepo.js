@@ -602,7 +602,7 @@ class SubscriptionRepository {
     async getPayingUserEngagementByDateRange (req, from, to) {
         return new Promise((resolve, reject) => {
             console.log('getPayingUserEngagementByDateRange: ', from, to);
-            req.db.collection('viewlogs', function (err, collection) {
+            req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
                         { $match:{
