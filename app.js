@@ -40,7 +40,7 @@ var job = new CronJob('1 1 * * *', function() {
     .catch(function(err){
         console.log('paywall daily - err: ', err);
     });
-}, null, true, 'America/Los_Angeles');
+}, null, true, 'Asia/Karachi');
 job.start();
 
 
