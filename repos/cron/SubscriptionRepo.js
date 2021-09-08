@@ -609,7 +609,7 @@ class SubscriptionRepository {
                             "billing_status": "Success",
                             $and:[
                                 {billing_dtm:{$gte: new Date(from)}},
-                                {billing_dtm:{$lt: new Date(to)}}
+                                {billing_dtm:{$lte: new Date(to)}}
                             ]
                         }},
                         { $group:{
@@ -644,6 +644,10 @@ class SubscriptionRepository {
                         { $project:{
                             "_id": 0,
                             "source": "$user_data.source"
+                        }},
+                        {$group: {
+                            _id: "$source",
+                            count: {$sum: 1}
                         }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
