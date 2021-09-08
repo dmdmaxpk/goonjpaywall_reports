@@ -605,40 +605,45 @@ class SubscriptionRepository {
             req.db.collection('viewlogs', function (err, collection) {
                 if (!err) {
                     collection.aggregate([
-                        {$match: {
+                        { $match:{
+                            "billing_status": "Success",
                             $and:[
-                                {"added_dtm":{$gte: new Date(from)}},
-                                {"added_dtm":{$lte: new Date(to)}}
+                                {billing_dtm:{$gte: new Date(from)}},
+                                {billing_dtm:{$lt: new Date(to)}}
                             ]
                         }},
-                        {$group: {_id: "$user_id"}},
-                        {$lookup: {
-                            from: "billinghistories",
-                            let: {user_id: "$_id"},
+                        { $group:{
+                            _id: {user_id: "$user_id", source: "$source"}
+                        }},
+                        { $lookup:{
+                            from: "viewlogs",
+                            let: {user_id: "$_id.user_id", source: "$_id.source"},
                             pipeline:[
-                                {$match: {
+                                { $match: {
                                     $expr: {
                                         $and:[
                                             {$eq: ["$user_id", "$$user_id"]},
-                                            {$eq: ["$billing_status", "Success"]},
                                             {$and: [
-                                                    {$gte: ["$billing_dtm", new Date(from)]},
-                                                    {$lte: ["$billing_dtm", new Date(to)]}
+                                                    {$gte: ["$added_dtm", new Date(from)]},
+                                                    {$lte: ["$added_dtm", new Date(to)]}
                                                 ]
                                             }
                                         ]
                                     }
                                 }},
-                                {$project: {
-                                    _id: 1,
-                                    source: 1,
+                                {$limit: 1},
+                                {$project:{
+                                    source: "$$source",
                                 }}
                             ],
-                            as: "billing"
+                            as: "user_data"
                         }},
-                        {$unwind: "$billing" },
+                        {
+                            $unwind: "$user_data"
+                        },
                         { $project:{
-                            source: "$billing.source",
+                            "_id": 0,
+                            "source": "$user_data.source"
                         }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
