@@ -184,7 +184,7 @@ class Helper {
     static computeTodayDate(req){
         let date, fromDate, toDate, day, month;
         date = new Date();
-        date.setDate(date.getDate() - 1);
+        date.setDate(date.getDate());
 
         day =  date.getDate();
         day = day > 9 ? day : '0'+Number(day);
@@ -210,7 +210,7 @@ class Helper {
     static computeTodayDateWithLocalTime(req){
         let date, fromDate, toDate, day, month;
         date = new Date();
-        date.setDate(date.getDate() - 1);
+        date.setDate(date.getDate());
 
         day =  date.getDate();
         day = day > 9 ? day : '0'+Number(day);
@@ -221,11 +221,11 @@ class Helper {
         req.month = month;
 
         fromDate  = new Date('2021-'+month+'-'+day+'T00:00:00.000Z');
-        console.log('computeTodayDate - fromDate : ', fromDate);
+        console.log('computeTodayDateWithLocalTime - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
         toDate.setDate(toDate.getDate() + 1);
-        console.log('computeTodayDate - toDate : ', toDate);
+        console.log('computeTodayDateWithLocalTime - toDate : ', toDate);
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }
