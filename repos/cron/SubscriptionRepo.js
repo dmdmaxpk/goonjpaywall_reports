@@ -165,7 +165,7 @@ class SubscriptionRepository {
                         },
                         {
                             $project: {
-                                source: {"$arrayElemAt": ["$source",0]},
+                                source: "$source",
                                 billing_dtm: "$billing_dtm"
                             }
                         },
