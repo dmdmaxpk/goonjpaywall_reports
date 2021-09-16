@@ -52,30 +52,13 @@ cronComputeDailyDataReports = async (req, res) => {
     // helper.threeLinesConsoleLog('ChargeDetailsSourceWiseServices - promiseBasedComputeChargeDetailsReports');
     // await ChargeDetailsSourceWiseServices.promiseBasedComputeChargeDetailsReports(req,res); // *********
 
+    // compute Net Addition report Data
+    helper.threeLinesConsoleLog('RevenueNetAdditionService - promiseBasedComputeRevenueNetAdditionReports');
+    await RevenueNetAdditionService.promiseBasedComputeRevenueNetAdditionReports(req,res);
 
-
-
-
-
-
-
-
-
-    // // compute Net Addition report Data
-    // helper.threeLinesConsoleLog('RevenueNetAdditionService - promiseBasedComputeRevenueNetAdditionReports');
-    // await RevenueNetAdditionService.promiseBasedComputeRevenueNetAdditionReports(req,res);
-    //
-    // // compute Affiliate - Affiliate Mids report Data
-    // helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateMidsFromSubscriptionsReports');
-    // await AffiliateSubscriptionsService.promiseBasedComputeAffiliateMidsFromSubscriptionsReports(req,res);
-
-
-
-
-
-
-
-
+    // compute Affiliate - Affiliate Mids report Data
+    helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateMidsFromSubscriptionsReports');
+    await AffiliateSubscriptionsService.promiseBasedComputeAffiliateMidsFromSubscriptionsReports(req,res);
 
     // // compute Insufficient Balance
     // helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeInsufficientBalanceReports');
@@ -85,25 +68,9 @@ cronComputeDailyDataReports = async (req, res) => {
     // helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeExcessiveBillingReports');
     // await InSufficientAndExcessiveBillingService.promiseBasedComputeExcessiveBillingReports(req,res);
 
-
-
-
-
-
-
-    // // compute Affiliate - Affiliate report Data
-    // helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports');
-    // await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res);
-
-
-
-
-
-
-
-
-
-
+    // compute Affiliate - Affiliate report Data
+    helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports');
+    await AffiliateSubscriptionsService.promiseBasedComputeAffiliateReports(req,res);
 
     // compute Affiliate - Helogs report Data
     // First - create/update connections with logger database
@@ -124,6 +91,7 @@ cronComputeDailyDataReports = async (req, res) => {
     // compute Affiliate - Subscribe Clicks Data
     helper.threeLinesConsoleLog('LogsService - promiseBasedComputeLogsSubscribeClicksReports');
     await LogsService.promiseBasedComputeLogsSubscribeClicksReports(req,res);
+
 
     // // compute Affiliate - Affiliate report Data
     // // First - create/update connections with goonjpaywall database
