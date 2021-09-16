@@ -28,17 +28,17 @@ cronComputeDailyDataReports = async (req, res) => {
     // helper.threeLinesConsoleLog('SubscriberService - promiseBasedComputeSubscriberReports');
     // await SubscriberService.promiseBasedComputeSubscriberReports(req,res);
 
-    // compute Subscriptions report Data
-    helper.threeLinesConsoleLog('SubscriptionService - promiseBasedComputeSubscriptionReports');
-    // await SubscriptionService.promiseBasedComputeDailySubscriptionReports(req,res);
-
-    // compute Subscriptions report Data
-    helper.threeLinesConsoleLog('BillingHistorySuccessfulService - promiseBasedComputeBillingHistorySuccessfulReports');
-    await BillingHistorySuccessfulService.promiseBasedComputeBillingHistorySuccessfulReports(req,res);
-
-    // compute Subscriptions report Data
-    helper.threeLinesConsoleLog('SubscriptionsSourceWiseSuccessfulService - promiseBasedSubscriptionsSourceWiseSuccessfulReports');
-    await SubscriptionsSourceWiseSuccessfulService.promiseBasedSubscriptionsSourceWiseSuccessfulReports(req,res);
+    // // compute Subscriptions report Data
+    // helper.threeLinesConsoleLog('SubscriptionService - promiseBasedComputeSubscriptionReports');
+    // // await SubscriptionService.promiseBasedComputeDailySubscriptionReports(req,res);
+    //
+    // // compute Subscriptions report Data
+    // helper.threeLinesConsoleLog('BillingHistorySuccessfulService - promiseBasedComputeBillingHistorySuccessfulReports');
+    // await BillingHistorySuccessfulService.promiseBasedComputeBillingHistorySuccessfulReports(req,res);
+    //
+    // // compute Subscriptions report Data
+    // helper.threeLinesConsoleLog('SubscriptionsSourceWiseSuccessfulService - promiseBasedSubscriptionsSourceWiseSuccessfulReports');
+    // await SubscriptionsSourceWiseSuccessfulService.promiseBasedSubscriptionsSourceWiseSuccessfulReports(req,res);
 
     // // compute Callback report Data
     // helper.threeLinesConsoleLog('CallbackSendService - promiseBasedComputeCallbackSendReports');
