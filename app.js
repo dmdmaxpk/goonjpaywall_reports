@@ -28,11 +28,6 @@ app.use(mongoSanitize());
 // Import routes
 app.use('/', require('./routes/index'));
 
-const builtin = require('module').builtinModules;
-const async_hooks = require('async_hooks');
-const eid = async_hooks.executionAsyncId();
-console.log('eid :', eid, eid2);
-
 var CronJob = require('cron').CronJob;
 var job = new CronJob('3 1 * * *', function() {
     console.log('paywall daily reporting cron: ' + (new Date()));
