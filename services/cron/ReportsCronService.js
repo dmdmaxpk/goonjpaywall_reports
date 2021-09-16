@@ -20,13 +20,13 @@ const connection = require('../../middlewares/connection');
 cronComputeDailyDataReports = async (req, res) => {
     console.log('cronComputeDailyDataReports');
 
-    // compute Users report data
-    helper.threeLinesConsoleLog('UserService - promiseBasedComputeUserReports');
-    await UserService.promiseBasedComputeUserReports(req,res);
-
-    // compute Subscribers report Data
-    helper.threeLinesConsoleLog('SubscriberService - promiseBasedComputeSubscriberReports');
-    await SubscriberService.promiseBasedComputeSubscriberReports(req,res);
+    // // compute Users report data
+    // helper.threeLinesConsoleLog('UserService - promiseBasedComputeUserReports');
+    // await UserService.promiseBasedComputeUserReports(req,res);
+    //
+    // // compute Subscribers report Data
+    // helper.threeLinesConsoleLog('SubscriberService - promiseBasedComputeSubscriberReports');
+    // await SubscriberService.promiseBasedComputeSubscriberReports(req,res);
 
     // compute Subscriptions report Data
     helper.threeLinesConsoleLog('SubscriptionService - promiseBasedComputeSubscriptionReports');
@@ -40,17 +40,17 @@ cronComputeDailyDataReports = async (req, res) => {
     helper.threeLinesConsoleLog('SubscriptionsSourceWiseSuccessfulService - promiseBasedSubscriptionsSourceWiseSuccessfulReports');
     await SubscriptionsSourceWiseSuccessfulService.promiseBasedSubscriptionsSourceWiseSuccessfulReports(req,res);
 
-    // compute Callback report Data
-    helper.threeLinesConsoleLog('CallbackSendService - promiseBasedComputeCallbackSendReports');
-    await CallbackSendService.promiseBasedComputeCallbackSendReports(req,res);
-
-    // compute Charge Details report Data
-    helper.threeLinesConsoleLog('ChargeDetailsRevenueServices - promiseBasedComputeChargeDetailsReports');
-    await ChargeDetailsRevenueServices.promiseBasedComputeChargeDetailsReports(req,res);
-
-    // compute Charge Details Source Wise report Data
-    helper.threeLinesConsoleLog('ChargeDetailsSourceWiseServices - promiseBasedComputeChargeDetailsReports');
-    await ChargeDetailsSourceWiseServices.promiseBasedComputeChargeDetailsReports(req,res); // *********
+    // // compute Callback report Data
+    // helper.threeLinesConsoleLog('CallbackSendService - promiseBasedComputeCallbackSendReports');
+    // await CallbackSendService.promiseBasedComputeCallbackSendReports(req,res);
+    //
+    // // compute Charge Details report Data
+    // helper.threeLinesConsoleLog('ChargeDetailsRevenueServices - promiseBasedComputeChargeDetailsReports');
+    // await ChargeDetailsRevenueServices.promiseBasedComputeChargeDetailsReports(req,res);
+    //
+    // // compute Charge Details Source Wise report Data
+    // helper.threeLinesConsoleLog('ChargeDetailsSourceWiseServices - promiseBasedComputeChargeDetailsReports');
+    // await ChargeDetailsSourceWiseServices.promiseBasedComputeChargeDetailsReports(req,res); // *********
 
     // compute Net Addition report Data
     helper.threeLinesConsoleLog('RevenueNetAdditionService - promiseBasedComputeRevenueNetAdditionReports');
@@ -60,13 +60,13 @@ cronComputeDailyDataReports = async (req, res) => {
     helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateMidsFromSubscriptionsReports');
     await AffiliateSubscriptionsService.promiseBasedComputeAffiliateMidsFromSubscriptionsReports(req,res);
 
-    // compute Insufficient Balance
-    helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeInsufficientBalanceReports');
-    await InSufficientAndExcessiveBillingService.promiseBasedComputeInsufficientBalanceReports(req,res);
-
-    // compute Excessive Billing
-    helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeExcessiveBillingReports');
-    await InSufficientAndExcessiveBillingService.promiseBasedComputeExcessiveBillingReports(req,res);
+    // // compute Insufficient Balance
+    // helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeInsufficientBalanceReports');
+    // await InSufficientAndExcessiveBillingService.promiseBasedComputeInsufficientBalanceReports(req,res);
+    //
+    // // compute Excessive Billing
+    // helper.threeLinesConsoleLog('InSufficientAndExcessiveBillingService - promiseBasedComputeExcessiveBillingReports');
+    // await InSufficientAndExcessiveBillingService.promiseBasedComputeExcessiveBillingReports(req,res);
 
     // compute Affiliate - Affiliate report Data
     helper.threeLinesConsoleLog('AffiliateSubscriptionsService - promiseBasedComputeAffiliateReports');
@@ -92,22 +92,22 @@ cronComputeDailyDataReports = async (req, res) => {
     helper.threeLinesConsoleLog('LogsService - promiseBasedComputeLogsSubscribeClicksReports');
     await LogsService.promiseBasedComputeLogsSubscribeClicksReports(req,res);
 
-    // compute Affiliate - Affiliate report Data
-    // First - create/update connections with goonjpaywall database
-    helper.sixLinesConsoleLog('Database - Connection ( goonjpaywall )');
-    await connection.updateConnection(req, res, null, 'goonjpaywall');
-
-    helper.threeLinesConsoleLog('BillingHistoryService - promiseBasedComputeBillingHistoryReports');
-    // await BillingHistoryService.promiseBasedComputeBillingHistoryReports(req,res);
-
-    helper.threeLinesConsoleLog('ChurnService - promiseBasedComputeChurnReports');
-    await ChurnService.promiseBasedComputeChurnReports(req,res);
-
-    helper.threeLinesConsoleLog('StatisticsService - promiseBasedComputeRequestCountReports');
-    await StatisticsService.promiseBasedComputeRequestCountReports(req,res);
-
-    helper.threeLinesConsoleLog('StatisticsService - promiseBasedComputeDailyBaseChargeReports');
-    await StatisticsService.promiseBasedComputeDailyBaseChargeReports(req,res);
+    // // compute Affiliate - Affiliate report Data
+    // // First - create/update connections with goonjpaywall database
+    // helper.sixLinesConsoleLog('Database - Connection ( goonjpaywall )');
+    // await connection.updateConnection(req, res, null, 'goonjpaywall');
+    //
+    // helper.threeLinesConsoleLog('BillingHistoryService - promiseBasedComputeBillingHistoryReports');
+    // // await BillingHistoryService.promiseBasedComputeBillingHistoryReports(req,res);
+    //
+    // helper.threeLinesConsoleLog('ChurnService - promiseBasedComputeChurnReports');
+    // await ChurnService.promiseBasedComputeChurnReports(req,res);
+    //
+    // helper.threeLinesConsoleLog('StatisticsService - promiseBasedComputeRequestCountReports');
+    // await StatisticsService.promiseBasedComputeRequestCountReports(req,res);
+    //
+    // helper.threeLinesConsoleLog('StatisticsService - promiseBasedComputeDailyBaseChargeReports');
+    // await StatisticsService.promiseBasedComputeDailyBaseChargeReports(req,res);
 
     helper.oneLineConsoleLog('Cron - Yesterday Data is computed successfully.');
 };
