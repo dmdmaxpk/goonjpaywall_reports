@@ -184,7 +184,7 @@ class Helper {
     static computeTodayDate(req){
         let date, fromDate, toDate, day, month;
         date = new Date();
-        date.setDate(date.getDate() );
+        date.setDate(date.getDate() - 1 );
 
         day =  date.getDate();
         day = day > 9 ? day : '0'+Number(day);
@@ -210,7 +210,7 @@ class Helper {
     static computeTodayDateWithLocalTime(req){
         let date, fromDate, toDate, day, month;
         date = new Date();
-        date.setDate(date.getDate());
+        date.setDate(date.getDate() - 1 );
 
         day =  date.getDate();
         day = day > 9 ? day : '0'+Number(day);
