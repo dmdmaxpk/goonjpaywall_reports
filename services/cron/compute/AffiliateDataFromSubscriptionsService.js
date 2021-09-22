@@ -447,7 +447,7 @@ function cloneStatusWiseObj() {
     }
 }
 function clonePackageWiseObj() {
-    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, gdn3: 0, goonj: 0 };
+    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, gdn3: 0, goonj: 0 , tp_fb_campaign: 0  };
     return {
         QDfC: _.clone(mids),
         QDfG: _.clone(mids),
