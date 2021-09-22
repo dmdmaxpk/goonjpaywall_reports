@@ -162,6 +162,124 @@ computeAffiliateReport = async (rawDataSet, params) =>{
     }
 };
 
+computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
+    console.log('computeTelenoreAffiliateReport', params);
+
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, innerObj, computedData, partKey;
+    let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = _.clone(cloneAffiliateObj());
+    let dayDataObj = _.clone(cloneAffiliateObj());
+    let weeklyDataObj = _.clone(cloneAffiliateObj());
+    let monthlyDataObj = _.clone(cloneAffiliateObj());
+
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+
+            //get Affiliate mids total count - live daily
+            if (outerObj.packageWise) {
+                partKey = outerObj.packageWise[0];
+                innerObj = partKey.QDfC;
+                computedData = computeAffiliateHeData('liveDaily', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                dataObj = computedData.dataObj;
+                dayDataObj = computedData.dayDataObj;
+                weeklyDataObj = computedData.weeklyDataObj;
+                monthlyDataObj = computedData.monthlyDataObj;
+            }
+
+            //get Affiliate mids total count - live weekly
+            if (outerObj.packageWise) {
+                partKey = outerObj.packageWise[0];
+                innerObj = partKey.QDfG;
+                computedData = computeAffiliateHeData('liveWeekly', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                dataObj = computedData.dataObj;
+                dayDataObj = computedData.dayDataObj;
+                weeklyDataObj = computedData.weeklyDataObj;
+                monthlyDataObj = computedData.monthlyDataObj;
+            }
+
+            //get Affiliate mids total count - live trial
+            if (outerObj.statusWise) {
+                partKey = outerObj.statusWise[0];
+                innerObj = partKey.trial;
+                computedData = computeAffiliateHeData('liveTrial', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                dataObj = computedData.dataObj;
+                dayDataObj = computedData.dayDataObj;
+                weeklyDataObj = computedData.weeklyDataObj;
+                monthlyDataObj = computedData.monthlyDataObj;
+            }
+
+            //get Affiliate mids total count - Subscriptions Mids
+            if (outerObj.subscriptions) {
+                innerObj = outerObj.subscriptions[0];
+                computedData = computeAffiliateHeData('subscriptons', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                dataObj = computedData.dataObj;
+                dayDataObj = computedData.dayDataObj;
+                weeklyDataObj = computedData.weeklyDataObj;
+                monthlyDataObj = computedData.monthlyDataObj;
+            }
+
+            // reset start_date for both month & week so can update with latest one
+            if (week_from_date === null)
+                week_from_date = outerObj.date;
+
+            if (month_from_date === null)
+                month_from_date = outerObj.date;
+
+            monthNo = new Date(outerObj.date).getMonth() + 1;
+            dayNo = new Date(outerObj.date).getDate();
+
+            // Monthly Data Count
+            if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
+                monthlyDataObj.from_date = month_from_date;
+                monthlyDataObj.to_date = outerObj.date;
+                monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                monthlyDataObj = _.clone(cloneAffiliateObj());
+                month_from_date = null;
+            }
+
+            // Weekly Data Count
+            if (Number(dayNo) % 7 === 0){
+                weeklyDataObj.from_date = week_from_date;
+                weeklyDataObj.to_date = outerObj.date;
+                weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                weeklyDataObj = _.clone(cloneAffiliateObj());
+                week_from_date = null;
+            }
+
+            // Day Wise Date Count
+            dayDataObj.date = outerObj.date;
+            dayWiseTotalCount.push(_.clone(dayDataObj));
+            dayDataObj = _.clone(cloneAffiliateObj());
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // Total Count Data
+        // add date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+
+        return reportsTransformer.transformTheData(2, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
+    }
+};
+
 computeHelogsDataReport = async (rawDataSet, params) =>{
     console.log('computeHelogsDataReport');
 
@@ -1426,5 +1544,7 @@ module.exports = {
     computeSubscriptionsMidDataReport: computeSubscriptionsMidDataReport,
     computeAffiliateDataStatusWiseReport: computeAffiliateDataStatusWiseReport,
     computeAffiliateDataSourceWiseReport: computeAffiliateDataSourceWiseReport,
-    computeAffiliateDataPackageWiseReport: computeAffiliateDataPackageWiseReport
+    computeAffiliateDataPackageWiseReport: computeAffiliateDataPackageWiseReport,
+
+    computeTelenoreAffiliateReport: computeTelenoreAffiliateReport,
 };

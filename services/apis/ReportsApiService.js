@@ -42,6 +42,8 @@ generateReportsData = async (req,res) => {
         }
         else if (params.type === 'paying_user')
             rawDataSet = await payingUsersRepo.generateReportsData(params);
+        else if (params.type === 'tp_campaign')
+            rawDataSet = await affiliateRepo.generateAffiliateReportsData(params);
         else if (params.type === 'others'){
             if (params.sub_type === 'daily_base' || params.sub_type === 'request_count' || params.sub_type === 'successful_charge' || params.sub_type === 'unsubscribed')
                 rawDataSet = await churnRepo.generateChurnReportsData(params);
@@ -318,6 +320,10 @@ generateReportsData = async (req,res) => {
                 else if(params.transactions === 'price_wise')
                     return transactionService.computeTransactingSubscribersPriceWiseReport(rawDataSet, params);
             }
+        }
+        else if (params.type === 'tp_campaign'){
+            if (params.sub_type === 'tp_fb_campaign')
+                return affiliateService.computeTelenoreAffiliateReport(rawDataSet, params);
         }
         else if (params.type === 'affiliate'){
             if (params.sub_type === 'affiliate')
