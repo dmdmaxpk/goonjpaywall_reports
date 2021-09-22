@@ -382,6 +382,8 @@ function packageWiseMidsCount(history, wise, dataObj) {
         dataObj[wise]['aff3a'] = dataObj[wise]['aff3a'] + history.count;
     else if (history.affiliate_mid === 'goonj' && ( history.status === 'Success' || history.status === 'Affiliate callback sent'))
         dataObj[wise]['goonj'] = dataObj[wise]['goonj'] + history.count;
+    else if (history.affiliate_mid === 'tp_fb_campaign' && ( history.status === 'Success' || history.status === 'Affiliate callback sent'))
+        dataObj[wise]['tp_fb_campaign'] = dataObj[wise]['tp_fb_campaign'] + history.count;
 
     else if (history.affiliate_mid === 'gdn' && ( history.status === 'trial' ))
         dataObj[wise]['gdn'] = dataObj[wise]['gdn'] + history.count;
@@ -414,6 +416,8 @@ function wiseMidsCount(history, wise, dataObj) {
         dataObj[wise]['gdn3'] = dataObj[wise]['gdn3'] + history.count;
     else if (history.affiliate_mid === 'goonj')
         dataObj[wise]['goonj'] = dataObj[wise]['goonj'] + history.count;
+    else if (history.affiliate_mid === 'tp_fb_campaign')
+        dataObj[wise]['tp_fb_campaign'] = dataObj[wise]['tp_fb_campaign'] + history.count;
 
     return dataObj;
 }
@@ -433,7 +437,7 @@ function cloneAffiliateWiseObj() {
     }
 }
 function cloneStatusWiseObj() {
-    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, gdn3: 0, goonj: 0 };
+    let mids = { '1': 0, '1569': 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, gdn3: 0, goonj: 0 , tp_fb_campaign: 0 };
     return {
         success: _.clone(mids),
         trial: _.clone(mids),
