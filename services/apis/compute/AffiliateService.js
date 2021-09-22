@@ -168,10 +168,10 @@ computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, computedData, partKey;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = _.clone(cloneAffiliateObj());
-    let dayDataObj = _.clone(cloneAffiliateObj());
-    let weeklyDataObj = _.clone(cloneAffiliateObj());
-    let monthlyDataObj = _.clone(cloneAffiliateObj());
+    let dataObj = _.clone(cloneTelenoreAffiliateObj());
+    let dayDataObj = _.clone(cloneTelenoreAffiliateObj());
+    let weeklyDataObj = _.clone(cloneTelenoreAffiliateObj());
+    let monthlyDataObj = _.clone(cloneTelenoreAffiliateObj());
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -181,7 +181,7 @@ computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
             if (outerObj.packageWise) {
                 partKey = outerObj.packageWise[0];
                 innerObj = partKey.QDfC;
-                computedData = computeAffiliateHeData('liveDaily', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                computedData = computeTelenorAffiliateData('liveDaily', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                 dataObj = computedData.dataObj;
                 dayDataObj = computedData.dayDataObj;
                 weeklyDataObj = computedData.weeklyDataObj;
@@ -192,7 +192,7 @@ computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
             if (outerObj.packageWise) {
                 partKey = outerObj.packageWise[0];
                 innerObj = partKey.QDfG;
-                computedData = computeAffiliateHeData('liveWeekly', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                computedData = computeTelenorAffiliateData('liveWeekly', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                 dataObj = computedData.dataObj;
                 dayDataObj = computedData.dayDataObj;
                 weeklyDataObj = computedData.weeklyDataObj;
@@ -203,7 +203,7 @@ computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
             if (outerObj.statusWise) {
                 partKey = outerObj.statusWise[0];
                 innerObj = partKey.trial;
-                computedData = computeAffiliateHeData('liveTrial', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                computedData = computeTelenorAffiliateData('liveTrial', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                 dataObj = computedData.dataObj;
                 dayDataObj = computedData.dayDataObj;
                 weeklyDataObj = computedData.weeklyDataObj;
@@ -213,7 +213,7 @@ computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
             //get Affiliate mids total count - Subscriptions Mids
             if (outerObj.subscriptions) {
                 innerObj = outerObj.subscriptions[0];
-                computedData = computeAffiliateHeData('subscriptons', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
+                computedData = computeTelenorAffiliateData('subscriptons', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
                 dataObj = computedData.dataObj;
                 dayDataObj = computedData.dayDataObj;
                 weeklyDataObj = computedData.weeklyDataObj;
@@ -235,7 +235,7 @@ computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
                 monthlyDataObj.from_date = month_from_date;
                 monthlyDataObj.to_date = outerObj.date;
                 monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                monthlyDataObj = _.clone(cloneAffiliateObj());
+                monthlyDataObj = _.clone(cloneTelenoreAffiliateObj());
                 month_from_date = null;
             }
 
@@ -244,14 +244,14 @@ computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
                 weeklyDataObj.from_date = week_from_date;
                 weeklyDataObj.to_date = outerObj.date;
                 weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                weeklyDataObj = _.clone(cloneAffiliateObj());
+                weeklyDataObj = _.clone(cloneTelenoreAffiliateObj());
                 week_from_date = null;
             }
 
             // Day Wise Date Count
             dayDataObj.date = outerObj.date;
             dayWiseTotalCount.push(_.clone(dayDataObj));
-            dayDataObj = _.clone(cloneAffiliateObj());
+            dayDataObj = _.clone(cloneTelenoreAffiliateObj());
         }
 
         //Insert last data in week array that is less then one week data
@@ -1520,6 +1520,18 @@ function computeAffiliateWiseData(statusWise, packageWise, sourceWise, innerObj,
 
     return {dataObj: dataObj, dayDataObj: dayDataObj, weeklyDataObj: weeklyDataObj, monthlyDataObj: monthlyDataObj}
 }
+
+function computeTelenorAffiliateData(part, innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj) {
+    if (innerObj.tp_fb_campaign){
+        dataObj[part]['tp_fb_campaign'] = _.clone(dataObj[part]['tp_fb_campaign'] + innerObj.tp_fb_campaign);
+        dayDataObj[part]['tp_fb_campaign'] = _.clone(dayDataObj[part]['tp_fb_campaign'] + innerObj.tp_fb_campaign);
+        weeklyDataObj[part]['tp_fb_campaign'] = _.clone(weeklyDataObj[part]['tp_fb_campaign'] + innerObj.tp_fb_campaign);
+        monthlyDataObj[part]['tp_fb_campaign'] = _.clone(monthlyDataObj[part]['tp_fb_campaign'] + innerObj.tp_fb_campaign);
+    }
+
+    return {dataObj: dataObj, dayDataObj: dayDataObj, weeklyDataObj: weeklyDataObj, monthlyDataObj: monthlyDataObj}
+}
+
 function cloneAffiliateObj (){
     let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
     return {
@@ -1527,6 +1539,15 @@ function cloneAffiliateObj (){
         uniqueSuccessHe:  _.clone(mids),
         pageViews:  _.clone(mids),
         subscribeClicks:  _.clone(mids),
+        subscriptons:  _.clone(mids),
+        liveTrial:  _.clone(mids),
+        liveDaily:  _.clone(mids),
+        liveWeekly:  _.clone(mids)
+    };
+}
+function cloneTelenoreAffiliateObj (){
+    let mids = {'tp_fb_campaign': 0};
+    return {
         subscriptons:  _.clone(mids),
         liveTrial:  _.clone(mids),
         liveDaily:  _.clone(mids),
