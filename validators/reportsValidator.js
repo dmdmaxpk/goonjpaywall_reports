@@ -15,7 +15,7 @@ class ReportsValidator{
                     this.checkSubTypeIsNull(params.user_billed, "Get Billed User", ['package_wise', 'paywall_wise', 'operator_wise']);
 
                 break;
-            case 'tp_campaign ':
+            case 'tp_campaign':
                 this.checkDateIsNull(params);
                 this.checkSubTypeIsNull(params.sub_type, "Telenor Campaign", ['tp_fb_campaign']);
 
