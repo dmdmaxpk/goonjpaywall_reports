@@ -256,7 +256,7 @@ function computeAffiliateData(subscriptionsRawData) {
 }
 function computeAffiliateMidsData(affiliateMidsData) {
 
-    let rawData, innerObj, affiliateMidsObj = { aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, gdn3: 0, goonj: 0, '1569': 0, '1': 0, 'null': 0 },
+    let rawData, innerObj, affiliateMidsObj = { tp_fb_campaign: 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, gdn3: 0, goonj: 0, '1569': 0, '1': 0, 'null': 0 },
         affiliateMids = [];
     for (let i=0; i < affiliateMidsData.length; i++) {
         rawData = affiliateMidsData[i];
@@ -267,6 +267,8 @@ function computeAffiliateMidsData(affiliateMidsData) {
             //Success, trial, Affiliate callback sent
             if(innerObj.affiliate_mid === 'aff3')
                 affiliateMidsObj.aff3 = affiliateMidsObj.aff3 + innerObj.count;
+            else if(innerObj.affiliate_mid === 'tp_fb_campaign')
+                affiliateMidsObj.tp_fb_campaign = affiliateMidsObj.tp_fb_campaign + innerObj.count;
             else if(innerObj.affiliate_mid === 'aff3a')
                 affiliateMidsObj.aff3a = affiliateMidsObj.aff3a + innerObj.count;
             else if(innerObj.affiliate_mid === 'gdn')

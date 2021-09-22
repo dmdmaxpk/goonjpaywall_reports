@@ -273,7 +273,7 @@ class SubscriptionRepository {
                     collection.aggregate([
                         {
                             $match:{
-                                source: {$in: ["HE","affiliate_web"]},
+                                source: {$in: ["HE","affiliate_web", "tp_geo_ent"]},
                                 $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                             }
                         },
