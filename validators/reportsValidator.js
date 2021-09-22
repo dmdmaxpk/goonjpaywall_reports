@@ -18,6 +18,8 @@ class ReportsValidator{
             case 'tp_campaign ':
                 this.checkDateIsNull(params);
                 this.checkSubTypeIsNull(params.sub_type, "Telenor Campaign", ['tp_fb_campaign']);
+
+                break;
             case 'paying_user':
                 this.checkDateIsNull(params);
                 this.checkSubTypeIsNull(params.sub_type, "Paying Users", ['new', 'all', 'revenue', 'engagement', 'session_time', 'watch_time']);
