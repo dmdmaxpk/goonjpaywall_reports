@@ -191,7 +191,7 @@ class SubscriptionRepository {
                     collection.aggregate([
                         {
                             $match:{
-                                source: {$in: ["HE","affiliate_web", "tp_geo_ent"]},
+                                source: {$in: ["HE","affiliate_web", "tp_geo_ent", "tp_discover_pak", "tp_dw_eng", "youtube"]},
                                 $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                             }
                         },
@@ -273,15 +273,17 @@ class SubscriptionRepository {
                     collection.aggregate([
                         {
                             $match:{
-                                source: {$in: ["HE","affiliate_web", "tp_geo_ent"]},
+                                source: {$in: ["HE","affiliate_web", "tp_geo_ent", "tp_discover_pak", "tp_dw_eng", "youtube"]},
                                 $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                             }
                         },
                         { $project:{
+                                affiliate: "$source",
                                 affiliate_mid: "$affiliate_mid",
                                 added_dtm: "$added_dtm"
                             }},
                         { $project:{
+                                affiliate: "$affiliate",
                                 affiliate_mid: "$affiliate_mid",
                                 day: { "$dayOfMonth" : "$added_dtm"},
                                 month: { "$month" : "$added_dtm" },
@@ -289,15 +291,16 @@ class SubscriptionRepository {
                             }},
                         { $project:{
                                 added_dtm: {"$dateFromParts": { year: "$year", month: "$month", day: "$day" }},
-                                affiliate_mid: "$affiliate_mid"
+                                affiliate_mid: "$affiliate_mid",
+                                affiliate: "$affiliate",
                             }},
                         { $group:{
-                                _id: {added_dtm: "$added_dtm", affiliate_mid: "$affiliate_mid"},
+                                _id: {added_dtm: "$added_dtm", affiliate_mid: "$affiliate_mid", affiliate: "$affiliate"},
                                 count: {$sum: 1}
                             }},
                         { $group:{
                             _id: {added_dtm: "$_id.added_dtm"},
-                            affiliate_mids: { $push:  {affiliate_mid: "$_id.affiliate_mid", count: "$count" }}
+                            affiliate_mids: { $push:  {affiliate_mid: "$_id.affiliate_mid", affiliate: "$affiliate", count: "$count" }}
                         }},
                         { $project: {
                             _id: 0,
