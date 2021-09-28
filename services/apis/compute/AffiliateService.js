@@ -162,124 +162,6 @@ computeAffiliateReport = async (rawDataSet, params) =>{
     }
 };
 
-computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
-    console.log('computeTelenoreAffiliateReport', params);
-
-    let monthNo, dayNo, week_from_date = null, month_from_date = null;
-    let outerObj, innerObj, computedData, partKey;
-    let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = _.clone(cloneTelenoreAffiliateObj());
-    let dayDataObj = _.clone(cloneTelenoreAffiliateObj());
-    let weeklyDataObj = _.clone(cloneTelenoreAffiliateObj());
-    let monthlyDataObj = _.clone(cloneTelenoreAffiliateObj());
-
-    if (rawDataSet.length > 0){
-        for (let i=0; i<rawDataSet.length; i++){
-            outerObj = rawDataSet[i];
-
-            //get Affiliate mids total count - live daily
-            if (outerObj.packageWise) {
-                partKey = outerObj.packageWise[0];
-                innerObj = partKey.QDfC;
-                computedData = computeTelenorAffiliateData('liveDaily', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                dataObj = computedData.dataObj;
-                dayDataObj = computedData.dayDataObj;
-                weeklyDataObj = computedData.weeklyDataObj;
-                monthlyDataObj = computedData.monthlyDataObj;
-            }
-
-            //get Affiliate mids total count - live weekly
-            if (outerObj.packageWise) {
-                partKey = outerObj.packageWise[0];
-                innerObj = partKey.QDfG;
-                computedData = computeTelenorAffiliateData('liveWeekly', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                dataObj = computedData.dataObj;
-                dayDataObj = computedData.dayDataObj;
-                weeklyDataObj = computedData.weeklyDataObj;
-                monthlyDataObj = computedData.monthlyDataObj;
-            }
-
-            //get Affiliate mids total count - live trial
-            if (outerObj.statusWise) {
-                partKey = outerObj.statusWise[0];
-                innerObj = partKey.trial;
-                computedData = computeTelenorAffiliateData('liveTrial', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                dataObj = computedData.dataObj;
-                dayDataObj = computedData.dayDataObj;
-                weeklyDataObj = computedData.weeklyDataObj;
-                monthlyDataObj = computedData.monthlyDataObj;
-            }
-
-            //get Affiliate mids total count - Subscriptions Mids
-            if (outerObj.subscriptions) {
-                innerObj = outerObj.subscriptions[0];
-                computedData = computeTelenorAffiliateData('subscriptons', innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj);
-                dataObj = computedData.dataObj;
-                dayDataObj = computedData.dayDataObj;
-                weeklyDataObj = computedData.weeklyDataObj;
-                monthlyDataObj = computedData.monthlyDataObj;
-            }
-
-            // reset start_date for both month & week so can update with latest one
-            if (week_from_date === null)
-                week_from_date = outerObj.date;
-
-            if (month_from_date === null)
-                month_from_date = outerObj.date;
-
-            monthNo = new Date(outerObj.date).getMonth() + 1;
-            dayNo = new Date(outerObj.date).getDate();
-
-            // Monthly Data Count
-            if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
-                monthlyDataObj.from_date = month_from_date;
-                monthlyDataObj.to_date = outerObj.date;
-                monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                monthlyDataObj = _.clone(cloneTelenoreAffiliateObj());
-                month_from_date = null;
-            }
-
-            // Weekly Data Count
-            if (Number(dayNo) % 7 === 0){
-                weeklyDataObj.from_date = week_from_date;
-                weeklyDataObj.to_date = outerObj.date;
-                weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                weeklyDataObj = _.clone(cloneTelenoreAffiliateObj());
-                week_from_date = null;
-            }
-
-            // Day Wise Date Count
-            dayDataObj.date = outerObj.date;
-            dayWiseTotalCount.push(_.clone(dayDataObj));
-            dayDataObj = _.clone(cloneTelenoreAffiliateObj());
-        }
-
-        //Insert last data in week array that is less then one week data
-        if (week_from_date !== null){
-            weeklyDataObj.from_date = week_from_date;
-            weeklyDataObj.to_date = outerObj.date;
-            weekWiseTotalCount.push(_.clone(weeklyDataObj));
-        }
-
-        //Insert last data in month array that is less then one month data
-        if (month_from_date !== null){
-            monthlyDataObj.from_date = month_from_date;
-            monthlyDataObj.to_date = outerObj.date;
-            monthWiseTotalCount.push(_.clone(monthlyDataObj));
-        }
-
-        // Total Count Data
-        // add date range (start-date, end-date)
-        dataObj = _.clone(dataObj);
-        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
-
-        return reportsTransformer.transformTheData(2, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
-    }
-    else {
-        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
-    }
-};
-
 computeHelogsDataReport = async (rawDataSet, params) =>{
     console.log('computeHelogsDataReport');
 
@@ -1416,6 +1298,228 @@ computeSubscriptionsMidDataReport = async (rawDataSet, params) => {
     }
 };
 
+computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
+    console.log('computeTelenoreAffiliateReport', params);
+
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, tpSourceObj, tpSource, pkg;
+    let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = _.clone(cloneTelenoreAffiliateObj());
+    let dayDataObj = _.clone(cloneTelenoreAffiliateObj());
+    let weeklyDataObj = _.clone(cloneTelenoreAffiliateObj());
+    let monthlyDataObj = _.clone(cloneTelenoreAffiliateObj());
+
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+
+            //get Affiliate mids total count - live daily
+            console.log('outerObj: ', outerObj.tpSourceTrialWise);
+
+            if (outerObj.tpSourcePkgWise) {
+                tpSourceObj = outerObj.tpSourcePkgWise[0];
+                if (tpSourceObj.tp_geo_ent){
+                    tpSource = tpSourceObj.tp_geo_ent;
+
+                    pkg = tpSource.QDfC;
+                    dataObj["tp_geo_ent"]["daily_live"] = Number(dataObj["tp_geo_ent"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["tp_geo_ent"]["daily_live"] = Number(dayDataObj["tp_geo_ent"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["tp_geo_ent"]["daily_live"] = Number(weeklyDataObj["tp_geo_ent"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["tp_geo_ent"]["daily_live"] = Number(monthlyDataObj["tp_geo_ent"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+
+                    pkg = tpSource.QDfG;
+                    dataObj["tp_geo_ent"]["weekly_live"] = Number(dataObj["tp_geo_ent"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["tp_geo_ent"]["weekly_live"] = Number(dayDataObj["tp_geo_ent"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["tp_geo_ent"]["weekly_live"] = Number(weeklyDataObj["tp_geo_ent"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["tp_geo_ent"]["weekly_live"] = Number(monthlyDataObj["tp_geo_ent"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                }
+                if (tpSourceObj.tp_discover_pak){
+                    tpSource = tpSourceObj.tp_discover_pak;
+
+                    pkg = tpSource.QDfC;
+                    dataObj["tp_discover_pak"]["daily_live"] = Number(dataObj["tp_discover_pak"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["tp_discover_pak"]["daily_live"] = Number(dayDataObj["tp_discover_pak"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["tp_discover_pak"]["daily_live"] = Number(weeklyDataObj["tp_discover_pak"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["tp_discover_pak"]["daily_live"] = Number(monthlyDataObj["tp_discover_pak"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+
+                    pkg = tpSource.QDfG;
+                    dataObj["tp_discover_pak"]["weekly_live"] = Number(dataObj["tp_discover_pak"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["tp_discover_pak"]["weekly_live"] = Number(dayDataObj["tp_discover_pak"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["tp_discover_pak"]["weekly_live"] = Number(weeklyDataObj["tp_discover_pak"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["tp_discover_pak"]["weekly_live"] = Number(monthlyDataObj["tp_discover_pak"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                }
+                if (tpSourceObj.tp_dw_eng){
+                    tpSource = tpSourceObj.tp_dw_eng;
+
+                    pkg = tpSource.QDfC;
+                    dataObj["tp_dw_eng"]["daily_live"] = Number(dataObj["tp_dw_eng"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["tp_dw_eng"]["daily_live"] = Number(dayDataObj["tp_dw_eng"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["tp_dw_eng"]["daily_live"] = Number(weeklyDataObj["tp_dw_eng"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["tp_dw_eng"]["daily_live"] = Number(monthlyDataObj["tp_dw_eng"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+
+                    pkg = tpSource.QDfG;
+                    dataObj["tp_dw_eng"]["weekly_live"] = Number(dataObj["tp_dw_eng"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["tp_dw_eng"]["weekly_live"] = Number(dayDataObj["tp_dw_eng"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["tp_dw_eng"]["weekly_live"] = Number(weeklyDataObj["tp_dw_eng"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["tp_dw_eng"]["weekly_live"] = Number(monthlyDataObj["tp_dw_eng"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                }
+                if (tpSourceObj.youtube){
+                    tpSource = tpSourceObj.youtube;
+
+                    pkg = tpSource.QDfC;
+                    dataObj["youtube"]["daily_live"] = Number(dataObj["youtube"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["youtube"]["daily_live"] = Number(dayDataObj["youtube"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["youtube"]["daily_live"] = Number(weeklyDataObj["youtube"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["youtube"]["daily_live"] = Number(monthlyDataObj["youtube"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+
+                    pkg = tpSource.QDfG;
+                    dataObj["youtube"]["weekly_live"] = Number(dataObj["youtube"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["youtube"]["weekly_live"] = Number(dayDataObj["youtube"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["youtube"]["weekly_live"] = Number(weeklyDataObj["youtube"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["youtube"]["weekly_live"] = Number(monthlyDataObj["youtube"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                }
+            }
+
+            if (outerObj.tpSourceTrialWise){
+                tpSourceObj = outerObj.tpSourceTrialWise[0];
+
+                console.log('tpSourceTrialWise: ', tpSourceObj);
+                if (tpSourceObj.tp_geo_ent){
+                    tpSource = tpSourceObj.tp_geo_ent;
+
+                    dataObj["tp_geo_ent"]["trial"] = Number(dataObj["tp_geo_ent"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_geo_ent"]["trial"] = Number(dayDataObj["tp_geo_ent"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_geo_ent"]["trial"] = Number(weeklyDataObj["tp_geo_ent"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_geo_ent"]["trial"] = Number(monthlyDataObj["tp_geo_ent"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    console.log('dataObj: ', dataObj);
+                }
+                if (tpSourceObj.tp_discover_pak){
+                    tpSource = tpSourceObj.tp_discover_pak;
+
+                    dataObj["tp_discover_pak"]["trial"] = Number(dataObj["tp_discover_pak"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_discover_pak"]["trial"] = Number(dayDataObj["tp_discover_pak"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_discover_pak"]["trial"] = Number(weeklyDataObj["tp_discover_pak"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_discover_pak"]["trial"] = Number(monthlyDataObj["tp_discover_pak"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                }
+                if (tpSourceObj.tp_dw_eng){
+                    tpSource = tpSourceObj.tp_dw_eng;
+
+                    dataObj["tp_dw_eng"]["trial"] = Number(dataObj["tp_dw_eng"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_dw_eng"]["trial"] = Number(dayDataObj["tp_dw_eng"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_dw_eng"]["trial"] = Number(weeklyDataObj["tp_dw_eng"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_dw_eng"]["trial"] = Number(monthlyDataObj["tp_dw_eng"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                }
+                if (tpSourceObj.youtube){
+                    tpSource = tpSourceObj.youtube;
+
+                    dataObj["youtube"]["trial"] = Number(dataObj["youtube"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["youtube"]["trial"] = Number(dayDataObj["youtube"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["youtube"]["trial"] = Number(weeklyDataObj["youtube"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["youtube"]["trial"] = Number(monthlyDataObj["youtube"]["trial"]) + Number(tpSource.tp_fb_campaign);
+
+                }
+            }
+
+            if (outerObj.tpSourceWiseSubs){
+                tpSourceObj = outerObj.tpSourceWiseSubs[0];
+
+                console.log('tpSourceWiseSubs: ', tpSourceObj);
+                if (tpSourceObj.tp_geo_ent){
+                    tpSource = tpSourceObj.tp_geo_ent;
+
+                    dataObj["tp_geo_ent"]["subscriptions"] = Number(dataObj["tp_geo_ent"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_geo_ent"]["subscriptions"] = Number(dayDataObj["tp_geo_ent"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_geo_ent"]["subscriptions"] = Number(weeklyDataObj["tp_geo_ent"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_geo_ent"]["subscriptions"] = Number(monthlyDataObj["tp_geo_ent"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    console.log('dataObj: ', dataObj);
+                }
+                if (tpSourceObj.tp_discover_pak){
+                    tpSource = tpSourceObj.tp_discover_pak;
+
+                    dataObj["tp_discover_pak"]["subscriptions"] = Number(dataObj["tp_discover_pak"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_discover_pak"]["subscriptions"] = Number(dayDataObj["tp_discover_pak"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_discover_pak"]["subscriptions"] = Number(weeklyDataObj["tp_discover_pak"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_discover_pak"]["subscriptions"] = Number(monthlyDataObj["tp_discover_pak"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                }
+                if (tpSourceObj.tp_dw_eng){
+                    tpSource = tpSourceObj.tp_dw_eng;
+
+                    dataObj["tp_dw_eng"]["subscriptions"] = Number(dataObj["tp_dw_eng"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_dw_eng"]["subscriptions"] = Number(dayDataObj["tp_dw_eng"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_dw_eng"]["subscriptions"] = Number(weeklyDataObj["tp_dw_eng"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_dw_eng"]["subscriptions"] = Number(monthlyDataObj["tp_dw_eng"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                }
+                if (tpSourceObj.youtube){
+                    tpSource = tpSourceObj.youtube;
+
+                    dataObj["youtube"]["subscriptions"] = Number(dataObj["youtube"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["youtube"]["subscriptions"] = Number(dayDataObj["youtube"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["youtube"]["subscriptions"] = Number(weeklyDataObj["youtube"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["youtube"]["subscriptions"] = Number(monthlyDataObj["youtube"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+
+                }
+            }
+
+            // reset start_date for both month & week so can update with latest one
+            if (week_from_date === null)
+                week_from_date = outerObj.date;
+
+            if (month_from_date === null)
+                month_from_date = outerObj.date;
+
+            monthNo = new Date(outerObj.date).getMonth() + 1;
+            dayNo = new Date(outerObj.date).getDate();
+
+            // Monthly Data Count
+            if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
+                monthlyDataObj.from_date = month_from_date;
+                monthlyDataObj.to_date = outerObj.date;
+                monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                monthlyDataObj = _.clone(cloneTelenoreAffiliateObj());
+                month_from_date = null;
+            }
+
+            // Weekly Data Count
+            if (Number(dayNo) % 7 === 0){
+                weeklyDataObj.from_date = week_from_date;
+                weeklyDataObj.to_date = outerObj.date;
+                weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                weeklyDataObj = _.clone(cloneTelenoreAffiliateObj());
+                week_from_date = null;
+            }
+
+            // Day Wise Date Count
+            dayDataObj.date = outerObj.date;
+            dayWiseTotalCount.push(_.clone(dayDataObj));
+            dayDataObj = _.clone(cloneTelenoreAffiliateObj());
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // Total Count Data
+        // add date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+
+        return reportsTransformer.transformTheData(2, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
+    }
+};
+
 function computeAffiliateHeData(part, innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj) {
     if (innerObj['1']){
         dataObj[part]['1'] = _.clone(dataObj[part]['1'] + innerObj['1']);
@@ -1520,18 +1624,6 @@ function computeAffiliateWiseData(statusWise, packageWise, sourceWise, innerObj,
 
     return {dataObj: dataObj, dayDataObj: dayDataObj, weeklyDataObj: weeklyDataObj, monthlyDataObj: monthlyDataObj}
 }
-
-function computeTelenorAffiliateData(part, innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj) {
-    if (innerObj.tp_fb_campaign){
-        dataObj[part]['tp_fb_campaign'] = _.clone(dataObj[part]['tp_fb_campaign'] + innerObj.tp_fb_campaign);
-        dayDataObj[part]['tp_fb_campaign'] = _.clone(dayDataObj[part]['tp_fb_campaign'] + innerObj.tp_fb_campaign);
-        weeklyDataObj[part]['tp_fb_campaign'] = _.clone(weeklyDataObj[part]['tp_fb_campaign'] + innerObj.tp_fb_campaign);
-        monthlyDataObj[part]['tp_fb_campaign'] = _.clone(monthlyDataObj[part]['tp_fb_campaign'] + innerObj.tp_fb_campaign);
-    }
-
-    return {dataObj: dataObj, dayDataObj: dayDataObj, weeklyDataObj: weeklyDataObj, monthlyDataObj: monthlyDataObj}
-}
-
 function cloneAffiliateObj (){
     let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
     return {
@@ -1546,12 +1638,12 @@ function cloneAffiliateObj (){
     };
 }
 function cloneTelenoreAffiliateObj (){
-    let mids = {'tp_fb_campaign': 0};
+    let mids = {'daily_live': 0, 'weekly_live': 0, 'trial': 0, 'subscriptions': 0};
     return {
-        subscriptons:  _.clone(mids),
-        liveTrial:  _.clone(mids),
-        liveDaily:  _.clone(mids),
-        liveWeekly:  _.clone(mids)
+        tp_geo_ent: _.clone(mids),
+        tp_discover_pak: _.clone(mids),
+        tp_dw_eng: _.clone(mids),
+        youtube: _.clone(mids)
     };
 }
 

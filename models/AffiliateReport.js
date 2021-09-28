@@ -13,6 +13,9 @@ const affiliateReport = new Schema({
     uniqueSuccessHe: {type: Object, default: undefined},
     logsPageView: {type: Object, default: undefined},
     logsSubscribeClick: {type: Object, default: undefined},
+    tpSourceWiseSubs: {type: Object, default: undefined},
+    tpSourcePkgWise: {type: Object, default: undefined},
+    tpSourceTrialWise: {type: Object, default: undefined},
     date: { type: Date, default: Date.now }
 }, { strict: true });
 

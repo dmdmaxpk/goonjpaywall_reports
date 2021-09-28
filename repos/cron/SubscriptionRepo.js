@@ -208,8 +208,8 @@ class SubscriptionRepository {
                                                 {$in: ["$billing_status",
                                                     [ "Success", "trial", "Affiliate callback sent" ]
                                                 ]},
-                                                {$gt: ["$billing_dtm", new Date(from)]},
-                                                {$lt: ["$billing_dtm", new Date(to)]}
+                                                {$gte: ["$billing_dtm", new Date(from)]},
+                                                {$lte: ["$billing_dtm", new Date(to)]}
                                             ]}
                                         }
                                     }],
@@ -274,7 +274,7 @@ class SubscriptionRepository {
                         {
                             $match:{
                                 source: {$in: ["HE","affiliate_web", "tp_geo_ent", "tp_discover_pak", "tp_dw_eng", "youtube"]},
-                                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
+                                $and: [{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
                             }
                         },
                         { $project:{
@@ -300,7 +300,7 @@ class SubscriptionRepository {
                             }},
                         { $group:{
                             _id: {added_dtm: "$_id.added_dtm"},
-                            affiliate_mids: { $push:  {affiliate_mid: "$_id.affiliate_mid", affiliate: "$affiliate", count: "$count" }}
+                            affiliate_mids: { $push:  {affiliate_mid: "$_id.affiliate_mid", affiliate: "$_id.affiliate", count: "$count" }}
                         }},
                         { $project: {
                             _id: 0,

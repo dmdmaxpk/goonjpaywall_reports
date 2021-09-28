@@ -27,8 +27,8 @@ computeAffiliateReports = async(req, res) => {
             computedData = computeAffiliateData(subscriptions);
             console.log('computedData : ', computedData);
 
-            //affiliateWise, statusWise, packageWise, sourceWise, tpSourceWise
-            await insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, computedData.tpSourceWise, fromDate);
+            //affiliateWise, statusWise, packageWise, sourceWise, tpSourcePkgWise, tpSourceTrialWise
+            await insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, computedData.tpSourcePkgWise, computedData.tpSourceTrialWise, fromDate);
         }
 
         // Get compute data for next time slot
@@ -84,7 +84,7 @@ computeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
             affiliateMidsData = computeAffiliateMidsData(affiliateMids);
             console.log('affiliateMidsData : ', affiliateMidsData.length);
 
-            await insertAffiliateMidsNewRecord(affiliateMidsData, fromDate);
+            await insertAffiliateMidsNewRecord(affiliateMidsData.affiliateMids, affiliateMidsData.tpSourceWise, fromDate);
         }
     });
 
@@ -132,12 +132,12 @@ promiseBasedComputeAffiliateReports = async(req, res) => {
 
         console.log('computeAffiliateReports: ', fromDate, toDate);
         await subscriptionRepo.getAffiliateDataByDateRange(req, fromDate, toDate).then(async function (subscriptions) {
-            console.log('subscription: ', subscriptions.length);
+            console.log('subscription: ', subscriptions, subscriptions.length);
 
             if (subscriptions.length > 0){
                 computedData = computeAffiliateData(subscriptions);
-                //affiliateWise, statusWise, packageWise, sourceWise, tpSourceWise
-                await insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, computedData.tpSourceWise, fromDate);
+                //affiliateWise, statusWise, packageWise, sourceWise, tpSourcePkgWise, tpSourceTrialWise
+                await insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, computedData.tpSourcePkgWise, computedData.tpSourceTrialWise, fromDate);
             }
         });
 
@@ -169,6 +169,8 @@ promiseBasedComputeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
 
             if (affiliateMids.length > 0){
                 affiliateMidsData = computeAffiliateMidsData(affiliateMids);
+                console.log('affiliateMidsData: ', affiliateMidsData);
+
                 await insertAffiliateMidsNewRecord(affiliateMidsData.affiliateMids, affiliateMidsData.tpSourceWise, fromDate);
             }
         });
@@ -184,14 +186,15 @@ promiseBasedComputeAffiliateMidsFromSubscriptionsReports = async(req, res) => {
 
 function computeAffiliateData(subscriptionsRawData) {
 
-    let rawData, statusWiseObj, packageWiseObj, sourceWiseObj, affiliateObj, tpSourceWiseObj, history,
-        affiliateWise = [], statusWise = [], packageWise = [], sourceWise = [], tpSourceWise = [];
+    let rawData, statusWiseObj, packageWiseObj, sourceWiseObj, affiliateObj, tpSourceAndPkgWiseObj, tpSourceAndTrialWiseObj, history,
+        affiliateWise = [], statusWise = [], packageWise = [], sourceWise = [], tpSourcePkgWise = [], tpSourceTrialWise = [];
 
     affiliateObj = _.clone(cloneAffiliateWiseObj());
     statusWiseObj = _.clone(cloneStatusWiseObj());
     packageWiseObj = _.clone(clonePackageWiseObj());
     sourceWiseObj = _.clone(cloneSourceWiseObj());
-    tpSourceWiseObj = _.clone(cloneSourceAndPackageWiseObj());
+    tpSourceAndPkgWiseObj = _.clone(cloneSourceAndPackageWiseObj());
+    tpSourceAndTrialWiseObj = _.clone(cloneSourceAndTrialWiseObj());
     for (let i=0; i < subscriptionsRawData.length; i++) {
 
         rawData = subscriptionsRawData[i];
@@ -234,43 +237,71 @@ function computeAffiliateData(subscriptionsRawData) {
                 else if (history.affiliate === 'affiliate_web')
                     sourceWiseObj = wiseMidsCount(history, 'affiliate_web', sourceWiseObj);
 
-
                 //collect data => source wise and package wise Mids count
-                if (history.affiliate === 'tp_geo_ent')
+                if (history.affiliate === 'tp_geo_ent'){
+                    console.log('history.affiliate: ', history.affiliate);
                     if (history.package_id === 'QDfC')
-                        tpSourceWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_geo_ent', 'QDfC', tpSourceWiseObj);
+                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_geo_ent', 'QDfC', tpSourceAndPkgWiseObj);
                     else if (history.package_id === 'QDfG')
-                        tpSourceWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_geo_ent', 'QDfG', tpSourceWiseObj);
+                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_geo_ent', 'QDfG', tpSourceAndPkgWiseObj);
+
+                    console.log('history.status: ', history.status);
 
                     if (history.status === 'trial')
-                        tpSourceWiseObj = sourceAndTrialwiseMidsCount(history, 'tp_geo_ent', 'trial', tpSourceWiseObj);
+                        tpSourceAndTrialWiseObj = sourceAndTrialwiseMidsCount(history, 'tp_geo_ent', tpSourceAndTrialWiseObj);
 
-                else if (history.affiliate === 'tp_discover_pak')
+                    console.log('tpSourceAndPkgWiseObj: ', tpSourceAndPkgWiseObj);
+                    console.log('tpSourceAndTrialWiseObj: ', tpSourceAndTrialWiseObj);
+                }
+
+
+                else if (history.affiliate === 'tp_discover_pak'){
+                    console.log('history.affiliate: ', history.affiliate);
                     if (history.package_id === 'QDfC')
-                        tpSourceWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_discover_pak', 'QDfC', tpSourceWiseObj);
+                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_discover_pak', 'QDfC', tpSourceAndPkgWiseObj);
                     else if (history.package_id === 'QDfG')
-                        tpSourceWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_discover_pak', 'QDfG', tpSourceWiseObj);
+                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_discover_pak', 'QDfG', tpSourceAndPkgWiseObj);
+
+                    console.log('history.status: ', history.status);
 
                     if (history.status === 'trial')
-                        tpSourceWiseObj = sourceAndTrialwiseMidsCount(history, 'tp_discover_pak', 'trial', tpSourceWiseObj);
+                        tpSourceAndTrialWiseObj = sourceAndTrialwiseMidsCount(history, 'tp_discover_pak', tpSourceAndTrialWiseObj);
 
-                else if (history.affiliate === 'tp_dw_eng')
+                    console.log('tpSourceAndPkgWiseObj: ', tpSourceAndPkgWiseObj);
+                    console.log('tpSourceAndTrialWiseObj: ', tpSourceAndTrialWiseObj);
+                }
+
+                else if (history.affiliate === 'tp_dw_eng'){
+                    console.log('history.affiliate: ', history.affiliate);
                     if (history.package_id === 'QDfC')
-                        tpSourceWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_dw_eng', 'QDfC', tpSourceWiseObj);
+                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_dw_eng', 'QDfC', tpSourceAndPkgWiseObj);
                     else if (history.package_id === 'QDfG')
-                        tpSourceWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_dw_eng', 'QDfG', tpSourceWiseObj);
+                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_dw_eng', 'QDfG', tpSourceAndPkgWiseObj);
+
+                    console.log('history.status: ', history.status);
 
                     if (history.status === 'trial')
-                        tpSourceWiseObj = sourceAndTrialwiseMidsCount(history, 'tp_dw_eng', 'trial', tpSourceWiseObj);
+                        tpSourceAndTrialWiseObj = sourceAndTrialwiseMidsCount(history, 'tp_dw_eng', tpSourceAndTrialWiseObj);
 
-                else if (history.affiliate === 'youtube')
+                    console.log('tpSourceAndPkgWiseObj: ', tpSourceAndPkgWiseObj);
+                    console.log('tpSourceAndTrialWiseObj: ', tpSourceAndTrialWiseObj);
+                }
+
+                else if (history.affiliate === 'youtube'){
+                    console.log('history.affiliate: ', history.affiliate);
                     if (history.package_id === 'QDfC')
-                        tpSourceWiseObj = sourceAndPackageWiseMidsCount(history, 'youtube', 'QDfC', tpSourceWiseObj);
+                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'youtube', 'QDfC', tpSourceAndPkgWiseObj);
                     else if (history.package_id === 'QDfG')
-                        tpSourceWiseObj = sourceAndPackageWiseMidsCount(history, 'youtube', 'QDfG', tpSourceWiseObj);
+                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'youtube', 'QDfG', tpSourceAndPkgWiseObj);
+
+                    console.log('history.status: ', history.status);
 
                     if (history.status === 'trial')
-                        tpSourceWiseObj = sourceAndTrialwiseMidsCount(history, 'youtube', 'trial', tpSourceWiseObj);
+                        tpSourceAndTrialWiseObj = sourceAndTrialwiseMidsCount(history, 'youtube', tpSourceAndTrialWiseObj);
+
+                    console.log('tpSourceAndPkgWiseObj: ', tpSourceAndPkgWiseObj);
+                    console.log('tpSourceAndTrialWiseObj: ', tpSourceAndTrialWiseObj);
+                }
             }
         }
 
@@ -278,13 +309,15 @@ function computeAffiliateData(subscriptionsRawData) {
         statusWiseObj.billing_dtm = rawData.billing_dtm;
         packageWiseObj.billing_dtm = rawData.billing_dtm;
         sourceWiseObj.billing_dtm = rawData.billing_dtm;
-        tpSourceWiseObj.billing_dtm = rawData.billing_dtm;
+        tpSourceAndPkgWiseObj.billing_dtm = rawData.billing_dtm;
+        tpSourceAndTrialWiseObj.billing_dtm = rawData.billing_dtm;
 
         affiliateObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
         statusWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
         packageWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
         sourceWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
-        tpSourceWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
+        tpSourceAndPkgWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
+        tpSourceAndTrialWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
     }
 
     //affiliateWise, statusWise, packageWise, sourceWise, tpSourceWise
@@ -292,14 +325,15 @@ function computeAffiliateData(subscriptionsRawData) {
     statusWise.push(statusWiseObj);
     packageWise.push(packageWiseObj);
     sourceWise.push(sourceWiseObj);
-    tpSourceWise.push(tpSourceWiseObj);
+    tpSourcePkgWise.push(tpSourceAndPkgWiseObj);
+    tpSourceTrialWise.push(tpSourceAndTrialWiseObj);
 
-    return {affiliateWise: affiliateWise, statusWise: statusWise, packageWise: packageWise, sourceWise: sourceWise, tpSourceWise: tpSourceWise};
+    return {affiliateWise: affiliateWise, statusWise: statusWise, packageWise: packageWise, sourceWise: sourceWise, tpSourcePkgWise: tpSourcePkgWise, tpSourceTrialWise: tpSourceTrialWise};
 }
 function computeAffiliateMidsData(affiliateMidsData) {
 
     let rawData, innerObj, affiliateMids = [], affiliateMidsObj = { tp_fb_campaign: 0, aff3: 0, aff3a: 0, gdn: 0, gdn2: 0, gdn3: 0, goonj: 0, '1569': 0, '1': 0, 'null': 0 };
-    let tpSourceWise = [], tpSourceWiseObj = _.clone(cloneSourceAndPackageWiseObj());
+    let tpSourceWise = [], tpSourceWiseObj = _.clone(cloneSourceSubscriptionWiseObj());
 
     for (let i=0; i < affiliateMidsData.length; i++) {
         rawData = affiliateMidsData[i];
@@ -329,27 +363,38 @@ function computeAffiliateMidsData(affiliateMidsData) {
             else if(innerObj.affiliate_mid === 'null')
                 affiliateMidsObj['null'] = affiliateMidsObj['null'] + innerObj.count;
 
-
             //collect data => source wise and package wise Mids count
-            if (innerObj.affiliate === 'tp_geo_ent')
-                tpSourceWiseObj = sourceAndSubscriptionswiseMidsCount(innerObj, 'tp_geo_ent', 'subscriptions', tpSourceWiseObj);
+            if (innerObj.affiliate === 'tp_geo_ent'){
+                console.log('affiliate: ', innerObj.affiliate);
+                tpSourceWiseObj = sourceAndSubscriptionswiseMidsCount(innerObj, 'tp_geo_ent', tpSourceWiseObj);
+                console.log('tpSourceWiseObj: ', tpSourceWiseObj);
+            }
 
-            else if (innerObj.affiliate === 'tp_discover_pak')
-                tpSourceWiseObj = sourceAndSubscriptionswiseMidsCount(innerObj, 'tp_discover_pak', 'subscriptions', tpSourceWiseObj);
+            else if (innerObj.affiliate === 'tp_discover_pak'){
+                console.log('affiliate: ', innerObj.affiliate);
+                tpSourceWiseObj = sourceAndSubscriptionswiseMidsCount(innerObj, 'tp_discover_pak', tpSourceWiseObj);
+                console.log('tpSourceWiseObj: ', tpSourceWiseObj);
+            }
 
-            else if (innerObj.affiliate === 'tp_dw_eng')
-                tpSourceWiseObj = sourceAndSubscriptionswiseMidsCount(innerObj, 'tp_discover_pak', 'subscriptions', tpSourceWiseObj);
+            else if (innerObj.affiliate === 'tp_dw_eng'){
+                console.log('affiliate: ', innerObj.affiliate);
+                tpSourceWiseObj = sourceAndSubscriptionswiseMidsCount(innerObj, 'tp_dw_eng', tpSourceWiseObj);
+                console.log('tpSourceWiseObj: ', tpSourceWiseObj);
+            }
 
-            else if (innerObj.affiliate === 'youtube')
-                tpSourceWiseObj = sourceAndSubscriptionswiseMidsCount(innerObj, 'youtube', 'subscriptions', tpSourceWiseObj);
+            else if (innerObj.affiliate === 'youtube'){
+                console.log('affiliate: ', innerObj.affiliate);
+                tpSourceWiseObj = sourceAndSubscriptionswiseMidsCount(innerObj, 'youtube', tpSourceWiseObj);
+                console.log('tpSourceWiseObj: ', tpSourceWiseObj);
+            }
 
         }
     }
 
-    affiliateMidsObj.billing_dtm = rawData.billing_dtm;
-    tpSourceWiseObj.billing_dtm = rawData.billing_dtm;
-    affiliateMidsObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
-    tpSourceWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.billing_dtm), null, 0, 0, 0);
+    affiliateMidsObj.added_dtm = rawData.added_dtm;
+    tpSourceWiseObj.added_dtm = rawData.added_dtm;
+    affiliateMidsObj.billing_dtm_hours = helper.setDate(new Date(rawData.added_dtm), null, 0, 0, 0);
+    tpSourceWiseObj.billing_dtm_hours = helper.setDate(new Date(rawData.added_dtm), null, 0, 0, 0);
 
     affiliateMids.push(affiliateMidsObj);
     tpSourceWise.push(tpSourceWiseObj);
@@ -357,7 +402,7 @@ function computeAffiliateMidsData(affiliateMidsData) {
     return { affiliateMids: affiliateMids, tpSourceWise: tpSourceWise};
 }
 
-function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, tpSourceWise, dateString) {
+function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, tpSourcePkgWise, tpSourceTrialWise, dateString) {
     //affiliateWise, statusWise, packageWise, sourceWise, tpSourceWise
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
@@ -370,7 +415,8 @@ function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, tpS
             result.statusWise = statusWise;
             result.packageWise = packageWise;
             result.sourceWise = sourceWise;
-            result.tpSourceWise = tpSourceWise;
+            result.tpSourcePkgWise = tpSourcePkgWise;
+            result.tpSourceTrialWise = tpSourceTrialWise;
 
             affiliateRepo.updateReport(result, result._id);
         }
@@ -380,7 +426,8 @@ function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, tpS
                 statusWise: statusWise,
                 packageWise: packageWise,
                 sourceWise: sourceWise,
-                tpSourceWise: tpSourceWise,
+                tpSourcePkgWise: tpSourcePkgWise,
+                tpSourceTrialWise: tpSourceTrialWise,
                 date: dateString
             });
     });
@@ -390,6 +437,7 @@ function insertAffiliateMidsNewRecord(affiliateMidsData, tpSourceWiseData, dateS
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
+    console.log('=>=>=>=>=>=>=> tpSourceWiseData', tpSourceWiseData);
 
     affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0) {
@@ -441,13 +489,13 @@ function packageWiseMidsCount(history, wise, dataObj) {
 
     console.log('history.affiliate_mid: ', history.affiliate_mid, history.status, history.count);
     if (history.affiliate_mid === '1569' && ( history.status === 'Success' || history.status === 'Affiliate callback sent'))
-        dataObj[wise]['1569'] = dataObj[wise]['1569'] + history.count;
+        dataObj[wise]['1569'] = history.count;
     else if (history.affiliate_mid === 'aff3' && ( history.status === 'Success' || history.status === 'Affiliate callback sent'))
-        dataObj[wise]['aff3'] = dataObj[wise]['aff3'] + history.count;
+        dataObj[wise]['aff3'] = history.count;
     else if (history.affiliate_mid === 'aff3a' && ( history.status === 'Success' || history.status === 'Affiliate callback sent'))
-        dataObj[wise]['aff3a'] = dataObj[wise]['aff3a'] + history.count;
+        dataObj[wise]['aff3a'] = history.count;
     else if (history.affiliate_mid === 'goonj' && ( history.status === 'Success' || history.status === 'Affiliate callback sent'))
-        dataObj[wise]['goonj'] = dataObj[wise]['goonj'] + history.count;
+        dataObj[wise]['goonj'] = history.count;
 
     else if (history.affiliate_mid === 'gdn' && ( history.status === 'trial' ))
         dataObj[wise]['gdn'] = dataObj[wise]['gdn'] + history.count;
@@ -490,18 +538,17 @@ function sourceAndPackageWiseMidsCount(history, wise, pkg, dataObj) {
     console.log('sourceAndPackageWiseMidsCount - dataObj: ', dataObj);
     return dataObj;
 }
-function sourceAndTrialwiseMidsCount(history, wise, status, dataObj) {
+function sourceAndTrialwiseMidsCount(history, wise, dataObj) {
     if (history.affiliate_mid === 'tp_fb_campaign')
-        dataObj[wise][status]['tp_fb_campaign'] = dataObj[wise][status]['tp_fb_campaign'] + history.count;
+        dataObj[wise]['tp_fb_campaign'] = dataObj[wise]['tp_fb_campaign'] + history.count;
 
     console.log('sourceAndTrialwiseMidsCount - dataObj: ', dataObj);
     return dataObj;
 }
-function sourceAndSubscriptionswiseMidsCount(history, wise, subscription, dataObj) {
+function sourceAndSubscriptionswiseMidsCount(history, wise, dataObj) {
     if (history.affiliate_mid === 'tp_fb_campaign')
-        dataObj[wise][subscription]['tp_fb_campaign'] = dataObj[wise][subscription]['tp_fb_campaign'] + history.count;
+        dataObj[wise]['tp_fb_campaign'] = dataObj[wise]['tp_fb_campaign'] + history.count;
 
-    console.log('sourceAndSubscriptionswiseMidsCount - dataObj: ', dataObj);
     return dataObj;
 }
 
@@ -550,12 +597,46 @@ function cloneSourceWiseObj() {
 function cloneSourceAndPackageWiseObj() {
     let mids = { tp_fb_campaign: 0 };
     return {
+        tp_geo_ent: {
+            QDfC : _.clone(mids),
+            QDfG : _.clone(mids),
+        },
+        tp_discover_pak: {
+            QDfC : _.clone(mids),
+            QDfG : _.clone(mids),
+        },
+        tp_dw_eng: {
+            QDfC : _.clone(mids),
+            QDfG : _.clone(mids),
+        },
+        youtube: {
+            QDfC : _.clone(mids),
+            QDfG : _.clone(mids),
+        },
+        billing_dtm: '',
+        billing_dtm_hours: ''
+    }
+}
+function cloneSourceAndTrialWiseObj() {
+    let mids = { tp_fb_campaign: 0 };
+    return {
         tp_geo_ent: _.clone(mids),
         tp_discover_pak: _.clone(mids),
         tp_dw_eng: _.clone(mids),
         youtube: _.clone(mids),
         billing_dtm: '',
         billing_dtm_hours: ''
+    }
+}
+function cloneSourceSubscriptionWiseObj() {
+    let mids = { tp_fb_campaign: 0 };
+    return {
+        tp_geo_ent: _.clone(mids),
+        tp_discover_pak: _.clone(mids),
+        tp_dw_eng: _.clone(mids),
+        youtube: _.clone(mids),
+        added_dtm: '',
+        added_dtm_hours: ''
     }
 }
 

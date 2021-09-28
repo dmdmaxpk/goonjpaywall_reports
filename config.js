@@ -1,6 +1,6 @@
 const env = process.env.NODE_ENV || 'development';
 
-const port = '3016';
+const port = '3006';
 const base_path = 'http://localhost:'+port;
 const cron_db_query_data_limit = 300000;
 let config = {

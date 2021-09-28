@@ -16,8 +16,14 @@ updateReport = async (data, id) => {
 };
 
 generateAffiliateReportsData = async (params) => {
-    console.log('generateAffiliateReportsData: ', params.from_date, params.to_date);
-    return await AffiliateReport.find( { $and:[{date:{$gte:new Date(params.from_date)}}, {date:{$lte:new Date(params.to_date)}}] }).sort({date: 1});
+
+    let fromDate  = new Date(params.from_date).setHours(0, 0, 0);
+    let toDate  = new Date(params.from_date);
+    toDate.setDate(toDate.getDate() + 1);
+    toDate.setHours(23, 59, 59);
+
+    console.log('generateAffiliateReportsData: ', new Date(fromDate), new Date(toDate));
+    return await AffiliateReport.find( { $and:[{date:{$gte: fromDate}}, {date:{$lt: toDate}}] }).sort({date: 1});
 };
 
 module.exports = {
