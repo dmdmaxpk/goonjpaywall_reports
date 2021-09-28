@@ -18,8 +18,7 @@ updateReport = async (data, id) => {
 generateAffiliateReportsData = async (params) => {
 
     let fromDate  = new Date(params.from_date).setHours(0, 0, 0);
-    let toDate  = new Date(params.from_date);
-    toDate.setDate(toDate.getDate() + 1);
+    let toDate  = new Date(params.to_date);
     toDate.setHours(23, 59, 59);
 
     console.log('generateAffiliateReportsData: ', new Date(fromDate), new Date(toDate));
