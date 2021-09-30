@@ -240,67 +240,59 @@ function computeAffiliateData(subscriptionsRawData) {
                 //collect data => source wise and package wise Mids count
                 if (history.affiliate === 'tp_geo_ent'){
                     console.log('history.affiliate: ', history.affiliate);
-                    if (history.package_id === 'QDfC')
-                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_geo_ent', 'QDfC', tpSourceAndPkgWiseObj);
-                    else if (history.package_id === 'QDfG')
-                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_geo_ent', 'QDfG', tpSourceAndPkgWiseObj);
 
-                    console.log('history.status: ', history.status);
+                    if (history.status === 'Success'){
+                        if (history.package_id === 'QDfC')
+                            tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_geo_ent', 'QDfC', tpSourceAndPkgWiseObj);
+                        else if (history.package_id === 'QDfG')
+                            tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_geo_ent', 'QDfG', tpSourceAndPkgWiseObj);
+                    }
 
                     if (history.status === 'trial')
                         tpSourceAndTrialWiseObj = sourceAndTrialwiseMidsCount(history, 'tp_geo_ent', tpSourceAndTrialWiseObj);
-
-                    console.log('tpSourceAndPkgWiseObj: ', tpSourceAndPkgWiseObj);
-                    console.log('tpSourceAndTrialWiseObj: ', tpSourceAndTrialWiseObj);
                 }
 
 
                 else if (history.affiliate === 'tp_discover_pak'){
                     console.log('history.affiliate: ', history.affiliate);
-                    if (history.package_id === 'QDfC')
-                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_discover_pak', 'QDfC', tpSourceAndPkgWiseObj);
-                    else if (history.package_id === 'QDfG')
-                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_discover_pak', 'QDfG', tpSourceAndPkgWiseObj);
 
-                    console.log('history.status: ', history.status);
+                    if (history.status === 'Success') {
+                        if (history.package_id === 'QDfC')
+                            tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_discover_pak', 'QDfC', tpSourceAndPkgWiseObj);
+                        else if (history.package_id === 'QDfG')
+                            tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_discover_pak', 'QDfG', tpSourceAndPkgWiseObj);
+                    }
 
                     if (history.status === 'trial')
                         tpSourceAndTrialWiseObj = sourceAndTrialwiseMidsCount(history, 'tp_discover_pak', tpSourceAndTrialWiseObj);
-
-                    console.log('tpSourceAndPkgWiseObj: ', tpSourceAndPkgWiseObj);
-                    console.log('tpSourceAndTrialWiseObj: ', tpSourceAndTrialWiseObj);
                 }
 
                 else if (history.affiliate === 'tp_dw_eng'){
                     console.log('history.affiliate: ', history.affiliate);
-                    if (history.package_id === 'QDfC')
-                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_dw_eng', 'QDfC', tpSourceAndPkgWiseObj);
-                    else if (history.package_id === 'QDfG')
-                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_dw_eng', 'QDfG', tpSourceAndPkgWiseObj);
 
-                    console.log('history.status: ', history.status);
+                    if (history.status === 'Success') {
+                        if (history.package_id === 'QDfC')
+                            tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_dw_eng', 'QDfC', tpSourceAndPkgWiseObj);
+                        else if (history.package_id === 'QDfG')
+                            tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_dw_eng', 'QDfG', tpSourceAndPkgWiseObj);
+                    }
 
                     if (history.status === 'trial')
                         tpSourceAndTrialWiseObj = sourceAndTrialwiseMidsCount(history, 'tp_dw_eng', tpSourceAndTrialWiseObj);
-
-                    console.log('tpSourceAndPkgWiseObj: ', tpSourceAndPkgWiseObj);
-                    console.log('tpSourceAndTrialWiseObj: ', tpSourceAndTrialWiseObj);
                 }
 
                 else if (history.affiliate === 'youtube'){
                     console.log('history.affiliate: ', history.affiliate);
-                    if (history.package_id === 'QDfC')
-                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'youtube', 'QDfC', tpSourceAndPkgWiseObj);
-                    else if (history.package_id === 'QDfG')
-                        tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'youtube', 'QDfG', tpSourceAndPkgWiseObj);
 
-                    console.log('history.status: ', history.status);
+                    if (history.status === 'Success') {
+                        if (history.package_id === 'QDfC')
+                            tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'youtube', 'QDfC', tpSourceAndPkgWiseObj);
+                        else if (history.package_id === 'QDfG')
+                            tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'youtube', 'QDfG', tpSourceAndPkgWiseObj);
+                    }
 
                     if (history.status === 'trial')
                         tpSourceAndTrialWiseObj = sourceAndTrialwiseMidsCount(history, 'youtube', tpSourceAndTrialWiseObj);
-
-                    console.log('tpSourceAndPkgWiseObj: ', tpSourceAndPkgWiseObj);
-                    console.log('tpSourceAndTrialWiseObj: ', tpSourceAndTrialWiseObj);
                 }
             }
         }
@@ -532,6 +524,10 @@ function wiseMidsCount(history, wise, dataObj) {
     return dataObj;
 }
 function sourceAndPackageWiseMidsCount(history, wise, pkg, dataObj) {
+    console.log('sourceAndPackageWiseMidsCount - history: ', history);
+    console.log('sourceAndPackageWiseMidsCount - wise: ', wise);
+    console.log('sourceAndPackageWiseMidsCount - pkg: ', pkg);
+
     if (history.affiliate_mid === 'tp_fb_campaign')
         dataObj[wise][pkg]['tp_fb_campaign'] = history.count;
 
