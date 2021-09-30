@@ -533,7 +533,7 @@ function wiseMidsCount(history, wise, dataObj) {
 }
 function sourceAndPackageWiseMidsCount(history, wise, pkg, dataObj) {
     if (history.affiliate_mid === 'tp_fb_campaign')
-        dataObj[wise][pkg]['tp_fb_campaign'] = dataObj[wise][pkg]['tp_fb_campaign'] + history.count;
+        dataObj[wise][pkg]['tp_fb_campaign'] = history.count;
 
     console.log('sourceAndPackageWiseMidsCount - dataObj: ', dataObj);
     return dataObj;
@@ -639,7 +639,6 @@ function cloneSourceSubscriptionWiseObj() {
         added_dtm_hours: ''
     }
 }
-
 
 module.exports = {
     computeAffiliateReports: computeAffiliateReports,
