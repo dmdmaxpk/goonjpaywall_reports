@@ -1314,8 +1314,6 @@ computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
             outerObj = rawDataSet[i];
 
             //get Affiliate mids total count - live daily
-            console.log('outerObj: ', outerObj.tpSourceTrialWise);
-
             if (outerObj.tpSourcePkgWise) {
                 tpSourceObj = outerObj.tpSourcePkgWise[0];
                 if (tpSourceObj.tp_geo_ent){
@@ -1382,8 +1380,6 @@ computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
 
             if (outerObj.tpSourceTrialWise){
                 tpSourceObj = outerObj.tpSourceTrialWise[0];
-
-                console.log('tpSourceTrialWise: ', tpSourceObj);
                 if (tpSourceObj.tp_geo_ent){
                     tpSource = tpSourceObj.tp_geo_ent;
 
@@ -1391,7 +1387,6 @@ computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
                     dayDataObj["tp_geo_ent"]["trial"] = Number(dayDataObj["tp_geo_ent"]["trial"]) + Number(tpSource.tp_fb_campaign);
                     weeklyDataObj["tp_geo_ent"]["trial"] = Number(weeklyDataObj["tp_geo_ent"]["trial"]) + Number(tpSource.tp_fb_campaign);
                     monthlyDataObj["tp_geo_ent"]["trial"] = Number(monthlyDataObj["tp_geo_ent"]["trial"]) + Number(tpSource.tp_fb_campaign);
-                    console.log('dataObj: ', dataObj);
                 }
                 if (tpSourceObj.tp_discover_pak){
                     tpSource = tpSourceObj.tp_discover_pak;

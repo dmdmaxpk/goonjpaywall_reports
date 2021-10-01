@@ -16,8 +16,12 @@ updateReport = async (data, id) => {
 };
 
 generateReportsData = async (params) => {
-    console.log('generateReportsData: ', params.from_date, params.to_date);
-    return await PayingUser.find( { $and:[{date:{$gte:new Date(params.from_date)}}, {date:{$lte:new Date(params.to_date)}}] }).sort({date: 1});
+    let fromDate  = new Date(params.from_date).setHours(0, 0, 0);
+    let toDate  = new Date(params.to_date);
+    toDate.setHours(23, 59, 59);
+
+    console.log('generateReportsData: ', new Date(fromDate), new Date(toDate));
+    return await PayingUser.find( { $and:[{date:{$gte: fromDate}}, {date:{$lt: toDate}}] }).sort({date: 1});
 };
 
 module.exports = {

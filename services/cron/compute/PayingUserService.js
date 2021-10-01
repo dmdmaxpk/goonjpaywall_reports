@@ -622,8 +622,12 @@ async function insertNewRecord(data, dateString, fieldName) {
 
             await payingUsersRepo.updateReport(result, result._id);
         }
-        else
-            await payingUsersRepo.createReport({fieldName: data, date: dateString});
+        else{
+            let obj = {};
+            obj.date = dateString;
+            obj[fieldName] = data;
+            await payingUsersRepo.createReport(obj);
+        }
     });
 }
 

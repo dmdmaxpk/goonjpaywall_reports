@@ -129,30 +129,30 @@ cronComputeMonthlyDataReports = async (req, res) => {
     helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputeNewPayingUserRevenueReports');
     await PayingUserService.promiseBasedComputeNewPayingUserRevenueReports(req,res);
 
-    helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputeNewPayingUsersReports');
-    await PayingUserService.promiseBasedComputeNewPayingUsersReports(req,res);
-
-    helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputeTotalPayingUsersReports');
-    await PayingUserService.promiseBasedComputeTotalPayingUsersReports(req,res);
-
-    helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputePayingUserSessionsReports');
-    await PayingUserService.promiseBasedComputePayingUserSessionsReports(req,res);
-
-
-    // compute msisdn wise data from streamlogs db
-    helper.sixLinesConsoleLog('Database - Connection ( streamlogs )');
-    await connection.updateConnection(req, res, null, 'streamlogs');
-
-    helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputePayingUserWatchTimeReports');
-    await PayingUserService.promiseBasedComputePayingUserWatchTimeReports(req,res);
-
-
-    // Connect with goonjpaywall db
-    helper.sixLinesConsoleLog('Database - Connection ( goonjpaywall )');
-    await connection.updateConnection(req, res, null, 'goonjpaywall');
-
-    helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputePayingUserEngagementReports');
-    await PayingUserService.promiseBasedComputePayingUserEngagementReports(req,res);
+    // helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputeNewPayingUsersReports');
+    // await PayingUserService.promiseBasedComputeNewPayingUsersReports(req,res);
+    //
+    // helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputeTotalPayingUsersReports');
+    // await PayingUserService.promiseBasedComputeTotalPayingUsersReports(req,res);
+    //
+    // helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputePayingUserSessionsReports');
+    // await PayingUserService.promiseBasedComputePayingUserSessionsReports(req,res);
+    //
+    //
+    // // compute msisdn wise data from streamlogs db
+    // helper.sixLinesConsoleLog('Database - Connection ( streamlogs )');
+    // await connection.updateConnection(req, res, null, 'streamlogs');
+    //
+    // helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputePayingUserWatchTimeReports');
+    // await PayingUserService.promiseBasedComputePayingUserWatchTimeReports(req,res);
+    //
+    //
+    // // Connect with goonjpaywall db
+    // helper.sixLinesConsoleLog('Database - Connection ( goonjpaywall )');
+    // await connection.updateConnection(req, res, null, 'goonjpaywall');
+    //
+    // helper.threeLinesConsoleLog('PayingUserService - promiseBasedComputePayingUserEngagementReports');
+    // await PayingUserService.promiseBasedComputePayingUserEngagementReports(req,res);
 
     helper.oneLineConsoleLog('Cron - Last Month Data computation is done.');
 };
