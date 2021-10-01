@@ -12,7 +12,7 @@ computeAffiliateReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 1, 9);
+    dateData = helper.computeNextDateWithLocalTime(req, 27, 9);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -21,11 +21,11 @@ computeAffiliateReports = async(req, res) => {
 
     console.log('computeAffiliateReports: ', fromDate, toDate);
     await subscriptionRepo.getAffiliateDataByDateRange(req, fromDate, toDate).then(async function (subscriptions) {
-        console.log('subscription: ', subscriptions);
+        console.log('subscription: ', subscriptions.length);
 
         if (subscriptions.length > 0){
             computedData = computeAffiliateData(subscriptions);
-            console.log('computedData : ', computedData);
+            // console.log('computedData:::::::::::::::::: : ', computedData);
 
             //affiliateWise, statusWise, packageWise, sourceWise, tpSourcePkgWise, tpSourceTrialWise, tpSourceExpireWise
             await insertNewRecord(computedData.affiliateWise, computedData.statusWise, computedData.packageWise, computedData.sourceWise, computedData.tpSourcePkgWise, computedData.tpSourceTrialWise, computedData.tpSourceExpireWise, fromDate);
@@ -132,7 +132,7 @@ promiseBasedComputeAffiliateReports = async(req, res) => {
 
         console.log('computeAffiliateReports: ', fromDate, toDate);
         await subscriptionRepo.getAffiliateDataByDateRange(req, fromDate, toDate).then(async function (subscriptions) {
-            console.log('subscription: ', subscriptions, subscriptions.length);
+            console.log('subscription: ', subscriptions.length);
 
             if (subscriptions.length > 0){
                 computedData = computeAffiliateData(subscriptions);
@@ -204,17 +204,18 @@ function computeAffiliateData(subscriptionsRawData) {
                 history = rawData.history[j];
 
                 //collect data => billing_status to package - then package to affiliate_type, then get mids count
-                if (history.package_id === 'QDfC') {
-                    if (history.affiliate === "HE")
-                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
-                    else if (history.affiliate === "affiliate_web")
-                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
-                }
-                else if (history.package_id === 'QDfG') {
-                    if (history.affiliate === "HE")
-                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
-                    else if (history.affiliate === "affiliate_web")
-                        affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
+                if (history.status === 'Success' || history.status === 'trial' || history.status === 'Affiliate callback sent') {
+                    if (history.package_id === 'QDfC') {
+                        if (history.affiliate === "HE")
+                            affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
+                        else if (history.affiliate === "affiliate_web")
+                            affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
+                    } else if (history.package_id === 'QDfG') {
+                        if (history.affiliate === "HE")
+                            affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
+                        else if (history.affiliate === "affiliate_web")
+                            affiliateObj = affliateWiseMidsCount(history, history.status, history.package_id, history.affiliate, affiliateObj);
+                    }
                 }
 
                 //collect data => billing_status wise, get Mids count
@@ -240,8 +241,6 @@ function computeAffiliateData(subscriptionsRawData) {
 
                 //collect data => source wise and package wise Mids count
                 if (history.affiliate === 'tp_geo_ent'){
-                    console.log('history.affiliate: ', history.affiliate);
-
                     if (history.status === 'Success'){
                         if (history.package_id === 'QDfC')
                             tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_geo_ent', 'QDfC', tpSourceAndPkgWiseObj);
@@ -252,13 +251,11 @@ function computeAffiliateData(subscriptionsRawData) {
                     if (history.status === 'trial')
                         tpSourceAndTrialWiseObj = sourceAndTrialWiseMidsCount(history, 'tp_geo_ent', tpSourceAndTrialWiseObj);
 
-                    if (history.status === 'expired' || history.status === 'unsubscribe-request-recieved' || history.status === 'unsubscribe-request-received-and-expired'){
-                        tpSourceAndTrialWiseObj = sourceAndExpireWiseMidsCount(history, 'tp_geo_ent', tpSourceAndExpireWiseObj);
-                    }
+                    if (history.status === 'expired' || history.status === 'unsubscribe-request-recieved' || history.status === 'unsubscribe-request-received-and-expired')
+                        tpSourceAndExpireWiseObj = sourceAndExpireWiseMidsCount(history, 'tp_geo_ent', tpSourceAndExpireWiseObj);
+
                 }
                 else if (history.affiliate === 'tp_discover_pak'){
-                    console.log('history.affiliate: ', history.affiliate);
-
                     if (history.status === 'Success') {
                         if (history.package_id === 'QDfC')
                             tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_discover_pak', 'QDfC', tpSourceAndPkgWiseObj);
@@ -269,13 +266,11 @@ function computeAffiliateData(subscriptionsRawData) {
                     if (history.status === 'trial')
                         tpSourceAndTrialWiseObj = sourceAndTrialWiseMidsCount(history, 'tp_discover_pak', tpSourceAndTrialWiseObj);
 
-                    if (history.status === 'expired' || history.status === 'unsubscribe-request-recieved' || history.status === 'unsubscribe-request-received-and-expired'){
-                        tpSourceAndTrialWiseObj = sourceAndExpireWiseMidsCount(history, 'tp_discover_pak', tpSourceAndExpireWiseObj);
-                    }
+                    if (history.status === 'expired' || history.status === 'unsubscribe-request-recieved' || history.status === 'unsubscribe-request-received-and-expired')
+                        tpSourceAndExpireWiseObj = sourceAndExpireWiseMidsCount(history, 'tp_discover_pak', tpSourceAndExpireWiseObj);
+
                 }
                 else if (history.affiliate === 'tp_dw_eng'){
-                    console.log('history.affiliate: ', history.affiliate);
-
                     if (history.status === 'Success') {
                         if (history.package_id === 'QDfC')
                             tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'tp_dw_eng', 'QDfC', tpSourceAndPkgWiseObj);
@@ -286,13 +281,11 @@ function computeAffiliateData(subscriptionsRawData) {
                     if (history.status === 'trial')
                         tpSourceAndTrialWiseObj = sourceAndTrialWiseMidsCount(history, 'tp_dw_eng', tpSourceAndTrialWiseObj);
 
-                    if (history.status === 'expired' || history.status === 'unsubscribe-request-recieved' || history.status === 'unsubscribe-request-received-and-expired'){
-                        tpSourceAndTrialWiseObj = sourceAndExpireWiseMidsCount(history, 'tp_dw_eng', tpSourceAndExpireWiseObj);
-                    }
+                    if (history.status === 'expired' || history.status === 'unsubscribe-request-recieved' || history.status === 'unsubscribe-request-received-and-expired')
+                        tpSourceAndExpireWiseObj = sourceAndExpireWiseMidsCount(history, 'tp_dw_eng', tpSourceAndExpireWiseObj);
+
                 }
                 else if (history.affiliate === 'youtube'){
-                    console.log('history.affiliate: ', history.affiliate);
-
                     if (history.status === 'Success') {
                         if (history.package_id === 'QDfC')
                             tpSourceAndPkgWiseObj = sourceAndPackageWiseMidsCount(history, 'youtube', 'QDfC', tpSourceAndPkgWiseObj);
@@ -303,9 +296,9 @@ function computeAffiliateData(subscriptionsRawData) {
                     if (history.status === 'trial')
                         tpSourceAndTrialWiseObj = sourceAndTrialWiseMidsCount(history, 'youtube', tpSourceAndTrialWiseObj);
 
-                    if (history.status === 'expired' || history.status === 'unsubscribe-request-recieved' || history.status === 'unsubscribe-request-received-and-expired'){
-                        tpSourceAndTrialWiseObj = sourceAndExpireWiseMidsCount(history, 'youtube', tpSourceAndExpireWiseObj);
-                    }
+                    if (history.status === 'expired' || history.status === 'unsubscribe-request-recieved' || history.status === 'unsubscribe-request-received-and-expired')
+                        tpSourceAndExpireWiseObj = sourceAndExpireWiseMidsCount(history, 'youtube', tpSourceAndExpireWiseObj);
+
                 }
             }
         }
@@ -514,8 +507,6 @@ function packageWiseMidsCount(history, wise, dataObj) {
     else if (history.affiliate_mid === '1' && (  history.status === 'trial' ))
         dataObj[wise]['1'] = dataObj[wise]['1'] + history.count;
 
-    console.log('dataObj: ', dataObj);
-
     return dataObj;
 }
 function wiseMidsCount(history, wise, dataObj) {
@@ -543,14 +534,12 @@ function sourceAndPackageWiseMidsCount(history, wise, pkg, dataObj) {
     if (history.affiliate_mid === 'tp_fb_campaign')
         dataObj[wise][pkg]['tp_fb_campaign'] = history.count;
 
-    console.log('sourceAndPackageWiseMidsCount - dataObj: ', dataObj);
     return dataObj;
 }
 function sourceAndTrialWiseMidsCount(history, wise, dataObj) {
     if (history.affiliate_mid === 'tp_fb_campaign')
         dataObj[wise]['tp_fb_campaign'] = dataObj[wise]['tp_fb_campaign'] + history.count;
 
-    console.log('sourceAndTrialWiseMidsCount - dataObj: ', dataObj);
     return dataObj;
 }
 function sourceAndExpireWiseMidsCount(history, wise, dataObj) {
