@@ -1672,7 +1672,7 @@ function cloneAffiliateObj (){
     };
 }
 function cloneTelenoreAffiliateObj (){
-    let mids = {'daily_live': 0, 'weekly_live': 0, 'trial': 0, 'subscriptions': 0};
+    let mids = {'daily_live': 0, 'weekly_live': 0, 'trial': 0, 'subscriptions': 0, 'expired': 0};
     return {
         tp_geo_ent: _.clone(mids),
         tp_discover_pak: _.clone(mids),
