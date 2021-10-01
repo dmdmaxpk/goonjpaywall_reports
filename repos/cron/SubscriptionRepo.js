@@ -206,7 +206,7 @@ class SubscriptionRepository {
                                                 {$eq: ["$user_id", "$$user_id" ]},
                                                 {$eq: ["$package_id", "$$package_id" ]},
                                                 {$in: ["$billing_status",
-                                                    [ "Success", "trial", "Affiliate callback sent" ]
+                                                    [ "Success", "trial", "expired", "unsubscribe-request-recieved", "unsubscribe-request-received-and-expired", "Affiliate callback sent" ]
                                                 ]},
                                                 {$gte: ["$billing_dtm", new Date(from)]},
                                                 {$lte: ["$billing_dtm", new Date(to)]}

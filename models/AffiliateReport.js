@@ -16,6 +16,7 @@ const affiliateReport = new Schema({
     tpSourceWiseSubs: {type: Object, default: undefined},
     tpSourcePkgWise: {type: Object, default: undefined},
     tpSourceTrialWise: {type: Object, default: undefined},
+    tpSourceExpireWise: {type: Object, default: undefined},
     date: { type: Date, default: Date.now }
 }, { strict: true });
 
