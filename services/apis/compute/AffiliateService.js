@@ -1418,7 +1418,6 @@ computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
             if (outerObj.tpSourceWiseSubs){
                 tpSourceObj = outerObj.tpSourceWiseSubs[0];
 
-                console.log('tpSourceWiseSubs: ', tpSourceObj);
                 if (tpSourceObj.tp_geo_ent){
                     tpSource = tpSourceObj.tp_geo_ent;
 
@@ -1451,6 +1450,46 @@ computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
                     dayDataObj["youtube"]["subscriptions"] = Number(dayDataObj["youtube"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
                     weeklyDataObj["youtube"]["subscriptions"] = Number(weeklyDataObj["youtube"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
                     monthlyDataObj["youtube"]["subscriptions"] = Number(monthlyDataObj["youtube"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+
+                }
+            }
+
+            if (outerObj.tpSourceExpireWise){
+                tpSourceObj = outerObj.tpSourceExpireWise[0];
+
+                console.log('tpSourceExpireWise: ', tpSourceObj);
+                if (tpSourceObj.tp_geo_ent){
+                    tpSource = tpSourceObj.tp_geo_ent;
+
+                    dataObj["tp_geo_ent"]["expired"] = Number(dataObj["tp_geo_ent"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_geo_ent"]["expired"] = Number(dayDataObj["tp_geo_ent"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_geo_ent"]["expired"] = Number(weeklyDataObj["tp_geo_ent"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_geo_ent"]["expired"] = Number(monthlyDataObj["tp_geo_ent"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    console.log('dataObj: ', dataObj);
+                }
+                if (tpSourceObj.tp_discover_pak){
+                    tpSource = tpSourceObj.tp_discover_pak;
+
+                    dataObj["tp_discover_pak"]["expired"] = Number(dataObj["tp_discover_pak"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_discover_pak"]["expired"] = Number(dayDataObj["tp_discover_pak"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_discover_pak"]["expired"] = Number(weeklyDataObj["tp_discover_pak"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_discover_pak"]["expired"] = Number(monthlyDataObj["tp_discover_pak"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                }
+                if (tpSourceObj.tp_dw_eng){
+                    tpSource = tpSourceObj.tp_dw_eng;
+
+                    dataObj["tp_dw_eng"]["expired"] = Number(dataObj["tp_dw_eng"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_dw_eng"]["expired"] = Number(dayDataObj["tp_dw_eng"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_dw_eng"]["expired"] = Number(weeklyDataObj["tp_dw_eng"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_dw_eng"]["expired"] = Number(monthlyDataObj["tp_dw_eng"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                }
+                if (tpSourceObj.youtube){
+                    tpSource = tpSourceObj.youtube;
+
+                    dataObj["youtube"]["expired"] = Number(dataObj["youtube"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["youtube"]["expired"] = Number(dayDataObj["youtube"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["youtube"]["expired"] = Number(weeklyDataObj["youtube"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["youtube"]["expired"] = Number(monthlyDataObj["youtube"]["expired"]) + Number(tpSource.tp_fb_campaign);
 
                 }
             }
