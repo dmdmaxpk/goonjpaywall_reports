@@ -412,10 +412,10 @@ function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, tpS
     affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0) {
             result = result[0];
-            // result.affiliateWise = affiliateWise;
-            // result.statusWise = statusWise;
-            // result.packageWise = packageWise;
-            // result.sourceWise = sourceWise;
+            result.affiliateWise = affiliateWise;
+            result.statusWise = statusWise;
+            result.packageWise = packageWise;
+            result.sourceWise = sourceWise;
             result.tpSourcePkgWise = tpSourcePkgWise;
             result.tpSourceTrialWise = tpSourceTrialWise;
             result.tpSourceExpireWise = tpSourceExpireWise;
@@ -424,10 +424,10 @@ function insertNewRecord(affiliateWise, statusWise, packageWise, sourceWise, tpS
         }
         else
             affiliateRepo.createReport({
-                // affiliateWise: affiliateWise,
-                // statusWise: statusWise,
-                // packageWise: packageWise,
-                // sourceWise: sourceWise,
+                affiliateWise: affiliateWise,
+                statusWise: statusWise,
+                packageWise: packageWise,
+                sourceWise: sourceWise,
                 tpSourcePkgWise: tpSourcePkgWise,
                 tpSourceTrialWise: tpSourceTrialWise,
                 tpSourceExpireWise: tpSourceExpireWise,
@@ -444,14 +444,14 @@ function insertAffiliateMidsNewRecord(affiliateMidsData, tpSourceWiseData, dateS
     affiliateRepo.getReportByDateString(dateString.toString()).then(function (result) {
         if (result.length > 0) {
             result = result[0];
-            // result.subscriptions = affiliateMidsData;
+            result.subscriptions = affiliateMidsData;
             result.tpSourceWiseSubs = tpSourceWiseData;
 
             affiliateRepo.updateReport(result, result._id);
         }
         else
             affiliateRepo.createReport({
-                // subscriptions: affiliateMidsData,
+                subscriptions: affiliateMidsData,
                 tpSourceWiseSubs: tpSourceWiseData,
                 date: dateString
             });
