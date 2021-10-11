@@ -4,6 +4,7 @@ const billingHistoryRepo = container.resolve('billingHistoryRepository');
 const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
+const payingUsersRepo = require("../../../repos/apis/PayingUsersRepo");
 
 let dateData, fromDate, toDate, day, month, finalData;
 let chargeDetailList = [], billingHistoryArr = [], returningUserListArr = [], fullAndPartialChargeListArr = [], uniquePayingUsers = [];
@@ -185,6 +186,64 @@ promiseBasedComputeChargeDetailsReports = async(req, res) => {
         }
         resolve(0);
     });
+};
+
+computeChargeDetailsAffiliateWiseReports = async(req, res) => {
+    console.log('computeChargeDetailsAffiliateWiseReports');
+
+    /*
+    * Compute date and time for data fetching from db
+    * Script will execute to fetch data as per day
+    * */
+    dateData = helper.computeNextDateWithLocalTime(req, 1, 10);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
+
+    /*
+    * Get total count from db
+    * */
+
+    // getChargeDetailsAffliatWiseByDateRange
+    console.log('computeChargeDetailsAffiliateWiseReports: ', fromDate, toDate);
+    await billingHistoryRepo.getChargeDetailsAffiliateWiseByDateRange(req, fromDate, toDate).then(async function (affiliateChargeDetails) {
+        console.log('affiliateChargeDetails.length: ', affiliateChargeDetails);
+
+        if (affiliateChargeDetails.length > 0){
+            finalData = computeChargeDetailAffiliateWiseData(affiliateChargeDetails, fromDate);
+            if (finalData) await insertNewRecordAffiliateChargeDetails(finalData, fromDate);
+        }
+    });
+
+
+    // Get compute data for next time slot
+    req.day = Number(req.day) + 1;
+    console.log('computeChargeDetailsAffiliateWiseReports -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
+
+    if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+        if (Number(month) < Number(helper.getTodayMonthNo()))
+            computeChargeDetailsAffiliateWiseReports(req, res);
+        else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
+            computeChargeDetailsAffiliateWiseReports(req, res);
+    }
+    else{
+        console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
+        req.day = 1;
+        req.month = Number(req.month) + 1;
+        console.log('computeChargeDetailsAffiliateWiseReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
+
+        if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+            computeChargeDetailsAffiliateWiseReports(req, res);
+    }
+
+    if (helper.isToday(fromDate)){
+        console.log('computeChargeDetailsAffiliateWiseReports - data compute - done');
+        delete req.day;
+        delete req.month;
+    }
 };
 
 function computeChargeDetailData(chargeDetails) {
@@ -384,6 +443,33 @@ function computeChargeDetailData(chargeDetails) {
     };
 }
 
+function computeChargeDetailAffiliateWiseData(chargeDetails, dateString) {
+    let chargeDetailObj = _.clone(cloneChargeDetailAffiliateWiseObj());
+
+    for (const record of chargeDetails) {
+        if (record.affiliate === 'aff3a') {
+            chargeDetailObj.affiliate.aff3a = chargeDetailObj.affiliate.aff3a + record.price;
+        } else if (record.affiliate === 'tp_gdn_daily') {
+            chargeDetailObj.affiliate.tp_gdn_daily = chargeDetailObj.affiliate.tp_gdn_daily + record.price;
+        } else if (record.affiliate === 'gdn2') {
+            chargeDetailObj.affiliate.gdn2 = chargeDetailObj.affiliate.gdn2 + record.price;
+        } else if (record.affiliate === 'goonj') {
+            chargeDetailObj.affiliate.goonj = chargeDetailObj.affiliate.goonj + record.price;
+        } else if (record.affiliate === 'tp-gdn3') {
+            chargeDetailObj.affiliate.gdn3 = chargeDetailObj.affiliate.gdn3 + record.price;
+        } else if (record.affiliate === 'null') {
+            chargeDetailObj.affiliate.null = chargeDetailObj.affiliate.null + record.price;
+        } else if (record.affiliate === 'tp_fb_campaign') {
+            chargeDetailObj.affiliate.tp_fb_campaign = chargeDetailObj.affiliate.tp_fb_campaign + record.price;
+        }
+    }
+
+    chargeDetailObj.affiliate.billing_dtm = dateString;
+    chargeDetailObj.affiliate.billing_dtm_hours = helper.setDate(new Date(dateString), null, 0, 0, 0);
+
+    return chargeDetailObj;
+}
+
 async function insertNewRecord(chargeDetailList, uniquePayingUsers, billingHistory, returningUserList, fullAndPartialChargeList, dateString, mode) {
     console.log('insertNewRecord - dateString', dateString);
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
@@ -440,6 +526,29 @@ async function insertNewRecord(chargeDetailList, uniquePayingUsers, billingHisto
     });
 }
 
+async function insertNewRecordAffiliateChargeDetails(chargeDetailsFinalData, dateString) {
+    console.log('insertNewRecordAffiliateChargeDetails - dateString', dateString);
+    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
+    console.log('insertNewRecordAffiliateChargeDetails - dateString', dateString);
+
+    await reportsRepo.getReportByDateString(dateString).then(async function (result) {
+        if (result.length > 0) {
+            result = result[0];
+            if (result.chargeDetails) result.chargeDetails.affiliate = chargeDetailsFinalData.affiliate;
+            else result.chargeDetails = chargeDetailsFinalData;
+
+            await reportsRepo.updateReport(result, result._id);
+        }
+        else{
+            let obj = {};
+            obj.date = dateString;
+            obj.chargeDetails = chargeDetailsFinalData;
+            await reportsRepo.createReport(obj);
+        }
+    });
+}
+
 function cloneChargeDetailObj() {
     return {
         package: {
@@ -462,6 +571,22 @@ function cloneChargeDetailObj() {
         },
         billing_dtm: '',
         billing_dtm_hours: ''
+    }
+}
+
+function cloneChargeDetailAffiliateWiseObj() {
+    return {
+        affiliate: {
+            aff3a: 0,
+            tp_gdn_daily: 0,
+            gdn2: 0,
+            goonj: 0,
+            gdn3: 0,
+            null: 0,
+            tp_fb_campaign: 0,
+            billing_dtm: '',
+            billing_dtm_hours: ''
+        }
     }
 }
 function cloneUniquePayingUsersObj() {
@@ -553,5 +678,9 @@ function countQuery(from, to){
 
 module.exports = {
     computeChargeDetailsReports: computeChargeDetailsReports,
-    promiseBasedComputeChargeDetailsReports: promiseBasedComputeChargeDetailsReports
+    promiseBasedComputeChargeDetailsReports: promiseBasedComputeChargeDetailsReports,
+
+
+    computeChargeDetailsAffiliateWiseReports: computeChargeDetailsAffiliateWiseReports,
+
 };

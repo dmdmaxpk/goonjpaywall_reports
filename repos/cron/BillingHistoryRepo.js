@@ -242,6 +242,67 @@ class BillingHistoryRepository {
         });
     }
 
+    async getChargeDetailsAffiliateWiseByDateRange (req, from, to){
+        return new Promise((resolve, reject) => {
+            console.log('getChargeDetailsAffiliateWiseByDateRange: ', from, to);
+            req.db.collection('billinghistories', function (err, collection) {
+                if (!err) {
+                    collection.aggregate( [
+                        { $match:{
+                            billing_status: 'Success',
+                            $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lt:new Date(to)}}]
+                        }},
+                        {$project:{
+                            price: "$price",
+                            user_id: "$user_id"
+                        }},
+                        { $lookup:{
+                            from: "subscriptions",
+                            let: {user_id: "$user_id", price: "$price"},
+                            pipeline:[
+                                { $match: {
+                                    $expr: {
+                                        $and:[
+                                            {$eq: ["$user_id", "$$user_id" ]},
+                                            {$and: [
+                                                    {$gte: ["$added_dtm", new Date(from)]},
+                                                    {$lte: ["$added_dtm", new Date(to)]}
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }},
+                                { $project:{
+                                    _id: 0,
+                                    price: "$$price",
+                                    affiliate_mid: "$affiliate_mid"
+                                }}
+                            ],
+                            as: "billing"
+                        }},
+                        {
+                            $unwind: "$billing"
+                        },
+                        { $group:{
+                            _id: "$billing.affiliate_mid",
+                            price: {$sum: "$billing.price"}
+                        }},
+                        { $project:{
+                            affiliate: "$_id",
+                            price: "$price"
+                        }},
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
+                        if(err){
+                            console.log('getChargeDetailsAffiliateWiseByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            })
+        });
+    }
+
     async getNetAdditionByDateRange(req, from, to, skip, limit){
         return new Promise((resolve, reject) => {
             console.log('getNetAdditionByDateRange: ', from, to);

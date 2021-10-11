@@ -155,6 +155,11 @@ exports.computeDailyBaseChargeReports = async (req,res) =>  {
     res.send("computeDailyBaseChargeReports - Executed\n");
 };
 
+exports.computeChargeDetailsAffiliateWiseReports = async (req,res) =>  {
+    ChargeDetailsRevenueServices.computeChargeDetailsAffiliateWiseReports(req,res);
+    res.send("computeChargeDetailsAffiliateWiseReports - Executed\n");
+};
+
 
 // Paying user new reports - monthly reports - section START
 exports.computeNewPayingUserRevenueReports = async (req,res) =>  {

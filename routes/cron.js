@@ -81,6 +81,9 @@ router.route('/compute-request-count-reports')
 router.route('/compute-daily-base-charge-reports')
     .get(connection.connect, controller.computeDailyBaseChargeReports);
 
+router.route('/compute-charge-affiliate-wise-reports')
+    .get(connection.connect, controller.computeChargeDetailsAffiliateWiseReports);
+
 
 // Controller method for paying user reports - section START
 router.route('/compute-new-paying-user-revenue-reports')
