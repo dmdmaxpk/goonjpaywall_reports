@@ -3,6 +3,8 @@ const reportsRepo = require('../../repos/apis/ReportsRepo');
 const affiliateRepo = require('../../repos/apis/AffiliateRepo');
 const churnRepo = require('../../repos/apis/ChurnRepo');
 const payingUsersRepo = require('../../repos/apis/PayingUsersRepo');
+const revenueRepo = require('../../repos/apis/RevenueRepo');
+
 const reportsTransformer = container.resolve('reportsTransformer');
 
 // Import Compute Files to access its factory functions
@@ -47,6 +49,12 @@ generateReportsData = async (req,res) => {
         else if (params.type === 'others'){
             if (params.sub_type === 'daily_base' || params.sub_type === 'request_count' || params.sub_type === 'successful_charge' || params.sub_type === 'unsubscribed')
                 rawDataSet = await churnRepo.generateChurnReportsData(params);
+            else
+                rawDataSet = await reportsRepo.generateReportsData(params);
+        }
+        else if(params.type === 'revenue'){
+            if (params.sub_type === 'affiliate_wise' || params.sub_type === 'tp_affiliate_wise')
+                rawDataSet = await revenueRepo.generateRevenueReportsData(params);
             else
                 rawDataSet = await reportsRepo.generateReportsData(params);
         }

@@ -11,6 +11,7 @@ require('./models/SubscriberReport');
 require('./models/AffiliateReport');
 require('./models/ChurnReport');
 require('./models/PayingUser');
+require('./models/Revenue');
 
 // Connection to Database
 const config = require('./config');

@@ -1,5 +1,6 @@
 const container = require("../../../configurations/container");
 const reportsRepo = require('../../../repos/apis/ReportsRepo');
+const revenueRepo = require('../../../repos/apis/RevenueRepo');
 const billingHistoryRepo = container.resolve('billingHistoryRepository');
 const helper = require('../../../helper/helper');
 const config = require('../../../config');
@@ -680,19 +681,18 @@ async function insertNewRecordAffiliateChargeDetails(chargeDetailsFinalData, dat
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     console.log('insertNewRecordAffiliateChargeDetails - dateString', dateString);
 
-    await reportsRepo.getReportByDateString(dateString).then(async function (result) {
+    await revenueRepo.getReportByDateString(dateString).then(async function (result) {
         if (result.length > 0) {
             result = result[0];
-            if (result.chargeDetails) result.chargeDetails.affiliate = chargeDetailsFinalData.affiliate;
-            else result.chargeDetails = chargeDetailsFinalData;
+            result.affiliate = chargeDetailsFinalData.affiliate;
 
-            await reportsRepo.updateReport(result, result._id);
+            await revenueRepo.updateReport(result, result._id);
         }
         else{
             let obj = {};
             obj.date = dateString;
-            obj.chargeDetails = chargeDetailsFinalData;
-            await reportsRepo.createReport(obj);
+            obj.affiliate = chargeDetailsFinalData.affiliate;
+            await revenueRepo.createReport(obj);
         }
     });
 }
@@ -703,19 +703,18 @@ async function insertNewRecordTPAffiliateChargeDetails(chargeDetailsFinalData, d
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
     console.log('insertNewRecordTPAffiliateChargeDetails - dateString', dateString);
 
-    await reportsRepo.getReportByDateString(dateString).then(async function (result) {
+    await revenueRepo.getReportByDateString(dateString).then(async function (result) {
         if (result.length > 0) {
             result = result[0];
-            if (result.chargeDetails) result.chargeDetails.tp_source = chargeDetailsFinalData.tp_source;
-            else result.chargeDetails = chargeDetailsFinalData;
+            result.tp_source = chargeDetailsFinalData.tp_source;
 
-            await reportsRepo.updateReport(result, result._id);
+            await revenueRepo.updateReport(result, result._id);
         }
         else{
             let obj = {};
             obj.date = dateString;
-            obj.chargeDetails = chargeDetailsFinalData;
-            await reportsRepo.createReport(obj);
+            obj.tp_source = chargeDetailsFinalData.tp_source;
+            await revenueRepo.createReport(obj);
         }
     });
 }
