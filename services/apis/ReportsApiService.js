@@ -222,6 +222,8 @@ generateReportsData = async (req,res) => {
                 return revenueService.computeRevenueOperatorWiseReport(rawDataSet, params);
             else if (params.sub_type === 'affiliate_wise')
                 return revenueService.computeRevenueAffiliateWiseReport(rawDataSet, params);
+            else if (params.sub_type === 'tp_affiliate_wise')
+                return revenueService.computeRevenueTPAffiliateWiseReport(rawDataSet, params);
         }
         else if (params.type === 'trial') {
             if (params.sub_type === 'source_wise')

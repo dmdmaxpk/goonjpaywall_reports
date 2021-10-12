@@ -4,7 +4,6 @@ const billingHistoryRepo = container.resolve('billingHistoryRepository');
 const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
-const payingUsersRepo = require("../../../repos/apis/PayingUsersRepo");
 
 let dateData, fromDate, toDate, day, month, finalData;
 let chargeDetailList = [], billingHistoryArr = [], returningUserListArr = [], fullAndPartialChargeListArr = [], uniquePayingUsers = [];
@@ -107,7 +106,6 @@ computeChargeDetailsReports = async(req, res) => {
         }
     });
 };
-
 promiseBasedComputeChargeDetailsReports = async(req, res) => {
     console.log('promiseBasedComputeChargeDetailsReports');
     return new Promise(async (resolve, reject) => {
@@ -244,6 +242,135 @@ computeChargeDetailsAffiliateWiseReports = async(req, res) => {
         delete req.day;
         delete req.month;
     }
+};
+promiseBasedComputeChargeDetailsAffiliateWiseReports = async(req, res) => {
+    console.log('promiseBasedComputeChargeDetailsAffiliateWiseReports');
+    return new Promise(async (resolve, reject) => {
+
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data as per day
+        * */
+        dateData = helper.computeTodayDateWithLocalTime(req);
+        req = dateData.req;
+        day = dateData.day;
+        month = dateData.month;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        // getChargeDetailsAffliatWiseByDateRange
+        console.log('promiseBasedComputeChargeDetailsAffiliateWiseReports: ', fromDate, toDate);
+        await billingHistoryRepo.getChargeDetailsAffiliateWiseByDateRange(req, fromDate, toDate).then(async function (affiliateChargeDetails) {
+            console.log('affiliateChargeDetails.length: ', affiliateChargeDetails);
+
+            if (affiliateChargeDetails.length > 0){
+                finalData = computeChargeDetailAffiliateWiseData(affiliateChargeDetails, fromDate);
+                if (finalData) await insertNewRecordAffiliateChargeDetails(finalData, fromDate);
+            }
+        });
+
+        if (helper.isToday(fromDate)){
+            console.log('promiseBasedComputeChargeDetailsAffiliateWiseReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+        resolve(0);
+    });
+};
+
+computeChargeDetailsTPAffiliateWiseReports = async(req, res) => {
+    console.log('computeChargeDetailsTPAffiliateWiseReports');
+
+    /*
+    * Compute date and time for data fetching from db
+    * Script will execute to fetch data as per day
+    * */
+    dateData = helper.computeNextDateWithLocalTime(req, 1, 10);
+    req = dateData.req;
+    day = dateData.day;
+    month = dateData.month;
+    fromDate = dateData.fromDate;
+    toDate = dateData.toDate;
+
+    /*
+    * Get total count from db
+    * */
+
+    console.log('computeChargeDetailsTPAffiliateWiseReports: ', fromDate, toDate);
+    await billingHistoryRepo.getChargeDetailsTPAffiliateWiseByDateRange(req, fromDate, toDate).then(async function (TPAffiliateChargeDetails) {
+        console.log('TPAffiliateChargeDetails.length: ', TPAffiliateChargeDetails);
+
+        if (TPAffiliateChargeDetails.length > 0){
+            finalData = computeChargeDetailTPAffiliateWiseData(TPAffiliateChargeDetails, fromDate);
+
+            console.log('finalData: ', finalData);
+            if (finalData) await insertNewRecordTPAffiliateChargeDetails(finalData, fromDate);
+        }
+    });
+
+
+    // Get compute data for next time slot
+    req.day = Number(req.day) + 1;
+    console.log('computeChargeDetailsTPAffiliateWiseReports -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
+
+    if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+        if (Number(month) < Number(helper.getTodayMonthNo()))
+            computeChargeDetailsTPAffiliateWiseReports(req, res);
+        else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
+            computeChargeDetailsTPAffiliateWiseReports(req, res);
+    }
+    else{
+        console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
+        req.day = 1;
+        req.month = Number(req.month) + 1;
+        console.log('computeChargeDetailsTPAffiliateWiseReports -> month : ', Number(month), Number(req.month), new Date().getMonth());
+
+        if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+            computeChargeDetailsTPAffiliateWiseReports(req, res);
+    }
+
+    if (helper.isToday(fromDate)){
+        console.log('computeChargeDetailsTPAffiliateWiseReports - data compute - done');
+        delete req.day;
+        delete req.month;
+    }
+};
+promiseBasedComputeChargeDetailsTPAffiliateWiseReports = async(req, res) => {
+    console.log('promiseBasedComputeChargeDetailsTPAffiliateWiseReports');
+    return new Promise(async (resolve, reject) => {
+
+        /*
+        * Compute date and time for data fetching from db
+        * Script will execute to fetch data as per day
+        * */
+        dateData = helper.computeTodayDateWithLocalTime(req);
+        req = dateData.req;
+        day = dateData.day;
+        month = dateData.month;
+        fromDate = dateData.fromDate;
+        toDate = dateData.toDate;
+
+        // getChargeDetailsAffliatWiseByDateRange
+        console.log('promiseBasedComputeChargeDetailsTPAffiliateWiseReports: ', fromDate, toDate);
+        await billingHistoryRepo.getChargeDetailsTPAffiliateWiseByDateRange(req, fromDate, toDate).then(async function (TPAffiliateChargeDetails) {
+            console.log('TPAffiliateChargeDetails.length: ', TPAffiliateChargeDetails);
+
+            if (TPAffiliateChargeDetails.length > 0){
+                finalData = computeChargeDetailTPAffiliateWiseData(TPAffiliateChargeDetails, fromDate);
+
+                console.log('finalData: ', finalData);
+                if (finalData) await insertNewRecordTPAffiliateChargeDetails(finalData, fromDate);
+            }
+        });
+
+        if (helper.isToday(fromDate)){
+            console.log('promiseBasedComputeChargeDetailsTPAffiliateWiseReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
+        resolve(0);
+    });
 };
 
 function computeChargeDetailData(chargeDetails) {
@@ -470,6 +597,27 @@ function computeChargeDetailAffiliateWiseData(chargeDetails, dateString) {
     return chargeDetailObj;
 }
 
+function computeChargeDetailTPAffiliateWiseData(chargeDetails, dateString) {
+    let chargeDetailObj = _.clone(cloneChargeDetailTPAffiliateWiseObj());
+
+    for (const record of chargeDetails) {
+        if (record.tp_source === 'tp_geo_ent') {
+            chargeDetailObj.tp_source.tp_geo_ent = chargeDetailObj.tp_source.tp_geo_ent + record.price;
+        } else if (record.tp_source === 'tp_discover_pak') {
+            chargeDetailObj.tp_source.tp_discover_pak = chargeDetailObj.tp_source.tp_discover_pak + record.price;
+        } else if (record.tp_source === 'tp_dw_eng') {
+            chargeDetailObj.tp_source.tp_dw_eng = chargeDetailObj.tp_source.tp_dw_eng + record.price;
+        } else if (record.tp_source === 'youtube') {
+            chargeDetailObj.tp_source.youtube = chargeDetailObj.tp_source.youtube + record.price;
+        }
+    }
+
+    chargeDetailObj.tp_source.added_dtm = dateString;
+    chargeDetailObj.tp_source.added_dtm_hours = helper.setDate(new Date(dateString), null, 0, 0, 0);
+
+    return chargeDetailObj;
+}
+
 async function insertNewRecord(chargeDetailList, uniquePayingUsers, billingHistory, returningUserList, fullAndPartialChargeList, dateString, mode) {
     console.log('insertNewRecord - dateString', dateString);
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
@@ -549,6 +697,29 @@ async function insertNewRecordAffiliateChargeDetails(chargeDetailsFinalData, dat
     });
 }
 
+async function insertNewRecordTPAffiliateChargeDetails(chargeDetailsFinalData, dateString) {
+    console.log('insertNewRecordTPAffiliateChargeDetails - dateString', dateString);
+    dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
+    dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
+    console.log('insertNewRecordTPAffiliateChargeDetails - dateString', dateString);
+
+    await reportsRepo.getReportByDateString(dateString).then(async function (result) {
+        if (result.length > 0) {
+            result = result[0];
+            if (result.chargeDetails) result.chargeDetails.tp_source = chargeDetailsFinalData.tp_source;
+            else result.chargeDetails = chargeDetailsFinalData;
+
+            await reportsRepo.updateReport(result, result._id);
+        }
+        else{
+            let obj = {};
+            obj.date = dateString;
+            obj.chargeDetails = chargeDetailsFinalData;
+            await reportsRepo.createReport(obj);
+        }
+    });
+}
+
 function cloneChargeDetailObj() {
     return {
         package: {
@@ -586,6 +757,18 @@ function cloneChargeDetailAffiliateWiseObj() {
             tp_fb_campaign: 0,
             billing_dtm: '',
             billing_dtm_hours: ''
+        }
+    }
+}
+function cloneChargeDetailTPAffiliateWiseObj() {
+    return {
+        tp_source: {
+            tp_geo_ent: 0,
+            tp_discover_pak: 0,
+            tp_dw_eng: 0,
+            youtube: 0,
+            added_dtm: '',
+            added_dtm_hours: ''
         }
     }
 }
@@ -680,7 +863,9 @@ module.exports = {
     computeChargeDetailsReports: computeChargeDetailsReports,
     promiseBasedComputeChargeDetailsReports: promiseBasedComputeChargeDetailsReports,
 
-
     computeChargeDetailsAffiliateWiseReports: computeChargeDetailsAffiliateWiseReports,
+    promiseBasedComputeChargeDetailsAffiliateWiseReports: promiseBasedComputeChargeDetailsAffiliateWiseReports,
 
+    computeChargeDetailsTPAffiliateWiseReports: computeChargeDetailsTPAffiliateWiseReports,
+    promiseBasedComputeChargeDetailsTPAffiliateWiseReports: promiseBasedComputeChargeDetailsTPAffiliateWiseReports,
 };

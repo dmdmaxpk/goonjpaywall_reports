@@ -160,6 +160,11 @@ exports.computeChargeDetailsAffiliateWiseReports = async (req,res) =>  {
     res.send("computeChargeDetailsAffiliateWiseReports - Executed\n");
 };
 
+exports.computeChargeDetailsTPAffiliateWiseReports = async (req,res) =>  {
+    ChargeDetailsRevenueServices.computeChargeDetailsTPAffiliateWiseReports(req,res);
+    res.send("computeChargeDetailsTPAffiliateWiseReports - Executed\n");
+};
+
 
 // Paying user new reports - monthly reports - section START
 exports.computeNewPayingUserRevenueReports = async (req,res) =>  {

@@ -264,11 +264,6 @@ class BillingHistoryRepository {
                                     $expr: {
                                         $and:[
                                             {$eq: ["$user_id", "$$user_id" ]},
-                                            {$and: [
-                                                    {$gte: ["$added_dtm", new Date(from)]},
-                                                    {$lte: ["$added_dtm", new Date(to)]}
-                                                ]
-                                            }
                                         ]
                                     }
                                 }},
@@ -294,6 +289,69 @@ class BillingHistoryRepository {
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getChargeDetailsAffiliateWiseByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            })
+        });
+    }
+
+    async getChargeDetailsTPAffiliateWiseByDateRange (req, from, to){
+        return new Promise((resolve, reject) => {
+            console.log('getChargeDetailsTPAffiliateWiseByDateRange: ', from, to);
+            req.db.collection('billinghistories', function (err, collection) {
+                if (!err) {
+                    collection.aggregate( [
+                        { $match:{
+                            billing_status: 'Success',
+                            $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lt:new Date(to)}}]
+                        }},
+                        {$project:{
+                            price: "$price",
+                            user_id: "$user_id"
+                        }},
+                        { $lookup:{
+                            from: "subscriptions",
+                            let: {user_id: "$user_id", price: "$price"},
+                            pipeline:[
+                                { $match: {
+                                    $expr: {
+                                        $and:[
+                                            {$eq: ["$user_id", "$$user_id" ]},
+                                            { $or: [
+                                                    { $eq : ["$source", "tp_geo_ent"] },
+                                                    { $eq : ["$source", "tp_discover_pak"] },
+                                                    { $eq : ["$source", "tp_dw_eng"] },
+                                                    { $eq : ["$source", "youtube"] }
+                                                ]
+                                            }
+                                        ],
+                                    }
+                                }},
+                                { $project:{
+                                    _id: 0,
+                                    price: "$$price",
+                                    source: "$source"
+                                }}
+                            ],
+                            as: "billing"
+                        }},
+                        {
+                            $unwind: "$billing"
+                        },
+                        { $group:{
+                            _id: "$billing.source",
+                            price: {$sum: "$billing.price"}
+                        }},
+                        { $project:{
+                            tp_source: "$_id",
+                            price: "$price"
+                        }},
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
+                        if(err){
+                            console.log('getChargeDetailsTPAffiliateWiseByDateRange - err: ', err.message);
                             resolve([]);
                         }
                         resolve(items);
