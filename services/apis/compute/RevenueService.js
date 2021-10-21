@@ -518,7 +518,6 @@ computeRevenueTPAffiliateWiseReport = async (rawDataSet, params) =>{
         for (let i=0; i<rawDataSet.length; i++){
             outerObj = rawDataSet[i];
 
-            console.log('outerObj: ', outerObj)
             if (outerObj.tp_source) {
                 innerObj = outerObj.tp_source;
                 if (innerObj.tp_geo_ent){

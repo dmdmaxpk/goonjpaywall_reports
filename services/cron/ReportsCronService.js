@@ -115,6 +115,12 @@ cronComputeDailyDataReports = async (req, res) => {
     helper.threeLinesConsoleLog('StatisticsService - promiseBasedComputeDailyBaseChargeReports');
     await StatisticsService.promiseBasedComputeDailyBaseChargeReports(req,res);
 
+    helper.threeLinesConsoleLog('ChargeDetailsRevenueServices - promiseBasedComputeChargeDetailsAffiliateWiseReports');
+    await ChargeDetailsRevenueServices.promiseBasedComputeChargeDetailsAffiliateWiseReports(req,res);
+
+    helper.threeLinesConsoleLog('ChargeDetailsRevenueServices - promiseBasedComputeChargeDetailsTPAffiliateWiseReports');
+    await ChargeDetailsRevenueServices.promiseBasedComputeChargeDetailsTPAffiliateWiseReports(req,res);
+
     helper.oneLineConsoleLog('Cron - Yesterday Data is computed successfully.');
 };
 
