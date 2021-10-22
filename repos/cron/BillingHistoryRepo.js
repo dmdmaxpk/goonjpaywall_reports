@@ -354,6 +354,8 @@ class BillingHistoryRepository {
                             console.log('getChargeDetailsTPAffiliateWiseByDateRange - err: ', err.message);
                             resolve([]);
                         }
+                        console.log('getChargeDetailsTPAffiliateWiseByDateRange - items: ', items);
+
                         resolve(items);
                     });
                 }
