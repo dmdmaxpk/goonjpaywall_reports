@@ -303,7 +303,7 @@ class BillingHistoryRepository {
             console.log('getChargeDetailsTPAffiliateWiseByDateRange: ', from, to);
             req.db.collection('billinghistories', function (err, collection) {
                 if (!err) {
-                    collection.aggregate( [
+                    let query = [
                         { $match:{
                             billing_status: 'Success',
                             $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lt:new Date(to)}}]
@@ -348,7 +348,10 @@ class BillingHistoryRepository {
                             tp_source: "$_id",
                             price: "$price"
                         }},
-                    ],{ allowDiskUse: true }).toArray(function(err, items) {
+                    ];
+
+                    console.log('query: ', query);
+                    collection.aggregate(query ,{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getChargeDetailsTPAffiliateWiseByDateRange - err: ', err.message);
                             resolve([]);
