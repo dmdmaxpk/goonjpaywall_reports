@@ -314,7 +314,7 @@ class BillingHistoryRepository {
                         }},
                         { $lookup:{
                             from: "subscriptions",
-                            let: {user_id: "$user_id", price: "$price"},
+                            let: {user_id: "$user_id"},
                             pipeline:[
                                 { $match: {
                                     $expr: {
@@ -332,7 +332,6 @@ class BillingHistoryRepository {
                                 }},
                                 { $project:{
                                     _id: 0,
-                                    price: "$$price",
                                     source: "$source"
                                 }}
                             ],
@@ -343,7 +342,7 @@ class BillingHistoryRepository {
                         },
                         { $group:{
                             _id: "$billing.source",
-                            price: {$sum: "$billing.price"}
+                            price: {$sum: "$price"}
                         }},
                         { $project:{
                             tp_source: "$_id",
