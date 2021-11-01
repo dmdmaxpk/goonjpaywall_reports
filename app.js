@@ -46,7 +46,7 @@ var job = new CronJob('3 1 * * *', function() {
 job.start();
 
 var CronJob = require('cron').CronJob;
-var job = new CronJob('17 9 * * *', function() {
+var job = new CronJob('0 0 1 * *', function() {
     console.log('paywall daily reporting cron: ' + (new Date()));
 
     axios.get(config.base_path + "/cron/cron-compute-monthly-data-reports")
