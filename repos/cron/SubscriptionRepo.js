@@ -480,13 +480,14 @@ class SubscriptionRepository {
                             $unwind: "$subscriptions"
                         },
                         {$group:{
-                                _id: "$subscriptions.source",
-                                count: {$sum: 1}
-                            }},
+                            _id: "$subscriptions.source",
+                            count: {$sum: 1}
+                        }},
                         { $project:{
-                                source: "$_id",
-                                count: "$count"
-                            }}
+                            source: "$_id",
+                            count: "$count",
+                            _id: 0
+                        }}
                     ],{ allowDiskUse: true }).toArray(function(err, items) {
                         if(err){
                             console.log('getTotalPayingUsersByDateRange - err: ', err.message);
