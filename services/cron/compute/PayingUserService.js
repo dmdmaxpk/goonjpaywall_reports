@@ -153,7 +153,7 @@ computeTotalPayingUsersReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextMonthWithLocalTime(req,  6);
+    dateData = helper.computeNextMonthWithLocalTime(req, 10);
     req = dateData.req;
     month = dateData.month;
     fromDate = dateData.fromDate;
@@ -162,10 +162,11 @@ computeTotalPayingUsersReports = async(req, res) => {
 
     console.log('computeTotalPayingUsersReports: ', fromDate, toDate);
     await subscriptionRepository.getTotalPayingUsersByDateRange(req, fromDate, toDate).then(async function (totalPayingUsers) {
-        console.log('totalPayingUsers.length: ', totalPayingUsers);
+        console.log('totalPayingUsers.length: ', totalPayingUsers.length);
 
         // Now compute and store data in DB
         if (totalPayingUsers.length > 0) finalDataList = _.clone(computePayingUsersMonthlyData(totalPayingUsers, finalDataList, fromDate));
+        console.log('finalDataList: ', finalDataList);
 
         if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPaying');
     });
@@ -438,8 +439,7 @@ function computePayingUsersData(payingUsers, finalList, dateString) {
             newObj.source.tp_gdn.count = newObj.source.tp_gdn.count + record.price;
         } else if (record.source === 'affiliate_web') {
             newObj.source.affiliate_web.count = newObj.source.affiliate_web.count + record.price;
-        } else if(record.source !== 'app' && record.source !== 'web' && record.source !== 'HE' &&
-            record.source !== 'gdn2' && record.source !== 'tp-gdn' && record.source !== 'affiliate_web'){
+        } else {
             newObj.source.others.count = newObj.source.others.count + record.price;
         }
     }
@@ -554,19 +554,18 @@ function computePayingUsersMonthlyData(payingUsers, finalList, dateString) {
 
     for (const record of payingUsers) {
         if (record.source === 'app') {
-            newObj.source.app.count = newObj.source.others.count + record.count;
+            newObj.source.app.count = newObj.source.app.count + record.count;
         } else if (record.source === 'web') {
-            newObj.source.web.count = newObj.source.others.count + record.count;
+            newObj.source.web.count = newObj.source.web.count + record.count;
         } else if (record.source === 'HE') {
-            newObj.source.he.count = newObj.source.others.count + record.count;
+            newObj.source.he.count = newObj.source.he.count + record.count;
         } else if (record.source === 'gdn2') {
-            newObj.source.gdn2.count = newObj.source.others.count + record.count;
+            newObj.source.gdn2.count = newObj.source.gdn2.count + record.count;
         } else if (record.source === 'tp-gdn') {
-            newObj.source.tp_gdn.count = newObj.source.others.count + record.count;
+            newObj.source.tp_gdn.count = newObj.source.tp_gdn.count + record.count;
         } else if (record.source === 'affiliate_web') {
-            newObj.source.affiliate_web.count = newObj.source.others.count + record.count;
-        } else if(record.source !== 'app' && record.source !== 'web' && record.source !== 'HE' &&
-            record.source !== 'gdn2' && record.source !== 'tp-gdn' && record.source !== 'affiliate_web'){
+            newObj.source.affiliate_web.count = newObj.source.affiliate_web.count + record.count;
+        } else {
             newObj.source.others.count = newObj.source.others.count + record.count;
         }
     }
@@ -584,19 +583,18 @@ function computePayingUsersEngagementData(payingUsers, finalList, dateString) {
 
     for (const record of payingUsers) {
         if (record._id === 'app') {
-            newObj.source.app.count = newObj.source.others.count + record.count;
+            newObj.source.app.count = newObj.source.app.count + record.count;
         } else if (record._id === 'web') {
-            newObj.source.web.count = newObj.source.others.count + record.count;
+            newObj.source.web.count = newObj.source.web.count + record.count;
         } else if (record._id === 'HE') {
-            newObj.source.he.count = newObj.source.others.count + record.count;
+            newObj.source.he.count = newObj.source.he.count + record.count;
         } else if (record._id === 'gdn2') {
-            newObj.source.gdn2.count = newObj.source.others.count + record.count;
+            newObj.source.gdn2.count = newObj.source.gdn2.count + record.count;
         } else if (record._id === 'tp-gdn') {
-            newObj.source.tp_gdn.count = newObj.source.others.count + record.count;
+            newObj.source.tp_gdn.count = newObj.source.tp_gdn.count + record.count;
         } else if (record._id === 'affiliate_web') {
-            newObj.source.affiliate_web.count = newObj.source.others.count + record.count;
-        } else if(record._id !== 'app' && record._id !== 'web' && record._id !== 'HE' &&
-            record._id !== 'gdn2' && record._id !== 'tp-gdn' && record._id !== 'affiliate_web'){
+            newObj.source.affiliate_web.count = newObj.source.affiliate_web.count + record.count;
+        } else {
             newObj.source.others.count = newObj.source.others.count + record.count;
         }
     }
@@ -610,7 +608,7 @@ function computePayingUsersEngagementData(payingUsers, finalList, dateString) {
 
 
 async function insertNewRecord(data, dateString, fieldName) {
-    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString);
+    console.log('=>=>=>=>=>=>=> insertNewRecord', dateString, fieldName);
 
     dateString = helper.setDateWithTimezone(new Date(dateString), 'out');
     dateString = new Date(helper.setDate(dateString, 0, 0, 0, 0));
@@ -619,6 +617,8 @@ async function insertNewRecord(data, dateString, fieldName) {
         if (result.length > 0) {
             result = result[0];
             result[fieldName] = data;
+
+            console.log('result[fieldName]:', [fieldName]);
 
             await payingUsersRepo.updateReport(result, result._id);
         }
