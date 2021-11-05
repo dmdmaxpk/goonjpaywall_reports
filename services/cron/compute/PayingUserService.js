@@ -201,10 +201,11 @@ promiseBasedComputeTotalPayingUsersReports = async(req, res) => {
 
         console.log('promiseBasedComputeTotalPayingUsersReports: ', fromDate, toDate);
         await subscriptionRepository.getTotalPayingUsersByDateRange(req, fromDate, toDate).then(async function (totalPayingUsers) {
-            console.log('totalPayingUsers.length: ', totalPayingUsers.length);
+            console.log('totalPayingUsers.length: ', totalPayingUsers);
 
             // Now compute and store data in DB
             if (totalPayingUsers.length > 0) finalDataList = _.clone(computePayingUsersMonthlyData(totalPayingUsers, finalDataList, fromDate));
+            console.log('finalDataList: ', finalDataList);
 
             if (finalDataList.length > 0) await insertNewRecord(finalDataList, fromDate, 'totalPaying');
         });
