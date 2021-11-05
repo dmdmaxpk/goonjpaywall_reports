@@ -162,7 +162,7 @@ computeTotalPayingUsersReports = async(req, res) => {
 
     console.log('computeTotalPayingUsersReports: ', fromDate, toDate);
     await subscriptionRepository.getTotalPayingUsersByDateRange(req, fromDate, toDate).then(async function (totalPayingUsers) {
-        console.log('totalPayingUsers.length: ', totalPayingUsers.length);
+        console.log('totalPayingUsers.length: ', totalPayingUsers);
 
         // Now compute and store data in DB
         if (totalPayingUsers.length > 0) finalDataList = _.clone(computePayingUsersMonthlyData(totalPayingUsers, finalDataList, fromDate));
