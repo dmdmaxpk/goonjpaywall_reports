@@ -27,7 +27,7 @@ const PayingUserService = require('../services/cron/compute/PayingUserService');
 const ReportsCronService = require('../services/cron/ReportsCronService');
 
 exports.computeUserReports = async (req,res) =>  {
-    await UserService.computeUserReports(req,res);
+    UserService.computeUserReports(req,res);
     res.send("computeUserReports - Executed\n");
 };
 
