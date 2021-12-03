@@ -365,15 +365,17 @@ class Helper {
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
+        console.log('computeLastMonthDateWithLocalTime - this.year : ', this.year);
+
         fromDate  = new Date(this.year + month+'-01T00:00:00.000Z');
-        console.log('computeNextDate - fromDate : ', fromDate);
+        console.log('computeLastMonthDateWithLocalTime - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
         daysInMonth = this.getDaysInMonth(month)
         toDate.setDate(toDate.getDate() + daysInMonth - 1);
         toDate.setHours(23, 59, 59);
 
-        console.log('computeNextDate - toDate : ', toDate);
+        console.log('computeLastMonthDateWithLocalTime - toDate : ', toDate);
 
         return {req: req, month: month, fromDate: fromDate, toDate: toDate};
     }

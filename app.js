@@ -20,8 +20,6 @@ mongoose.connection.on('error', err => console.error(`Error: ${err.message}`));
 
 const app = express();
 
-console.log("process: ", process.env.UV_THREADPOOL_SIZE);
-
 // Middlewares
 app.use(cors());
 app.use(bodyParser.json());
