@@ -7,7 +7,6 @@ class Helper {
 
     constructor() {
         this.db = undefined;
-        this.year = undefined;
     }
 
     static getDBInstance(){
@@ -19,7 +18,7 @@ class Helper {
     }
 
     static getThisYear(){
-        this.year = new Date().getFullYear();
+        return new Date().getFullYear();
     }
 
     static sleep(ms) {
