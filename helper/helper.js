@@ -131,14 +131,14 @@ class Helper {
         let year = this.getThisYear();
 
         if (day === 'chunk_1'){
-            fromDate  = new Date(year + month+'-01T00:00:00.000Z');
+            fromDate  = new Date(year+'-'+month+'-01T00:00:00.000Z');
             toDate  = new Date(_.clone(fromDate));
 
             toDate.setDate(15);
             toDate.setHours(23, 59, 59);
         }
         else{
-            fromDate  = new Date(year + month+'-16T00:00:00.000Z');
+            fromDate  = new Date(year+'-'+month+'-16T00:00:00.000Z');
             toDate  = new Date(_.clone(fromDate));
             days = this.getDaysInMonth(month);
 
@@ -203,7 +203,7 @@ class Helper {
 
         let year = this.getThisYear();
 
-        fromDate  = new Date(year + month+'-'+day+'T00:00:00.000Z');
+        fromDate  = new Date(year+'-'+month+'-'+day+'T00:00:00.000Z');
         fromDate = this.setDateWithTimezone(fromDate, 'in');
         console.log('computeTodayDate - fromDate : ', fromDate);
 
@@ -231,7 +231,7 @@ class Helper {
 
         let year = this.getThisYear();
 
-        fromDate  = new Date(year + month+'-'+day+'T00:00:00.000Z');
+        fromDate  = new Date(year+'-'+month+'-'+day+'T00:00:00.000Z');
         console.log('computeTodayDateWithLocalTime - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
@@ -254,7 +254,7 @@ class Helper {
 
         let year = this.getThisYear();
 
-        fromDate  = new Date(year + month+'-'+day+'T00:00:00.000Z');
+        fromDate  = new Date(year+'-'+month+'-'+day+'T00:00:00.000Z');
         console.log('computeTodayDateWithLocalTimeForScript - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
@@ -313,7 +313,7 @@ class Helper {
 
         let year = this.getThisYear();
 
-        fromDate  = new Date(year + month+'-'+day+'T00:00:00.000Z');
+        fromDate  = new Date(year+'-'+month+'-'+day+'T00:00:00.000Z');
         fromDate = this.setDateWithTimezone(fromDate, 'in');
         console.log('computeNextDate - fromDate : ', fromDate);
 
@@ -341,7 +341,7 @@ class Helper {
 
         let year = this.getThisYear();
 
-        fromDate  = new Date(year + month+'-'+day+'T00:00:00.000Z');
+        fromDate  = new Date(year+'-'+month+'-'+day+'T00:00:00.000Z');
         console.log('computeNextDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
@@ -361,13 +361,13 @@ class Helper {
 
         let year = this.getThisYear();
 
-        fromDate  = new Date(year + month+'-01T00:00:00.000Z');
+        fromDate  = new Date(year+'-'+month+'-01T00:00:00.000Z');
         console.log('computeNextMonthWithLocalTime - fromDate : ', fromDate);
 
         tDays = this.getDaysInMonth(month);
         console.log('computeNextMonthWithLocalTime - tDays : ', tDays);
 
-        toDate  = new Date(year + month+'-'+tDays+'T23:59:59.000Z');
+        toDate  = new Date(year+'-'+month+'-'+tDays+'T23:59:59.000Z');
         console.log('computeNextMonthWithLocalTime - toDate : ', toDate);
 
         return {req: req, month: month, fromDate: fromDate, toDate: toDate};
@@ -387,7 +387,7 @@ class Helper {
 
         console.log('computeLastMonthDateWithLocalTime - year : ', year);
 
-        fromDate  = new Date(year + month+'-01T00:00:00.000Z');
+        fromDate  = new Date(year+'-'+month+'-01T00:00:00.000Z');
         console.log('computeLastMonthDateWithLocalTime - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
@@ -410,7 +410,7 @@ class Helper {
 
         let year = this.getThisYear();
 
-        fromDate  = new Date(year + month+'-01T00:00:00.000Z');
+        fromDate  = new Date(year+'-'+month+'-01T00:00:00.000Z');
         console.log('computeNextDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
@@ -435,7 +435,7 @@ class Helper {
 
         let year = this.getThisYear();
 
-        fromDate  = new Date(year + month+'-'+fromDay+'T00:00:00.000Z');
+        fromDate  = new Date(year+'-'+month+'-'+fromDay+'T00:00:00.000Z');
         console.log('computeNextDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
@@ -477,10 +477,10 @@ class Helper {
 
         let year = this.getThisYear();
 
-        fromDate  = new Date(year + month+'-'+day+'T'+(fromHours)+':00:00.000Z');
+        fromDate  = new Date(year+'-'+month+'-'+day+'T'+(fromHours)+':00:00.000Z');
         fromDate = this.setDateWithTimezone(fromDate, 'in');
 
-        toDate  = new Date(year + month+'-'+day+'T'+(toHours)+':59:59.000Z');
+        toDate  = new Date(year+'-'+month+'-'+day+'T'+(toHours)+':59:59.000Z');
         toDate = this.setDateWithTimezone(toDate, 'in');
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate, fromHours: fromHours, toHours: toHours};
