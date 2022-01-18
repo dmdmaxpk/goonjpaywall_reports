@@ -383,12 +383,16 @@ class Helper {
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
+        if(month === '00' || month === 0){
+            month = 12;
+            year = year - 1;
+        }
+
         let year = this.getThisYear();
 
         console.log('computeLastMonthDateWithLocalTime - year : ', year, "month: ", month);
 
-        // fromDate  = new Date(year+'-'+month+'-01T00:00:00.000Z');
-        fromDate  = new Date("2021-12"+'-01T00:00:00.000Z');
+        fromDate  = new Date(year+'-'+month+'-01T00:00:00.000Z');
         console.log('computeLastMonthDateWithLocalTime - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
