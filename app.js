@@ -15,7 +15,7 @@ require('./models/Revenue');
 
 // Connection to Database
 const config = require('./config');
-mongoose.connect(config.mongoDB['goonj_paywall_reports']);
+mongoose.connect(config.mongoDB['goonj_paywall_reports'], {useUnifiedTopology: true, useCreateIndex: true, useNewUrlParser: true, useFindAndModify: false});
 mongoose.connection.on('error', err => console.error(`Error: ${err.message}`));
 
 const app = express();
