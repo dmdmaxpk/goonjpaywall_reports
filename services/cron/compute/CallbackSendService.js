@@ -5,7 +5,7 @@ const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, finalList = [];
+let dateData, fromDate, toDate, day, month, finalList = [];
 let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeCallbackSendReports = async(req, res) => {
     console.log('computeCallbackSendReports');
@@ -14,7 +14,7 @@ computeCallbackSendReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 8, 11);
+    dateData = helper.computeNextDate(req, 30, 8);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -67,22 +67,22 @@ computeCallbackSendReports = async(req, res) => {
 
     // Get compute data for next time slot
     req.day = Number(req.day) + 1;
-    console.log('computeCallbackSendReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+    console.log('getCallbackSendByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-    if (req.day <= helper.getDaysInMonth(month)){
-        console.log('IF');
-        if (month < helper.getTodayMonthNo())
+    if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+        if (Number(month) < Number(helper.getTodayMonthNo()))
             computeCallbackSendReports(req, res);
-        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+        else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
             computeCallbackSendReports(req, res);
     }
     else{
-        console.log('ELSE');
+        console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
         req.day = 1;
         req.month = Number(req.month) + 1;
-        console.log('computeCallbackSendReports -> month : ', month, req.month, new Date().getMonth());
+        console.log('getCallbackSendByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-        if (req.month <= helper.getTodayMonthNo())
+        if (Number(req.month) <= Number(helper.getTodayMonthNo()))
             computeCallbackSendReports(req, res);
     }
 

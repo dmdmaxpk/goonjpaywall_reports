@@ -383,9 +383,235 @@ computeRevenueOperatorWiseReport = async (rawDataSet, params) =>{
         return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
     }
 };
+computeRevenueAffiliateWiseReport = async (rawDataSet, params) =>{
+    console.log('computeRevenueAffiliateWiseReport');
+
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, innerObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = {aff3a: 0, tp_gdn_daily: 0, gdn2: 0, goonj: 0, gdn3: 0, null: 0, tp_fb_campaign: 0};
+    let dayDataObj = {aff3a: 0, tp_gdn_daily: 0, gdn2: 0, goonj: 0, gdn3: 0, null: 0, tp_fb_campaign: 0};
+    let weeklyDataObj = {aff3a: 0, tp_gdn_daily: 0, gdn2: 0, goonj: 0, gdn3: 0, null: 0, tp_fb_campaign: 0};
+    let monthlyDataObj = {aff3a: 0, tp_gdn_daily: 0, gdn2: 0, goonj: 0, gdn3: 0, null: 0, tp_fb_campaign: 0};
+
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+
+            if (outerObj.affiliate) {
+                innerObj = outerObj.affiliate;
+                if (innerObj.aff3a){
+                    dataObj.aff3a = dataObj.aff3a + innerObj.aff3a;
+                    dayDataObj.aff3a = dayDataObj.aff3a + innerObj.aff3a;
+                    weeklyDataObj.aff3a = weeklyDataObj.aff3a + innerObj.aff3a;
+                    monthlyDataObj.aff3a = monthlyDataObj.aff3a + innerObj.aff3a;
+                }
+                if (innerObj.tp_gdn_daily){
+                    dataObj.tp_gdn_daily = dataObj.tp_gdn_daily + innerObj.tp_gdn_daily;
+                    dayDataObj.tp_gdn_daily = dayDataObj.tp_gdn_daily + innerObj.tp_gdn_daily;
+                    weeklyDataObj.tp_gdn_daily = weeklyDataObj.tp_gdn_daily + innerObj.tp_gdn_daily;
+                    monthlyDataObj.tp_gdn_daily = monthlyDataObj.tp_gdn_daily + innerObj.tp_gdn_daily;
+                }
+                if (innerObj.gdn2){
+                    dataObj.gdn2 = dataObj.gdn2 + innerObj.gdn2;
+                    dayDataObj.gdn2 = dayDataObj.gdn2 + innerObj.gdn2;
+                    weeklyDataObj.gdn2 = weeklyDataObj.gdn2 + innerObj.gdn2;
+                    monthlyDataObj.gdn2 = monthlyDataObj.gdn2 + innerObj.gdn2;
+                }
+                if (innerObj.goonj){
+                    dataObj.goonj = dataObj.goonj + innerObj.goonj;
+                    dayDataObj.goonj = dayDataObj.goonj + innerObj.goonj;
+                    weeklyDataObj.goonj = weeklyDataObj.goonj + innerObj.goonj;
+                    monthlyDataObj.goonj = monthlyDataObj.goonj + innerObj.goonj;
+                }
+                if (innerObj.gdn3){
+                    dataObj.gdn3 = dataObj.gdn3 + innerObj.gdn3;
+                    dayDataObj.gdn3 = dayDataObj.gdn3 + innerObj.gdn3;
+                    weeklyDataObj.gdn3 = weeklyDataObj.gdn3 + innerObj.gdn3;
+                    monthlyDataObj.gdn3 = monthlyDataObj.gdn3 + innerObj.gdn3;
+                }
+                if (innerObj.null){
+                    dataObj.null = dataObj.null + innerObj.null;
+                    dayDataObj.null = dayDataObj.null + innerObj.null;
+                    weeklyDataObj.null = weeklyDataObj.null + innerObj.null;
+                    monthlyDataObj.null = monthlyDataObj.null + innerObj.null;
+                }
+                if (innerObj.tp_fb_campaign){
+                    dataObj.tp_fb_campaign = dataObj.tp_fb_campaign + innerObj.tp_fb_campaign;
+                    dayDataObj.tp_fb_campaign = dayDataObj.tp_fb_campaign + innerObj.tp_fb_campaign;
+                    weeklyDataObj.tp_fb_campaign = weeklyDataObj.tp_fb_campaign + innerObj.tp_fb_campaign;
+                    monthlyDataObj.tp_fb_campaign = monthlyDataObj.tp_fb_campaign + innerObj.tp_fb_campaign;
+                }
+
+                // Hourly Bases Data
+                // hourlyBasisTotalCount.push();
+
+                // reset start_date for both month & week so can update with latest one
+                if (week_from_date === null)
+                    week_from_date = innerObj.billing_dtm;
+
+                if (month_from_date === null)
+                    month_from_date = innerObj.billing_dtm;
+            }
+
+            monthNo = new Date(outerObj.date).getMonth() + 1;
+            dayNo = new Date(outerObj.date).getDate();
+
+            // Monthly Data Count
+            if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
+                monthlyDataObj.from_date = month_from_date;
+                monthlyDataObj.to_date = outerObj.date;
+                monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                monthlyDataObj = _.clone({aff3a: 0, tp_gdn_daily: 0, gdn2: 0, goonj: 0, gdn3: 0, null: 0, tp_fb_campaign: 0});
+                month_from_date = null;
+            }
+
+            // Weekly Data Count
+            if (Number(dayNo) % 7 === 0){
+                weeklyDataObj.from_date = week_from_date;
+                weeklyDataObj.to_date = outerObj.date;
+                weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                weeklyDataObj = _.clone({aff3a: 0, tp_gdn_daily: 0, gdn2: 0, goonj: 0, gdn3: 0, null: 0, tp_fb_campaign: 0});
+                week_from_date = null;
+            }
+
+            // Total Count Data
+            // Day Wise Date Count
+            dayDataObj.date = outerObj.date;
+            dayWiseTotalCount.push(_.clone(dayDataObj));
+            dayDataObj = _.clone({aff3a: 0, tp_gdn_daily: 0, gdn2: 0, goonj: 0, gdn3: 0, null: 0, tp_fb_campaign: 0});
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
+    }
+};
+computeRevenueTPAffiliateWiseReport = async (rawDataSet, params) =>{
+    console.log('computeRevenueTPAffiliateWiseReport');
+
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, innerObj, hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = {tp_geo_ent: 0, tp_discover_pak: 0, tp_dw_eng: 0, youtube: 0};
+    let dayDataObj = {tp_geo_ent: 0, tp_discover_pak: 0, tp_dw_eng: 0, youtube: 0};
+    let weeklyDataObj = {tp_geo_ent: 0, tp_discover_pak: 0, tp_dw_eng: 0, youtube: 0};
+    let monthlyDataObj = {tp_geo_ent: 0, tp_discover_pak: 0, tp_dw_eng: 0, youtube: 0};
+
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+
+            if (outerObj.tp_source) {
+                innerObj = outerObj.tp_source;
+                if (innerObj.tp_geo_ent){
+                    dataObj.tp_geo_ent = dataObj.tp_geo_ent + innerObj.tp_geo_ent;
+                    dayDataObj.tp_geo_ent = dayDataObj.tp_geo_ent + innerObj.tp_geo_ent;
+                    weeklyDataObj.tp_geo_ent = weeklyDataObj.tp_geo_ent + innerObj.tp_geo_ent;
+                    monthlyDataObj.tp_geo_ent = monthlyDataObj.tp_geo_ent + innerObj.tp_geo_ent;
+                }
+                if (innerObj.tp_discover_pak){
+                    dataObj.tp_discover_pak = dataObj.tp_discover_pak + innerObj.tp_discover_pak;
+                    dayDataObj.tp_discover_pak = dayDataObj.tp_discover_pak + innerObj.tp_discover_pak;
+                    weeklyDataObj.tp_discover_pak = weeklyDataObj.tp_discover_pak + innerObj.tp_discover_pak;
+                    monthlyDataObj.tp_discover_pak = monthlyDataObj.tp_discover_pak + innerObj.tp_discover_pak;
+                }
+                if (innerObj.tp_dw_eng){
+                    dataObj.tp_dw_eng = dataObj.tp_dw_eng + innerObj.tp_dw_eng;
+                    dayDataObj.tp_dw_eng = dayDataObj.tp_dw_eng + innerObj.tp_dw_eng;
+                    weeklyDataObj.tp_dw_eng = weeklyDataObj.tp_dw_eng + innerObj.tp_dw_eng;
+                    monthlyDataObj.tp_dw_eng = monthlyDataObj.tp_dw_eng + innerObj.tp_dw_eng;
+                }
+                if (innerObj.youtube){
+                    dataObj.youtube = dataObj.youtube + innerObj.youtube;
+                    dayDataObj.youtube = dayDataObj.youtube + innerObj.youtube;
+                    weeklyDataObj.youtube = weeklyDataObj.youtube + innerObj.youtube;
+                    monthlyDataObj.youtube = monthlyDataObj.youtube + innerObj.youtube;
+                }
+
+                // Hourly Bases Data
+                // hourlyBasisTotalCount.push();
+
+                // reset start_date for both month & week so can update with latest one
+                if (week_from_date === null)
+                    week_from_date = innerObj.added_dtm;
+
+                if (month_from_date === null)
+                    month_from_date = innerObj.added_dtm;
+            }
+
+            monthNo = new Date(outerObj.date).getMonth() + 1;
+            dayNo = new Date(outerObj.date).getDate();
+
+            // Monthly Data Count
+            if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
+                monthlyDataObj.from_date = month_from_date;
+                monthlyDataObj.to_date = outerObj.date;
+                monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                monthlyDataObj = _.clone({tp_geo_ent: 0, tp_discover_pak: 0, tp_dw_eng: 0, youtube: 0});
+                month_from_date = null;
+            }
+
+            // Weekly Data Count
+            if (Number(dayNo) % 7 === 0){
+                weeklyDataObj.from_date = week_from_date;
+                weeklyDataObj.to_date = outerObj.date;
+                weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                weeklyDataObj = _.clone({tp_geo_ent: 0, tp_discover_pak: 0, tp_dw_eng: 0, youtube: 0});
+                week_from_date = null;
+            }
+
+            // Total Count Data
+            // Day Wise Date Count
+            dayDataObj.date = outerObj.date;
+            dayWiseTotalCount.push(_.clone(dayDataObj));
+            dayDataObj = _.clone({tp_geo_ent: 0, tp_discover_pak: 0, tp_dw_eng: 0, youtube: 0});
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+        return reportsTransformer.transformTheData(1, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
+    }
+};
 
 module.exports = {
     computeRevenuePackageWiseReport: computeRevenuePackageWiseReport,
     computeRevenuePaywallWiseReport: computeRevenuePaywallWiseReport,
-    computeRevenueOperatorWiseReport: computeRevenueOperatorWiseReport
+    computeRevenueOperatorWiseReport: computeRevenueOperatorWiseReport,
+    computeRevenueAffiliateWiseReport: computeRevenueAffiliateWiseReport,
+    computeRevenueTPAffiliateWiseReport: computeRevenueTPAffiliateWiseReport,
 };

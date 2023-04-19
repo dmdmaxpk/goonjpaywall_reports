@@ -6,7 +6,7 @@ const subscriptionRepository = container.resolve('subscriptionRepository');
 const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
-let fromHours, toHours, fromDate, toDate, day, month, finalList = [];
+let dateData, fromHours, toHours, fromDate, toDate, day, month, finalList = [];
 computeSubscriberSubscriptionsReports = async(req, res) => {
     console.log('computeSubscriberSubscriptionsReports: ');
 

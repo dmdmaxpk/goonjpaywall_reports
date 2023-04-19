@@ -5,7 +5,7 @@ const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, finalData, chargeDetailSourceWiseList = [], transactionsSourceWiseList = [];
+let dateData, fromDate, toDate, day, month, finalData, chargeDetailSourceWiseList = [], transactionsSourceWiseList = [];
 let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeChargeDetailsSourceWiseReports = async(req, res) => {
     console.log('computeChargeDetailsSourceWiseReports');
@@ -14,7 +14,7 @@ computeChargeDetailsSourceWiseReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 8, 11);
+    dateData = helper.computeNextDate(req, 30, 8);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -71,20 +71,22 @@ computeChargeDetailsSourceWiseReports = async(req, res) => {
 
         // Recurring - get and compute data for next day - time slot
         req.day = Number(req.day) + 1;
-        console.log('getChargeDetailsSourceWiseByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
+        console.log('getChargeDetailsSourceWiseByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
+        if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+            if (Number(month) < Number(helper.getTodayMonthNo()))
                 computeChargeDetailsSourceWiseReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+            else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
                 computeChargeDetailsSourceWiseReports(req, res);
         }
         else{
+            console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('getChargeDetailsSourceWiseByDateRange -> month : ', month, req.month, new Date().getMonth());
+            console.log('getChargeDetailsSourceWiseByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-            if (req.month <= helper.getTodayMonthNo())
+            if (Number(req.month) <= Number(helper.getTodayMonthNo()))
                 computeChargeDetailsSourceWiseReports(req, res);
         }
 
@@ -170,9 +172,10 @@ promiseBasedComputeChargeDetailsReports = async(req, res) => {
 
 function computeChargeDetailSourceWiseData(chargeDetails) {
 
-    let dateInMili, outer_added_dtm, inner_added_dtm, outerObj, innerObj, price, micro_charge;
+    let outer_added_dtm, inner_added_dtm, outerObj, innerObj, price, micro_charge;
     let chargeDetailSourceWiseObj, transactionsSourceWiseObj;
     let chargeDetailSourceWiseList = [], transactionsSourceWiseList = [];
+    let thisHour, check, hoursArr = [];
 
     for (let j=0; j < chargeDetails.length; j++) {
 
@@ -180,10 +183,14 @@ function computeChargeDetailSourceWiseData(chargeDetails) {
 
         chargeDetailSourceWiseObj = _.clone(cloneChargeDetailSourceWiseObj());
         transactionsSourceWiseObj = _.clone(cloneTransactionSourceWiseObj());
-
         outer_added_dtm = helper.setDate(new Date(outerObj.added_dtm), null, 0, 0, 0).getTime();
+        thisHour = new Date(outerObj.added_dtm).getUTCHours();
+        check = hoursArr.includes(thisHour);
 
-        if (dateInMili !== outer_added_dtm){
+        if (!check) {
+            hoursArr.push(thisHour);
+            console.log('hoursArr: ', hoursArr.length);
+
             for (let k=0; k < chargeDetails.length; k++) {
 
                 innerObj = chargeDetails[k];
@@ -192,7 +199,6 @@ function computeChargeDetailSourceWiseData(chargeDetails) {
                 if (outer_added_dtm === inner_added_dtm){
                     micro_charge = innerObj.micro_charge === false ? false : true;
                     price = innerObj.price - (innerObj.discount ? innerObj.discount : 0);
-                    dateInMili = inner_added_dtm;
 
                     //Source wise Charge Details
                     if (innerObj.source === 'app'){
@@ -387,8 +393,8 @@ function countQuery(from, to){
         {
             $lookup: {
                 from: "billinghistories",
-                localField: "subscriber_id",
-                foreignField: "subscriber_id",
+                localField: "user_id",
+                foreignField: "user_id",
                 as: "histories"
             }
         },

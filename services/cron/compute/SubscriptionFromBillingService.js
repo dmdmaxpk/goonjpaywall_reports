@@ -5,7 +5,7 @@ const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, finalData, subscriptionFinalList = [], subscribersFinalList = [];
+let dateData, fromDate, toDate, day, month, finalData, subscriptionFinalList = [], subscribersFinalList = [];
 let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeSubscriptionsFromBillingService = async(req, res) => {
     console.log('computeSubscriptionsFromBillingService');
@@ -80,20 +80,22 @@ computeSubscriptionsFromBillingService = async(req, res) => {
 
     // Get compute data for next time slot
     req.day = Number(req.day) + 1;
-    console.log('computeSubscriptionsFromBillingService -> day : ', day, req.day, helper.getDaysInMonth(month));
+    console.log('computeSubscriptionsFromBillingHistoryByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-    if (req.day <= helper.getDaysInMonth(month)){
-        if (month < helper.getTodayMonthNo())
+    if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+        if (Number(month) < Number(helper.getTodayMonthNo()))
             computeSubscriptionsFromBillingService(req, res);
-        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+        else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
             computeSubscriptionsFromBillingService(req, res);
     }
     else{
+        console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
         req.day = 1;
         req.month = Number(req.month) + 1;
-        console.log('computeSubscriptionsFromBillingService -> month : ', month, req.month, new Date().getMonth());
+        console.log('computeSubscriptionsFromBillingHistoryByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-        if (req.month <= helper.getTodayMonthNo())
+        if (Number(req.month) <= Number(helper.getTodayMonthNo()))
             computeSubscriptionsFromBillingService(req, res);
     }
 

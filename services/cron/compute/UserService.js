@@ -4,7 +4,7 @@ const userRepo = container.resolve('userRepository');
 const helper = require('../../../helper/helper');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, finalList = [];
+let dateData, fromDate, toDate, day, month, finalList = [];
 computeUserReports = async(req, res) => {
     console.log('computeUserReports: ');
 
@@ -12,7 +12,7 @@ computeUserReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDate(req, 11, 10);
+    dateData = helper.computeNextDate(req, 30, 8);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -34,20 +34,22 @@ computeUserReports = async(req, res) => {
 
     // Get compute data for next time slot
     req.day = Number(req.day) + 1;
-    console.log('getUsersByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
+    console.log('getUsersByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-    if (req.day <= helper.getDaysInMonth(month)){
-        if (month < helper.getTodayMonthNo())
+    if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+        if (Number(month) < Number(helper.getTodayMonthNo()))
             computeUserReports(req, res);
-        else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+        else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
             computeUserReports(req, res);
     }
     else{
+        console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
         req.day = 1;
         req.month = Number(req.month) + 1;
-        console.log('getUsersByDateRange -> month : ', month, req.month, new Date().getMonth());
+        console.log('getUsersByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-        if (req.month <= helper.getTodayMonthNo())
+        if (Number(req.month) <= Number(helper.getTodayMonthNo()))
             computeUserReports(req, res);
     }
 

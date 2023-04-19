@@ -17,7 +17,7 @@ updateReport = async (data, id) => {
 
 generateReportsData = async (params) => {
     console.log('generateReportsData: ', params.from_date, params.to_date);
-    return await Report.find( { $and:[{date:{$gte:new Date(params.from_date)}}, {date:{$lte:new Date(params.to_date)}}] });
+    return await Report.find( { $and:[{date:{$gte:new Date(params.from_date)}}, {date:{$lte:new Date(params.to_date)}}] }).sort({date: 1});
 };
 
 module.exports = {

@@ -1,31 +1,67 @@
-
 class ReportsValidator{
-
     reset(){
         this.status = true;
         this.reasons = ''
     }
-
     validateParams(params){
         this.reset();
         console.log('params: ', params);
         switch(params.type.trim()) {
             case 'users':
                 this.checkDateIsNull(params);
-                this.checkSubTypeIsNull(params.sub_type, "Get Users", ['active_inactive', 'full_and_partial_charged', 'returning_user', 'accessing_service', 'unique_paying', 'user_billed']);
+                this.checkSubTypeIsNull(params.sub_type, "Get Users", ['active_inactive', 'full_and_partial_charged', 'returning_user', 'accessing_service', 'user_billed']);
 
                 if (params.sub_type === 'user_billed')
                     this.checkSubTypeIsNull(params.user_billed, "Get Billed User", ['package_wise', 'paywall_wise', 'operator_wise']);
 
                 break;
+            case 'tp_campaign':
+                this.checkDateIsNull(params);
+                this.checkSubTypeIsNull(params.sub_type, "Telenor Campaign", ['tp_fb_campaign']);
+
+                break;
+            case 'paying_user':
+                this.checkDateIsNull(params);
+                this.checkSubTypeIsNull(params.sub_type, "Paying Users", ['new', 'all', 'revenue', 'engagement', 'session_time', 'watch_time']);
+
+                if (params.sub_type === 'new' || params.sub_type === 'all' || params.sub_type === 'revenue' || params.sub_type === 'engagement'){
+                    let subType = params.sub_type;
+                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Report", ['source_wise']);
+                }
+                if (params.sub_type === 'session_time'){
+                    let subType = params.sub_type;
+                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Session Time Report", ['one_three', 'four_ten', 'more_then_ten', 'and_all']);
+                }
+                if (params.sub_type === 'watch_time'){
+                    let subType = params.sub_type;
+                    this.checkSubTypeIsNull(params[subType], "Get Paying Users Watch Time Report", ['zero_fifteen', 'sixteen_thirty', 'thirtyOne_sixty', 'more_then_60', 'and_all']);
+                }
+
+                break;
             case 'subscribers':
                 this.checkDateIsNull(params, "Subscribers");
-                this.checkSubTypeIsNull(params.sub_type, "Subscribers", ['total', 'active_inactive']);
+                this.checkSubTypeIsNull(params.sub_type, "Subscribers", ['total', 'active_inactive', 'successful']);
+
+                if (params.sub_type === 'successful')
+                    this.checkSubTypeIsNull(params.successful, "Transacting Subscribers", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise']);
 
                 break;
             case 'subscriptions':
                 this.checkDateIsNull(params, "Get Subscribers");
-                this.checkSubTypeIsNull(params.sub_type, "Subscriptions", ['active_inactive', 'package_wise', 'source_wise', 'paywall_wise', 'affiliate_mid', 'callback_send', 'success_rate']);
+                // this.checkSubTypeIsNull(params.sub_type, "Subscriptions", ['active_inactive', 'package_wise', 'source_wise', 'paywall_wise', 'operator_wise', 'price_wise']);
+                this.checkSubTypeIsNull(params.sub_type, "Subscriptions", ['successful', 'trialed', 'graced', 'callback_send', 'active_inactive']);
+
+                if (params.sub_type === 'successful')
+                    this.checkSubTypeIsNull(params.successful, "Successful Subscriptions", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise', 'success_rate']);
+
+                if (params.sub_type === 'trialed')
+                    this.checkSubTypeIsNull(params.trialed, "Trialed Subscriptions", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise']);
+
+                if (params.sub_type === 'graced')
+                    this.checkSubTypeIsNull(params.graced, "Graced Subscriptions", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise']);
+
+                if (params.sub_type === 'callback_send')
+                    this.checkSubTypeIsNull(params.callback_send, "Callback Send Subscriptions", ['affiliate_mid', 'package_wise', 'paywall_wise', 'operator_wise']);
 
                 break;
             case 'subscriptionsFromBilling':
@@ -48,7 +84,7 @@ class ReportsValidator{
                 break;
             case 'revenue':
                 this.checkDateIsNull(params, "Revenue");
-                this.checkSubTypeIsNull(params.sub_type, "Revenue", ['package_wise', 'paywall_wise', 'operator_wise', 'deactivated']);
+                this.checkSubTypeIsNull(params.sub_type, "Revenue", ['package_wise', 'paywall_wise', 'operator_wise', 'deactivated', 'affiliate_wise', 'tp_affiliate_wise']);
 
                 break;
             case 'charge_details':
@@ -62,6 +98,20 @@ class ReportsValidator{
 
                 break;
             case 'transactions':
+                this.checkDateIsNull(params, "Get Transactions");
+                this.checkSubTypeIsNull(params.sub_type, "Transactions", ['avg_transactions', 'avg_transactions_per_customer', 'successful', 'trialed', 'graced']);
+
+                if (params.sub_type === 'successful')
+                    this.checkSubTypeIsNull(params.successful, "Successful Transactions", ['source_wise', 'package_wise', 'paywall_wise', 'operator_wise', 'price_wise', 'success_failure_rate', 'avg_transaction', 'new_vs_returning']);
+
+                if (params.sub_type === 'trialed')
+                    this.checkSubTypeIsNull(params.trialed, "Trialed Transactions", ['source_wise', 'package_wise', 'paywall_wise', 'price_wise']);
+
+                if (params.sub_type === 'graced')
+                    this.checkSubTypeIsNull(params.graced, "Graced Transactions", ['source_wise', 'package_wise', 'paywall_wise', 'price_wise']);
+
+                break;
+            case 'transactionsOld':
                 this.checkDateIsNull(params, "Get Transactions");
                 this.checkSubTypeIsNull(params.sub_type, "Transactions", ['transactions', 'subscribers']);
 
@@ -95,9 +145,14 @@ class ReportsValidator{
                 this.checkSubTypeIsNull(params.sub_type, "Visitors", ['app', 'web']);
 
                 break;
-            case 'avg_churn':
+            case 'churn':
                 this.checkDateIsNull(params);
-                this.checkSubTypeIsNotArray(params, "Get Average Churn");
+                this.checkSubTypeIsNull(params.sub_type, "Get Churn", ['churn']);
+
+                break;
+            case 'others':
+                this.checkDateIsNull(params, "Others");
+                this.checkSubTypeIsNull(params.sub_type, "Others Statistics", ['daily_base', 'request_count', 'successful_charge', 'unsubscribed', 'insufficient_balance', 'excessive_billing']);
 
                 break;
             case 'share_msisdn':
@@ -112,14 +167,14 @@ class ReportsValidator{
                 this.checkDateIsNull(params, "Check Uninstall");
 
                 break;
+            case 'ccd_api_data':
+                this.checkCCDReportParams(params, "Customer Support Api Data");
+
+                break;
             default:
                 this.status = false; this.reasons = 'The Report Type is invalid.';
                 break;
         }
-        let type = params.type ? params.type.trim() : '';
-        console.log('type: ', type);
-
-        console.log('response ', this.status, this.reasons);
         return {status: this.status, reasons: this.reasons};
     }
 
@@ -133,7 +188,17 @@ class ReportsValidator{
 
         return true;
     }
+    checkCCDReportParams(params){
+        if (params.month === undefined) {
+            this.status = false; this.reasons = 'Please select the month.';
+        }
 
+        if (params.method === undefined) {
+            this.status = false; this.reasons = 'Please select the method.';
+        }
+
+        return true;
+    }
     checkDateIsNotArray(params, reportType){
 
         if (Array.isArray(params.from_date)) {
@@ -152,14 +217,12 @@ class ReportsValidator{
             this.status = false; this.reasons = 'The Report "'+reportType+'", its End Date is invalid.';
         }
     }
-
     checkSubTypeIsNull(subType, reportType, subTypes){
         if (!subTypes.includes(subType)) {
             this.status = false; this.reasons = 'The Report "'+reportType+'", its Sub Type is invalid.';
         }
         return true;
     }
-
     checkSubTypeIsNotArray(params, reportType){
         if (Array.isArray(params.sub_type)) {
             if (params.sub_type.length == 0){

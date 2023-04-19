@@ -1,6 +1,6 @@
 const config = require('../config');
 const  _ = require('lodash');
-const moment = require('moment-timezone');
+const moment = require('moment');
 
 //Helper class - define all basic functions
 class Helper {
@@ -15,6 +15,10 @@ class Helper {
 
     static async setDBInstance(db){
         this.db = db;
+    }
+
+    static getThisYear(){
+        return new Date().getFullYear();
     }
 
     static sleep(ms) {
@@ -47,6 +51,18 @@ class Helper {
             '                                      ' + '\n' +
             '*******     '+message+'     **********' + '\n'
     ) ;
+    }
+
+    static yearsDifferenceWise(date){
+        let todayDate = new Date()
+        let year = date.getFullYear();
+        let todayYear = todayDate.getFullYear();
+
+        console.log('yearsDifferenceWise: ', year, todayYear);
+        if (todayYear > year)
+            return false;
+        else
+            return true;
     }
 
     static checkDataExist(dataArr, date, type){
@@ -92,7 +108,8 @@ class Helper {
     }
 
     static getDaysInMonth(month) {
-        return new Date(2020, month, 0).getDate();
+        let year = this.getThisYear();
+        return new Date(year, month, 0).getDate();
     }
 
     static getTodayDayNo() {
@@ -101,6 +118,54 @@ class Helper {
 
     static getTodayMonthNo() {
         return new Date().getMonth() + 1;
+    }
+
+    static computeDateFromMonth(query) {
+
+        let day = query.day;
+        let month = query.month;
+        let fromDate, toDate, days;
+
+        console.log('day: ', day);
+
+        let year = this.getThisYear();
+
+        if (day === 'chunk_1'){
+            fromDate  = new Date(year+'-'+month+'-01T00:00:00.000Z');
+            toDate  = new Date(_.clone(fromDate));
+
+            toDate.setDate(15);
+            toDate.setHours(23, 59, 59);
+        }
+        else{
+            fromDate  = new Date(year+'-'+month+'-16T00:00:00.000Z');
+            toDate  = new Date(_.clone(fromDate));
+            days = this.getDaysInMonth(month);
+
+            toDate.setDate(days);
+            toDate.setHours(23, 59, 59);
+        }
+
+        return {fromDate: fromDate, toDate: toDate};
+    }
+
+    static getDatesArr(from, to) {
+        console.log('getDatesArr')
+
+        from = moment(new Date(from)).date(1);
+        to = moment(new Date(to)).date(1);
+        let dates=[];
+        for(let dt = new Date(from); dt <= to; dt.setDate(dt.getDate()+1)){
+            console.log('in loop: ');
+
+            if(dt.getDate() === 1){
+                console.log('======', dt.getDate());
+                dates.push(new ISODate(dt));
+            }
+        }
+        console.log('dates: ', dates);
+
+        return dates;
     }
 
     static splitHoursFromISODate(dateString){
@@ -126,7 +191,7 @@ class Helper {
     static computeTodayDate(req){
         let date, fromDate, toDate, day, month;
         date = new Date();
-        date.setDate(date.getDate() - 1);
+        date.setDate(date.getDate());
 
         day =  date.getDate();
         day = day > 9 ? day : '0'+Number(day);
@@ -136,7 +201,9 @@ class Helper {
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
+        let year = this.getThisYear();
+
+        fromDate  = new Date(year+'-'+month+'-'+day+'T00:00:00.000Z');
         fromDate = this.setDateWithTimezone(fromDate, 'in');
         console.log('computeTodayDate - fromDate : ', fromDate);
 
@@ -152,7 +219,7 @@ class Helper {
     static computeTodayDateWithLocalTime(req){
         let date, fromDate, toDate, day, month;
         date = new Date();
-        date.setDate(date.getDate() - 1);
+        date.setDate(date.getDate());
 
         day =  date.getDate();
         day = day > 9 ? day : '0'+Number(day);
@@ -162,14 +229,39 @@ class Helper {
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
-        console.log('computeTodayDate - fromDate : ', fromDate);
+        let year = this.getThisYear();
+
+        fromDate  = new Date(year+'-'+month+'-'+day+'T00:00:00.000Z');
+        console.log('computeTodayDateWithLocalTime - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
         toDate.setDate(toDate.getDate() + 1);
-        console.log('computeTodayDate - toDate : ', toDate);
+        console.log('computeTodayDateWithLocalTime - toDate : ', toDate);
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
+    }
+
+    static computeTodayDateWithLocalTimeForScript(fromDate1){
+        let date, fromDate, toDate, day, month;
+        console.log('computeTodayDateWithLocalTimeForScript - fromDate1 : ', fromDate1);
+
+        date = new Date(fromDate1);
+        day =  date.getDate();
+        day = day > 9 ? day : '0'+Number(day);
+
+        month =  date.getMonth() + 1;
+        month = month > 9 ? month : '0'+Number(month);
+
+        let year = this.getThisYear();
+
+        fromDate  = new Date(year+'-'+month+'-'+day+'T00:00:00.000Z');
+        console.log('computeTodayDateWithLocalTimeForScript - fromDate : ', fromDate);
+
+        toDate  = new Date(_.clone(fromDate));
+        toDate.setHours(23, 59, 59);
+        console.log('computeTodayDateWithLocalTimeForScript - toDate : ', toDate);
+
+        return {fromDate: fromDate, toDate: toDate};
     }
 
     static computeTodayEightHoursDate(req){
@@ -207,15 +299,21 @@ class Helper {
 
         let fromDate, toDate, day, month;
 
+        console.log('computeNextDate - req.day, sDay : ', req.day, sDay);
+
         day = req.day ? req.day : sDay;
         day = day > 9 ? day : '0'+Number(day);
+        console.log('computeNextDate - day : ', day);
+
         req.day = day;
 
         month = req.month ? req.month : sMonth;
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
+        let year = this.getThisYear();
+
+        fromDate  = new Date(year+'-'+month+'-'+day+'T00:00:00.000Z');
         fromDate = this.setDateWithTimezone(fromDate, 'in');
         console.log('computeNextDate - fromDate : ', fromDate);
 
@@ -224,6 +322,7 @@ class Helper {
         toDate.setHours(23, 59, 59);
         toDate = this.setDateWithTimezone(toDate, 'in');
         console.log('computeNextDate - toDate : ', toDate);
+        console.log('computeNextDate - req.day : ', req.day);
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
     }
@@ -240,7 +339,9 @@ class Helper {
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T00:00:00.000Z');
+        let year = this.getThisYear();
+
+        fromDate  = new Date(year+'-'+month+'-'+day+'T00:00:00.000Z');
         console.log('computeNextDate - fromDate : ', fromDate);
 
         toDate  = new Date(_.clone(fromDate));
@@ -250,6 +351,115 @@ class Helper {
         //return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate};
 
         return {req: req, day: 12, month: 11, fromDate: '2020-11-18T00:00:00.000Z', toDate: '2020-11-18T13:00:00.000Z'};
+    }
+
+    static computeNextMonthWithLocalTime(req, sMonth){
+
+        let fromDate, toDate, tDays, month;
+
+        month = req.month ? req.month : sMonth;
+        month = month > 9 ? month : '0'+Number(month);
+        req.month = month;
+
+        let year = this.getThisYear();
+
+        fromDate  = new Date(year+'-'+month+'-01T00:00:00.000Z');
+        console.log('computeNextMonthWithLocalTime - fromDate : ', fromDate);
+
+        tDays = this.getDaysInMonth(month);
+        console.log('computeNextMonthWithLocalTime - tDays : ', tDays);
+
+        toDate  = new Date(year+'-'+month+'-'+tDays+'T23:59:59.000Z');
+        console.log('computeNextMonthWithLocalTime - toDate : ', toDate);
+
+        return {req: req, month: month, fromDate: fromDate, toDate: toDate};
+    }
+
+    static computeLastMonthDateWithLocalTime(req){
+
+        let fromDate, toDate, month, daysInMonth;
+        let date = new Date();
+        let sMonth =  date.getMonth();
+
+        month = req.month ? req.month : sMonth;
+        month = month > 9 ? month : '0'+Number(month);
+        req.month = month;
+
+        if(month === '00' || month === 0){
+            month = 12;
+            year = year - 1;
+        }
+
+        let year = this.getThisYear();
+
+        console.log('computeLastMonthDateWithLocalTime - year : ', year, "month: ", month);
+
+        fromDate  = new Date(year+'-'+month+'-01T00:00:00.000Z');
+        console.log('computeLastMonthDateWithLocalTime - fromDate : ', fromDate);
+
+        toDate  = new Date(_.clone(fromDate));
+        daysInMonth = this.getDaysInMonth(month)
+        toDate.setDate(toDate.getDate() + daysInMonth - 1);
+        toDate.setHours(23, 59, 59);
+
+        console.log('computeLastMonthDateWithLocalTime - toDate : ', toDate);
+
+        return {req: req, month: month, fromDate: fromDate, toDate: toDate};
+    }
+
+    static computeNextMonthDateWithLocalTime(req, sMonth){
+
+        let fromDate, toDate, month, daysInMonth;
+
+        month = req.month ? req.month : sMonth;
+        month = month > 9 ? month : '0'+Number(month);
+        req.month = month;
+
+        let year = this.getThisYear();
+
+        fromDate  = new Date(year+'-'+month+'-01T00:00:00.000Z');
+        console.log('computeNextDate - fromDate : ', fromDate);
+
+        toDate  = new Date(_.clone(fromDate));
+        daysInMonth = this.getDaysInMonth(month)
+        toDate.setDate(toDate.getDate() + daysInMonth - 1);
+        console.log('computeNextDate - toDate : ', toDate);
+
+        return {req: req, month: month, fromDate: fromDate, toDate: toDate};
+    }
+
+    static computeNextWeekDateWithLocalTime(req, sDay, sMonth){
+
+        let fromDate, toDate, fromDay, toDay, month, daysInMonth, dayAdd;
+
+        fromDay = req.fromDay ? req.fromDay : sDay;
+        fromDay = fromDay > 9 ? fromDay : '0'+Number(fromDay);
+        req.fromDay = fromDay;
+
+        month = req.month ? req.month : sMonth;
+        month = month > 9 ? month : '0'+Number(month);
+        req.month = month;
+
+        let year = this.getThisYear();
+
+        fromDate  = new Date(year+'-'+month+'-'+fromDay+'T00:00:00.000Z');
+        console.log('computeNextDate - fromDate : ', fromDate);
+
+        toDate  = new Date(_.clone(fromDate));
+        if(fromDay === 28 ){
+            daysInMonth = this.getDaysInMonth();
+            dayAdd = daysInMonth - fromDay;
+        }
+        else
+            dayAdd = 7;
+
+        toDate.setDate(toDate.getDate() + dayAdd);
+        console.log('computeNextDate - toDate : ', toDate, dayAdd);
+
+        toDay = fromDay + dayAdd;
+        toDay = toDay > 9 ? toDay : '0'+Number(toDay);
+        req.toDay = toDay;
+        return {req: req, fromDay: fromDay, toDay: toDay, month: month, fromDate: fromDate, toDate: toDate};
     }
 
     static computeNextEightHoursDate(req, sDay, sMonth){
@@ -272,10 +482,12 @@ class Helper {
         toHours = toHours > 9 ? toHours : '0'+Number(toHours);
         req.toHours = toHours;
 
-        fromDate  = new Date('2020-'+month+'-'+day+'T'+(fromHours)+':00:00.000Z');
+        let year = this.getThisYear();
+
+        fromDate  = new Date(year+'-'+month+'-'+day+'T'+(fromHours)+':00:00.000Z');
         fromDate = this.setDateWithTimezone(fromDate, 'in');
 
-        toDate  = new Date('2020-'+month+'-'+day+'T'+(toHours)+':59:59.000Z');
+        toDate  = new Date(year+'-'+month+'-'+day+'T'+(toHours)+':59:59.000Z');
         toDate = this.setDateWithTimezone(toDate, 'in');
 
         return {req: req, day: day, month: month, fromDate: fromDate, toDate: toDate, fromHours: fromHours, toHours: toHours};
@@ -295,6 +507,8 @@ class Helper {
     }
 
     static async getTotalCount (req, from, to, collectionName, query=null) {
+        console.log('getTotalCount - collectionName: ', collectionName);
+
         return await new Promise(async(resolve, reject) => {
             req.db.collection(collectionName, async function (err, collection){
                 if (!err){
@@ -318,13 +532,15 @@ class Helper {
                         }
                     }
                     else{
-                        console.log('getTotalCount - else case');
+                        console.log('getTotalCount - Else case', query);
+
                         try {
                             await collection.aggregate(query,{ allowDiskUse: true }).toArray(async function(err, count) {
                                 if(err){
                                     console.error(collectionName, ' count query - err: ', err.message);
                                     await resolve(0);
                                 }
+                                console.log('count: ', count);
                                 (count.length > 0) ? await resolve(count[0].count) : await resolve(0);
                             });
                         }catch (e) {

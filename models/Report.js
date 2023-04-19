@@ -22,6 +22,8 @@ const report = new Schema({
     avgTransactions: {type: Object, default: undefined},
     pageViews: {type: Object, default: undefined},
     transactions: {type: Object, default: undefined},
+    insufficient_balance: {type: Object, default: undefined},
+    excessive_billing: {type: Object, default: undefined},
     date: { type: Date, default: Date.now }
 }, { strict: true });
 

@@ -154,6 +154,7 @@ computeAffiliateReport = async (rawDataSet, params) =>{
         // add date range (start-date, end-date)
         dataObj = _.clone(dataObj);
         dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+
         return reportsTransformer.transformTheData(2, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
     }
     else {
@@ -167,10 +168,10 @@ computeHelogsDataReport = async (rawDataSet, params) =>{
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -220,6 +221,12 @@ computeHelogsDataReport = async (rawDataSet, params) =>{
                     weeklyDataObj.gdn2 = weeklyDataObj.gdn2 + innerObj.gdn2;
                     monthlyDataObj.gdn2 = monthlyDataObj.gdn2 + innerObj.gdn2;
                 }
+                if (innerObj.gdn3){
+                    dataObj.gdn3 = dataObj.gdn3 + innerObj.gdn3;
+                    dayDataObj.gdn3 = dayDataObj.gdn3 + innerObj.gdn3;
+                    weeklyDataObj.gdn3 = weeklyDataObj.gdn3 + innerObj.gdn3;
+                    monthlyDataObj.gdn3 = monthlyDataObj.gdn3 + innerObj.gdn3;
+                }
 
                 // reset start_date for both month & week so can update with latest one
                 if (week_from_date === null)
@@ -236,7 +243,7 @@ computeHelogsDataReport = async (rawDataSet, params) =>{
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     month_from_date = null;
                 }
 
@@ -245,14 +252,14 @@ computeHelogsDataReport = async (rawDataSet, params) =>{
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
             }
         }
 
@@ -287,10 +294,10 @@ computeUniqueSuccessHeWiseReport = async (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -340,6 +347,12 @@ computeUniqueSuccessHeWiseReport = async (rawDataSet, params) => {
                     weeklyDataObj.gdn2 = weeklyDataObj.gdn2 + innerObj.gdn2;
                     monthlyDataObj.gdn2 = monthlyDataObj.gdn2 + innerObj.gdn2;
                 }
+                if (innerObj.gdn3){
+                    dataObj.gdn3 = dataObj.gdn3 + innerObj.gdn3;
+                    dayDataObj.gdn3 = dayDataObj.gdn3 + innerObj.gdn3;
+                    weeklyDataObj.gdn3 = weeklyDataObj.gdn3 + innerObj.gdn3;
+                    monthlyDataObj.gdn3 = monthlyDataObj.gdn3 + innerObj.gdn3;
+                }
 
                 // reset start_date for both month & week so can update with latest one
                 if (week_from_date === null)
@@ -356,7 +369,7 @@ computeUniqueSuccessHeWiseReport = async (rawDataSet, params) => {
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     month_from_date = null;
                 }
 
@@ -365,14 +378,14 @@ computeUniqueSuccessHeWiseReport = async (rawDataSet, params) => {
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
             }
         }
 
@@ -407,7 +420,7 @@ computeAffiliateDataReport = async (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, statusWise, packageWise, sourceWise, computedData;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let midsObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let midsObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
     let sourceObj = {HE: _.clone(midsObj), affiliate_web: _.clone(midsObj)};
     let packageOBj = {liveDaily: _.clone(sourceObj), liveWeekly: _.clone(sourceObj)};
 
@@ -617,7 +630,7 @@ computeAffiliateDataSourceWiseReport = async (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, sourceWise, computedData;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
     let dataObj = {HE: _.clone(mids), affiliate_web: _.clone(mids)};
     let dayDataObj = {HE: _.clone(mids), affiliate_web: _.clone(mids)};
     let weeklyDataObj = {HE: _.clone(mids), affiliate_web: _.clone(mids)};
@@ -711,7 +724,7 @@ computeAffiliateDataPackageWiseReport = async (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, packageWise, computedData;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
     let dataObj = {liveDaily: _.clone(mids), liveWeekly: _.clone(mids)};
     let dayDataObj = {liveDaily: _.clone(mids), liveWeekly: _.clone(mids)};
     let weeklyDataObj = {liveDaily: _.clone(mids), liveWeekly: _.clone(mids)};
@@ -805,7 +818,7 @@ computeAffiliateDataStatusWiseReport = async (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj, statusWise, computedData;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
     let dataObj = {success: _.clone(mids), trial: _.clone(mids), callback_sent: _.clone(mids)};
     let dayDataObj = {success: _.clone(mids), trial: _.clone(mids), callback_sent: _.clone(mids)};
     let weeklyDataObj = {success: _.clone(mids), trial: _.clone(mids), callback_sent: _.clone(mids)};
@@ -907,10 +920,10 @@ computePageViewDataReport = async  (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -960,6 +973,12 @@ computePageViewDataReport = async  (rawDataSet, params) => {
                     weeklyDataObj.gdn2 = weeklyDataObj.gdn2 + innerObj.gdn2;
                     monthlyDataObj.gdn2 = monthlyDataObj.gdn2 + innerObj.gdn2;
                 }
+                if (innerObj.gdn3){
+                    dataObj.gdn3 = dataObj.gdn3 + innerObj.gdn3;
+                    dayDataObj.gdn3 = dayDataObj.gdn3 + innerObj.gdn3;
+                    weeklyDataObj.gdn3 = weeklyDataObj.gdn3 + innerObj.gdn3;
+                    monthlyDataObj.gdn3 = monthlyDataObj.gdn3 + innerObj.gdn3;
+                }
 
                 // reset start_date for both month & week so can update with latest one
                 if (week_from_date === null)
@@ -976,7 +995,7 @@ computePageViewDataReport = async  (rawDataSet, params) => {
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     month_from_date = null;
                 }
 
@@ -985,14 +1004,14 @@ computePageViewDataReport = async  (rawDataSet, params) => {
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
             }
         }
 
@@ -1027,10 +1046,10 @@ computeSubscribeClickDataReport = async  (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
+    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -1080,6 +1099,12 @@ computeSubscribeClickDataReport = async  (rawDataSet, params) => {
                     weeklyDataObj.gdn2 = weeklyDataObj.gdn2 + innerObj.gdn2;
                     monthlyDataObj.gdn2 = monthlyDataObj.gdn2 + innerObj.gdn2;
                 }
+                if (innerObj.gdn3){
+                    dataObj.gdn3 = dataObj.gdn3 + innerObj.gdn3;
+                    dayDataObj.gdn3 = dayDataObj.gdn3 + innerObj.gdn3;
+                    weeklyDataObj.gdn3 = weeklyDataObj.gdn3 + innerObj.gdn3;
+                    monthlyDataObj.gdn3 = monthlyDataObj.gdn3 + innerObj.gdn3;
+                }
 
                 // reset start_date for both month & week so can update with latest one
                 if (week_from_date === null)
@@ -1096,7 +1121,7 @@ computeSubscribeClickDataReport = async  (rawDataSet, params) => {
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     month_from_date = null;
                 }
 
@@ -1105,14 +1130,14 @@ computeSubscribeClickDataReport = async  (rawDataSet, params) => {
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0});
             }
         }
 
@@ -1147,10 +1172,10 @@ computeSubscriptionsMidDataReport = async (rawDataSet, params) => {
     let monthNo, dayNo, week_from_date = null, month_from_date = null;
     let outerObj, innerObj;
     let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
-    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
-    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let dataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0, 'tp_fb_campaign': 0};
+    let dayDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0, 'tp_fb_campaign': 0};
+    let weeklyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0, 'tp_fb_campaign': 0};
+    let monthlyDataObj = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0, 'tp_fb_campaign': 0};
 
     if (rawDataSet.length > 0){
         for (let i=0; i<rawDataSet.length; i++){
@@ -1200,6 +1225,18 @@ computeSubscriptionsMidDataReport = async (rawDataSet, params) => {
                     weeklyDataObj.gdn2 = weeklyDataObj.gdn2 + innerObj.gdn2;
                     monthlyDataObj.gdn2 = monthlyDataObj.gdn2 + innerObj.gdn2;
                 }
+                if (innerObj.gdn3){
+                    dataObj.gdn3 = dataObj.gdn3 + innerObj.gdn3;
+                    dayDataObj.gdn3 = dayDataObj.gdn3 + innerObj.gdn3;
+                    weeklyDataObj.gdn3 = weeklyDataObj.gdn3 + innerObj.gdn3;
+                    monthlyDataObj.gdn3 = monthlyDataObj.gdn3 + innerObj.gdn3;
+                }
+                if (innerObj.tp_fb_campaign){
+                    dataObj.tp_fb_campaign = dataObj.tp_fb_campaign + innerObj.tp_fb_campaign;
+                    dayDataObj.tp_fb_campaign = dayDataObj.tp_fb_campaign + innerObj.tp_fb_campaign;
+                    weeklyDataObj.tp_fb_campaign = weeklyDataObj.tp_fb_campaign + innerObj.tp_fb_campaign;
+                    monthlyDataObj.tp_fb_campaign = monthlyDataObj.tp_fb_campaign + innerObj.tp_fb_campaign;
+                }
 
                 // reset start_date for both month & week so can update with latest one
                 if (week_from_date === null)
@@ -1216,7 +1253,7 @@ computeSubscriptionsMidDataReport = async (rawDataSet, params) => {
                     monthlyDataObj.from_date = month_from_date;
                     monthlyDataObj.to_date = outerObj.date;
                     monthWiseTotalCount.push(_.clone(monthlyDataObj));
-                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    monthlyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0, 'tp_fb_campaign': 0});
                     month_from_date = null;
                 }
 
@@ -1225,14 +1262,14 @@ computeSubscriptionsMidDataReport = async (rawDataSet, params) => {
                     weeklyDataObj.from_date = week_from_date;
                     weeklyDataObj.to_date = outerObj.date;
                     weekWiseTotalCount.push(_.clone(weeklyDataObj));
-                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                    weeklyDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0, 'tp_fb_campaign': 0});
                     week_from_date = null;
                 }
 
                 // Day Wise Date Count
                 dayDataObj.date = outerObj.date;
                 dayWiseTotalCount.push(_.clone(dayDataObj));
-                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0});
+                dayDataObj = _.clone({'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0, 'tp_fb_campaign': 0});
             }
         }
 
@@ -1261,48 +1298,310 @@ computeSubscriptionsMidDataReport = async (rawDataSet, params) => {
     }
 };
 
+computeTelenoreAffiliateReport = async (rawDataSet, params) =>{
+    console.log('computeTelenoreAffiliateReport', params);
+
+    let monthNo, dayNo, week_from_date = null, month_from_date = null;
+    let outerObj, tpSourceObj, tpSource, pkg;
+    let hourlyBasisTotalCount = [], dayWiseTotalCount = [], weekWiseTotalCount = [], monthWiseTotalCount = [];
+    let dataObj = _.clone(cloneTelenoreAffiliateObj());
+    let dayDataObj = _.clone(cloneTelenoreAffiliateObj());
+    let weeklyDataObj = _.clone(cloneTelenoreAffiliateObj());
+    let monthlyDataObj = _.clone(cloneTelenoreAffiliateObj());
+
+    if (rawDataSet.length > 0){
+        for (let i=0; i<rawDataSet.length; i++){
+            outerObj = rawDataSet[i];
+
+            //get Affiliate mids total count - live daily
+            if (outerObj.tpSourcePkgWise) {
+                tpSourceObj = outerObj.tpSourcePkgWise[0];
+                if (tpSourceObj.tp_geo_ent){
+                    tpSource = tpSourceObj.tp_geo_ent;
+
+                    pkg = tpSource.QDfC;
+                    dataObj["tp_geo_ent"]["daily_live"] = Number(dataObj["tp_geo_ent"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["tp_geo_ent"]["daily_live"] = Number(dayDataObj["tp_geo_ent"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["tp_geo_ent"]["daily_live"] = Number(weeklyDataObj["tp_geo_ent"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["tp_geo_ent"]["daily_live"] = Number(monthlyDataObj["tp_geo_ent"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+
+                    pkg = tpSource.QDfG;
+                    dataObj["tp_geo_ent"]["weekly_live"] = Number(dataObj["tp_geo_ent"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["tp_geo_ent"]["weekly_live"] = Number(dayDataObj["tp_geo_ent"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["tp_geo_ent"]["weekly_live"] = Number(weeklyDataObj["tp_geo_ent"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["tp_geo_ent"]["weekly_live"] = Number(monthlyDataObj["tp_geo_ent"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                }
+                if (tpSourceObj.tp_discover_pak){
+                    tpSource = tpSourceObj.tp_discover_pak;
+
+                    pkg = tpSource.QDfC;
+                    dataObj["tp_discover_pak"]["daily_live"] = Number(dataObj["tp_discover_pak"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["tp_discover_pak"]["daily_live"] = Number(dayDataObj["tp_discover_pak"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["tp_discover_pak"]["daily_live"] = Number(weeklyDataObj["tp_discover_pak"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["tp_discover_pak"]["daily_live"] = Number(monthlyDataObj["tp_discover_pak"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+
+                    pkg = tpSource.QDfG;
+                    dataObj["tp_discover_pak"]["weekly_live"] = Number(dataObj["tp_discover_pak"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["tp_discover_pak"]["weekly_live"] = Number(dayDataObj["tp_discover_pak"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["tp_discover_pak"]["weekly_live"] = Number(weeklyDataObj["tp_discover_pak"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["tp_discover_pak"]["weekly_live"] = Number(monthlyDataObj["tp_discover_pak"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                }
+                if (tpSourceObj.tp_dw_eng){
+                    tpSource = tpSourceObj.tp_dw_eng;
+
+                    pkg = tpSource.QDfC;
+                    dataObj["tp_dw_eng"]["daily_live"] = Number(dataObj["tp_dw_eng"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["tp_dw_eng"]["daily_live"] = Number(dayDataObj["tp_dw_eng"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["tp_dw_eng"]["daily_live"] = Number(weeklyDataObj["tp_dw_eng"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["tp_dw_eng"]["daily_live"] = Number(monthlyDataObj["tp_dw_eng"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+
+                    pkg = tpSource.QDfG;
+                    dataObj["tp_dw_eng"]["weekly_live"] = Number(dataObj["tp_dw_eng"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["tp_dw_eng"]["weekly_live"] = Number(dayDataObj["tp_dw_eng"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["tp_dw_eng"]["weekly_live"] = Number(weeklyDataObj["tp_dw_eng"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["tp_dw_eng"]["weekly_live"] = Number(monthlyDataObj["tp_dw_eng"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                }
+                if (tpSourceObj.youtube){
+                    tpSource = tpSourceObj.youtube;
+
+                    pkg = tpSource.QDfC;
+                    dataObj["youtube"]["daily_live"] = Number(dataObj["youtube"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["youtube"]["daily_live"] = Number(dayDataObj["youtube"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["youtube"]["daily_live"] = Number(weeklyDataObj["youtube"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["youtube"]["daily_live"] = Number(monthlyDataObj["youtube"]["daily_live"]) + Number(pkg.tp_fb_campaign);
+
+                    pkg = tpSource.QDfG;
+                    dataObj["youtube"]["weekly_live"] = Number(dataObj["youtube"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    dayDataObj["youtube"]["weekly_live"] = Number(dayDataObj["youtube"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    weeklyDataObj["youtube"]["weekly_live"] = Number(weeklyDataObj["youtube"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                    monthlyDataObj["youtube"]["weekly_live"] = Number(monthlyDataObj["youtube"]["weekly_live"]) + Number(pkg.tp_fb_campaign);
+                }
+            }
+
+            if (outerObj.tpSourceTrialWise){
+                tpSourceObj = outerObj.tpSourceTrialWise[0];
+                if (tpSourceObj.tp_geo_ent){
+                    tpSource = tpSourceObj.tp_geo_ent;
+
+                    dataObj["tp_geo_ent"]["trial"] = Number(dataObj["tp_geo_ent"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_geo_ent"]["trial"] = Number(dayDataObj["tp_geo_ent"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_geo_ent"]["trial"] = Number(weeklyDataObj["tp_geo_ent"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_geo_ent"]["trial"] = Number(monthlyDataObj["tp_geo_ent"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                }
+                if (tpSourceObj.tp_discover_pak){
+                    tpSource = tpSourceObj.tp_discover_pak;
+
+                    dataObj["tp_discover_pak"]["trial"] = Number(dataObj["tp_discover_pak"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_discover_pak"]["trial"] = Number(dayDataObj["tp_discover_pak"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_discover_pak"]["trial"] = Number(weeklyDataObj["tp_discover_pak"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_discover_pak"]["trial"] = Number(monthlyDataObj["tp_discover_pak"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                }
+                if (tpSourceObj.tp_dw_eng){
+                    tpSource = tpSourceObj.tp_dw_eng;
+
+                    dataObj["tp_dw_eng"]["trial"] = Number(dataObj["tp_dw_eng"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_dw_eng"]["trial"] = Number(dayDataObj["tp_dw_eng"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_dw_eng"]["trial"] = Number(weeklyDataObj["tp_dw_eng"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_dw_eng"]["trial"] = Number(monthlyDataObj["tp_dw_eng"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                }
+                if (tpSourceObj.youtube){
+                    tpSource = tpSourceObj.youtube;
+
+                    dataObj["youtube"]["trial"] = Number(dataObj["youtube"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["youtube"]["trial"] = Number(dayDataObj["youtube"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["youtube"]["trial"] = Number(weeklyDataObj["youtube"]["trial"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["youtube"]["trial"] = Number(monthlyDataObj["youtube"]["trial"]) + Number(tpSource.tp_fb_campaign);
+
+                }
+            }
+
+            if (outerObj.tpSourceWiseSubs){
+                tpSourceObj = outerObj.tpSourceWiseSubs[0];
+
+                if (tpSourceObj.tp_geo_ent){
+                    tpSource = tpSourceObj.tp_geo_ent;
+
+                    dataObj["tp_geo_ent"]["subscriptions"] = Number(dataObj["tp_geo_ent"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_geo_ent"]["subscriptions"] = Number(dayDataObj["tp_geo_ent"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_geo_ent"]["subscriptions"] = Number(weeklyDataObj["tp_geo_ent"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_geo_ent"]["subscriptions"] = Number(monthlyDataObj["tp_geo_ent"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    console.log('dataObj: ', dataObj);
+                }
+                if (tpSourceObj.tp_discover_pak){
+                    tpSource = tpSourceObj.tp_discover_pak;
+
+                    dataObj["tp_discover_pak"]["subscriptions"] = Number(dataObj["tp_discover_pak"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_discover_pak"]["subscriptions"] = Number(dayDataObj["tp_discover_pak"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_discover_pak"]["subscriptions"] = Number(weeklyDataObj["tp_discover_pak"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_discover_pak"]["subscriptions"] = Number(monthlyDataObj["tp_discover_pak"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                }
+                if (tpSourceObj.tp_dw_eng){
+                    tpSource = tpSourceObj.tp_dw_eng;
+
+                    dataObj["tp_dw_eng"]["subscriptions"] = Number(dataObj["tp_dw_eng"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_dw_eng"]["subscriptions"] = Number(dayDataObj["tp_dw_eng"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_dw_eng"]["subscriptions"] = Number(weeklyDataObj["tp_dw_eng"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_dw_eng"]["subscriptions"] = Number(monthlyDataObj["tp_dw_eng"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                }
+                if (tpSourceObj.youtube){
+                    tpSource = tpSourceObj.youtube;
+
+                    dataObj["youtube"]["subscriptions"] = Number(dataObj["youtube"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["youtube"]["subscriptions"] = Number(dayDataObj["youtube"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["youtube"]["subscriptions"] = Number(weeklyDataObj["youtube"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["youtube"]["subscriptions"] = Number(monthlyDataObj["youtube"]["subscriptions"]) + Number(tpSource.tp_fb_campaign);
+
+                }
+            }
+
+            if (outerObj.tpSourceExpireWise){
+                tpSourceObj = outerObj.tpSourceExpireWise[0];
+
+                console.log('tpSourceExpireWise: ', tpSourceObj);
+                if (tpSourceObj.tp_geo_ent){
+                    tpSource = tpSourceObj.tp_geo_ent;
+
+                    dataObj["tp_geo_ent"]["expired"] = Number(dataObj["tp_geo_ent"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_geo_ent"]["expired"] = Number(dayDataObj["tp_geo_ent"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_geo_ent"]["expired"] = Number(weeklyDataObj["tp_geo_ent"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_geo_ent"]["expired"] = Number(monthlyDataObj["tp_geo_ent"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    console.log('dataObj: ', dataObj);
+                }
+                if (tpSourceObj.tp_discover_pak){
+                    tpSource = tpSourceObj.tp_discover_pak;
+
+                    dataObj["tp_discover_pak"]["expired"] = Number(dataObj["tp_discover_pak"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_discover_pak"]["expired"] = Number(dayDataObj["tp_discover_pak"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_discover_pak"]["expired"] = Number(weeklyDataObj["tp_discover_pak"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_discover_pak"]["expired"] = Number(monthlyDataObj["tp_discover_pak"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                }
+                if (tpSourceObj.tp_dw_eng){
+                    tpSource = tpSourceObj.tp_dw_eng;
+
+                    dataObj["tp_dw_eng"]["expired"] = Number(dataObj["tp_dw_eng"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["tp_dw_eng"]["expired"] = Number(dayDataObj["tp_dw_eng"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["tp_dw_eng"]["expired"] = Number(weeklyDataObj["tp_dw_eng"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["tp_dw_eng"]["expired"] = Number(monthlyDataObj["tp_dw_eng"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                }
+                if (tpSourceObj.youtube){
+                    tpSource = tpSourceObj.youtube;
+
+                    dataObj["youtube"]["expired"] = Number(dataObj["youtube"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    dayDataObj["youtube"]["expired"] = Number(dayDataObj["youtube"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    weeklyDataObj["youtube"]["expired"] = Number(weeklyDataObj["youtube"]["expired"]) + Number(tpSource.tp_fb_campaign);
+                    monthlyDataObj["youtube"]["expired"] = Number(monthlyDataObj["youtube"]["expired"]) + Number(tpSource.tp_fb_campaign);
+
+                }
+            }
+
+            // reset start_date for both month & week so can update with latest one
+            if (week_from_date === null)
+                week_from_date = outerObj.date;
+
+            if (month_from_date === null)
+                month_from_date = outerObj.date;
+
+            monthNo = new Date(outerObj.date).getMonth() + 1;
+            dayNo = new Date(outerObj.date).getDate();
+
+            // Monthly Data Count
+            if(Number(dayNo) === Number(helper.getDaysInMonth(monthNo))){
+                monthlyDataObj.from_date = month_from_date;
+                monthlyDataObj.to_date = outerObj.date;
+                monthWiseTotalCount.push(_.clone(monthlyDataObj));
+                monthlyDataObj = _.clone(cloneTelenoreAffiliateObj());
+                month_from_date = null;
+            }
+
+            // Weekly Data Count
+            if (Number(dayNo) % 7 === 0){
+                weeklyDataObj.from_date = week_from_date;
+                weeklyDataObj.to_date = outerObj.date;
+                weekWiseTotalCount.push(_.clone(weeklyDataObj));
+                weeklyDataObj = _.clone(cloneTelenoreAffiliateObj());
+                week_from_date = null;
+            }
+
+            // Day Wise Date Count
+            dayDataObj.date = outerObj.date;
+            dayWiseTotalCount.push(_.clone(dayDataObj));
+            dayDataObj = _.clone(cloneTelenoreAffiliateObj());
+        }
+
+        //Insert last data in week array that is less then one week data
+        if (week_from_date !== null){
+            weeklyDataObj.from_date = week_from_date;
+            weeklyDataObj.to_date = outerObj.date;
+            weekWiseTotalCount.push(_.clone(weeklyDataObj));
+        }
+
+        //Insert last data in month array that is less then one month data
+        if (month_from_date !== null){
+            monthlyDataObj.from_date = month_from_date;
+            monthlyDataObj.to_date = outerObj.date;
+            monthWiseTotalCount.push(_.clone(monthlyDataObj));
+        }
+
+        // Total Count Data
+        // add date range (start-date, end-date)
+        dataObj = _.clone(dataObj);
+        dataObj.from_date = params.from_date; dataObj.to_date = params.to_date;
+
+        return reportsTransformer.transformTheData(2, true, dataObj, hourlyBasisTotalCount, dayWiseTotalCount, weekWiseTotalCount, monthWiseTotalCount, params, 'Successfully process the data.');
+    }
+    else {
+        return reportsTransformer.transformErrorCatchData(false, 'Data not exist.');
+    }
+};
+
 function computeAffiliateHeData(part, innerObj, dataObj, dayDataObj, weeklyDataObj, monthlyDataObj) {
     if (innerObj['1']){
-        dataObj[part]['1'] = dataObj[part]['1'] + innerObj['1'];
-        dayDataObj[part]['1'] = dayDataObj[part]['1'] + innerObj['1'];
-        weeklyDataObj[part]['1'] = weeklyDataObj[part]['1'] + innerObj['1'];
-        monthlyDataObj[part]['1'] = monthlyDataObj[part]['1'] + innerObj['1'];
+        dataObj[part]['1'] = _.clone(dataObj[part]['1'] + innerObj['1']);
+        dayDataObj[part]['1'] = _.clone(dayDataObj[part]['1'] + innerObj['1']);
+        weeklyDataObj[part]['1'] = _.clone(weeklyDataObj[part]['1'] + innerObj['1']);
+        monthlyDataObj[part]['1'] = _.clone(monthlyDataObj[part]['1'] + innerObj['1']);
     }
     if (innerObj['1569']){
-        dataObj[part]['1569'] = dataObj[part]['1569'] + innerObj['1569'];
-        dayDataObj[part]['1569'] = dayDataObj[part]['1569'] + innerObj['1569'];
-        weeklyDataObj[part]['1569'] = weeklyDataObj[part]['1569'] + innerObj['1569'];
-        monthlyDataObj[part]['1569'] = monthlyDataObj[part]['1569'] + innerObj['1569'];
+        dataObj[part]['1569'] = _.clone(dataObj[part]['1569'] + innerObj['1569']);
+        dayDataObj[part]['1569'] = _.clone(dayDataObj[part]['1569'] + innerObj['1569']);
+        weeklyDataObj[part]['1569'] = _.clone(weeklyDataObj[part]['1569'] + innerObj['1569']);
+        monthlyDataObj[part]['1569'] = _.clone(monthlyDataObj[part]['1569'] + innerObj['1569']);
     }
     if (innerObj.aff3){
-        dataObj[part]['aff3'] = dataObj[part]['aff3'] + innerObj.aff3;
-        dayDataObj[part]['aff3'] = dayDataObj[part]['aff3'] + innerObj.aff3;
-        weeklyDataObj[part]['aff3'] = weeklyDataObj[part]['aff3'] + innerObj.aff3;
-        monthlyDataObj[part]['aff3'] = monthlyDataObj[part]['aff3'] + innerObj.aff3;
+        dataObj[part]['aff3'] = _.clone(dataObj[part]['aff3'] + innerObj.aff3);
+        dayDataObj[part]['aff3'] = _.clone(dayDataObj[part]['aff3'] + innerObj.aff3);
+        weeklyDataObj[part]['aff3'] = _.clone(weeklyDataObj[part]['aff3'] + innerObj.aff3);
+        monthlyDataObj[part]['aff3'] = _.clone(monthlyDataObj[part]['aff3'] + innerObj.aff3);
     }
     if (innerObj.aff3a){
-        dataObj[part]['aff3a'] = dataObj[part]['aff3a'] + innerObj.aff3a;
-        dayDataObj[part]['aff3a'] = dayDataObj[part]['aff3a'] + innerObj.aff3a;
-        weeklyDataObj[part]['aff3a'] = weeklyDataObj[part]['aff3a'] + innerObj.aff3a;
-        monthlyDataObj[part]['aff3a'] = monthlyDataObj[part]['aff3a'] + innerObj.aff3a;
+        dataObj[part]['aff3a'] = _.clone(dataObj[part]['aff3a'] + innerObj.aff3a);
+        dayDataObj[part]['aff3a'] = _.clone(dayDataObj[part]['aff3a'] + innerObj.aff3a);
+        weeklyDataObj[part]['aff3a'] = _.clone(weeklyDataObj[part]['aff3a'] + innerObj.aff3a);
+        monthlyDataObj[part]['aff3a'] = _.clone(monthlyDataObj[part]['aff3a'] + innerObj.aff3a);
     }
     if (innerObj.goonj){
-        dataObj[part]['goonj'] = dataObj[part]['goonj'] + innerObj.goonj;
-        dayDataObj[part]['goonj'] = dayDataObj[part]['goonj'] + innerObj.goonj;
-        weeklyDataObj[part]['goonj'] = weeklyDataObj[part]['goonj'] + innerObj.goonj;
-        monthlyDataObj[part]['goonj'] = monthlyDataObj[part]['goonj'] + innerObj.goonj;
+        dataObj[part]['goonj'] = _.clone(dataObj[part]['goonj'] + innerObj.goonj);
+        dayDataObj[part]['goonj'] = _.clone(dayDataObj[part]['goonj'] + innerObj.goonj);
+        weeklyDataObj[part]['goonj'] = _.clone(weeklyDataObj[part]['goonj'] + innerObj.goonj);
+        monthlyDataObj[part]['goonj'] = _.clone(monthlyDataObj[part]['goonj'] + innerObj.goonj);
     }
     if (innerObj.gdn){
-        dataObj[part]['gdn'] = dataObj[part]['gdn'] + innerObj.gdn;
-        dayDataObj[part]['gdn'] = dayDataObj[part]['gdn'] + innerObj.gdn;
-        weeklyDataObj[part]['gdn'] = weeklyDataObj[part]['gdn'] + innerObj.gdn;
-        monthlyDataObj[part]['gdn'] = monthlyDataObj[part]['gdn'] + innerObj.gdn;
+        dataObj[part]['gdn'] = _.clone(dataObj[part]['gdn'] + innerObj.gdn);
+        dayDataObj[part]['gdn'] = _.clone(dayDataObj[part]['gdn'] + innerObj.gdn);
+        weeklyDataObj[part]['gdn'] = _.clone(weeklyDataObj[part]['gdn'] + innerObj.gdn);
+        monthlyDataObj[part]['gdn'] = _.clone(monthlyDataObj[part]['gdn'] + innerObj.gdn);
     }
     if (innerObj.gdn2){
-        dataObj[part]['gdn2'] = dataObj[part]['gdn2'] + innerObj.gdn2;
-        dayDataObj[part]['gdn2'] = dayDataObj[part]['gdn2'] + innerObj.gdn2;
-        weeklyDataObj[part]['gdn2'] = weeklyDataObj[part]['gdn2'] + innerObj.gdn2;
-        monthlyDataObj[part]['gdn2'] = monthlyDataObj[part]['gdn2'] + innerObj.gdn2;
+        dataObj[part]['gdn2'] = _.clone(dataObj[part]['gdn2'] + innerObj.gdn2);
+        dayDataObj[part]['gdn2'] = _.clone(dayDataObj[part]['gdn2'] + innerObj.gdn2);
+        weeklyDataObj[part]['gdn2'] = _.clone(weeklyDataObj[part]['gdn2'] + innerObj.gdn2);
+        monthlyDataObj[part]['gdn2'] = _.clone(monthlyDataObj[part]['gdn2'] + innerObj.gdn2);
+    }
+    if (innerObj.gdn3){
+        dataObj[part]['gdn3'] = _.clone(dataObj[part]['gdn3'] + innerObj.gdn3);
+        dayDataObj[part]['gdn3'] = _.clone(dayDataObj[part]['gdn3'] + innerObj.gdn3);
+        weeklyDataObj[part]['gdn3'] = _.clone(weeklyDataObj[part]['gdn3'] + innerObj.gdn3);
+        monthlyDataObj[part]['gdn3'] = _.clone(monthlyDataObj[part]['gdn3'] + innerObj.gdn3);
     }
 
     return {dataObj: dataObj, dayDataObj: dayDataObj, weeklyDataObj: weeklyDataObj, monthlyDataObj: monthlyDataObj}
@@ -1350,11 +1649,17 @@ function computeAffiliateWiseData(statusWise, packageWise, sourceWise, innerObj,
         weeklyDataObj[statusWise][packageWise][sourceWise]['gdn2'] = weeklyDataObj[statusWise][packageWise][sourceWise]['gdn2'] + innerObj.gdn2;
         monthlyDataObj[statusWise][packageWise][sourceWise]['gdn2'] = monthlyDataObj[statusWise][packageWise][sourceWise]['gdn2'] + innerObj.gdn2;
     }
+    if (innerObj.gdn3){
+        dataObj[statusWise][packageWise][sourceWise]['gdn3'] = dataObj[statusWise][packageWise][sourceWise]['gdn3'] + innerObj.gdn3;
+        dayDataObj[statusWise][packageWise][sourceWise]['gdn3'] = dayDataObj[statusWise][packageWise][sourceWise]['gdn3'] + innerObj.gdn3;
+        weeklyDataObj[statusWise][packageWise][sourceWise]['gdn3'] = weeklyDataObj[statusWise][packageWise][sourceWise]['gdn3'] + innerObj.gdn3;
+        monthlyDataObj[statusWise][packageWise][sourceWise]['gdn3'] = monthlyDataObj[statusWise][packageWise][sourceWise]['gdn3'] + innerObj.gdn3;
+    }
 
     return {dataObj: dataObj, dayDataObj: dayDataObj, weeklyDataObj: weeklyDataObj, monthlyDataObj: monthlyDataObj}
 }
 function cloneAffiliateObj (){
-    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0};
+    let mids = {'1': 0, '1569': 0, 'aff3a': 0, 'aff3': 0, 'goonj': 0, 'gdn': 0, 'gdn2': 0, 'gdn3': 0};
     return {
         HE: _.clone(mids),
         uniqueSuccessHe:  _.clone(mids),
@@ -1364,6 +1669,15 @@ function cloneAffiliateObj (){
         liveTrial:  _.clone(mids),
         liveDaily:  _.clone(mids),
         liveWeekly:  _.clone(mids)
+    };
+}
+function cloneTelenoreAffiliateObj (){
+    let mids = {'daily_live': 0, 'weekly_live': 0, 'trial': 0, 'subscriptions': 0, 'expired': 0};
+    return {
+        tp_geo_ent: _.clone(mids),
+        tp_discover_pak: _.clone(mids),
+        tp_dw_eng: _.clone(mids),
+        youtube: _.clone(mids)
     };
 }
 
@@ -1377,5 +1691,7 @@ module.exports = {
     computeSubscriptionsMidDataReport: computeSubscriptionsMidDataReport,
     computeAffiliateDataStatusWiseReport: computeAffiliateDataStatusWiseReport,
     computeAffiliateDataSourceWiseReport: computeAffiliateDataSourceWiseReport,
-    computeAffiliateDataPackageWiseReport: computeAffiliateDataPackageWiseReport
+    computeAffiliateDataPackageWiseReport: computeAffiliateDataPackageWiseReport,
+
+    computeTelenoreAffiliateReport: computeTelenoreAffiliateReport,
 };

@@ -5,7 +5,7 @@ const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, computedData;
+let dateData, fromDate, toDate, day, month, computedData;
 let sourceWiseUnSub = [], sourceWiseTrail = [], transactingSubsList = [];
 let computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 
@@ -72,20 +72,22 @@ computeBillingHistoryReports = async(req, res) => {
 
         // Get compute data for next time slot
         req.day = Number(req.day) + 1;
-        console.log('computeBillingHistoryReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        console.log('getBillingHistoryByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
+        if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+            if (Number(month) < Number(helper.getTodayMonthNo()))
                 computeBillingHistoryReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
+            else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
                 computeBillingHistoryReports(req, res);
         }
         else{
+            console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
+
             req.day = 1;
             req.month = Number(req.month) + 1;
-            console.log('computeBillingHistoryReports -> month : ', month, req.month, new Date().getMonth());
+            console.log('getBillingHistoryByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-            if (req.month <= helper.getTodayMonthNo())
+            if (Number(req.month) <= Number(helper.getTodayMonthNo()))
                 computeBillingHistoryReports(req, res);
         }
 

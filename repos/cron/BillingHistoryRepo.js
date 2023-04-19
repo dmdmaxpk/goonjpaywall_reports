@@ -35,6 +35,41 @@ class BillingHistoryRepository {
         });
     }
 
+    async getBillingHistorySuccessfulByDateRange (req, from, to, skip, limit) {
+        console.log('getBillingHistorySuccessfulByDateRange - ', from, to);
+        return new Promise((resolve, reject) => {
+            req.db.collection('billinghistories', function (err, collection) {
+                if (!err) {
+                    collection.aggregate( [
+                        {$match : {
+                            $or: [{billing_status: "Success"}, {billing_status: "billed"}],
+                            $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+                        }},
+                        {$project:{
+                            price: "$price",
+                            source: {$ifNull: ['$source', 'app'] },
+                            paywall_id: {$ifNull: ['$paywall_id', 'Dt6Gp70c'] },
+                            package_id: {$ifNull: ['$package_id', 'QDfC'] },
+                            operator: {$ifNull: ['$operator', 'telenor'] },
+                            billing_status: {$ifNull: ['$billing_status', 'expire'] },
+                            transaction_id: "$transaction_id",
+                            operator_response: "$operator_response",
+                            billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } },
+                        }},
+                        { $skip: skip },
+                        { $limit: limit }
+                    ], { allowDiskUse: true }).toArray(function(err, items) {
+                        if(err){
+                            console.log('getBillingHistorySuccessfulByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            });
+        });
+    }
+
     async computeSubscriptionsFromBillingHistoryByDateRange (req, from, to, skip, limit) {
         return new Promise((resolve, reject) => {
             console.log('computeSubscriptionsFromBillingHistoryByDateRange: ', from, to, skip, limit);
@@ -126,6 +161,52 @@ class BillingHistoryRepository {
         });
     }
 
+    async getInsufficientBalanceByDateRange(req, from, to) {
+        return new Promise((resolve, reject) => {
+            console.log('getInsufficientBalanceByDateRange: ', from, to);
+            req.db.collection('billinghistories', function (err, collection) {
+                if (!err) {
+                    collection.aggregate([
+                        { $match:{
+                            "operator_response.errorMessage": "The account balance is insufficient.",
+                            $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+                        }},
+                        { $count: "count"}
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
+                        if(err){
+                            console.log('getInsufficientBalanceByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            });
+        });
+    }
+
+    async getExcessiveBillingCountByDateRange(req, from, to) {
+        return new Promise((resolve, reject) => {
+            console.log('getExcessiveBillingCountByDateRange: ', from, to);
+            req.db.collection('billinghistories', function (err, collection) {
+                if (!err) {
+                    collection.aggregate([
+                        { $match:{
+                            billing_status: "billing_exceeded",
+                            $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+                        }},
+                        { $count: "count"}
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
+                        if(err){
+                            console.log('getExcessiveBillingCountByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            });
+        });
+    }
+
     async getChargeDetailsByDateRange (req, from, to, skip, limit){
         return new Promise((resolve, reject) => {
             console.log('getChargeDetailsByDateRange: ', from, to, skip, limit);
@@ -161,6 +242,129 @@ class BillingHistoryRepository {
         });
     }
 
+    async getChargeDetailsAffiliateWiseByDateRange (req, from, to){
+        return new Promise((resolve, reject) => {
+            console.log('getChargeDetailsAffiliateWiseByDateRange: ', from, to);
+            req.db.collection('billinghistories', function (err, collection) {
+                if (!err) {
+                    collection.aggregate( [
+                        { $match:{
+                            billing_status: 'Success',
+                            $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lt:new Date(to)}}]
+                        }},
+                        {$project:{
+                            price: "$price",
+                            user_id: "$user_id"
+                        }},
+                        { $lookup:{
+                            from: "subscriptions",
+                            let: {user_id: "$user_id", price: "$price"},
+                            pipeline:[
+                                { $match: {
+                                    $expr: {
+                                        $and:[
+                                            {$eq: ["$user_id", "$$user_id" ]},
+                                        ]
+                                    }
+                                }},
+                                { $project:{
+                                    _id: 0,
+                                    price: "$$price",
+                                    affiliate_mid: "$affiliate_mid"
+                                }}
+                            ],
+                            as: "billing"
+                        }},
+                        {
+                            $unwind: "$billing"
+                        },
+                        { $group:{
+                            _id: "$billing.affiliate_mid",
+                            price: {$sum: "$billing.price"}
+                        }},
+                        { $project:{
+                            affiliate: "$_id",
+                            price: "$price"
+                        }},
+                    ],{ allowDiskUse: true }).toArray(function(err, items) {
+                        if(err){
+                            console.log('getChargeDetailsAffiliateWiseByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        resolve(items);
+                    });
+                }
+            })
+        });
+    }
+
+    async getChargeDetailsTPAffiliateWiseByDateRange (req, from, to){
+        return new Promise((resolve, reject) => {
+            console.log('getChargeDetailsTPAffiliateWiseByDateRange: ', from, to);
+            req.db.collection('billinghistories', function (err, collection) {
+                if (!err) {
+                    let query = [
+                        { $match:{
+                            billing_status: 'Success',
+                            $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lt:new Date(to)}}]
+                        }},
+                        {$project:{
+                            price: "$price",
+                            user_id: "$user_id"
+                        }},
+                        { $lookup:{
+                            from: "subscriptions",
+                            let: {user_id: "$user_id"},
+                            pipeline:[
+                                { $match: {
+                                    $expr: {
+                                        $and:[
+                                            {$eq: ["$user_id", "$$user_id" ]},
+                                            { $or: [
+                                                    { $eq : ["$source", "tp_geo_ent"] },
+                                                    { $eq : ["$source", "tp_discover_pak"] },
+                                                    { $eq : ["$source", "tp_dw_eng"] },
+                                                    { $eq : ["$source", "youtube"] }
+                                                ]
+                                            }
+                                        ],
+                                    }
+                                }},
+                                { $project:{
+                                    _id: 0,
+                                    source: "$source"
+                                }}
+                            ],
+                            as: "billing"
+                        }},
+                        {
+                            $unwind: "$billing"
+                        },
+                        { $group:{
+                            _id: "$billing.source",
+                            price: {$sum: "$price"}
+                        }},
+                        { $project:{
+                            tp_source: "$_id",
+                            price: "$price"
+                        }},
+                    ];
+
+                    console.log('query: ', query);
+                    collection.aggregate(query ,{ allowDiskUse: true }).toArray(function(err, items) {
+                        if(err){
+                            console.log('getChargeDetailsTPAffiliateWiseByDateRange - err: ', err.message);
+                            resolve([]);
+                        }
+                        console.log('getChargeDetailsTPAffiliateWiseByDateRange - items: ', items);
+
+                        resolve(items);
+                    });
+                }
+            })
+        });
+    }
+
     async getNetAdditionByDateRange(req, from, to, skip, limit){
         return new Promise((resolve, reject) => {
             console.log('getNetAdditionByDateRange: ', from, to);
@@ -180,7 +384,6 @@ class BillingHistoryRepository {
                                 paywall: "$paywall_id",
                                 operator: "$operator",
                                 billing_dtm: "$billing_dtm"
-                                //billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } }
                             }
                         },
                         { $skip: skip },
@@ -207,7 +410,7 @@ class BillingHistoryRepository {
                                 $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
                         }},
                         { $group: {
-                            _id: "$subscriber_id",
+                            _id: "$user_id",
                             data: { $push:  {
                                 price: "$price",
                                 paywall_id: "$paywall_id",

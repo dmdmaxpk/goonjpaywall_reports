@@ -5,18 +5,17 @@ const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, computedData;
+let dateData, fromDate, toDate, day, month, computedData;
 let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
-computeTransactionsAvgReports = async(req, res) => {
-    console.log('computeTransactionsAvgReports');
+computeTransactingSubscribersReports = async(req, res) => {
+    console.log('computeTransactingSubscribersReports');
 
     /*
     * Compute date and time for data fetching from db
-    * Script will execute to fetch data as per day
+    * Script will execute to fetch month wise
     * */
-    dateData = helper.computeNextDate(req, 1, 2);
+    dateData = helper.computeNextDateWithLocalTime(req, 1, 2);
     req = dateData.req;
-    day = dateData.day;
     month = dateData.month;
     fromDate = dateData.fromDate;
     toDate = dateData.toDate;
@@ -63,24 +62,12 @@ computeTransactionsAvgReports = async(req, res) => {
             }
         }
 
-        // Get compute data for next time slot
-        req.day = Number(req.day) + 1;
-        console.log('getChargeDetailsByDateRange -> day : ', day, req.day, helper.getDaysInMonth(month));
+        // Compute data for next month
+        req.month = Number(req.month) + 1;
+        console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
 
-        if (req.day <= helper.getDaysInMonth(month)){
-            if (month < helper.getTodayMonthNo())
-                computeTransactionsAvgReports(req, res);
-            else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-                computeTransactionsAvgReports(req, res);
-        }
-        else{
-            req.day = 1;
-            req.month = Number(req.month) + 1;
-            console.log('getChargeDetailsByDateRange -> month : ', month, req.month, new Date().getMonth());
-
-            if (req.month <= helper.getTodayMonthNo())
-                computeTransactionsAvgReports(req, res);
-        }
+        if (req.month <= helper.getTodayMonthNo())
+            computeTransactingSubscribersReports(req, res);
     });
 };
 
@@ -181,60 +168,27 @@ function insertNewRecord(transactionAvg, transactionsCount, dateString, mode) {
 
 function countQuery(from, to){
     return [
-        {$match : {
-                $and:[{added_dtm:{$gte:new Date(from)}}, {added_dtm:{$lte:new Date(to)}}]
-            }},
-        {$lookup:{
-                from: "billinghistories",
-                localField: "subscriber_id",
-                foreignField: "subscriber_id",
-                as: "histories"}
-        },
-        { $project: {
-                source:"$source",
-                added_dtm:"$added_dtm",
-                subscription_status:"$subscription_status",
-                bill_status: { $filter: {
-                        input: "$histories",
-                        as: "history",
-                        cond: { $or: [
-                                { $eq: ['$$history.billing_status',"expired"] },
-                                { $eq: ['$$history.billing_status',"unsubscribe-request-recieved"] },
-                                { $eq: ['$$history.billing_status',"unsubscribe-request-received-and-expired"] }
-                            ]}
-                    }} }
-        },
-        {$project: {
-                source:"$source",
-                added_dtm:"$added_dtm",
-                numOfFailed: { $size:"$bill_status" },
-                subscription_status:"$subscription_status",
-                billing_status: {"$arrayElemAt": ["$bill_status.billing_status",0]},
-                package: {"$arrayElemAt": ["$bill_status.package_id",0]},
-                paywall: {"$arrayElemAt": ["$bill_status.paywall_id",0]},
-                operator: {"$arrayElemAt": ["$bill_status.operator",0]},
-                billing_dtm: {"$arrayElemAt": ["$bill_status.billing_dtm",0]}
-            }
-        },
-        {$match: { numOfFailed: {$gte: 1}  }},
-        {$project: {
-                _id: 0,
-                added_dtm:"$added_dtm",
-                source:"$source",
-                subscription_status:"$subscription_status",
-                billing_status:"$billing_status",
-                package: "$package",
-                paywall: "$paywall",
-                operator: "$operator",
-                billing_dtm: "$billing_dtm",
-            }
-        },
         {
-            $count: "count"
-        }
+            $match:{
+                billing_status: "Success",
+                $and:[{billing_dtm:{$gte:new Date(from)}}, {billing_dtm:{$lte:new Date(to)}}]
+            }
+        },
+        {$project:{
+                source: {$ifNull: ['$source', 'app'] },
+                micro_charge: {$ifNull: ['$micro_charge', 'false'] },
+                paywall_id: {$ifNull: ['$paywall_id', 'Dt6Gp70c'] },
+                package_id: {$ifNull: ['$package_id', 'QDfC'] },
+                operator: {$ifNull: ['$operator', 'telenor'] },
+                billing_status: {$ifNull: ['$billing_status', 'expire'] },
+                transaction_id: "$transaction_id",
+                user_id: "$user_id",
+                billing_dtm: { '$dateToString' : { date: "$billing_dtm", 'timezone' : "Asia/Karachi" } },
+            }
+        },
     ];
 }
 
 module.exports = {
-    computeTransactionsAvgReports: computeTransactionsAvgReports,
+    computeTransactingSubscribersReports: computeTransactingSubscribersReports,
 };

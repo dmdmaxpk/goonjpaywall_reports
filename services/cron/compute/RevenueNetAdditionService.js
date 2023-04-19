@@ -5,7 +5,7 @@ const helper = require('../../../helper/helper');
 const config = require('../../../config');
 const  _ = require('lodash');
 
-let fromDate, toDate, day, month, finalData, finalList = [];
+let dateData, fromDate, toDate, day, month, finalData, finalList = [];
 let query, computeChunks, totalChunks = 0, lastLimit = 0, limit = config.cron_db_query_data_limit;
 computeRevenueNetAdditionReports = async(req, res) => {
     console.log('computeRevenueNetAdditionReports');
@@ -14,7 +14,7 @@ computeRevenueNetAdditionReports = async(req, res) => {
     * Compute date and time for data fetching from db
     * Script will execute to fetch data as per day
     * */
-    dateData = helper.computeNextDateWithLocalTime(req, 16, 10);
+    dateData = helper.computeNextDateWithLocalTime(req, 30, 8);
     req = dateData.req;
     day = dateData.day;
     month = dateData.month;
@@ -70,31 +70,31 @@ computeRevenueNetAdditionReports = async(req, res) => {
         }
 
         // Get compute data for next time slot
-        // req.day = Number(req.day) + 1;
-        // console.log('computeRevenueNetAdditionReports -> day : ', day, req.day, helper.getDaysInMonth(month));
+        req.day = Number(req.day) + 1;
+        console.log('getNetAdditionByDateRange -> day : ', Number(day), Number(req.day), Number(month), Number(helper.getDaysInMonth(month)));
 
-        // if (req.day <= helper.getDaysInMonth(month)){
-        //     console.log('IF');
-        //     if (month < helper.getTodayMonthNo())
-        //         computeRevenueNetAdditionReports(req, res);
-        //     else if (month === helper.getTodayMonthNo() && req.day <= helper.getTodayDayNo())
-        //         computeRevenueNetAdditionReports(req, res);
-        // }
-        // else{
-        //     console.log('ELSE');
-        //     req.day = 1;
-        //     req.month = Number(req.month) + 1;
-        //     console.log('computeRevenueNetAdditionReports -> month : ', month, req.month, new Date().getMonth());
+        if (Number(req.day) <= Number(helper.getDaysInMonth(month))){
+            if (Number(month) < Number(helper.getTodayMonthNo()))
+                computeRevenueNetAdditionReports(req, res);
+            else if (Number(month) === Number(helper.getTodayMonthNo()) && Number(req.day) <= Number(helper.getTodayDayNo()))
+                computeRevenueNetAdditionReports(req, res);
+        }
+        else{
+            console.log('else - 1: ', Number(req.month), Number(helper.getTodayMonthNo()));
 
-        //     if (req.month <= helper.getTodayMonthNo())
-        //         computeRevenueNetAdditionReports(req, res);
-        // }
+            req.day = 1;
+            req.month = Number(req.month) + 1;
+            console.log('getNetAdditionByDateRange -> month : ', Number(month), Number(req.month), new Date().getMonth());
 
-        // if (helper.isToday(fromDate)){
-        //     console.log('computeRevenueNetAdditionReports - data compute - done');
-        //     delete req.day;
-        //     delete req.month;
-        // }
+            if (Number(req.month) <= Number(helper.getTodayMonthNo()))
+                computeRevenueNetAdditionReports(req, res);
+        }
+
+        if (helper.isToday(fromDate)){
+            console.log('computeRevenueNetAdditionReports - data compute - done');
+            delete req.day;
+            delete req.month;
+        }
     });
 };
 
@@ -173,9 +173,9 @@ promiseBasedComputeRevenueNetAdditionReports = async(req, res) => {
 };
 
 function computeNetAdditionRevenueData(netAdditions) {
-    //console.log('==>', netAdditions);
-    let dateInMili, outer_billing_dtm, inner_billing_dtm, expire_type, newObj, outerObj, innerObj, finalList = [];
-    
+
+    let outer_billing_dtm, inner_billing_dtm, expire_type, newObj, outerObj, innerObj, finalList = [];
+    let check, hoursArr = [];
     for (let j=0; j < netAdditions.length; j++) {
 
         outerObj = netAdditions[j];
@@ -183,14 +183,19 @@ function computeNetAdditionRevenueData(netAdditions) {
         newObj = _.cloneDeep(cloneInfoObj());
         outer_billing_dtm = helper.setDate(new Date(outerObj.billing_dtm), null, 0, 0, 0).getTime();
 
-        if (dateInMili !== outer_billing_dtm){
+        thisHour = new Date(outerObj.billing_dtm).getUTCHours();
+        check = hoursArr.includes(thisHour);
+
+        if (!check){
+            hoursArr.push(thisHour);
+            console.log('hoursArr: ', hoursArr.length);
             for (let k=0; k < netAdditions.length; k++) {
 
                 innerObj = netAdditions[k];
                 inner_billing_dtm = helper.setDate(new Date(innerObj.billing_dtm), null, 0, 0, 0).getTime();
 
                 if (outer_billing_dtm === inner_billing_dtm){
-                    dateInMili = inner_billing_dtm;
+
                     if (innerObj.billing_source === 'system-after-grace-end' || innerObj.billing_source === 'system' || innerObj.billing_source === 'dmdmax'){
                         expire_type = 'system';
                         newObj.netAdditionType.system = newObj.netAdditionType.system + 1;
