@@ -61,4 +61,14 @@ job.start();
 let { port } = config;
 app.listen(port, () => {
     console.log(`APP is running on port ${port}`);
+
+    console.log('paywall monthly reporting cron: ' + (new Date()));
+
+    axios.get(config.base_path + "/cron/cron-compute-monthly-data-reports")
+    .then(function(response){
+        console.log('paywall monthly - response.data: ', response.data);
+    })
+    .catch(function(err){
+        console.log('paywall monthly - err: ', err);
+    });
 });
