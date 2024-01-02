@@ -382,13 +382,12 @@ class Helper {
         month = req.month ? req.month : sMonth;
         month = month > 9 ? month : '0'+Number(month);
         req.month = month;
+        let year = this.getThisYear();
 
         if(month === '00' || month === 0){
             month = 12;
             year = year - 1;
         }
-
-        let year = this.getThisYear();
 
         console.log('computeLastMonthDateWithLocalTime - year : ', year, "month: ", month);
 
